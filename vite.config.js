@@ -9,9 +9,11 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/home.css',
-                'resources/css/admin.css',
+                'resources/css/login.css',
                 'resources/css/admin/pengguna.css',
                 'resources/css/admin/spj.css',
+                'resources/css/teknis.css',
+                'resources/css/umum.css',
                 'resources/js/app.js',
             ],
 

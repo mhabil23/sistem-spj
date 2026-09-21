@@ -8,91 +8,43 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+use App\Http\Controllers\AuthController;
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN
-|--------------------------------------------------------------------------
-*/
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
+    // Daftar SPJ
+    Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');
+    Route::get('/spj/create', [SpjController::class, 'create'])->name('spj.create');
+    Route::post('/spj', [SpjController::class, 'store'])->name('spj.store');
 
+    // Pengguna
+    Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
+    Route::get('/pengguna/create', [UserController::class, 'create'])->name('pengguna.create');
+    Route::post('/pengguna', [UserController::class, 'store'])->name('pengguna.store');
 
-/*
-|--------------------------------------------------------------------------
-| DATA SPJ
-|--------------------------------------------------------------------------
-*/
-
-/*
-|--------------------------------------------------------------------------
-| DATA SPJ
-|--------------------------------------------------------------------------
-*/
-
-// Daftar SPJ
-Route::get('/admin/spj', [SpjController::class, 'index'])
-    ->name('admin.spj.index');
-
-// Form tambah SPJ
-Route::get('/admin/spj/create', [SpjController::class, 'create'])
-    ->name('admin.spj.create');
-
-// Simpan SPJ
-Route::post('/admin/spj', [SpjController::class, 'store'])
-    ->name('admin.spj.store');
-
-// Form edit SPJ
-Route::get('/admin/spj/{id}/edit', [SpjController::class, 'edit'])
-    ->name('admin.spj.edit');
-
-// Update SPJ
-Route::put('/admin/spj/{id}', [SpjController::class, 'update'])
-    ->name('admin.spj.update');
-
-// Hapus SPJ
-Route::delete('/admin/spj/{id}', [SpjController::class, 'destroy'])
-    ->name('admin.spj.destroy');
-
-
-/*
-|--------------------------------------------------------------------------
-| PENGGUNA
-|--------------------------------------------------------------------------
-*/
-
-Route::prefix('admin')->name('admin.')->group(function () {
-
-    // Daftar pengguna
-    Route::get('/pengguna', [UserController::class, 'index'])
-        ->name('pengguna.index');
-
-    // Form tambah pengguna
-    Route::get('/pengguna/create', [UserController::class, 'create'])
-        ->name('pengguna.create');
-
-    // Simpan pengguna
-    Route::post('/pengguna', [UserController::class, 'store'])
-        ->name('pengguna.store');
+    // Riwayat
+    Route::get('/riwayat', function () {
+        return view('admin.riwayat');
+    })->name('riwayat');
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| RIWAYAT
-|--------------------------------------------------------------------------
-*/
+// Riwayat handled above
 
-Route::get('/admin/riwayat', function () {
-    return view('admin.riwayat');
-})->name('admin.riwayat');
 
+use App\Http\Controllers\Teknis\DashboardController as TeknisDashboardController;
+use App\Http\Controllers\Teknis\SpjController as TeknisSpjController;
+use App\Http\Controllers\Teknis\RiwayatController as TeknisRiwayatController;
+use App\Http\Controllers\Teknis\DokumenController as TeknisDokumenController;
+use App\Http\Controllers\Teknis\ProfilController as TeknisProfilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,9 +52,16 @@ Route::get('/admin/riwayat', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/teknis/dashboard', function () {
-    return view('teknis.dashboard');
-})->name('teknis.dashboard');
+Route::redirect('/teknis', '/teknis/dashboard');
+Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->group(function () {
+    Route::get('/dashboard', [TeknisDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('spj', TeknisSpjController::class);
+    Route::get('/riwayat', [TeknisRiwayatController::class, 'index'])->name('riwayat.index');
+    Route::get('/dokumen', [TeknisDokumenController::class, 'index'])->name('dokumen.index');
+    Route::post('/dokumen/{spj}/upload', [TeknisDokumenController::class, 'upload'])->name('dokumen.upload');
+    Route::get('/profil', [TeknisProfilController::class, 'index'])->name('profil.index');
+    Route::put('/profil', [TeknisProfilController::class, 'update'])->name('profil.update');
+});
 
 
 /*
@@ -111,6 +70,8 @@ Route::get('/teknis/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/umum/dashboard', function () {
-    return view('umum.dashboard');
-})->name('umum.dashboard');
+Route::middleware(['auth', 'role:umum'])->prefix('umum')->name('umum.')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('umum.dashboard');
+    })->name('dashboard');
+});

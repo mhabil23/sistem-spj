@@ -29,4 +29,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function spjs()
+    {
+        return $this->hasMany(Spj::class);
+    }
 }

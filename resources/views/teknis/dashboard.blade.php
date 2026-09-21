@@ -25,12 +25,8 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
     </div>
 
 
-    <a href="#" class="btn-primary">
-
-        <span>+</span>
-
-        Ajukan SPJ
-
+    <a href="{{ route('teknis.spj.create') }}" class="btn-primary">
+        <span>+</span> Ajukan SPJ
     </a>
 
 </div>
@@ -43,110 +39,43 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
 
     <!-- TOTAL -->
-
     <div class="stat-card">
-
-        <div class="stat-icon blue">
-            ▣
-        </div>
-
+        <div class="stat-icon blue">▣</div>
         <div class="stat-content">
-
-            <span>
-                Total SPJ
-            </span>
-
-            <strong>
-                24
-            </strong>
-
-            <small>
-                Semua pengajuan Anda
-            </small>
-
+            <span>Total SPJ</span>
+            <strong>{{ $totalSpj }}</strong>
+            <small>Semua pengajuan Anda</small>
         </div>
-
     </div>
-
 
     <!-- DIPROSES -->
-
     <div class="stat-card">
-
-        <div class="stat-icon orange">
-            ◷
-        </div>
-
+        <div class="stat-icon orange">◷</div>
         <div class="stat-content">
-
-            <span>
-                Sedang Diproses
-            </span>
-
-            <strong>
-                8
-            </strong>
-
-            <small>
-                Menunggu pemeriksaan
-            </small>
-
+            <span>Sedang Diproses</span>
+            <strong>{{ $diprosesSpj }}</strong>
+            <small>Menunggu pemeriksaan</small>
         </div>
-
     </div>
-
 
     <!-- DIKEMBALIKAN -->
-
     <div class="stat-card">
-
-        <div class="stat-icon red">
-            !
-        </div>
-
+        <div class="stat-icon red">!</div>
         <div class="stat-content">
-
-            <span>
-                Dikembalikan
-            </span>
-
-            <strong>
-                3
-            </strong>
-
-            <small>
-                Perlu diperbaiki
-            </small>
-
+            <span>Dikembalikan</span>
+            <strong>{{ $dikembalikanSpj }}</strong>
+            <small>Perlu diperbaiki</small>
         </div>
-
     </div>
 
-
     <!-- SELESAI -->
-
     <div class="stat-card">
-
-        <div class="stat-icon green">
-            ✓
-        </div>
-
+        <div class="stat-icon green">✓</div>
         <div class="stat-content">
-
-            <span>
-                Selesai
-            </span>
-
-            <strong>
-                13
-            </strong>
-
-            <small>
-                SPJ telah selesai
-            </small>
-
+            <span>Selesai</span>
+            <strong>{{ $selesaiSpj }}</strong>
+            <small>SPJ telah selesai</small>
         </div>
-
     </div>
 
 </section>
@@ -176,9 +105,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
             </div>
 
-            <a href="#">
-                Lihat semua →
-            </a>
+            <a href="{{ route('teknis.spj.index') }}">Lihat semua →</a>
 
         </div>
 
@@ -217,140 +144,41 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
 
                 <tbody>
-
-
+                    @forelse($recentSpjs as $spj)
                     <tr>
-
+                        <td><strong>{{ $spj->nomor_spj }}</strong></td>
+                        <td>{{ $spj->kegiatan }}</td>
+                        <td>Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                         <td>
-
-                            <strong>
-                                SPJ-2026-001
-                            </strong>
-
+                            @if(in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_bendahara']))
+                                Teknis
+                            @elseif($spj->status == 'diajukan')
+                                Umum/PPSPM
+                            @elseif($spj->status == 'disetujui_umum')
+                                PPK
+                            @elseif($spj->status == 'disetujui_ppk')
+                                Bendahara
+                            @elseif($spj->status == 'selesai')
+                                Arsip
+                            @else
+                                {{ ucfirst($spj->status) }}
+                            @endif
                         </td>
-
                         <td>
-                            Perjalanan Dinas
+                            @php
+                                $badgeClass = 'pending';
+                                if($spj->status == 'selesai') $badgeClass = 'completed';
+                                if(str_contains($spj->status, 'revisi')) $badgeClass = 'returned';
+                                if($spj->status == 'draft') $badgeClass = 'draft';
+                            @endphp
+                            <span class="badge {{ $badgeClass }}">{{ str_replace('_', ' ', ucfirst($spj->status)) }}</span>
                         </td>
-
-                        <td>
-                            Rp 5.000.000
-                        </td>
-
-                        <td>
-                            Umum/PPSPM
-                        </td>
-
-                        <td>
-
-                            <span class="badge pending">
-                                Diproses
-                            </span>
-
-                        </td>
-
                     </tr>
-
-
+                    @empty
                     <tr>
-
-                        <td>
-
-                            <strong>
-                                SPJ-2026-002
-                            </strong>
-
-                        </td>
-
-                        <td>
-                            Kegiatan Rapat
-                        </td>
-
-                        <td>
-                            Rp 2.500.000
-                        </td>
-
-                        <td>
-                            PPK
-                        </td>
-
-                        <td>
-
-                            <span class="badge approved">
-                                Disetujui
-                            </span>
-
-                        </td>
-
+                        <td colspan="5" style="text-align:center; padding: 20px;">Belum ada pengajuan SPJ</td>
                     </tr>
-
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                SPJ-2026-003
-                            </strong>
-
-                        </td>
-
-                        <td>
-                            Pengadaan ATK
-                        </td>
-
-                        <td>
-                            Rp 1.750.000
-                        </td>
-
-                        <td>
-                            Teknis
-                        </td>
-
-                        <td>
-
-                            <span class="badge returned">
-                                Dikembalikan
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>
-
-                            <strong>
-                                SPJ-2026-004
-                            </strong>
-
-                        </td>
-
-                        <td>
-                            Perjalanan Dinas
-                        </td>
-
-                        <td>
-                            Rp 4.200.000
-                        </td>
-
-                        <td>
-                            Arsip
-                        </td>
-
-                        <td>
-
-                            <span class="badge completed">
-                                Selesai
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-
+                    @endforelse
                 </tbody>
 
             </table>
@@ -384,69 +212,40 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
         <div class="status-list">
 
-
+            @forelse($recentSpjs->take(3) as $spj)
             <div class="status-item">
-
-                <div class="status-number active">
-                    ✓
+                @php
+                    $isDone = $spj->status == 'selesai';
+                    $isError = str_contains($spj->status, 'revisi');
+                    $isPending = in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']);
+                    $icon = $isDone ? '✓' : ($isError ? '!' : '◷');
+                    $class = $isDone ? 'success' : ($isError ? 'warning' : 'active');
+                @endphp
+                <div class="status-number {{ $class }}">
+                    {{ $icon }}
                 </div>
-
                 <div>
-
-                    <strong>
-                        SPJ-2026-001
-                    </strong>
-
+                    <strong>{{ $spj->nomor_spj }}</strong>
                     <span>
-                        Sedang diperiksa Umum/PPSPM
+                        @if($spj->status == 'draft')
+                            Disimpan sebagai draft
+                        @elseif($spj->status == 'diajukan')
+                            Telah diajukan ke Umum
+                        @elseif($spj->status == 'disetujui_umum')
+                            Telah disetujui Umum (Menunggu PPK)
+                        @elseif($spj->status == 'disetujui_ppk')
+                            Telah disetujui PPK (Proses Bendahara)
+                        @elseif(str_contains($spj->status, 'revisi'))
+                            Dikembalikan oleh {{ ucfirst(explode('_', $spj->status)[1] ?? 'Pemeriksa') }}
+                        @elseif($spj->status == 'selesai')
+                            Selesai & Diarsipkan
+                        @endif
                     </span>
-
                 </div>
-
             </div>
-
-
-            <div class="status-item">
-
-                <div class="status-number success">
-                    ✓
-                </div>
-
-                <div>
-
-                    <strong>
-                        SPJ-2026-002
-                    </strong>
-
-                    <span>
-                        Telah disetujui PPK
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div class="status-item">
-
-                <div class="status-number warning">
-                    !
-                </div>
-
-                <div>
-
-                    <strong>
-                        SPJ-2026-003
-                    </strong>
-
-                    <span>
-                        Dokumen perlu diperbaiki
-                    </span>
-
-                </div>
-
-            </div>
-
+            @empty
+            <div style="padding: 1rem; color: #6b7280; text-align: center;">Belum ada status SPJ terbaru.</div>
+            @endforelse
 
         </div>
 
@@ -456,146 +255,75 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
 
 
-<!-- ALUR SPJ -->
-
 <section class="panel workflow-panel">
-
+    @if($recentSpjs->isNotEmpty())
+    @php $topSpj = $recentSpjs->first(); @endphp
     <div class="panel-header">
-
         <div>
-
-            <h2>
-                Alur SPJ-2026-001
-            </h2>
-
-            <p>
-                Posisi pengajuan saat ini
-            </p>
-
+            <h2>Alur {{ $topSpj->nomor_spj }}</h2>
+            <p>Posisi pengajuan terakhir Anda</p>
         </div>
-
-        <a href="#">
-            Detail →
-        </a>
-
+        <a href="{{ route('teknis.spj.show', $topSpj->id) }}">Detail →</a>
     </div>
-
 
     <div class="workflow">
-
-
+        @php
+            $isUmum = in_array($topSpj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'selesai']);
+            $isPpk = in_array($topSpj->status, ['disetujui_umum', 'disetujui_ppk', 'selesai']);
+            $isBendahara = in_array($topSpj->status, ['disetujui_ppk', 'selesai']);
+            $isDone = $topSpj->status == 'selesai';
+        @endphp
         <!-- TEKNIS -->
-
         <div class="workflow-step completed">
-
-            <div class="workflow-circle">
-                ✓
-            </div>
-
-            <strong>
-                Teknis
-            </strong>
-
-            <small>
-                Pengajuan
-            </small>
-
+            <div class="workflow-circle">✓</div>
+            <strong>Teknis</strong>
+            <small>Pengajuan</small>
         </div>
 
-
-        <div class="workflow-line completed">
-        </div>
-
+        <div class="workflow-line completed"></div>
 
         <!-- UMUM -->
-
-        <div class="workflow-step current">
-
-            <div class="workflow-circle">
-                2
-            </div>
-
-            <strong>
-                Umum/PPSPM
-            </strong>
-
-            <small>
-                Pemeriksaan
-            </small>
-
+        <div class="workflow-step {{ $isUmum && !$isPpk ? 'current' : '' }} {{ $isPpk ? 'completed' : '' }}">
+            <div class="workflow-circle">{{ $isPpk ? '✓' : '2' }}</div>
+            <strong>Umum/PPSPM</strong>
+            <small>Pemeriksaan</small>
         </div>
 
-
-        <div class="workflow-line">
-        </div>
-
+        <div class="workflow-line {{ $isPpk ? 'completed' : '' }}"></div>
 
         <!-- PPK -->
-
-        <div class="workflow-step">
-
-            <div class="workflow-circle">
-                3
-            </div>
-
-            <strong>
-                PPK
-            </strong>
-
-            <small>
-                Persetujuan
-            </small>
-
+        <div class="workflow-step {{ $isPpk && !$isBendahara ? 'current' : '' }} {{ $isBendahara ? 'completed' : '' }}">
+            <div class="workflow-circle">{{ $isBendahara ? '✓' : '3' }}</div>
+            <strong>PPK</strong>
+            <small>Persetujuan</small>
         </div>
 
-
-        <div class="workflow-line">
-        </div>
-
+        <div class="workflow-line {{ $isBendahara ? 'completed' : '' }}"></div>
 
         <!-- BENDAHARA -->
-
-        <div class="workflow-step">
-
-            <div class="workflow-circle">
-                4
-            </div>
-
-            <strong>
-                Bendahara
-            </strong>
-
-            <small>
-                Pembayaran
-            </small>
-
+        <div class="workflow-step {{ $isBendahara && !$isDone ? 'current' : '' }} {{ $isDone ? 'completed' : '' }}">
+            <div class="workflow-circle">{{ $isDone ? '✓' : '4' }}</div>
+            <strong>Bendahara</strong>
+            <small>Pembayaran</small>
         </div>
 
-
-        <div class="workflow-line">
-        </div>
-
+        <div class="workflow-line {{ $isDone ? 'completed' : '' }}"></div>
 
         <!-- SELESAI -->
-
-        <div class="workflow-step">
-
-            <div class="workflow-circle">
-                ✓
-            </div>
-
-            <strong>
-                Arsip
-            </strong>
-
-            <small>
-                Selesai
-            </small>
-
+        <div class="workflow-step {{ $isDone ? 'current completed' : '' }}">
+            <div class="workflow-circle">{{ $isDone ? '✓' : '5' }}</div>
+            <strong>Arsip</strong>
+            <small>Selesai</small>
         </div>
-
     </div>
-
+    @else
+    <div class="panel-header">
+        <div>
+            <h2>Alur SPJ</h2>
+            <p>Belum ada SPJ untuk ditampilkan alurnya.</p>
+        </div>
+    </div>
+    @endif
 </section>
 
 
@@ -623,53 +351,34 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
     <div class="attention-list">
 
+        @php
+            $needAttention = $recentSpjs->filter(function($spj) {
+                return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']);
+            });
+        @endphp
 
-        <div class="attention-item warning">
-
-            <div class="attention-icon">
-                !
-            </div>
-
-            <div>
-
-                <strong>
-                    SPJ-2026-003 perlu diperbaiki
-                </strong>
-
-                <p>
-                    Dokumen kuitansi belum lengkap.
-                    Silakan perbaiki dan kirim kembali.
-                </p>
-
-            </div>
-
-            <a href="#">
-                Perbaiki →
-            </a>
-
-        </div>
-
-
-        <div class="attention-item info">
-
-            <div class="attention-icon">
-                i
-            </div>
-
-            <div>
-
-                <strong>
-                    SPJ-2026-001 sedang diperiksa
-                </strong>
-
-                <p>
-                    SPJ sedang diperiksa oleh
-                    Subbagian Umum/PPSPM.
-                </p>
-
-            </div>
-
-        </div>
+        @forelse($needAttention->take(3) as $spj)
+            @if(str_contains($spj->status, 'revisi'))
+                <div class="attention-item warning">
+                    <div class="attention-icon">!</div>
+                    <div>
+                        <strong>{{ $spj->nomor_spj }} dikembalikan oleh {{ ucfirst(explode('_', $spj->status)[1] ?? '') }}</strong>
+                        <p>{{ Str::limit($spj->catatan_revisi, 50, '...') }}</p>
+                    </div>
+                    <a href="{{ route('teknis.spj.edit', $spj->id) }}">Perbaiki →</a>
+                </div>
+            @elseif(in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']))
+                <div class="attention-item info">
+                    <div class="attention-icon">i</div>
+                    <div>
+                        <strong>{{ $spj->nomor_spj }} sedang diproses</strong>
+                        <p>Pengajuan Anda sedang di tahap {{ str_replace('_', ' ', $spj->status) }}.</p>
+                    </div>
+                </div>
+            @endif
+        @empty
+            <div style="padding: 1rem; color: #6b7280; text-align: center;">Tidak ada pemberitahuan saat ini.</div>
+        @endforelse
 
     </div>
 
