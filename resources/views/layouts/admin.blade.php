@@ -11,10 +11,10 @@
     <title>
         {{ $title ?? 'Dashboard' }} | Sistem SPJ
     </title>
-
     @vite([
-    'resources/css/admin.css',
+    'resources/css/admin/dashboard.css',
     'resources/css/admin/pengguna.css',
+    'resources/css/admin/spj.css',
     'resources/js/app.js'
     ])
 

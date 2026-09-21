@@ -32,15 +32,15 @@
 
 
         <a
-            href="#"
-            class="nav-item {{ request()->routeIs('admin.spj.*') ? 'active' : '' }}">
+            href="{{ route('admin.spj') }}"
+            class="nav-item {{ request()->routeIs('admin.spj') ? 'active' : '' }}">
             <span class="nav-icon">▣</span>
             <span>Data SPJ</span>
         </a>
 
 
         <a
-            href="{{ route('admin.users.index') }}"
+            href="{{ route('admin.pengguna.index') }}"
             class="nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
             <span class="nav-icon">♙</span>
             <span>Pengguna</span>
