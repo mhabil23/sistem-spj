@@ -30,7 +30,7 @@
 
             <div>
                 <span>Total SPJ</span>
-                <strong>128</strong>
+                <strong>{{ $spjs->count() }}</strong>
                 <small>Seluruh dokumen</small>
             </div>
         </div>
@@ -40,7 +40,7 @@
 
             <div>
                 <span>Menunggu Proses</span>
-                <strong>18</strong>
+                <strong>{{ $spjs->whereIn('status', ['diajukan', 'diproses'])->count() }}</strong>
                 <small>Perlu diproses</small>
             </div>
         </div>
@@ -50,7 +50,7 @@
 
             <div>
                 <span>Selesai</span>
-                <strong>96</strong>
+                <strong>{{ $spjs->where('status', 'selesai')->count() }}</strong>
                 <small>Sudah selesai</small>
             </div>
         </div>
@@ -60,7 +60,7 @@
 
             <div>
                 <span>Dikembalikan</span>
-                <strong>14</strong>
+                <strong>{{ $spjs->where('status', 'dikembalikan')->count() }}</strong>
                 <small>Perlu diperbaiki</small>
             </div>
         </div>
@@ -120,9 +120,8 @@
                         <th>No</th>
                         <th>Nomor SPJ</th>
                         <th>Uraian</th>
-                        <th>Pengaju</th>
-                        <th>Tanggal</th>
                         <th>Nilai</th>
+                        <th>Tanggal</th>
                         <th>Status</th>
                         <th>Aksi</th>
                     </tr>
@@ -130,28 +129,42 @@
 
                 <tbody>
 
-                    @forelse($spjs as $spj)
+                    @forelse($spjs as $index => $spj)
 
                     <tr>
 
+                        {{-- NO --}}
+                        <td>
+                            {{ $index + 1 }}
+                        </td>
+
+
+                        {{-- NOMOR SPJ --}}
                         <td>
                             <strong>
                                 {{ $spj->nomor_spj }}
                             </strong>
                         </td>
 
+
+                        {{-- URAIAN --}}
                         <td>
                             {{ $spj->kegiatan }}
                         </td>
 
-                        <td>
-                            {{ $spj->tanggal->format('d M Y') }}
-                        </td>
 
+                        {{-- NILAI --}}
                         <td>
                             Rp {{ number_format($spj->nilai, 0, ',', '.') }}
                         </td>
 
+
+                        {{-- TANGGAL --}}
+                        <td>
+                            {{ $spj->tanggal->format('d M Y') }}
+                        </td>
+
+                        {{-- STATUS --}}
                         <td>
 
                             <span class="spj-status {{ $spj->status }}">
@@ -161,7 +174,39 @@
                         </td>
 
                         <td>
-                            {{ $spj->keterangan ?: '-' }}
+                            <div class="spj-actions">
+
+
+
+                                {{-- EDIT --}}
+                                <a
+                                    href="{{ route('admin.spj.edit', $spj->id) }}"
+                                    class="spj-action-btn edit"
+                                    title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+
+                                {{-- HAPUS --}}
+                                <form
+                                    action="{{ route('admin.spj.destroy', $spj->id) }}"
+                                    method="POST"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Yakin ingin menghapus SPJ {{ $spj->nomor_spj }}?')">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="spj-action-btn delete"
+                                        title="Hapus">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+
+                                </form>
+
+                            </div>
                         </td>
 
                     </tr>
@@ -170,7 +215,9 @@
 
                     <tr>
 
-                        <td colspan="6" style="text-align:center; padding:30px;">
+                        <td
+                            colspan="8"
+                            style="text-align:center; padding:30px;">
                             Belum ada data SPJ.
                         </td>
 

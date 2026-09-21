@@ -680,6 +680,79 @@
 
 }
 
+/* =========================
+   AKSI SPJ
+========================= */
+
+.spj-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.spj-action-btn {
+    width: 32px;
+    height: 32px;
+
+    border: 1px solid transparent;
+    border-radius: 7px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    transition: all .2s ease;
+}
+
+.spj-action-btn i {
+    font-size: 14px;
+}
+
+
+/* LIHAT */
+
+.spj-action-btn.view {
+    color: #64748b;
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.spj-action-btn.view:hover {
+    color: #334155;
+    background: #f1f5f9;
+}
+
+
+/* EDIT */
+
+.spj-action-btn.edit {
+    color: #2563eb;
+    background: #eff6ff;
+    border-color: #dbeafe;
+}
+
+.spj-action-btn.edit:hover {
+    color: #1d4ed8;
+    background: #dbeafe;
+}
+
+
+/* HAPUS */
+
+.spj-action-btn.delete {
+    color: #dc2626;
+    background: #fef2f2;
+    border-color: #fee2e2;
+}
+
+.spj-action-btn.delete:hover {
+    color: #b91c1c;
+    background: #fee2e2;
+}
 
 @media (max-width: 500px) {
 
@@ -695,5 +768,7 @@
     .filter-select {
         width: 100%;
     }
+
+    
 
 }
