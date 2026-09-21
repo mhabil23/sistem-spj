@@ -1,0 +1,521 @@
+/* ========================================
+   ADMIN - RIWAYAT PROSES
+======================================== */
+
+.history-page {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+
+/* HEADER */
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.history-header h2 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 23px;
+}
+
+.history-header p {
+    margin: 6px 0 0;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+
+/* FILTER BUTTON */
+
+.btn-filter {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #475569;
+    padding: 10px 15px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+
+/* STATISTICS */
+
+.history-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.history-stat-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.history-stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.history-stat-icon.blue {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.history-stat-icon.orange {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.history-stat-icon.green {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.history-stat-icon.red {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.history-stat-card div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.history-stat-card span {
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.history-stat-card strong {
+    margin-top: 3px;
+    color: #1e293b;
+    font-size: 23px;
+}
+
+.history-stat-card small {
+    margin-top: 2px;
+    color: #94a3b8;
+    font-size: 9px;
+}
+
+
+/* PANEL */
+
+.history-panel {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+
+/* TOOLBAR */
+
+.history-toolbar {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.history-toolbar h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.history-toolbar p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.history-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+/* SEARCH */
+
+.history-search {
+    height: 38px;
+    min-width: 220px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 11px;
+}
+
+.history-search span {
+    color: #94a3b8;
+    font-size: 18px;
+}
+
+.history-search input {
+    width: 100%;
+    border: 0;
+    outline: none;
+    color: #334155;
+    font-size: 11px;
+}
+
+.history-select {
+    height: 38px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: #fff;
+    color: #64748b;
+    padding: 0 10px;
+    font-size: 11px;
+    outline: none;
+}
+
+
+/* TABLE */
+
+.history-table-wrapper {
+    overflow-x: auto;
+}
+
+.history-table {
+    width: 100%;
+    min-width: 950px;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    padding: 13px 20px;
+    background: #f8fafc;
+    color: #64748b;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.history-table td {
+    padding: 14px 20px;
+    border-top: 1px solid #f1f5f9;
+    color: #64748b;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.history-table tbody tr:hover {
+    background: #fafcff;
+}
+
+
+/* DOCUMENT */
+
+.document-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.document-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 7px;
+    background: #fef2f2;
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 700;
+}
+
+.document-info div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.document-info strong {
+    color: #334155;
+    font-size: 11px;
+}
+
+.document-info span {
+    margin-top: 3px;
+    color: #a0aaba;
+    font-size: 9px;
+}
+
+
+/* ACTIVITY */
+
+.activity {
+    display: flex;
+    flex-direction: column;
+}
+
+.activity strong {
+    color: #475569;
+    font-size: 11px;
+}
+
+.activity span {
+    margin-top: 3px;
+    color: #a0aaba;
+    font-size: 9px;
+}
+
+
+/* USER */
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #dbeafe;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.user-avatar.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.user-avatar.purple {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+
+/* STATUS */
+
+.history-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.history-status i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.history-status.processing {
+    color: #ea580c;
+}
+
+.history-status.processing i {
+    background: #f97316;
+}
+
+.history-status.completed {
+    color: #16a34a;
+}
+
+.history-status.completed i {
+    background: #22c55e;
+}
+
+.history-status.returned {
+    color: #ef4444;
+}
+
+.history-status.returned i {
+    background: #ef4444;
+}
+
+
+/* TIME */
+
+.time-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-info strong {
+    color: #475569;
+    font-size: 10px;
+}
+
+.time-info span {
+    margin-top: 3px;
+    color: #a0aaba;
+    font-size: 9px;
+}
+
+
+/* ACTION */
+
+.history-action {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 6px;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.history-action:hover {
+    background: #e2e8f0;
+}
+
+
+/* FOOTER */
+
+.history-footer {
+    min-height: 64px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #e5e7eb;
+}
+
+.history-footer > span {
+    color: #94a3b8;
+    font-size: 10px;
+}
+
+.history-footer strong {
+    color: #64748b;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pagination button {
+    min-width: 29px;
+    height: 29px;
+    padding: 0 7px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    background: #fff;
+    color: #64748b;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.pagination button.active {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+}
+
+.pagination button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1100px) {
+
+    .history-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .history-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .history-actions {
+        width: 100%;
+    }
+
+    .history-search {
+        flex: 1;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .history-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-filter {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .history-actions {
+        flex-wrap: wrap;
+    }
+
+    .history-search {
+        width: 100%;
+        flex: none;
+    }
+
+    .history-select {
+        flex: 1;
+    }
+
+    .history-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 500px) {
+
+    .history-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .history-actions {
+        flex-direction: column;
+    }
+
+    .history-select {
+        width: 100%;
+    }
+}

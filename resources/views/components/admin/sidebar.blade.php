@@ -32,7 +32,7 @@
 
 
         <a
-            href="{{ route('admin.spj') }}"
+            href="{{ route('admin.spj.index') }}"
             class="nav-item {{ request()->routeIs('admin.spj') ? 'active' : '' }}">
             <span class="nav-icon">▣</span>
             <span>Data SPJ</span>
@@ -45,11 +45,10 @@
             <span class="nav-icon">♙</span>
             <span>Pengguna</span>
         </a>
-
         <a
-            href="#"
-            class="nav-item {{ request()->routeIs('admin.history.*') ? 'active' : '' }}">
-            <span class="nav-icon">◷</span>
+            href="{{ route('admin.riwayat') }}"
+            class="nav-item {{ request()->routeIs('admin.riwayat') ? 'active' : '' }}">
+            <span class="nav-icon">↻</span>
             <span>Riwayat Proses</span>
         </a>
 
