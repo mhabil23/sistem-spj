@@ -32,24 +32,24 @@
 
 
         <a
-            href="#"
-            class="nav-item">
+            href="{{ route('teknis.spj.create') }}"
+            class="nav-item {{ request()->routeIs('teknis.spj.create') ? 'active' : '' }}">
             <span class="nav-icon">+</span>
             <span>Ajukan SPJ</span>
         </a>
 
 
         <a
-            href="#"
-            class="nav-item">
+            href="{{ route('teknis.spj.index') }}"
+            class="nav-item {{ request()->routeIs('teknis.spj.index') || request()->routeIs('teknis.spj.show') || request()->routeIs('teknis.spj.edit') ? 'active' : '' }}">
             <span class="nav-icon">▣</span>
             <span>SPJ Saya</span>
         </a>
 
 
         <a
-            href="#"
-            class="nav-item">
+            href="{{ route('teknis.riwayat.index') }}"
+            class="nav-item {{ request()->routeIs('teknis.riwayat.index') ? 'active' : '' }}">
             <span class="nav-icon">◷</span>
             <span>Riwayat</span>
         </a>
@@ -61,8 +61,8 @@
 
 
         <a
-            href="#"
-            class="nav-item">
+            href="{{ route('teknis.dokumen.index') }}"
+            class="nav-item {{ request()->routeIs('teknis.dokumen.index') ? 'active' : '' }}">
             <span class="nav-icon">▤</span>
             <span>Dokumen SPJ</span>
         </a>
@@ -74,8 +74,8 @@
 
 
         <a
-            href="#"
-            class="nav-item">
+            href="{{ route('teknis.profil.index') }}"
+            class="nav-item {{ request()->routeIs('teknis.profil.index') ? 'active' : '' }}">
             <span class="nav-icon">⚙</span>
             <span>Profil</span>
         </a>
@@ -95,7 +95,7 @@
             <div class="admin-info">
 
                 <strong>
-                    Pengguna Teknis
+                    {{ Auth::user()->name ?? 'Pengguna Teknis' }}
                 </strong>
 
                 <span>
@@ -114,11 +114,15 @@
 
 
         <a
-            href="#"
+            href="{{ route('logout') }}"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
             class="logout-btn">
             <span>↪</span>
             <span>Keluar</span>
         </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
 
     </div>
 
