@@ -9,15 +9,21 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/css/home.css',
+                'resources/css/admin.css',
+                'resources/css/admin/pengguna.css',
+                'resources/css/admin/spj.css',
                 'resources/js/app.js',
             ],
+
             refresh: true,
+
             fonts: [
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
             ],
         }),
+
         tailwindcss(),
     ],
 

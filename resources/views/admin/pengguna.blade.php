@@ -19,10 +19,10 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
             </p>
         </div>
 
-        <button type="button" class="btn-primary">
-            <span>＋</span>
+        <a href="{{ route('admin.pengguna.create') }}" class="btn-primary">
+            <span>+</span>
             Tambah Pengguna
-        </button>
+        </a>
 
     </div>
 

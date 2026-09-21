@@ -1,14 +1,17 @@
 /* ========================================
-   ADMIN - PENGGUNA
+   ADMIN - DATA SPJ
 ======================================== */
 
-.user-page {
+.spj-page {
+    width: 100%;
     max-width: 1500px;
     margin: 0 auto;
 }
 
 
-/* HEADER */
+/* ========================================
+   HEADER
+======================================== */
 
 .page-header {
     display: flex;
@@ -30,12 +33,14 @@
 }
 
 
-/* BUTTON */
+/* ========================================
+   BUTTON
+======================================== */
 
 .btn-primary {
     border: 0;
     background: #2563eb;
-    color: white;
+    color: #fff;
     padding: 11px 16px;
     border-radius: 8px;
     display: flex;
@@ -44,7 +49,8 @@
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
-    transition: .2s;
+    text-decoration: none;
+    transition: 0.2s;
 }
 
 .btn-primary:hover {
@@ -56,16 +62,18 @@
 }
 
 
-/* STATISTICS */
+/* ========================================
+   STATISTICS
+======================================== */
 
-.user-stats {
+.spj-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 20px;
 }
 
-.user-stat-card {
+.spj-stat-card {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -75,64 +83,68 @@
     gap: 13px;
 }
 
-.user-stat-icon {
+.spj-stat-icon {
     width: 45px;
     height: 45px;
     flex-shrink: 0;
     border-radius: 10px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     font-size: 18px;
     font-weight: 700;
 }
 
-.user-stat-icon.blue {
+.spj-stat-icon.blue {
     background: #eff6ff;
     color: #2563eb;
 }
 
-.user-stat-icon.green {
+.spj-stat-icon.green {
     background: #f0fdf4;
     color: #16a34a;
 }
 
-.user-stat-icon.orange {
+.spj-stat-icon.orange {
     background: #fff7ed;
     color: #ea580c;
 }
 
-.user-stat-icon.purple {
-    background: #faf5ff;
-    color: #9333ea;
+.spj-stat-icon.red {
+    background: #fef2f2;
+    color: #ef4444;
 }
 
-.user-stat-card > div:last-child {
+.spj-stat-card > div:last-child {
     display: flex;
     flex-direction: column;
 }
 
-.user-stat-card span {
+.spj-stat-card span {
     color: #94a3b8;
     font-size: 11px;
 }
 
-.user-stat-card strong {
+.spj-stat-card strong {
     margin-top: 3px;
     color: #1e293b;
     font-size: 23px;
 }
 
-.user-stat-card small {
+.spj-stat-card small {
     margin-top: 2px;
     color: #94a3b8;
     font-size: 9px;
 }
 
 
-/* PANEL */
+/* ========================================
+   PANEL
+======================================== */
 
-.user-panel {
+.spj-panel {
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
@@ -140,14 +152,19 @@
 }
 
 
-/* TOOLBAR */
+/* ========================================
+   TOOLBAR
+======================================== */
 
-.user-toolbar {
+.spj-toolbar {
     padding: 20px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 20px;
+
     border-bottom: 1px solid #e5e7eb;
 }
 
@@ -170,18 +187,24 @@
 }
 
 
-/* SEARCH */
+/* ========================================
+   SEARCH
+======================================== */
 
 .search-box {
     height: 38px;
-    min-width: 220px;
+    min-width: 250px;
+
     border: 1px solid #e2e8f0;
     border-radius: 7px;
+
     display: flex;
     align-items: center;
+
     gap: 7px;
     padding: 0 11px;
-    background: white;
+
+    background: #fff;
 }
 
 .search-box span {
@@ -191,8 +214,10 @@
 
 .search-box input {
     width: 100%;
+
     border: 0;
     outline: none;
+
     color: #334155;
     font-size: 11px;
 }
@@ -202,191 +227,260 @@
 }
 
 
-/* FILTER */
+/* ========================================
+   FILTER
+======================================== */
 
 .filter-select {
     height: 38px;
+
     border: 1px solid #e2e8f0;
     border-radius: 7px;
-    background: white;
+
+    background: #fff;
     color: #64748b;
+
     padding: 0 10px;
+
     font-size: 11px;
     outline: none;
+
     cursor: pointer;
 }
 
 
-/* TABLE */
+/* ========================================
+   TABLE
+======================================== */
 
-.user-table-wrapper {
+.spj-table-wrapper {
+    width: 100%;
     overflow-x: auto;
 }
 
-.user-table {
+.spj-table {
     width: 100%;
-    min-width: 900px;
+    min-width: 1050px;
+
     border-collapse: collapse;
 }
 
-.user-table th {
-    padding: 13px 20px;
+.spj-table th {
+    padding: 13px 18px;
+
     background: #f8fafc;
+
     color: #64748b;
+
     text-align: left;
+
     font-size: 10px;
     font-weight: 700;
+
     white-space: nowrap;
 }
 
-.user-table td {
-    padding: 14px 20px;
+.spj-table td {
+    padding: 14px 18px;
+
     border-top: 1px solid #f1f5f9;
+
     color: #64748b;
+
     font-size: 11px;
+
     white-space: nowrap;
 }
 
-.user-table tbody tr {
-    transition: .15s;
+.spj-table tbody tr {
+    transition: 0.15s;
 }
 
-.user-table tbody tr:hover {
+.spj-table tbody tr:hover {
     background: #fafcff;
 }
 
 
-/* PROFILE */
+/* ========================================
+   NOMOR SPJ
+======================================== */
 
-.user-profile {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.table-avatar {
-    width: 37px;
-    height: 37px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.table-avatar.admin {
-    background: #dbeafe;
-    color: #2563eb;
-}
-
-.table-avatar.teknis {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.table-avatar.umum {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.table-avatar.ppk {
-    background: #ede9fe;
-    color: #7c3aed;
-}
-
-.table-avatar.bendahara {
-    background: #fce7f3;
-    color: #db2777;
-}
-
-.user-profile > div:last-child {
+.spj-number {
     display: flex;
     flex-direction: column;
 }
 
-.user-profile strong {
+.spj-number strong {
     color: #334155;
     font-size: 11px;
 }
 
-.user-profile span {
+.spj-number span {
+    margin-top: 3px;
+
+    color: #a0aaba;
+
+    font-size: 9px;
+}
+
+
+/* ========================================
+   DESKRIPSI
+======================================== */
+
+.spj-description {
+    color: #475569;
+    font-size: 11px;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* ========================================
+   PENGAJU
+======================================== */
+
+.submitter {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.submitter > div:last-child {
+    display: flex;
+    flex-direction: column;
+}
+
+.submitter strong {
+    color: #334155;
+    font-size: 11px;
+}
+
+.submitter span {
     margin-top: 3px;
     color: #a0aaba;
     font-size: 9px;
 }
 
 
-/* ROLE */
+/* ========================================
+   AVATAR
+======================================== */
 
-.role-badge {
-    display: inline-flex;
-    padding: 5px 9px;
-    border-radius: 5px;
-    font-size: 9px;
-    font-weight: 600;
+.avatar {
+    width: 34px;
+    height: 34px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    font-weight: 700;
 }
 
-.role-badge.admin {
-    background: #eff6ff;
+.avatar.teknis {
+    background: #dbeafe;
     color: #2563eb;
 }
 
-.role-badge.teknis {
-    background: #f0fdf4;
+.avatar.umum {
+    background: #dcfce7;
     color: #16a34a;
 }
 
-.role-badge.umum {
-    background: #fffbeb;
-    color: #d97706;
-}
-
-.role-badge.ppk {
-    background: #f5f3ff;
+.avatar.ppk {
+    background: #ede9fe;
     color: #7c3aed;
 }
 
-.role-badge.bendahara {
-    background: #fdf2f8;
+.avatar.bendahara {
+    background: #fce7f3;
     color: #db2777;
 }
 
 
-/* STATUS */
+/* ========================================
+   NILAI
+======================================== */
 
-.status-badge {
+.amount {
+    color: #334155;
+    font-size: 11px;
+}
+
+
+/* ========================================
+   STATUS
+======================================== */
+
+.spj-status {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+
     font-size: 10px;
     font-weight: 600;
 }
 
-.status-badge i {
+.spj-status i {
     width: 6px;
     height: 6px;
+
     border-radius: 50%;
 }
 
-.status-badge.active {
+
+/* MENUNGGU */
+
+.spj-status.waiting {
+    color: #d97706;
+}
+
+.spj-status.waiting i {
+    background: #f59e0b;
+}
+
+
+/* DIPROSES */
+
+.spj-status.process {
+    color: #2563eb;
+}
+
+.spj-status.process i {
+    background: #3b82f6;
+}
+
+
+/* DISETUJUI */
+
+.spj-status.approved {
     color: #16a34a;
 }
 
-.status-badge.active i {
+.spj-status.approved i {
     background: #22c55e;
 }
 
-.status-badge.inactive {
-    color: #94a3b8;
+
+/* DIKEMBALIKAN */
+
+.spj-status.returned {
+    color: #ef4444;
 }
 
-.status-badge.inactive i {
-    background: #94a3b8;
+.spj-status.returned i {
+    background: #ef4444;
 }
 
 
-/* ACTION */
+/* ========================================
+   ACTION
+======================================== */
 
 .action-buttons {
     display: flex;
@@ -397,15 +491,23 @@
 .action-btn {
     width: 30px;
     height: 30px;
+
     border: 0;
     border-radius: 6px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     cursor: pointer;
+
     font-size: 12px;
-    transition: .15s;
+
+    transition: 0.15s;
 }
+
+
+/* VIEW */
 
 .action-btn.view {
     background: #f1f5f9;
@@ -416,6 +518,9 @@
     background: #e2e8f0;
 }
 
+
+/* EDIT */
+
 .action-btn.edit {
     background: #eff6ff;
     color: #2563eb;
@@ -424,6 +529,9 @@
 .action-btn.edit:hover {
     background: #dbeafe;
 }
+
+
+/* DELETE */
 
 .action-btn.delete {
     background: #fef2f2;
@@ -435,14 +543,18 @@
 }
 
 
-/* FOOTER */
+/* ========================================
+   FOOTER
+======================================== */
 
 .table-footer {
     min-height: 64px;
     padding: 0 20px;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     border-top: 1px solid #e5e7eb;
 }
 
@@ -455,6 +567,11 @@
     color: #64748b;
 }
 
+
+/* ========================================
+   PAGINATION
+======================================== */
+
 .pagination {
     display: flex;
     align-items: center;
@@ -464,12 +581,17 @@
 .pagination button {
     min-width: 29px;
     height: 29px;
+
     padding: 0 7px;
+
     border: 1px solid #e2e8f0;
     border-radius: 5px;
-    background: white;
+
+    background: #fff;
     color: #64748b;
+
     font-size: 10px;
+
     cursor: pointer;
 }
 
@@ -479,27 +601,28 @@
 
 .pagination button.active {
     background: #2563eb;
-    color: white;
+    color: #fff;
+
     border-color: #2563eb;
 }
 
 .pagination button:disabled {
-    opacity: .4;
+    opacity: 0.4;
     cursor: not-allowed;
 }
 
 
-/* =========================
+/* ========================================
    RESPONSIVE
-========================= */
+======================================== */
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
 
-    .user-stats {
+    .spj-stats {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .user-toolbar {
+    .spj-toolbar {
         align-items: flex-start;
         flex-direction: column;
     }
@@ -514,16 +637,17 @@
 
 }
 
+
 @media (max-width: 768px) {
 
-    .user-page {
+    .spj-page {
         width: 100%;
     }
 
     .page-header {
         align-items: flex-start;
-        gap: 15px;
         flex-direction: column;
+        gap: 15px;
     }
 
     .btn-primary {
@@ -533,10 +657,12 @@
 
     .toolbar-actions {
         flex-wrap: wrap;
+        width: 100%;
     }
 
     .search-box {
         width: 100%;
+        min-width: 0;
         flex: none;
     }
 
@@ -546,21 +672,24 @@
 
     .table-footer {
         align-items: flex-start;
-        gap: 15px;
         flex-direction: column;
+        gap: 15px;
+
         padding: 16px 20px;
     }
 
 }
 
+
 @media (max-width: 500px) {
 
-    .user-stats {
+    .spj-stats {
         grid-template-columns: 1fr;
     }
 
     .toolbar-actions {
         flex-direction: column;
+        align-items: stretch;
     }
 
     .filter-select {
