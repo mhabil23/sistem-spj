@@ -1,0 +1,166 @@
+.spj-create-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.spj-create-page .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.spj-create-page .page-header h2 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 23px;
+}
+
+.spj-create-page .page-header p {
+    margin: 6px 0 0;
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.btn-back {
+    padding: 10px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    background: #fff;
+    color: #475569;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.spj-form-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.form-card-header {
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.form-card-header h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 15px;
+}
+
+.form-card-header p {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.spj-form-card form {
+    padding: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.form-group label span {
+    color: #ef4444;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 11px 12px;
+    outline: none;
+    color: #334155;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.error {
+    display: block;
+    margin-top: 5px;
+    color: #ef4444;
+    font-size: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-cancel,
+.btn-save {
+    padding: 11px 17px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-cancel {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #64748b;
+}
+
+.btn-save {
+    border: 0;
+    background: #2563eb;
+    color: #fff;
+}
+
+.btn-save:hover {
+    background: #1d4ed8;
+}
+
+@media (max-width: 600px) {
+
+    .spj-create-page .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-back {
+        width: 100%;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-cancel,
+    .btn-save {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+}

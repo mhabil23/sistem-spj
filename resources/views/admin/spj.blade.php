@@ -13,8 +13,10 @@
             <p>Kelola seluruh dokumen SPJ yang terdaftar dalam sistem.</p>
         </div>
 
-        <a href="#" class="btn-primary">
-            <span>+</span>
+        <a
+            href="{{ route('admin.spj.create') }}"
+            class="btn-primary">
+            <span>＋</span>
             Tambah SPJ
         </a>
     </div>
@@ -128,258 +130,53 @@
 
                 <tbody>
 
-                    {{-- DATA 1 --}}
+                    @forelse($spjs as $spj)
+
                     <tr>
 
-                        <td>01</td>
-
                         <td>
-                            <div class="spj-number">
-                                <strong>SPJ-001/IX/2026</strong>
-                                <span>SPJ-2026-0001</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="spj-description">
-                                Belanja perjalanan dinas
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="submitter">
-                                <div class="avatar teknis">A</div>
-
-                                <div>
-                                    <strong>Ahmad Fauzan</strong>
-                                    <span>Teknis</span>
-                                </div>
-                            </div>
-                        </td>
-
-                        <td>
-                            21 Sep 2026
-                        </td>
-
-                        <td>
-                            <strong class="amount">
-                                Rp 2.500.000
+                            <strong>
+                                {{ $spj->nomor_spj }}
                             </strong>
                         </td>
 
                         <td>
-                            <span class="spj-status process">
-                                <i></i>
-                                Diproses
-                            </span>
+                            {{ $spj->kegiatan }}
                         </td>
 
                         <td>
-                            <div class="action-buttons">
+                            {{ $spj->tanggal->format('d M Y') }}
+                        </td>
 
-                                <button class="action-btn view"
-                                    title="Lihat">
-                                    👁
-                                </button>
+                        <td>
+                            Rp {{ number_format($spj->nilai, 0, ',', '.') }}
+                        </td>
 
-                                <button class="action-btn edit"
-                                    title="Edit">
-                                    ✎
-                                </button>
+                        <td>
 
-                            </div>
+                            <span class="spj-status {{ $spj->status }}">
+                                {{ ucfirst($spj->status) }}
+                            </span>
+
+                        </td>
+
+                        <td>
+                            {{ $spj->keterangan ?: '-' }}
                         </td>
 
                     </tr>
 
+                    @empty
 
-                    {{-- DATA 2 --}}
                     <tr>
 
-                        <td>02</td>
-
-                        <td>
-                            <div class="spj-number">
-                                <strong>SPJ-002/IX/2026</strong>
-                                <span>SPJ-2026-0002</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="spj-description">
-                                Belanja alat tulis kantor
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="submitter">
-                                <div class="avatar umum">S</div>
-
-                                <div>
-                                    <strong>Siti Rahma</strong>
-                                    <span>Umum / PPSPM</span>
-                                </div>
-                            </div>
-                        </td>
-
-                        <td>
-                            20 Sep 2026
-                        </td>
-
-                        <td>
-                            <strong class="amount">
-                                Rp 1.250.000
-                            </strong>
-                        </td>
-
-                        <td>
-                            <span class="spj-status approved">
-                                <i></i>
-                                Disetujui
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="action-buttons">
-
-                                <button class="action-btn view">
-                                    👁
-                                </button>
-
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
-
-                            </div>
+                        <td colspan="6" style="text-align:center; padding:30px;">
+                            Belum ada data SPJ.
                         </td>
 
                     </tr>
 
-
-                    {{-- DATA 3 --}}
-                    <tr>
-
-                        <td>03</td>
-
-                        <td>
-                            <div class="spj-number">
-                                <strong>SPJ-003/IX/2026</strong>
-                                <span>SPJ-2026-0003</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="spj-description">
-                                Honorarium kegiatan
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="submitter">
-                                <div class="avatar ppk">B</div>
-
-                                <div>
-                                    <strong>Budi Santoso</strong>
-                                    <span>PPK</span>
-                                </div>
-                            </div>
-                        </td>
-
-                        <td>
-                            19 Sep 2026
-                        </td>
-
-                        <td>
-                            <strong class="amount">
-                                Rp 3.750.000
-                            </strong>
-                        </td>
-
-                        <td>
-                            <span class="spj-status waiting">
-                                <i></i>
-                                Menunggu
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="action-buttons">
-
-                                <button class="action-btn view">
-                                    👁
-                                </button>
-
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
-
-                            </div>
-                        </td>
-
-                    </tr>
-
-
-                    {{-- DATA 4 --}}
-                    <tr>
-
-                        <td>04</td>
-
-                        <td>
-                            <div class="spj-number">
-                                <strong>SPJ-004/IX/2026</strong>
-                                <span>SPJ-2026-0004</span>
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="spj-description">
-                                Pengadaan perlengkapan kantor
-                            </div>
-                        </td>
-
-                        <td>
-                            <div class="submitter">
-                                <div class="avatar bendahara">D</div>
-
-                                <div>
-                                    <strong>Dewi Lestari</strong>
-                                    <span>Bendahara</span>
-                                </div>
-                            </div>
-                        </td>
-
-                        <td>
-                            18 Sep 2026
-                        </td>
-
-                        <td>
-                            <strong class="amount">
-                                Rp 5.200.000
-                            </strong>
-                        </td>
-
-                        <td>
-                            <span class="spj-status returned">
-                                <i></i>
-                                Dikembalikan
-                            </span>
-                        </td>
-
-                        <td>
-                            <div class="action-buttons">
-
-                                <button class="action-btn view">
-                                    👁
-                                </button>
-
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
-
-                            </div>
-                        </td>
-
-                    </tr>
+                    @endforelse
 
                 </tbody>
 

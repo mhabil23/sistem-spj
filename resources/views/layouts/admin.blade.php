@@ -15,6 +15,8 @@
     'resources/css/admin/dashboard.css',
     'resources/css/admin/pengguna.css',
     'resources/css/admin/spj.css',
+    'resources/css/admin/riwayat.css',
+    'resources/css/admin/spj-create.css',
     'resources/js/app.js'
     ])
 

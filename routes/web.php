@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\SpjController;
 
 Route::get('/', function () {
     return view('home');
@@ -22,9 +23,24 @@ Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
 
-Route::get('/admin/spj', function () {
-    return view('admin.spj');
-})->name('admin.spj');
+
+/*
+|--------------------------------------------------------------------------
+| DATA SPJ
+|--------------------------------------------------------------------------
+*/
+
+// Daftar SPJ
+Route::get('/admin/spj', [SpjController::class, 'index'])
+    ->name('admin.spj.index');
+
+// Form tambah SPJ
+Route::get('/admin/spj/create', [SpjController::class, 'create'])
+    ->name('admin.spj.create');
+
+// Simpan SPJ
+Route::post('/admin/spj', [SpjController::class, 'store'])
+    ->name('admin.spj.store');
 
 
 /*
@@ -47,6 +63,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/pengguna', [UserController::class, 'store'])
         ->name('pengguna.store');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| RIWAYAT
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/riwayat', function () {
+    return view('admin.riwayat');
+})->name('admin.riwayat');
 
 
 /*
