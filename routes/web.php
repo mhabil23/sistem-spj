@@ -30,6 +30,12 @@ Route::get('/admin/dashboard', function () {
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| DATA SPJ
+|--------------------------------------------------------------------------
+*/
+
 // Daftar SPJ
 Route::get('/admin/spj', [SpjController::class, 'index'])
     ->name('admin.spj.index');
@@ -41,6 +47,18 @@ Route::get('/admin/spj/create', [SpjController::class, 'create'])
 // Simpan SPJ
 Route::post('/admin/spj', [SpjController::class, 'store'])
     ->name('admin.spj.store');
+
+// Form edit SPJ
+Route::get('/admin/spj/{id}/edit', [SpjController::class, 'edit'])
+    ->name('admin.spj.edit');
+
+// Update SPJ
+Route::put('/admin/spj/{id}', [SpjController::class, 'update'])
+    ->name('admin.spj.update');
+
+// Hapus SPJ
+Route::delete('/admin/spj/{id}', [SpjController::class, 'destroy'])
+    ->name('admin.spj.destroy');
 
 
 /*
