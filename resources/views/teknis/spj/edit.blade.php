@@ -25,9 +25,9 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
     </div>
     <div style="padding: 1.5rem;">
         
-        @if(in_array($spj->status, ['revisi_umum', 'revisi_ppk', 'revisi_bendahara']) && $spj->catatan_revisi)
+        @if(in_array($spj->status, ['revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara']) && $spj->catatan_revisi)
             <div style="background-color: #fef2f2; border: 1px solid #f87171; border-left: 4px solid #dc2626; padding: 1rem; border-radius: 0.25rem; margin-bottom: 1.5rem;">
-                <h3 style="color: #991b1b; font-size: 1rem; margin-top: 0; margin-bottom: 0.5rem;">Catatan Revisi dari {{ explode('_', $spj->status)[1] ?? 'Pemeriksa' }}</h3>
+                <h3 style="color: #991b1b; font-size: 1rem; margin-top: 0; margin-bottom: 0.5rem;">Catatan Revisi dari {{ strtoupper(explode('_', $spj->status)[1] ?? 'Pemeriksa') }}</h3>
                 <p style="color: #7f1d1d; margin: 0; white-space: pre-line;">{{ $spj->catatan_revisi }}</p>
             </div>
         @endif

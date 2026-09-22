@@ -10,15 +10,15 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>
-        {{ $title ?? 'Dashboard' }} | Sistem SPJ
-    </title>
-
+    <title>{{ $title ?? 'Panel Teknis' }} | Sistem SPJ</title>
 
     @vite([
-    'resources/css/teknis.css',
-    'resources/js/app.js'
+        'resources/css/app.css',
+        'resources/css/teknis/layout.css',
+        'resources/js/app.js'
     ])
+
+    @stack('styles')
 
 </head>
 

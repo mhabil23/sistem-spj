@@ -7,15 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 class Spj extends Model
 {
     protected $fillable = [
-        'user_id',
         'nomor_spj',
         'kegiatan',
         'tanggal',
         'nilai',
         'keterangan',
         'status',
+        'user_id',
         'dokumen_file',
         'catatan_revisi',
+        'catatan_internal',
+        'catatan_ppk',
+        'disposisi',
+        'nomor_spm',
+        'bukti_transfer',
+        'catatan_ppspm',
+        'diajukan_at',
+        'disetujui_umum_at',
+        'disetujui_ppk_at',
+        'disetujui_ppspm_at',
+        'diselesaikan_at',
     ];
 
     public function user()

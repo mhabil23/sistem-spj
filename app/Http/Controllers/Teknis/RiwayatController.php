@@ -13,7 +13,7 @@ class RiwayatController extends Controller
     {
         // Ambil data SPJ yang statusnya sudah 'selesai' atau 'dikembalikan'
         $riwayatSpjs = Spj::where('user_id', Auth::id())
-            ->whereIn('status', ['selesai', 'revisi_umum', 'revisi_ppk', 'revisi_bendahara'])
+            ->whereIn('status', ['selesai', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])
             ->orderBy('updated_at', 'desc')
             ->get();
 

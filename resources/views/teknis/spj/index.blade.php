@@ -6,6 +6,10 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
 @endphp
 
 @section('content')
+@push('styles')
+    @vite(['resources/css/teknis/riwayat.css'])
+@endpush
+
 
 <!-- PAGE HEADER -->
 <div class="page-heading">
@@ -87,3 +91,4 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
 </div>
 
 @endsection
+

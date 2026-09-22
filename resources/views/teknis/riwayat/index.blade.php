@@ -6,6 +6,10 @@ $subtitle = 'Lihat riwayat pengajuan SPJ Anda yang telah selesai atau dikembalik
 @endphp
 
 @section('content')
+@push('styles')
+    @vite(['resources/css/teknis/riwayat.css'])
+@endpush
+
 
 <div class="page-heading">
     <div>
@@ -61,3 +65,4 @@ $subtitle = 'Lihat riwayat pengajuan SPJ Anda yang telah selesai atau dikembalik
 </div>
 
 @endsection
+

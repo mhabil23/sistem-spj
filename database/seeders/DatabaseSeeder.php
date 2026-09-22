@@ -37,5 +37,26 @@ class DatabaseSeeder extends Seeder
             'role' => 'umum',
             'password' => bcrypt('password'),
         ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Pengguna PPK',
+            'email' => 'ppk@example.com',
+            'role' => 'ppk',
+            'password' => bcrypt('password'),
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Pengguna PPSPM',
+            'email' => 'ppspm@example.com',
+            'role' => 'ppspm',
+            'password' => bcrypt('password'),
+        ]);
+
+        \App\Models\User::factory()->create([
+            'name' => 'Pengguna Bendahara',
+            'email' => 'bendahara@example.com',
+            'role' => 'bendahara',
+            'password' => bcrypt('password'),
+        ]);
     }
 }

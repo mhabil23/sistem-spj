@@ -40,6 +40,7 @@ class SpjController extends Controller
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'status' => $request->status,
+            'diajukan_at' => $request->status === 'diajukan' ? now() : null,
         ]);
 
         $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan ke Umum.' : 'SPJ berhasil dibuat dan disimpan sebagai Draft.';
@@ -64,7 +65,7 @@ class SpjController extends Controller
             abort(403, 'Akses tidak diizinkan.');
         }
 
-        if (!in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_bendahara'])) {
+        if (!in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
             return redirect()->route('teknis.spj.index')->with('error', 'SPJ tidak dapat diubah karena sudah dalam proses.');
         }
 
@@ -78,7 +79,7 @@ class SpjController extends Controller
             abort(403, 'Akses tidak diizinkan.');
         }
 
-        if (!in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_bendahara'])) {
+        if (!in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
             return redirect()->route('teknis.spj.index')->with('error', 'SPJ tidak dapat diubah karena sudah dalam proses.');
         }
 
@@ -98,6 +99,7 @@ class SpjController extends Controller
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'status' => $request->status,
+            'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
         ]);
 
         $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan.' : 'Draft SPJ berhasil diperbarui.';

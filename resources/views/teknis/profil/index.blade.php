@@ -6,6 +6,10 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 @endphp
 
 @section('content')
+@push('styles')
+    @vite(['resources/css/teknis/profil.css'])
+@endpush
+
 
 <div class="page-heading">
     <div>
@@ -78,3 +82,4 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 </div>
 
 @endsection
+
