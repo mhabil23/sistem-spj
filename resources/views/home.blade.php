@@ -23,9 +23,19 @@
             </div>
         </div>
 
-        <a href="#" class="login-btn">
-            Login
-        </a>
+        @auth
+            @php
+                $role = auth()->user()->role;
+                $dashboardUrl = url('/' . $role . '/dashboard');
+            @endphp
+            <a href="{{ $dashboardUrl }}" class="login-btn" style="background-color: #10b981; border-color: #10b981; color: white;">
+                Dashboard ({{ strtoupper($role) }})
+            </a>
+        @else
+            <a href="{{ route('login') }}" class="login-btn">
+                Login
+            </a>
+        @endauth
     </header>
 
 
@@ -52,7 +62,7 @@
                 </p>
 
                 <div class="hero-buttons">
-                    <a href="#" class="btn-primary">
+                    <a href="{{ auth()->check() ? url('/' . auth()->user()->role . '/dashboard') : route('login') }}" class="btn-primary">
                         Mulai Pengajuan
                     </a>
 
