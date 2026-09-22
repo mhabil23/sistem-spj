@@ -6,6 +6,10 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 @endphp
 
 @section('content')
+@push('styles')
+    @vite(['resources/css/teknis/dashboard.css'])
+@endpush
+
 
 
 <!-- PAGE HEADER -->
@@ -157,6 +161,8 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                             @elseif($spj->status == 'disetujui_umum')
                                 PPK
                             @elseif($spj->status == 'disetujui_ppk')
+                                PPSPM
+                            @elseif($spj->status == 'disetujui_ppspm')
                                 Bendahara
                             @elseif($spj->status == 'selesai')
                                 Arsip
@@ -234,7 +240,9 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                         @elseif($spj->status == 'disetujui_umum')
                             Telah disetujui Umum (Menunggu PPK)
                         @elseif($spj->status == 'disetujui_ppk')
-                            Telah disetujui PPK (Proses Bendahara)
+                            Telah disetujui PPK (Menunggu PPSPM)
+                        @elseif($spj->status == 'disetujui_ppspm')
+                            Telah disetujui PPSPM (Proses Bendahara)
                         @elseif(str_contains($spj->status, 'revisi'))
                             Dikembalikan oleh {{ ucfirst(explode('_', $spj->status)[1] ?? 'Pemeriksa') }}
                         @elseif($spj->status == 'selesai')
@@ -268,9 +276,10 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
     <div class="workflow">
         @php
-            $isUmum = in_array($topSpj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'selesai']);
-            $isPpk = in_array($topSpj->status, ['disetujui_umum', 'disetujui_ppk', 'selesai']);
-            $isBendahara = in_array($topSpj->status, ['disetujui_ppk', 'selesai']);
+            $isUmum = in_array($topSpj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai']);
+            $isPpk = in_array($topSpj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai']);
+            $isPpspm = in_array($topSpj->status, ['disetujui_ppk', 'disetujui_ppspm', 'selesai']);
+            $isBendahara = in_array($topSpj->status, ['disetujui_ppspm', 'selesai']);
             $isDone = $topSpj->status == 'selesai';
         @endphp
         <!-- TEKNIS -->
@@ -285,24 +294,33 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
         <!-- UMUM -->
         <div class="workflow-step {{ $isUmum && !$isPpk ? 'current' : '' }} {{ $isPpk ? 'completed' : '' }}">
             <div class="workflow-circle">{{ $isPpk ? '✓' : '2' }}</div>
-            <strong>Umum/PPSPM</strong>
+            <strong>Umum</strong>
             <small>Pemeriksaan</small>
         </div>
 
         <div class="workflow-line {{ $isPpk ? 'completed' : '' }}"></div>
 
         <!-- PPK -->
-        <div class="workflow-step {{ $isPpk && !$isBendahara ? 'current' : '' }} {{ $isBendahara ? 'completed' : '' }}">
-            <div class="workflow-circle">{{ $isBendahara ? '✓' : '3' }}</div>
+        <div class="workflow-step {{ $isPpk && !$isPpspm ? 'current' : '' }} {{ $isPpspm ? 'completed' : '' }}">
+            <div class="workflow-circle">{{ $isPpspm ? '✓' : '3' }}</div>
             <strong>PPK</strong>
             <small>Persetujuan</small>
+        </div>
+
+        <div class="workflow-line {{ $isPpspm ? 'completed' : '' }}"></div>
+
+        <!-- PPSPM -->
+        <div class="workflow-step {{ $isPpspm && !$isBendahara ? 'current' : '' }} {{ $isBendahara ? 'completed' : '' }}">
+            <div class="workflow-circle">{{ $isBendahara ? '✓' : '4' }}</div>
+            <strong>PPSPM</strong>
+            <small>Verifikasi</small>
         </div>
 
         <div class="workflow-line {{ $isBendahara ? 'completed' : '' }}"></div>
 
         <!-- BENDAHARA -->
         <div class="workflow-step {{ $isBendahara && !$isDone ? 'current' : '' }} {{ $isDone ? 'completed' : '' }}">
-            <div class="workflow-circle">{{ $isDone ? '✓' : '4' }}</div>
+            <div class="workflow-circle">{{ $isDone ? '✓' : '5' }}</div>
             <strong>Bendahara</strong>
             <small>Pembayaran</small>
         </div>
@@ -311,7 +329,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
         <!-- SELESAI -->
         <div class="workflow-step {{ $isDone ? 'current completed' : '' }}">
-            <div class="workflow-circle">{{ $isDone ? '✓' : '5' }}</div>
+            <div class="workflow-circle">{{ $isDone ? '✓' : '6' }}</div>
             <strong>Arsip</strong>
             <small>Selesai</small>
         </div>
@@ -353,7 +371,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 
         @php
             $needAttention = $recentSpjs->filter(function($spj) {
-                return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']);
+                return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm']);
             });
         @endphp
 
@@ -362,12 +380,12 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                 <div class="attention-item warning">
                     <div class="attention-icon">!</div>
                     <div>
-                        <strong>{{ $spj->nomor_spj }} dikembalikan oleh {{ ucfirst(explode('_', $spj->status)[1] ?? '') }}</strong>
+                        <strong>{{ $spj->nomor_spj }} dikembalikan oleh {{ strtoupper(explode('_', $spj->status)[1] ?? '') }}</strong>
                         <p>{{ Str::limit($spj->catatan_revisi, 50, '...') }}</p>
                     </div>
                     <a href="{{ route('teknis.spj.edit', $spj->id) }}">Perbaiki →</a>
                 </div>
-            @elseif(in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']))
+            @elseif(in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm']))
                 <div class="attention-item info">
                     <div class="attention-icon">i</div>
                     <div>

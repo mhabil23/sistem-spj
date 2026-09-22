@@ -29,6 +29,12 @@ class AuthController extends Controller
                 return redirect()->route('teknis.dashboard');
             } elseif ($role === 'umum') {
                 return redirect()->route('umum.dashboard');
+            } elseif ($role === 'ppk') {
+                return redirect()->route('ppk.dashboard');
+            } elseif ($role === 'ppspm') {
+                return redirect()->route('ppspm.dashboard');
+            } elseif ($role === 'bendahara') {
+                return redirect()->route('bendahara.dashboard');
             }
             
             return redirect()->intended('/');

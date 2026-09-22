@@ -1,0 +1,183 @@
+/* =========================
+   WORKFLOW
+========================= */
+
+.workflow-panel {
+    margin-bottom: 20px;
+}
+
+.workflow {
+    padding: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.workflow-step {
+    text-align: center;
+
+    min-width: 90px;
+}
+
+.workflow-circle {
+    width: 37px;
+    height: 37px;
+
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    border: 2px solid #dfe4ea;
+
+    color: #9ca5b1;
+
+    background: white;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.workflow-step.completed .workflow-circle {
+    background: #3478b8;
+
+    border-color: #3478b8;
+
+    color: white;
+}
+
+.workflow-step.current .workflow-circle {
+    background: #fff6df;
+
+    border-color: #e8b43c;
+
+    color: #b88317;
+}
+
+.workflow-step strong {
+    display: block;
+
+    margin-top: 9px;
+
+    font-size: 9px;
+}
+
+.workflow-step small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #9aa3b1;
+
+    font-size: 8px;
+}
+
+.workflow-line {
+    width: 55px;
+    height: 2px;
+
+    margin: 0 5px;
+
+    background: #e2e6eb;
+}
+
+.workflow-line.completed {
+    background: #3478b8;
+}
+
+
+/* =========================
+   ATTENTION
+========================= */
+
+.notification-panel {
+    margin-bottom: 20px;
+}
+
+.attention-list {
+    padding: 5px 20px 15px;
+}
+
+.attention-item {
+    padding: 15px;
+
+    margin: 10px 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border-radius: 9px;
+}
+
+.attention-item.warning {
+    background: #fff9e9;
+    border: 1px solid #f5e5ad;
+}
+
+.attention-item.info {
+    background: #edf5fc;
+    border: 1px solid #d7e9f8;
+}
+
+.attention-icon {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: white;
+
+    font-weight: 700;
+}
+
+.attention-item.warning .attention-icon {
+    color: #b88317;
+}
+
+.attention-item.info .attention-icon {
+    color: #3478b8;
+}
+
+.attention-item strong {
+    font-size: 10px;
+}
+
+.attention-item p {
+    margin-top: 4px;
+
+    color: #7e8897;
+
+    font-size: 9px;
+
+    line-height: 1.5;
+}
+
+.attention-item a {
+    margin-left: auto;
+
+    color: #3478b8;
+
+    text-decoration: none;
+
+    font-size: 9px;
+
+    white-space: nowrap;
+}
+
+
+

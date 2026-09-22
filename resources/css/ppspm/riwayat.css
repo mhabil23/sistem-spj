@@ -1,0 +1,150 @@
+/* =========================
+   TABLE
+========================= */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    white-space: nowrap;
+}
+
+th {
+    padding: 13px 20px;
+
+    text-align: left;
+
+    background: #fafbfc;
+
+    color: #8d96a5;
+
+    font-size: 9px;
+
+    font-weight: 600;
+}
+
+td {
+    padding: 15px 20px;
+
+    border-top: 1px solid #f0f2f5;
+
+    color: #667085;
+
+    font-size: 10px;
+}
+
+td strong {
+    color: #344054;
+}
+
+.badge {
+    display: inline-block;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    font-size: 8px;
+
+    font-weight: 700;
+}
+
+.badge.pending {
+    background: #fff6df;
+    color: #ae7d12;
+}
+
+.badge.approved {
+    background: #eaf7ee;
+    color: #458957;
+}
+
+.badge.returned {
+    background: #fff0f0;
+    color: #c45858;
+}
+
+.badge.completed {
+    background: #edf5fc;
+    color: #3478b8;
+}
+
+
+/* =========================
+   STATUS LIST
+========================= */
+
+.status-list {
+    padding: 8px 20px 15px;
+}
+
+.status-item {
+    padding: 17px 0;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.status-item:last-child {
+    border-bottom: none;
+}
+
+.status-number {
+    width: 31px;
+    height: 31px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.status-number.active {
+    background: #edf5fc;
+    color: #3478b8;
+}
+
+.status-number.success {
+    background: #eaf7ee;
+    color: #458957;
+}
+
+.status-number.warning {
+    background: #fff0f0;
+    color: #c45858;
+}
+
+.status-item strong {
+    display: block;
+
+    font-size: 10px;
+}
+
+.status-item span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #8d96a5;
+
+    font-size: 9px;
+}
+
+
+
