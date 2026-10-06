@@ -32,6 +32,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/pengguna/create', [UserController::class, 'create'])->name('pengguna.create');
     Route::post('/pengguna', [UserController::class, 'store'])->name('pengguna.store');
 
+    // Form edit pengguna
+    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])
+        ->name('pengguna.edit');
+
+    // Update pengguna
+    Route::put('/pengguna/{user}', [UserController::class, 'update'])
+        ->name('pengguna.update');
+
+    // Hapus pengguna
+    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])
+        ->name('pengguna.destroy');
+
     // Riwayat
     Route::get('/riwayat', function () {
         return view('admin.riwayat');
@@ -65,18 +77,7 @@ Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->g
     Route::put('/profil', [TeknisProfilController::class, 'update'])->name('profil.update');
 });
 
-    // Form edit pengguna
-    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])
-        ->name('pengguna.edit');
 
-    // Update pengguna
-    Route::put('/pengguna/{user}', [UserController::class, 'update'])
-        ->name('pengguna.update');
-
-    // Hapus pengguna
-    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])
-        ->name('pengguna.destroy');
-});
 
 /*
 |--------------------------------------------------------------------------
