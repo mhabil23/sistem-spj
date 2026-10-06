@@ -279,174 +279,102 @@ $subtitle = 'Rekap dan laporan data SPJ.';
 
         <div class="table-wrapper">
 
-            <table class="laporan-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            No
-                        </th>
-
-                        <th>
-                            Nomor SPJ
-                        </th>
-
-                        <th>
-                            Tanggal
-                        </th>
-
-                        <th>
-                            Kegiatan
-                        </th>
-
-                        <th>
-                            Nilai
-                        </th>
-
-                        <th>
-                            Status
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    @forelse($spjs as $index => $spj)
-
-                    <tr>
-
-                        <td>
-                            {{ $index + 1 }}
-                        </td>
-
-                        <td>
-
-                            <strong>
-                                {{ $spj->nomor_spj }}
-                            </strong>
-
-                        </td>
-
-                        <td>
-
-                            {{ $spj->tanggal
-                                ? \Carbon\Carbon::parse($spj->tanggal)->format('d/m/Y')
-                                : '-'
-                            }}
-
-                        </td>
-
-                        <td>
-                            {{ $spj->kegiatan }}
-                        </td>
-
-                        <td>
-
-                            Rp
-                            {{ number_format($spj->nilai, 0, ',', '.') }}
-
-                        </td>
-
-                        <td>
-
-                            @if($spj->status === 'diajukan')
-
-                            <span class="laporan-badge pending">
-                                Diajukan
-                            </span>
-
-                            @elseif($spj->status === 'diproses')
-
-                            <span class="laporan-badge processing">
-                                Diproses
-                            </span>
-
-                            @elseif($spj->status === 'selesai')
-
-                            <span class="laporan-badge completed">
-                                Selesai
-                            </span>
-
-                            @elseif($spj->status === 'dikembalikan')
-
-                            <span class="laporan-badge returned">
-                                Dikembalikan
-                            </span>
-
-                            @elseif($spj->status === 'draft')
-
-                            <span class="laporan-badge draft">
-                                Draft
-                            </span>
-
-                            @endif
-
-                        </td>
-
-                    </tr>
-
-                    @empty
-
-                    <tr>
-
-                        <td
-                            colspan="6"
-                            class="empty-data">
-
-                            <i class="bi bi-inbox"></i>
-
-                            <strong>
-                                Tidak ada data SPJ
-                            </strong>
-
-                            <span>
-                                Belum ada data yang sesuai dengan filter.
-                            </span>
-
-                        </td>
-
-                    </tr>
-
-                    @endforelse
-
-                </tbody>
-
-
-                @if($spjs->count() > 0)
-
-                <tfoot>
-
-                    <tr>
-
-                        <td
-                            colspan="4"
-                            class="total-label">
-
-                            TOTAL
-
-                        </td>
-
-                        <td class="total-value">
-
-                            Rp
-                            {{ number_format($totalNilai, 0, ',', '.') }}
-
-                        </td>
-
-                        <td></td>
-
-                    </tr>
-
-                </tfoot>
-
-                @endif
-
-            </table>
+            <style>
+                .cetak-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin-bottom: 30px; }
+                .cetak-table th, .cetak-table td { border: 1px solid #333; padding: 5px; }
+                .cetak-table th { background-color: #f5f5f5; font-weight: bold; text-align: center; }
+                .ttd-container { display: flex; justify-content: flex-end; padding-right: 50px; text-align: left; font-size: 12px; margin-top: 40px; }
+                
+                @media print {
+                    @page { size: landscape; margin: 10mm; }
+                    .page-header, .laporan-filter, .laporan-stats, .panel-header { display: none !important; }
+                    .laporan-panel { box-shadow: none; border: none; padding: 0; }
+                    body { background: #fff; }
+                }
+            </style>
+
+            <div style="overflow-x: auto;">
+                <table class="cetak-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="width: 30px;">No</th>
+                            <th rowspan="2" style="width: 200px;">Nama Kegiatan</th>
+                            <th rowspan="2" style="width: 100px;">Jumlah Anggaran</th>
+                            <th rowspan="2" style="width: 80px;">Tanggal Pembuatan Daftar</th>
+                            <th colspan="14">Kelengkapan Administrasi</th>
+                            <th rowspan="2" style="width: 80px;">Keterangan</th>
+                        </tr>
+                        <tr>
+                            <th>Daftar Penerima</th>
+                            <th>BAST</th>
+                            <th>SK</th>
+                            <th>KAK</th>
+                            <th>Form Permintaan</th>
+                            <th>SPK</th>
+                            <th>Surat Tugas</th>
+                            <th>Kesesuaian MRK dg SPK</th>
+                            <th>CMS</th>
+                            <th>Cek SBKS</th>
+                            <th>Tgl Masuk SPJ</th>
+                            <th>Tgl Periksa PPK</th>
+                            <th>Paraf PPSPM</th>
+                            <th>Paraf Bendahara</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($spjs as $index => $spj)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td style="text-align: left;">{{ $spj->kegiatan }}</td>
+                            <td style="text-align: right;">{{ number_format($spj->nilai, 0, ',', '.') }}</td>
+                            <td>{!! $spj->tanggal ? \Carbon\Carbon::parse($spj->tanggal)->locale('id')->translatedFormat('d F Y') : '-' !!}</td>
+                            
+                            {{-- Checkmarks dinamis --}}
+                            <td>{!! $spj->kel_daftar_penerima ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_bast ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_sk ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_kak ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_form_permintaan ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_spk ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_surat_tugas ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_kesesuaian_mrk ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_cms ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->kel_cek_sbks ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
+                            <td>{!! $spj->disetujui_ppk_at ? \Carbon\Carbon::parse($spj->disetujui_ppk_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
+                            <td></td>
+                            <td></td>
+                            
+                            <td></td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="19" style="padding: 20px; font-style: italic;">Tidak ada data SPJ</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                    @if($spjs->count() > 0)
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" style="text-align: right; padding-right: 15px;">TOTAL</th>
+                            <th style="text-align: right;">{{ number_format($totalNilai, 0, ',', '.') }}</th>
+                            <th colspan="16"></th>
+                        </tr>
+                    </tfoot>
+                    @endif
+                </table>
+            </div>
+
+            <div class="ttd-container">
+                <div>
+                    <p style="margin: 0;">setor ke PPSPM :</p>
+                    <p style="margin: 0;">Lasusua, {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
+                    <p style="margin: 0;">Pejabat Pembuat Komitmen</p>
+                    <br><br><br><br>
+                    <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah</p>
+                    <p style="margin: 0;">NIP.198510292011011009</p>
+                </div>
+            </div>
 
         </div>
 

@@ -127,4 +127,12 @@ class SpjController extends Controller
         
         return $pdf->stream('Checklist-Verifikasi-'.$spj->nomor_spj.'.pdf');
     }
+
+    public function destroy($id)
+    {
+        $spj = Spj::findOrFail($id);
+        $spj->delete();
+
+        return redirect()->route('umum.spj.index')->with('success', 'SPJ berhasil dihapus.');
+    }
 }
