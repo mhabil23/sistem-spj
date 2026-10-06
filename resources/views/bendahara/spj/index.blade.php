@@ -8,107 +8,293 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
 @section('content')
 @push('styles')
     @vite(['resources/css/bendahara/riwayat.css'])
+    <style>
+        .index-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 24px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .filter-wrapper {
+            padding: 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 16px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            display: block;
+            font-size: 12px;
+            color: #475569;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 13px;
+            transition: all 0.2s;
+            outline: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02) inset;
+        }
+
+        .filter-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .btn-search {
+            height: 42px;
+            padding: 0 24px;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .btn-search:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-reset {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 42px;
+            padding: 0 20px;
+            font-size: 13px;
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            background: #fef2f2;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        .custom-table th {
+            padding: 16px 24px;
+            text-align: left;
+            background: #ffffff;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .custom-table td {
+            padding: 18px 24px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        .custom-table tbody tr {
+            transition: background-color 0.15s;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .custom-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .btn-bulk-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: #0d9488;
+            color: white;
+            box-shadow: 0 2px 4px rgba(13, 148, 136, 0.2);
+        }
+
+        .btn-bulk-action:hover {
+            background-color: #0f766e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(13, 148, 136, 0.25);
+        }
+
+        .custom-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #0d9488;
+        }
+    </style>
 @endpush
 
-<div class="page-heading">
-    <div>
-        <h2>Semua Antrean Pencairan</h2>
-        <p>SPJ yang berstatus 'Siap Dicairkan' harus segera diproses.</p>
+<div style="padding: 32px 40px; box-sizing: border-box; width: 100%;">
+    <div class="page-heading" style="margin-bottom: 24px;">
+        <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Semua Antrean Pencairan</h2>
+        <p style="color: #64748b; font-size: 14px; margin: 0;">SPJ yang berstatus 'Siap Dicairkan' harus segera diproses.</p>
+    </div>
+
+    <div class="index-panel">
+        <div class="filter-wrapper">
+            <form action="{{ route('bendahara.spj.index') }}" method="GET" class="filter-form">
+                <div class="filter-group" style="flex: 2;">
+                    <label class="filter-label">Cari (No. SPJ / Nama / Kegiatan)</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Dari Tanggal</label>
+                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="filter-input">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Sampai Tanggal</label>
+                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="filter-input">
+                </div>
+                <div>
+                    <button type="submit" class="btn-search">
+                        <ion-icon name="funnel-outline" style="margin-right: 6px; font-size: 16px;"></ion-icon> Terapkan Filter
+                    </button>
+                </div>
+                @if(request()->hasAny(['search', 'start_date', 'end_date']))
+                <div>
+                    <a href="{{ route('bendahara.spj.index') }}" class="btn-reset">Reset</a>
+                </div>
+                @endif
+            </form>
+        </div>
+
+        <div style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; background: #ffffff;">
+            <h2 style="font-size: 15px; font-weight: 700; color: #1e293b; margin: 0;">Daftar Kotak Masuk</h2>
+            <button type="button" onclick="submitBulkVerify()" class="btn-bulk-action">
+                <ion-icon name="cash-outline" style="font-size: 18px;"></ion-icon> Cairkan Terpilih
+            </button>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <form id="bulkVerifyForm" action="{{ route('bendahara.spj.bulk-verify') }}" method="POST">
+                @csrf
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px; text-align: center;">
+                                <input type="checkbox" id="selectAll" onclick="toggleSelectAll()" class="custom-checkbox">
+                            </th>
+                            <th>Tanggal Pengajuan</th>
+                            <th>Kegiatan</th>
+                            <th>Pengaju</th>
+                            <th>Status Pencairan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($spjs as $spj)
+                        <tr>
+                            <td style="text-align: center;">
+                                <input type="checkbox" name="spj_ids[]" value="{{ $spj->id }}" class="spj-checkbox custom-checkbox">
+                            </td>
+                            <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
+                            <td><strong style="color: #0f172a;">{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</strong></td>
+                            <td>{{ $spj->user->name ?? 'Teknis' }}</td>
+                            <td>
+                                @php
+                                    $badgeClass = 'pending';
+                                    $statusText = 'Menunggu';
+                                    
+                                    if($spj->status == 'disetujui_ppspm') {
+                                        $badgeClass = 'pending';
+                                        $statusText = 'Siap Dicairkan';
+                                    } elseif($spj->status == 'revisi_bendahara') {
+                                        $badgeClass = 'returned';
+                                        $statusText = 'Dikembalikan';
+                                    } elseif($spj->status == 'selesai') {
+                                        $badgeClass = 'completed';
+                                        $statusText = 'Selesai (Cair)';
+                                    }
+                                @endphp
+                                <span class="badge {{ $badgeClass }}" style="font-size: 10px; padding: 6px 12px;">{{ $statusText }}</span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <a href="{{ route('bendahara.spj.show', $spj->id) }}" 
+                                       style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none; color: white; transition: all 0.2s; {{ $spj->status == 'disetujui_ppspm' ? 'background-color: #0d9488; box-shadow: 0 2px 4px rgba(13,148,136,0.25);' : 'background-color: #94a3b8;' }}" 
+                                       title="{{ $spj->status == 'disetujui_ppspm' ? 'Cairkan' : 'Detail' }}"
+                                       onmouseover="this.style.transform='translateY(-2px)';" 
+                                       onmouseout="this.style.transform='translateY(0)';">
+                                        <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <ion-icon name="folder-open-outline" style="font-size: 48px; color: #cbd5e1; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
+                                    Tidak ada dokumen SPJ yang mengantre.
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </form>
+        </div>
     </div>
 </div>
 
-<div class="panel" style="margin-bottom: 20px; padding: 20px;">
-    <form action="{{ route('bendahara.spj.index') }}" method="GET" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 200px;">
-            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Cari (No. SPJ / Nama / Kegiatan)</label>
-            <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci..." style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 13px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Dari Tanggal</label>
-            <input type="date" name="start_date" value="{{ request('start_date') }}" style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 13px;">
-        </div>
-        <div>
-            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Sampai Tanggal</label>
-            <input type="date" name="end_date" value="{{ request('end_date') }}" style="padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 13px;">
-        </div>
-        <div>
-            <button type="submit" class="btn-primary" style="height: 36px; padding: 0 16px; font-size: 12px;">Terapkan Filter</button>
-        </div>
-        @if(request()->hasAny(['search', 'start_date', 'end_date']))
-        <div>
-            <a href="{{ route('bendahara.spj.index') }}" style="display: inline-block; padding: 8px 16px; font-size: 12px; color: #ef4444; text-decoration: none; font-weight: 600; border: 1px solid #fee2e2; border-radius: 8px; background: #fef2f2;">Reset</a>
-        </div>
-        @endif
-    </form>
-</div>
-
-<div class="panel">
-    <div style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0;">
-        <h2 style="font-size: 1rem; color: #1e293b; margin: 0;">Daftar Kotak Masuk</h2>
-        <button type="button" onclick="submitBulkVerify()" class="btn-primary" style="background-color: #0d9488; padding: 0.5rem 1rem; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-            <ion-icon name="cash-outline"></ion-icon> Cairkan Terpilih
-        </button>
-    </div>
-    <div style="overflow-x: auto;">
-        <form id="bulkVerifyForm" action="{{ route('bendahara.spj.bulk-verify') }}" method="POST">
-            @csrf
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th style="width: 40px; text-align: center;">
-                            <input type="checkbox" id="selectAll" onclick="toggleSelectAll()" style="cursor: pointer;">
-                        </th>
-                        <th>Tanggal Pengajuan</th>
-                        <th>Kegiatan</th>
-                        <th>Pengaju</th>
-                        <th>Status Pencairan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-            <tbody>
-                @forelse($spjs as $spj)
-                <tr>
-                    <td style="text-align: center;">
-                        <input type="checkbox" name="spj_ids[]" value="{{ $spj->id }}" class="spj-checkbox" style="cursor: pointer;">
-                    </td>
-                    <td>{{ $spj->updated_at->format('d M Y') }}</td>
-                    <td><strong>{{ $spj->kegiatan }}</strong></td>
-                    <td>{{ $spj->user->name ?? 'Teknis' }}</td>
-                    <td>
-                        @php
-                            $badgeClass = 'pending';
-                            $statusText = 'Menunggu';
-                            
-                            if($spj->status == 'disetujui_ppspm') {
-                                $badgeClass = 'pending';
-                                $statusText = 'Siap Dicairkan';
-                            } elseif($spj->status == 'revisi_bendahara') {
-                                $badgeClass = 'returned';
-                                $statusText = 'Dikembalikan';
-                            } elseif($spj->status == 'selesai') {
-                                $badgeClass = 'completed';
-                                $statusText = 'Selesai (Cair)';
-                            }
-                        @endphp
-                        <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
-                    </td>
-                    <td>
-                        <a href="{{ route('bendahara.spj.show', $spj->id) }}" class="btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem; text-decoration: none; {{ $spj->status == 'disetujui_ppspm' ? 'background-color: #0d9488;' : 'background-color: #6b7280;' }}">
-                            {{ $spj->status == 'disetujui_ppspm' ? 'Cairkan' : 'Detail' }}
-                        </a>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 2rem;">Tidak ada dokumen SPJ yang mengantre.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-        </form>
-    </div>
-</div>
-
+@push('scripts')
 <script>
     function toggleSelectAll() {
         const selectAll = document.getElementById('selectAll');
@@ -128,5 +314,5 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
         }
     }
 </script>
-
+@endpush
 @endsection
