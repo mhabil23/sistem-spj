@@ -42,4 +42,48 @@ class UserController extends Controller
             ->route('admin.pengguna.index')
             ->with('success', 'Pengguna berhasil ditambahkan.');
     }
+
+    // Form edit pengguna
+    public function edit(User $user)
+    {
+        return view('admin.pengguna-edit', compact('user'));
+    }
+
+    // Update pengguna
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|in:admin,teknis,umum,ppk,bendahara',
+            'status' => 'required|in:aktif,nonaktif',
+            'password' => 'nullable|min:8|confirmed',
+        ]);
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->role = $validated['role'];
+        $user->status = $validated['status'];
+
+        // Password hanya diubah kalau diisi
+        if (!empty($validated['password'])) {
+            $user->password = Hash::make($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with('success', 'Pengguna berhasil diperbarui.');
+    }
+
+    // Hapus pengguna
+    public function destroy(User $user)
+    {
+        $user->delete();
+
+        return redirect()
+            ->route('admin.pengguna.index')
+            ->with('success', 'Pengguna berhasil dihapus.');
+    }
 }

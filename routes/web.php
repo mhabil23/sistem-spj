@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SpjController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\RiwayatController;
 
 Route::get('/', function () {
     return view('home');
@@ -63,6 +65,18 @@ Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->g
     Route::put('/profil', [TeknisProfilController::class, 'update'])->name('profil.update');
 });
 
+    // Form edit pengguna
+    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])
+        ->name('pengguna.edit');
+
+    // Update pengguna
+    Route::put('/pengguna/{user}', [UserController::class, 'update'])
+        ->name('pengguna.update');
+
+    // Hapus pengguna
+    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])
+        ->name('pengguna.destroy');
+});
 
 /*
 |--------------------------------------------------------------------------

@@ -8,6 +8,7 @@
 
 <section class="stats-grid">
 
+    {{-- TOTAL SPJ --}}
     <div class="stat-card">
 
         <div class="stat-icon blue">
@@ -18,10 +19,10 @@
 
             <span>Total SPJ</span>
 
-            <strong>128</strong>
+            <strong>{{ $totalSpj }}</strong>
 
             <small>
-                <b>+12%</b> dari bulan lalu
+                Seluruh SPJ terdaftar
             </small>
 
         </div>
@@ -29,6 +30,7 @@
     </div>
 
 
+    {{-- MENUNGGU PEMERIKSAAN --}}
     <div class="stat-card">
 
         <div class="stat-icon orange">
@@ -39,7 +41,7 @@
 
             <span>Menunggu Pemeriksaan</span>
 
-            <strong>18</strong>
+            <strong>{{ $menungguProses }}</strong>
 
             <small>
                 Perlu ditindaklanjuti
@@ -50,6 +52,7 @@
     </div>
 
 
+    {{-- SPJ SELESAI --}}
     <div class="stat-card">
 
         <div class="stat-icon green">
@@ -60,10 +63,10 @@
 
             <span>SPJ Selesai</span>
 
-            <strong>96</strong>
+            <strong>{{ $selesai }}</strong>
 
             <small>
-                <b>+8%</b> bulan ini
+                SPJ telah selesai
             </small>
 
         </div>
@@ -71,6 +74,7 @@
     </div>
 
 
+    {{-- TOTAL PENGGUNA --}}
     <div class="stat-card">
 
         <div class="stat-icon purple">
@@ -81,10 +85,10 @@
 
             <span>Total Pengguna</span>
 
-            <strong>24</strong>
+            <strong>{{ $totalPengguna }}</strong>
 
             <small>
-                5 role aktif
+                {{ $penggunaAktif }} pengguna aktif
             </small>
 
         </div>
@@ -118,8 +122,8 @@
 
             </div>
 
-            <a href="#">
-                Lihat semua →
+            <a href="{{ route('admin.spj.index') }}">
+                Lihat semua
             </a>
 
         </div>
@@ -138,7 +142,7 @@
                         </th>
 
                         <th>
-                            Pengaju
+                            Tanggal
                         </th>
 
                         <th>
@@ -160,120 +164,87 @@
 
                 <tbody>
 
+                    @forelse($spjTerbaru as $spj)
+
                     <tr>
 
+                        {{-- NOMOR SPJ --}}
                         <td>
                             <strong>
-                                SPJ-2026-001
+                                {{ $spj->nomor_spj }}
                             </strong>
                         </td>
 
-                        <td>
-                            Ahmad
-                        </td>
 
                         <td>
-                            Perjalanan Dinas
+                            {{ $spj->tanggal
+        ? \Carbon\Carbon::parse($spj->tanggal)->format('d M Y')
+        : '-' }}
                         </td>
 
+
+                        {{-- KEGIATAN --}}
                         <td>
-                            Rp 5.000.000
+                            {{ $spj->kegiatan }}
                         </td>
 
+
+                        {{-- NILAI --}}
                         <td>
+                            Rp {{ number_format($spj->nilai, 0, ',', '.') }}
+                        </td>
+
+
+                        {{-- STATUS --}}
+                        <td>
+
+                            @if($spj->status === 'diproses')
+
                             <span class="badge pending">
                                 Diproses
                             </span>
-                        </td>
 
-                    </tr>
+                            @elseif($spj->status === 'selesai')
 
-
-                    <tr>
-
-                        <td>
-                            <strong>
-                                SPJ-2026-002
-                            </strong>
-                        </td>
-
-                        <td>
-                            Budi
-                        </td>
-
-                        <td>
-                            Kegiatan Rapat
-                        </td>
-
-                        <td>
-                            Rp 2.500.000
-                        </td>
-
-                        <td>
-                            <span class="badge approved">
-                                Disetujui
-                            </span>
-                        </td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>
-                            <strong>
-                                SPJ-2026-003
-                            </strong>
-                        </td>
-
-                        <td>
-                            Siti
-                        </td>
-
-                        <td>
-                            Pengadaan ATK
-                        </td>
-
-                        <td>
-                            Rp 1.750.000
-                        </td>
-
-                        <td>
-                            <span class="badge returned">
-                                Dikembalikan
-                            </span>
-                        </td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>
-                            <strong>
-                                SPJ-2026-004
-                            </strong>
-                        </td>
-
-                        <td>
-                            Andi
-                        </td>
-
-                        <td>
-                            Perjalanan Dinas
-                        </td>
-
-                        <td>
-                            Rp 4.200.000
-                        </td>
-
-                        <td>
                             <span class="badge completed">
                                 Selesai
                             </span>
+
+                            @elseif($spj->status === 'dikembalikan')
+
+                            <span class="badge returned">
+                                Dikembalikan
+                            </span>
+
+                            @elseif($spj->status === 'diajukan')
+
+                            <span class="badge pending">
+                                Diajukan
+                            </span>
+
+                            @elseif($spj->status === 'draft')
+
+                            <span class="badge">
+                                Draft
+                            </span>
+
+                            @endif
+
                         </td>
 
                     </tr>
+
+                    @empty
+
+                    <tr>
+
+                        <td colspan="5" style="text-align: center;">
+                            Belum ada data SPJ.
+                        </td>
+
+                    </tr>
+
+                    @endforelse
 
                 </tbody>
 
@@ -308,6 +279,84 @@
 
         <div class="activity-list">
 
+            @forelse($spjTerbaru as $spj)
+
+            <div class="activity">
+
+                {{-- ICON --}}
+                <div class="activity-icon
+                @if($spj->status === 'selesai')
+                    green
+                @elseif($spj->status === 'dikembalikan')
+                    orange
+                @elseif($spj->status === 'diajukan')
+                    blue
+                @else
+                    purple
+                @endif
+            ">
+
+                    @if($spj->status === 'selesai')
+                    ✓
+                    @elseif($spj->status === 'dikembalikan')
+                    !
+                    @elseif($spj->status === 'diajukan')
+                    +
+                    @else
+                    ◷
+                    @endif
+
+                </div>
+
+
+                {{-- INFORMASI AKTIVITAS --}}
+                <div>
+
+                    <strong>
+
+                        @if($spj->status === 'selesai')
+
+                        {{ $spj->nomor_spj }} selesai
+
+                        @elseif($spj->status === 'dikembalikan')
+
+                        {{ $spj->nomor_spj }} dikembalikan
+
+                        @elseif($spj->status === 'diajukan')
+
+                        {{ $spj->nomor_spj }} diajukan
+
+                        @elseif($spj->status === 'diproses')
+
+                        {{ $spj->nomor_spj }} sedang diproses
+
+                        @else
+
+                        {{ $spj->nomor_spj }} dibuat
+
+                        @endif
+
+                    </strong>
+
+
+                    <span>
+                        {{ $spj->kegiatan }}
+                    </span>
+
+
+                    <small>
+
+                        {{ $spj->created_at
+                        ? $spj->created_at->diffForHumans()
+                        : '-' }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+            @empty
 
             <div class="activity">
 
@@ -318,96 +367,22 @@
                 <div>
 
                     <strong>
-                        SPJ-2026-002 disetujui
+                        Belum ada aktivitas
                     </strong>
 
                     <span>
-                        PPK menyetujui SPJ
+                        Belum ada data SPJ dalam sistem.
                     </span>
 
                     <small>
-                        10 menit yang lalu
+                        -
                     </small>
 
                 </div>
 
             </div>
 
-
-            <div class="activity">
-
-                <div class="activity-icon orange">
-                    !
-                </div>
-
-                <div>
-
-                    <strong>
-                        SPJ-2026-003 dikembalikan
-                    </strong>
-
-                    <span>
-                        Dokumen belum lengkap
-                    </span>
-
-                    <small>
-                        35 menit yang lalu
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <div class="activity">
-
-                <div class="activity-icon green">
-                    +
-                </div>
-
-                <div>
-
-                    <strong>
-                        SPJ baru diajukan
-                    </strong>
-
-                    <span>
-                        SPJ-2026-005 oleh Ahmad
-                    </span>
-
-                    <small>
-                        1 jam yang lalu
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <div class="activity">
-
-                <div class="activity-icon purple">
-                    $
-                </div>
-
-                <div>
-
-                    <strong>
-                        Pembayaran selesai
-                    </strong>
-
-                    <span>
-                        SPJ-2026-004
-                    </span>
-
-                    <small>
-                        2 jam yang lalu
-                    </small>
-
-                </div>
-
-            </div>
-
+            @endforelse
 
         </div>
 
@@ -435,7 +410,7 @@
 
         </div>
 
-        <a href="#">
+        <a href="{{ route('admin.spj.index') }}">
             Detail →
         </a>
 
@@ -444,11 +419,11 @@
 
     <div class="workflow-stats">
 
-
+        {{-- TEKNIS --}}
         <div class="workflow-box">
 
             <div class="workflow-number">
-                12
+                {{ $pengajuan }}
             </div>
 
             <span>
@@ -467,10 +442,11 @@
         </div>
 
 
+        {{-- UMUM / PPSPM --}}
         <div class="workflow-box">
 
             <div class="workflow-number">
-                8
+                {{ $pemeriksaan }}
             </div>
 
             <span>
@@ -489,10 +465,11 @@
         </div>
 
 
+        {{-- PPK --}}
         <div class="workflow-box">
 
             <div class="workflow-number">
-                5
+                {{ $persetujuan }}
             </div>
 
             <span>
@@ -511,10 +488,11 @@
         </div>
 
 
+        {{-- BENDAHARA --}}
         <div class="workflow-box">
 
             <div class="workflow-number">
-                3
+                {{ $pembayaran }}
             </div>
 
             <span>
@@ -533,10 +511,11 @@
         </div>
 
 
+        {{-- SELESAI --}}
         <div class="workflow-box completed-box">
 
             <div class="workflow-number">
-                96
+                {{ $selesai }}
             </div>
 
             <span>
@@ -548,7 +527,6 @@
             </small>
 
         </div>
-
 
     </div>
 

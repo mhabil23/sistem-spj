@@ -680,9 +680,10 @@
 
 }
 
-/* =========================
+
+/* ========================================
    AKSI SPJ
-========================= */
+======================================== */
 
 .spj-actions {
     display: flex;
@@ -754,6 +755,7 @@
     background: #fee2e2;
 }
 
+
 @media (max-width: 500px) {
 
     .spj-stats {
@@ -769,6 +771,180 @@
         width: 100%;
     }
 
-    
+}
+
+
+/* =====================================================
+   PRINT LAPORAN SPJ
+   ===================================================== */
+
+/* Konten khusus print, disembunyikan di layar */
+.print-only {
+    display: none;
+}
+
+@media print {
+
+    @page {
+        size: A4 landscape;
+        margin: 15mm;
+    }
+
+    /* Sembunyikan seluruh layout admin */
+    .sidebar,
+    .navbar,
+    .admin-navbar,
+    .top-navbar,
+    .no-print {
+        display: none !important;
+    }
+
+    .admin-layout {
+        display: block !important;
+        width: 100% !important;
+        min-height: auto !important;
+    }
+
+    .main-content,
+    .content {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Tampilkan konten khusus print */
+    .print-only {
+        display: block !important;
+    }
+
+    .laporan-page {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+        box-shadow: none !important;
+    }
+
+    /* ===== HEADER LAPORAN (judul instansi) ===== */
+    .print-header {
+        text-align: center;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #000;
+    }
+
+    .print-header h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #000;
+        text-transform: uppercase;
+    }
+
+    .print-header h2 {
+        margin: 4px 0 0;
+        font-size: 13px;
+        font-weight: 700;
+        color: #000;
+        text-transform: uppercase;
+    }
+
+    .print-header p {
+        margin: 3px 0 0;
+        font-size: 10px;
+        color: #000;
+    }
+
+    /* ===== INFO PERIODE & TANGGAL ===== */
+    .print-meta {
+        display: flex;
+        justify-content: space-between;
+        margin: 12px 0;
+        font-size: 10px;
+        color: #000;
+    }
+
+    /* Filter, statistik, tombol tetap tidak dicetak */
+    .laporan-filter,
+    .filter-card,
+    .filter-section,
+    .laporan-statistik,
+    .report-stats,
+    .stats-grid,
+    button,
+    .btn,
+    a.btn,
+    .btn-primary,
+    .btn-secondary,
+    .print-btn {
+        display: none !important;
+    }
+
+    /* ===== TABEL ===== */
+    .laporan-table-wrapper {
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
+    .laporan-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 11px !important;
+    }
+
+    .laporan-table th,
+    .laporan-table td {
+        border: 1px solid #000 !important;
+        padding: 6px 8px !important;
+        color: #000 !important;
+        background: white !important;
+    }
+
+    .laporan-table th {
+        font-weight: bold !important;
+        text-align: center !important;
+    }
+
+    .laporan-table tr {
+        page-break-inside: avoid !important;
+    }
+
+    /* Baris total */
+    .laporan-total {
+        text-align: right;
+        font-weight: bold;
+        font-size: 11px;
+        color: #000;
+        margin-top: 8px;
+    }
+
+    /* ===== FOOTER / TANDA TANGAN ===== */
+    .print-footer {
+        margin-top: 40px;
+        display: flex;
+        justify-content: flex-end;
+        page-break-inside: avoid;
+    }
+
+    .print-signature {
+        text-align: center;
+        font-size: 11px;
+        color: #000;
+    }
+
+    .print-signature .sign-space {
+        height: 60px;
+    }
+
+    .print-signature strong {
+        text-decoration: underline;
+    }
 
 }

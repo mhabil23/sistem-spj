@@ -1,3 +1,4 @@
+
 /* ========================================
    ADMIN - RIWAYAT PROSES
 ======================================== */
@@ -8,7 +9,9 @@
 }
 
 
-/* HEADER */
+/* ========================================
+   HEADER
+======================================== */
 
 .history-header {
     display: flex;
@@ -30,7 +33,9 @@
 }
 
 
-/* FILTER BUTTON */
+/* ========================================
+   FILTER BUTTON
+======================================== */
 
 .btn-filter {
     border: 1px solid #e2e8f0;
@@ -43,10 +48,17 @@
     gap: 7px;
     font-size: 12px;
     cursor: pointer;
+    transition: .2s ease;
+}
+
+.btn-filter:hover {
+    background: #f8fafc;
 }
 
 
-/* STATISTICS */
+/* ========================================
+   STATISTICS
+======================================== */
 
 .history-stats {
     display: grid;
@@ -120,7 +132,9 @@
 }
 
 
-/* PANEL */
+/* ========================================
+   PANEL / SHAPE PUTIH
+======================================== */
 
 .history-panel {
     background: #fff;
@@ -130,7 +144,23 @@
 }
 
 
-/* TOOLBAR */
+/* ========================================
+   TABLE WRAPPER / CARD RIWAYAT
+======================================== */
+
+.history-table-wrapper {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+
+/* ========================================
+   TOOLBAR
+======================================== */
 
 .history-toolbar {
     padding: 20px;
@@ -139,6 +169,7 @@
     justify-content: space-between;
     gap: 20px;
     border-bottom: 1px solid #e5e7eb;
+    background: #fff;
 }
 
 .history-toolbar h3 {
@@ -160,7 +191,9 @@
 }
 
 
-/* SEARCH */
+/* ========================================
+   SEARCH
+======================================== */
 
 .history-search {
     height: 38px;
@@ -171,6 +204,7 @@
     align-items: center;
     gap: 7px;
     padding: 0 11px;
+    background: #fff;
 }
 
 .history-search span {
@@ -184,6 +218,7 @@
     outline: none;
     color: #334155;
     font-size: 11px;
+    background: transparent;
 }
 
 .history-select {
@@ -198,16 +233,15 @@
 }
 
 
-/* TABLE */
-
-.history-table-wrapper {
-    overflow-x: auto;
-}
+/* ========================================
+   TABLE
+======================================== */
 
 .history-table {
     width: 100%;
     min-width: 950px;
     border-collapse: collapse;
+    background: #fff;
 }
 
 .history-table th {
@@ -226,14 +260,21 @@
     color: #64748b;
     font-size: 11px;
     white-space: nowrap;
+    background: #fff;
 }
 
 .history-table tbody tr:hover {
     background: #fafcff;
 }
 
+.history-table tbody tr:hover td {
+    background: #fafcff;
+}
 
-/* DOCUMENT */
+
+/* ========================================
+   DOCUMENT
+======================================== */
 
 .document-info {
     display: flex;
@@ -252,6 +293,7 @@
     justify-content: center;
     font-size: 8px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .document-info div:last-child {
@@ -271,7 +313,9 @@
 }
 
 
-/* ACTIVITY */
+/* ========================================
+   ACTIVITY
+======================================== */
 
 .activity {
     display: flex;
@@ -290,7 +334,9 @@
 }
 
 
-/* USER */
+/* ========================================
+   USER
+======================================== */
 
 .user-info {
     display: flex;
@@ -309,6 +355,7 @@
     justify-content: center;
     font-size: 9px;
     font-weight: 700;
+    flex-shrink: 0;
 }
 
 .user-avatar.green {
@@ -322,7 +369,9 @@
 }
 
 
-/* STATUS */
+/* ========================================
+   STATUS
+======================================== */
 
 .history-status {
     display: inline-flex;
@@ -363,7 +412,9 @@
 }
 
 
-/* TIME */
+/* ========================================
+   TIME
+======================================== */
 
 .time-info {
     display: flex;
@@ -382,7 +433,9 @@
 }
 
 
-/* ACTION */
+/* ========================================
+   ACTION
+======================================== */
 
 .history-action {
     width: 30px;
@@ -392,6 +445,11 @@
     background: #f1f5f9;
     color: #64748b;
     cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: .2s ease;
 }
 
 .history-action:hover {
@@ -399,7 +457,9 @@
 }
 
 
-/* FOOTER */
+/* ========================================
+   FOOTER
+======================================== */
 
 .history-footer {
     min-height: 64px;
@@ -407,6 +467,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: #fff;
     border-top: 1px solid #e5e7eb;
 }
 
@@ -418,6 +479,11 @@
 .history-footer strong {
     color: #64748b;
 }
+
+
+/* ========================================
+   PAGINATION
+======================================== */
 
 .pagination {
     display: flex;
@@ -435,6 +501,12 @@
     color: #64748b;
     font-size: 10px;
     cursor: pointer;
+    transition: .2s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+    background: #f8fafc;
+    border-color: #cbd5e1;
 }
 
 .pagination button.active {
@@ -449,7 +521,9 @@
 }
 
 
-/* RESPONSIVE */
+/* ========================================
+   RESPONSIVE
+======================================== */
 
 @media (max-width: 1100px) {
 
@@ -470,6 +544,7 @@
         flex: 1;
     }
 }
+
 
 @media (max-width: 768px) {
 
@@ -505,6 +580,7 @@
     }
 }
 
+
 @media (max-width: 500px) {
 
     .history-stats {
@@ -515,7 +591,21 @@
         flex-direction: column;
     }
 
+    .history-search {
+        width: 100%;
+    }
+
     .history-select {
         width: 100%;
+    }
+
+    .history-footer {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .pagination {
+        width: 100%;
+        justify-content: flex-end;
     }
 }

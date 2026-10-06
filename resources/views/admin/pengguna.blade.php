@@ -38,7 +38,7 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
 
             <div>
                 <span>Total Pengguna</span>
-                <strong>24</strong>
+                <strong>{{ $users->count() }}</strong>
                 <small>Seluruh akun</small>
             </div>
 
@@ -53,7 +53,7 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
 
             <div>
                 <span>Pengguna Aktif</span>
-                <strong>22</strong>
+                <strong>{{ $users->where('status', 'aktif')->count() }}</strong>
                 <small>Akun aktif</small>
             </div>
 
@@ -68,7 +68,7 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
 
             <div>
                 <span>Menunggu Aktivasi</span>
-                <strong>2</strong>
+                <strong>{{ $users->where('status', 'nonaktif')->count() }}</strong>
                 <small>Perlu diperiksa</small>
             </div>
 
@@ -83,7 +83,7 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
 
             <div>
                 <span>Role</span>
-                <strong>5</strong>
+                <strong>{{ $users->pluck('role')->unique()->count() }}</strong>
                 <small>Jenis pengguna</small>
             </div>
 
@@ -200,385 +200,148 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
 
                 <tbody>
 
-                    {{-- ADMIN --}}
+                    @forelse($users as $user)
+
                     <tr>
 
+                        {{-- PENGGUNA --}}
                         <td>
-
                             <div class="user-profile">
 
-                                <div class="table-avatar admin">
-                                    A
+                                <div class="table-avatar {{ $user->role }}">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
 
                                 <div>
-
                                     <strong>
-                                        Administrator
+                                        {{ $user->name }}
                                     </strong>
 
                                     <span>
-                                        ID: USR-001
+                                        ID: USR-{{ str_pad($user->id, 3, '0', STR_PAD_LEFT) }}
                                     </span>
-
                                 </div>
 
                             </div>
-
                         </td>
 
+
+                        {{-- EMAIL --}}
                         <td>
-                            admin@bps.go.id
+                            {{ $user->email }}
                         </td>
 
+
+                        {{-- ROLE --}}
                         <td>
 
-                            <span class="role-badge admin">
+                            <span class="role-badge {{ $user->role }}">
+
+                                @if($user->role === 'admin')
                                 Admin
-                            </span>
 
-                        </td>
-
-                        <td>
-
-                            <span class="status-badge active">
-                                <i></i>
-                                Aktif
-                            </span>
-
-                        </td>
-
-                        <td>
-                            Hari ini, 07:21
-                        </td>
-
-                        <td>
-
-                            <div class="action-buttons">
-
-                                <button
-                                    class="action-btn view"
-                                    title="Lihat">
-                                    👁
-                                </button>
-
-                                <button
-                                    class="action-btn edit"
-                                    title="Edit">
-                                    ✎
-                                </button>
-
-                                <button
-                                    class="action-btn delete"
-                                    title="Hapus">
-                                    🗑
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- TEKNIS --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="user-profile">
-
-                                <div class="table-avatar teknis">
-                                    T
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Ahmad Fauzan
-                                    </strong>
-
-                                    <span>
-                                        ID: USR-002
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <td>
-                            ahmad@bps.go.id
-                        </td>
-
-                        <td>
-
-                            <span class="role-badge teknis">
+                                @elseif($user->role === 'teknis')
                                 Teknis
-                            </span>
 
-                        </td>
-
-                        <td>
-
-                            <span class="status-badge active">
-                                <i></i>
-                                Aktif
-                            </span>
-
-                        </td>
-
-                        <td>
-                            Hari ini, 07:05
-                        </td>
-
-                        <td>
-
-                            <div class="action-buttons">
-
-                                <button class="action-btn view">
-                                    👁
-                                </button>
-
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
-
-                                <button class="action-btn delete">
-                                    🗑
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- UMUM --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="user-profile">
-
-                                <div class="table-avatar umum">
-                                    S
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Siti Rahma
-                                    </strong>
-
-                                    <span>
-                                        ID: USR-003
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <td>
-                            siti@bps.go.id
-                        </td>
-
-                        <td>
-
-                            <span class="role-badge umum">
+                                @elseif($user->role === 'umum')
                                 Umum / PPSPM
-                            </span>
 
-                        </td>
-
-                        <td>
-
-                            <span class="status-badge active">
-                                <i></i>
-                                Aktif
-                            </span>
-
-                        </td>
-
-                        <td>
-                            Kemarin, 16:43
-                        </td>
-
-                        <td>
-
-                            <div class="action-buttons">
-
-                                <button class="action-btn view">
-                                    👁
-                                </button>
-
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
-
-                                <button class="action-btn delete">
-                                    🗑
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- PPK --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="user-profile">
-
-                                <div class="table-avatar ppk">
-                                    B
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Budi Santoso
-                                    </strong>
-
-                                    <span>
-                                        ID: USR-004
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <td>
-                            budi@bps.go.id
-                        </td>
-
-                        <td>
-
-                            <span class="role-badge ppk">
+                                @elseif($user->role === 'ppk')
                                 PPK
+
+                                @elseif($user->role === 'bendahara')
+                                Bendahara
+
+                                @else
+                                {{ ucfirst($user->role) }}
+                                @endif
+
                             </span>
 
                         </td>
 
+
+                        {{-- STATUS --}}
                         <td>
+
+                            @if($user->status === 'aktif')
 
                             <span class="status-badge active">
                                 <i></i>
                                 Aktif
                             </span>
 
-                        </td>
-
-                        <td>
-                            20 Sep 2026, 15:20
-                        </td>
-
-                        <td>
-
-                            <div class="action-buttons">
-
-                                <button class="action-btn view">
-                                    👁
-                                </button>
-
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
-
-                                <button class="action-btn delete">
-                                    🗑
-                                </button>
-
-                            </div>
-
-                        </td>
-
-                    </tr>
-
-
-                    {{-- BENDAHARA --}}
-                    <tr>
-
-                        <td>
-
-                            <div class="user-profile">
-
-                                <div class="table-avatar bendahara">
-                                    D
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        Dewi Lestari
-                                    </strong>
-
-                                    <span>
-                                        ID: USR-005
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <td>
-                            dewi@bps.go.id
-                        </td>
-
-                        <td>
-
-                            <span class="role-badge bendahara">
-                                Bendahara
-                            </span>
-
-                        </td>
-
-                        <td>
+                            @else
 
                             <span class="status-badge inactive">
                                 <i></i>
                                 Nonaktif
                             </span>
 
+                            @endif
+
                         </td>
 
+
+                        {{-- TERAKHIR DIPERBARUI --}}
                         <td>
-                            18 Sep 2026, 09:12
+                            {{ $user->updated_at
+                    ? $user->updated_at->format('d M Y, H:i')
+                    : '-' }}
                         </td>
 
+
+                        {{-- AKSI --}}
                         <td>
 
                             <div class="action-buttons">
 
-                                <button class="action-btn view">
-                                    👁
-                                </button>
+                                {{-- EDIT --}}
+                                <a
+                                    href="{{ route('admin.pengguna.edit', $user->id) }}"
+                                    class="action-btn edit"
+                                    title="Edit">
 
-                                <button class="action-btn edit">
-                                    ✎
-                                </button>
+                                    <i class="bi bi-pencil"></i>
 
-                                <button class="action-btn delete">
-                                    🗑
-                                </button>
+                                </a>
+
+
+                                {{-- HAPUS --}}
+                                <form
+                                    action="{{ route('admin.pengguna.destroy', $user->id) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengguna {{ $user->name }}?')">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="action-btn delete"
+                                        title="Hapus">
+
+                                        <i class="bi bi-trash3"></i>
+
+                                    </button>
+
+                                </form>
 
                             </div>
 
                         </td>
 
                     </tr>
+
+                    @empty
+
+                    <tr>
+                        <td colspan="6" style="text-align: center;">
+                            Belum ada pengguna yang terdaftar.
+                        </td>
+                    </tr>
+
+                    @endforelse
 
                 </tbody>
 
@@ -589,11 +352,6 @@ $subtitle = 'Kelola akun dan hak akses pengguna sistem SPJ.';
 
         {{-- FOOTER --}}
         <div class="table-footer">
-
-            <span>
-                Menampilkan <strong>1–5</strong> dari
-                <strong>24</strong> pengguna
-            </span>
 
             <div class="pagination">
 
