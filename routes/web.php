@@ -18,24 +18,29 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Daftar SPJ
     Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');
     Route::get('/spj/create', [SpjController::class, 'create'])->name('spj.create');
     Route::post('/spj', [SpjController::class, 'store'])->name('spj.store');
+    Route::get('/spj/{spj}/edit', [SpjController::class, 'edit'])->name('spj.edit');
+    Route::put('/spj/{spj}', [SpjController::class, 'update'])->name('spj.update');
+    Route::delete('/spj/{spj}', [SpjController::class, 'destroy'])->name('spj.destroy');
 
     // Pengguna
     Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
     Route::get('/pengguna/create', [UserController::class, 'create'])->name('pengguna.create');
     Route::post('/pengguna', [UserController::class, 'store'])->name('pengguna.store');
+    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])->name('pengguna.edit');
+    Route::put('/pengguna/{user}', [UserController::class, 'update'])->name('pengguna.update');
+    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])->name('pengguna.destroy');
+
+    // Laporan SPJ
+    Route::get('/laporan-spj', [SpjController::class, 'laporan'])->name('laporan.spj');
 
     // Riwayat
-    Route::get('/riwayat', function () {
-        return view('admin.riwayat');
-    })->name('riwayat');
+    Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
 });
 
 
@@ -65,18 +70,6 @@ Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->g
     Route::put('/profil', [TeknisProfilController::class, 'update'])->name('profil.update');
 });
 
-    // Form edit pengguna
-    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])
-        ->name('pengguna.edit');
-
-    // Update pengguna
-    Route::put('/pengguna/{user}', [UserController::class, 'update'])
-        ->name('pengguna.update');
-
-    // Hapus pengguna
-    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])
-        ->name('pengguna.destroy');
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +87,7 @@ Route::middleware(['auth', 'role:umum'])->prefix('umum')->name('umum.')->group(f
     Route::get('/dashboard', [UmumDashboardController::class, 'index'])->name('dashboard');
     Route::get('/spj', [UmumSpjController::class, 'index'])->name('spj.index');
     Route::get('/spj/{id}', [UmumSpjController::class, 'show'])->name('spj.show');
+    Route::delete('/spj/{id}', [UmumSpjController::class, 'destroy'])->name('spj.destroy');
     Route::get('/spj/{id}/print', [UmumSpjController::class, 'print'])->name('spj.print');
     Route::post('/spj/{id}/verify', [UmumSpjController::class, 'verify'])->name('spj.verify');
     

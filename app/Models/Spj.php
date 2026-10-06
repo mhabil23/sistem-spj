@@ -27,6 +27,16 @@ class Spj extends Model
         'disetujui_ppk_at',
         'disetujui_ppspm_at',
         'diselesaikan_at',
+        'kel_daftar_penerima',
+        'kel_bast',
+        'kel_sk',
+        'kel_kak',
+        'kel_form_permintaan',
+        'kel_spk',
+        'kel_surat_tugas',
+        'kel_kesesuaian_mrk',
+        'kel_cms',
+        'kel_cek_sbks',
     ];
 
     public function user()

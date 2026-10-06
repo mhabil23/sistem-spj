@@ -76,7 +76,7 @@
     color: #ef4444;
 }
 
-.form-group input,
+.form-group input:not([type="checkbox"]),
 .form-group textarea {
     width: 100%;
     box-sizing: border-box;
@@ -89,7 +89,7 @@
     font-size: 12px;
 }
 
-.form-group input:focus,
+.form-group input:not([type="checkbox"]):focus,
 .form-group textarea:focus {
     border-color: #2563eb;
 }
