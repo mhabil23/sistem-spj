@@ -191,16 +191,15 @@
                                 <form
                                     action="{{ route('admin.spj.destroy', $spj->id) }}"
                                     method="POST"
-                                    style="display:inline;"
-                                    onsubmit="return confirm('Yakin ingin menghapus SPJ {{ $spj->nomor_spj }}?')">
+                                    style="display: inline;"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus SPJ ini?');">
 
                                     @csrf
                                     @method('DELETE')
 
                                     <button
                                         type="submit"
-                                        class="spj-action-btn delete"
-                                        title="Hapus">
+                                        class="spj-action-btn delete">
                                         <i class="bi bi-trash"></i>
                                     </button>
 
@@ -234,11 +233,6 @@
 
         {{-- FOOTER --}}
         <div class="table-footer">
-
-            <span>
-                Menampilkan <strong>1–4</strong> dari
-                <strong>128</strong> SPJ
-            </span>
 
             <div class="pagination">
 

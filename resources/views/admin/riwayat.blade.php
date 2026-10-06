@@ -87,377 +87,198 @@
 
     </div>
 
+    <div class="history-table-wrapper">
 
-    {{-- TABLE --}}
-    <div class="history-panel">
+        <table class="history-table">
 
-        <div class="history-toolbar">
+            <thead>
+                <tr>
+                    <th>DOKUMEN</th>
+                    <th>AKTIVITAS</th>
+                    <th>PENGGUNA</th>
+                    <th>STATUS</th>
+                    <th>WAKTU</th>
+                    <th>AKSI</th>
+                </tr>
+            </thead>
 
-            <div>
-                <h3>Riwayat Aktivitas</h3>
+            <tbody>
 
-                <p>
-                    Daftar aktivitas proses SPJ terbaru.
-                </p>
-            </div>
+                @forelse($riwayat as $history)
 
+                <tr>
 
-            <div class="history-actions">
+                    {{-- DOKUMEN --}}
+                    <td>
+                        <div class="document-info">
 
-                <div class="history-search">
-
-                    <span>⌕</span>
-
-                    <input
-                        type="text"
-                        placeholder="Cari dokumen...">
-
-                </div>
-
-                <select class="history-select">
-
-                    <option>Semua Status</option>
-                    <option>Diproses</option>
-                    <option>Selesai</option>
-                    <option>Dikembalikan</option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-
-        <div class="history-table-wrapper">
-
-            <table class="history-table">
-
-                <thead>
-
-                    <tr>
-
-                        <th>DOKUMEN</th>
-                        <th>AKTIVITAS</th>
-                        <th>PENGGUNA</th>
-                        <th>STATUS</th>
-                        <th>WAKTU</th>
-                        <th>AKSI</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    <tr>
-
-                        <td>
-
-                            <div class="document-info">
-
-                                <div class="document-icon">
-                                    PDF
-                                </div>
-
-                                <div>
-                                    <strong>
-                                        SPJ Perjalanan Dinas
-                                    </strong>
-
-                                    <span>
-                                        SPJ-2026-001
-                                    </span>
-                                </div>
-
+                            <div class="document-icon">
+                                SPJ
                             </div>
 
-                        </td>
-
-
-                        <td>
-
-                            <div class="activity">
-
+                            <div>
                                 <strong>
-                                    Pengajuan SPJ
+                                    {{ $history->spj?->kegiatan ?? 'SPJ' }}
                                 </strong>
 
                                 <span>
-                                    Dokumen diajukan
+                                    {{ $history->spj?->nomor_spj ?? '-' }}
                                 </span>
-
                             </div>
 
-                        </td>
+                        </div>
+                    </td>
 
 
-                        <td>
+                    {{-- AKTIVITAS --}}
+                    <td>
+                        <div class="activity">
 
-                            <div class="user-info">
+                            <strong>
+                                @if($history->spj?->status === 'diajukan')
+                                Pengajuan SPJ
+                                @elseif($history->spj?->status === 'diproses')
+                                Pemeriksaan SPJ
+                                @elseif($history->spj?->status === 'selesai')
+                                SPJ Selesai
+                                @elseif($history->spj?->status === 'dikembalikan')
+                                Revisi SPJ
+                                @else
+                                Proses SPJ
+                                @endif
+                            </strong>
 
-                                <div class="user-avatar">
-                                    AH
-                                </div>
-
-                                <span>
-                                    Ahmad
-                                </span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="history-status processing">
-                                <i></i>
-                                Diproses
+                            <span>
+                                @if($history->spj?->status === 'diajukan')
+                                Dokumen diajukan
+                                @elseif($history->spj?->status === 'diproses')
+                                Dokumen sedang diperiksa
+                                @elseif($history->spj?->status === 'selesai')
+                                Proses SPJ telah selesai
+                                @elseif($history->spj?->status === 'dikembalikan')
+                                Dokumen perlu diperbaiki
+                                @else
+                                Aktivitas SPJ
+                                @endif
                             </span>
 
-                        </td>
+                        </div>
+                    </td>
 
 
-                        <td>
+                    {{-- PENGGUNA --}}
+                    <td>
+                        <div class="user-info">
 
-                            <div class="time-info">
-
-                                <strong>
-                                    21 Sep 2026
-                                </strong>
-
-                                <span>
-                                    08:45 WIB
-                                </span>
-
+                            <div class="user-avatar">
+                                {{ strtoupper(substr($history->user?->name ?? 'U', 0, 2)) }}
                             </div>
 
-                        </td>
-
-
-                        <td>
-
-                            <button class="history-action">
-                                →
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-
-                    <tr>
-
-                        <td>
-
-                            <div class="document-info">
-
-                                <div class="document-icon">
-                                    PDF
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        SPJ Belanja Barang
-                                    </strong>
-
-                                    <span>
-                                        SPJ-2026-002
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="activity">
-
-                                <strong>
-                                    Verifikasi SPJ
-                                </strong>
-
-                                <span>
-                                    Dokumen diverifikasi
-                                </span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="user-info">
-
-                                <div class="user-avatar green">
-                                    BS
-                                </div>
-
-                                <span>
-                                    Budi
-                                </span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="history-status completed">
-                                <i></i>
-                                Selesai
+                            <span>
+                                {{ $history->user?->name ?? 'Sistem' }}
                             </span>
 
-                        </td>
+                        </div>
+                    </td>
 
 
-                        <td>
+                    {{-- STATUS --}}
+                    <td>
 
-                            <div class="time-info">
+                        @if($history->spj?->status === 'diajukan')
 
-                                <strong>
-                                    20 Sep 2026
-                                </strong>
+                        <span class="history-status processing">
+                            <i></i>
+                            Diajukan
+                        </span>
 
-                                <span>
-                                    15:20 WIB
-                                </span>
+                        @elseif($history->spj?->status === 'diproses')
 
-                            </div>
+                        <span class="history-status processing">
+                            <i></i>
+                            Diproses
+                        </span>
 
-                        </td>
+                        @elseif($history->spj?->status === 'selesai')
 
+                        <span class="history-status completed">
+                            <i></i>
+                            Selesai
+                        </span>
 
-                        <td>
+                        @elseif($history->spj?->status === 'dikembalikan')
 
-                            <button class="history-action">
-                                →
-                            </button>
+                        <span class="history-status returned">
+                            <i></i>
+                            Dikembalikan
+                        </span>
 
-                        </td>
+                        @else
 
-                    </tr>
+                        <span class="history-status">
+                            <i></i>
+                            {{ ucfirst($history->spj?->status ?? 'Tidak diketahui') }}
+                        </span>
 
+                        @endif
 
-                    <tr>
-
-                        <td>
-
-                            <div class="document-info">
-
-                                <div class="document-icon">
-                                    PDF
-                                </div>
-
-                                <div>
-
-                                    <strong>
-                                        SPJ Honorarium
-                                    </strong>
-
-                                    <span>
-                                        SPJ-2026-003
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                        </td>
+                    </td>
 
 
-                        <td>
+                    {{-- WAKTU --}}
+                    <td>
 
-                            <div class="activity">
+                        <div class="time-info">
 
-                                <strong>
-                                    Revisi SPJ
-                                </strong>
+                            <strong>
+                                {{ $history->created_at?->format('d M Y') ?? '-' }}
+                            </strong>
 
-                                <span>
-                                    Dokumen dikembalikan
-                                </span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <div class="user-info">
-
-                                <div class="user-avatar purple">
-                                    RN
-                                </div>
-
-                                <span>
-                                    Rina
-                                </span>
-
-                            </div>
-
-                        </td>
-
-
-                        <td>
-
-                            <span class="history-status returned">
-                                <i></i>
-                                Dikembalikan
+                            <span>
+                                {{ $history->created_at?->format('H:i') ?? '-' }}
+                                WIB
                             </span>
 
-                        </td>
+                        </div>
+
+                    </td>
 
 
-                        <td>
+                    {{-- AKSI --}}
+                    <td>
 
-                            <div class="time-info">
+                        <a
+                            href="{{ route('admin.spj.edit', $history->spj_id) }}"
+                            class="history-action"
+                            title="Lihat SPJ">
+                        </a>
 
-                                <strong>
-                                    20 Sep 2026
-                                </strong>
+                    </td>
 
-                                <span>
-                                    10:15 WIB
-                                </span>
+                </tr>
 
-                            </div>
+                @empty
 
-                        </td>
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px;">
+                        Belum ada riwayat proses SPJ.
+                    </td>
+                </tr>
 
+                @endforelse
 
-                        <td>
+            </tbody>
 
-                            <button class="history-action">
-                                →
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
+        </table>
 
 
-        {{-- FOOTER --}}
+        {{-- FOOTER / PAGINATION --}}
         <div class="history-footer">
 
             <span>
                 Menampilkan <strong>3</strong> dari
                 <strong>128</strong> riwayat
             </span>
-
 
             <div class="pagination">
 
@@ -494,6 +315,7 @@
         </div>
 
     </div>
+
 
 </div>
 

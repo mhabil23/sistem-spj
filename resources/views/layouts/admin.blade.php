@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    rel="stylesheet">
 
 <head>
 
@@ -14,14 +11,24 @@
     <title>
         {{ $title ?? 'Dashboard' }} | Sistem SPJ
     </title>
+
+    {{-- Bootstrap Icons --}}
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+
+    {{-- Vite CSS & JS --}}
     @vite([
     'resources/css/admin/dashboard.css',
     'resources/css/admin/pengguna.css',
     'resources/css/admin/spj.css',
     'resources/css/admin/riwayat.css',
     'resources/css/admin/spj-create.css',
+    'resources/css/admin/laporan-spj.css',
     'resources/js/app.js'
     ])
+
+    @stack('styles')
 
 </head>
 
@@ -29,12 +36,18 @@
 
     <div class="admin-layout">
 
+        {{-- SIDEBAR --}}
         @include('components.admin.sidebar')
 
+
+        {{-- MAIN CONTENT --}}
         <main class="main-content">
 
+            {{-- NAVBAR --}}
             @include('components.admin.navbar')
 
+
+            {{-- CONTENT --}}
             <div class="content">
 
                 @yield('content')
@@ -45,16 +58,22 @@
 
     </div>
 
+
+    {{-- SIDEBAR MOBILE --}}
     <script>
         function toggleSidebar() {
 
             const sidebar =
                 document.querySelector('.sidebar');
 
-            sidebar.classList.toggle('show');
+            if (sidebar) {
+                sidebar.classList.toggle('show');
+            }
 
         }
     </script>
+
+    @stack('scripts')
 
 </body>
 

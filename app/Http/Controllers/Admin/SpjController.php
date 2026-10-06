@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class SpjController extends Controller
 {
+    /**
+     * Menampilkan daftar SPJ
+     */
     public function index()
     {
         $spjs = Spj::latest()->get();
@@ -15,21 +18,33 @@ class SpjController extends Controller
         return view('admin.spj', compact('spjs'));
     }
 
+    /**
+     * Menampilkan form tambah SPJ
+     */
     public function create()
     {
         return view('admin.spj-create');
     }
 
+    /**
+     * Menampilkan detail SPJ
+     */
     public function show(Spj $spj)
     {
         return view('admin.spj-show', compact('spj'));
     }
 
+    /**
+     * Menampilkan form edit SPJ
+     */
     public function edit(Spj $spj)
     {
         return view('admin.spj-edit', compact('spj'));
     }
 
+    /**
+     * Menyimpan SPJ baru
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -55,6 +70,9 @@ class SpjController extends Controller
             ->with('success', 'SPJ berhasil ditambahkan.');
     }
 
+    /**
+     * Memperbarui SPJ
+     */
     public function update(Request $request, Spj $spj)
     {
         $validated = $request->validate([
@@ -69,16 +87,67 @@ class SpjController extends Controller
         $spj->update($validated);
 
         return redirect()
-            ->route('spj.index')
+            ->route('admin.spj.index')
             ->with('success', 'Data SPJ berhasil diperbarui.');
     }
 
+    /**
+     * Menghapus SPJ
+     */
     public function destroy(Spj $spj)
     {
         $spj->delete();
 
         return redirect()
-            ->route('spj.index')
+            ->route('admin.spj.index')
             ->with('success', 'Data SPJ berhasil dihapus.');
+    }
+
+    public function laporan(Request $request)
+    {
+        $query = Spj::query();
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter tanggal mulai
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal', '>=', $request->tanggal_mulai);
+        }
+
+        // Filter tanggal selesai
+        if ($request->filled('tanggal_selesai')) {
+            $query->whereDate('tanggal', '<=', $request->tanggal_selesai);
+        }
+
+        // Ambil data laporan
+        $spjs = $query
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        // Rekap
+        $totalSpj = $spjs->count();
+
+        $totalNilai = $spjs->sum('nilai');
+
+        $totalDiajukan = $spjs->where('status', 'diajukan')->count();
+
+        $totalDiproses = $spjs->where('status', 'diproses')->count();
+
+        $totalSelesai = $spjs->where('status', 'selesai')->count();
+
+        $totalDikembalikan = $spjs->where('status', 'dikembalikan')->count();
+
+        return view('admin.laporan-spj', compact(
+            'spjs',
+            'totalSpj',
+            'totalNilai',
+            'totalDiajukan',
+            'totalDiproses',
+            'totalSelesai',
+            'totalDikembalikan'
+        ));
     }
 }
