@@ -10,7 +10,7 @@ class SpjController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Spj::with('user')->whereIn('status', ['diajukan', 'disetujui_umum']);
+        $query = Spj::with('user')->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -48,7 +48,7 @@ class SpjController extends Controller
     {
         $spj = Spj::findOrFail($id);
 
-        if (!in_array($spj->status, ['diajukan', 'disetujui_umum'])) {
+        if (!in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk'])) {
             return redirect()->route('umum.spj.index')->with('error', 'SPJ ini sudah tidak berada di antrean pemeriksaan Anda.');
         }
 
@@ -86,13 +86,33 @@ class SpjController extends Controller
                     'catatan_revisi' => null,
                     'disetujui_ppk_at' => now(),
                 ]);
-                $msg = 'SPJ telah ditandatangani PPK dan diteruskan ke PPSPM.';
+                $msg = 'SPJ telah ditandatangani PPK. Harap bawa dokumen fisik ke PPSPM untuk persetujuan selanjutnya.';
             } else {
                 $spj->update([
                     'status' => 'revisi_ppk',
                     'catatan_revisi' => $request->catatan_revisi
                 ]);
                 $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPK.';
+            }
+        } elseif ($spj->status === 'disetujui_ppk') {
+            $request->validate([
+                'action' => 'required|in:setujui_ppspm,tolak_ppspm',
+                'catatan_revisi' => 'required_if:action,tolak_ppspm|nullable|string'
+            ]);
+
+            if ($request->action === 'setujui_ppspm') {
+                $spj->update([
+                    'status' => 'disetujui_ppspm',
+                    'catatan_revisi' => null,
+                    // We don't have disetujui_ppspm_at column in migration, just update status
+                ]);
+                $msg = 'SPJ telah disetujui PPSPM dan diteruskan ke Bendahara.';
+            } else {
+                $spj->update([
+                    'status' => 'revisi_ppspm',
+                    'catatan_revisi' => $request->catatan_revisi
+                ]);
+                $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPSPM.';
             }
         }
 

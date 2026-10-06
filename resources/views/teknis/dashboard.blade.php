@@ -111,7 +111,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                                 @if(in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_bendahara', 'revisi_ppspm']))
                                     Teknis
                                 @elseif($spj->status == 'diajukan')
-                                    Umum/PPSPM
+                                    Umum
                                 @elseif($spj->status == 'disetujui_umum')
                                     PPK
                                 @elseif($spj->status == 'disetujui_ppk')
@@ -252,20 +252,11 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                 <strong style="font-size: 0.9rem; color: {{ $isPpk ? '#0f172a' : '#94a3b8' }};">PPK</strong>
             </div>
 
-            <!-- PPSPM -->
-            <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
-                <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isBendahara ? 'var(--success)' : ($isPpspm ? 'var(--primary)' : '#f1f5f9') }}; color: {{ $isBendahara || $isPpspm ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.1);">
-                    @if($isBendahara) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    @else 4 @endif
-                </div>
-                <strong style="font-size: 0.9rem; color: {{ $isPpspm ? '#0f172a' : '#94a3b8' }};">PPSPM</strong>
-            </div>
-
             <!-- BENDAHARA -->
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
                 <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isDone ? 'var(--success)' : ($isBendahara ? 'var(--primary)' : '#f1f5f9') }}; color: {{ $isDone || $isBendahara ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.1);">
                     @if($isDone) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    @else 5 @endif
+                    @else 4 @endif
                 </div>
                 <strong style="font-size: 0.9rem; color: {{ $isBendahara ? '#0f172a' : '#94a3b8' }};">Bendahara</strong>
             </div>
@@ -274,7 +265,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
                 <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isDone ? 'var(--success)' : '#f1f5f9' }}; color: {{ $isDone ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.1);">
                     @if($isDone) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    @else 6 @endif
+                    @else 5 @endif
                 </div>
                 <strong style="font-size: 0.9rem; color: {{ $isDone ? '#0f172a' : '#94a3b8' }};">Arsip</strong>
             </div>

@@ -75,9 +75,12 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                             } elseif($spj->status == 'disetujui_umum') {
                                 $badgeClass = 'completed';
                                 $statusText = 'Di Meja PPK';
-                            } elseif(in_array($spj->status, ['disetujui_ppk', 'disetujui_ppspm', 'selesai'])) {
+                            } elseif($spj->status == 'disetujui_ppk') {
                                 $badgeClass = 'completed';
-                                $statusText = 'Disetujui PPK';
+                                $statusText = 'Di Meja PPSPM';
+                            } elseif(in_array($spj->status, ['disetujui_ppspm', 'selesai'])) {
+                                $badgeClass = 'completed';
+                                $statusText = 'Diteruskan ke Bendahara';
                             }
                         @endphp
                         <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
