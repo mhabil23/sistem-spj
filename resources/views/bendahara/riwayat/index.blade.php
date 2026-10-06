@@ -29,7 +29,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
 <div class="panel" style="margin-bottom: 20px; padding: 20px;">
     <form action="{{ route('bendahara.riwayat.index') }}" method="GET" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 200px;">
-            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Cari (No. SPJ / Nama / Kegiatan)</label>
+            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Cari (Nama / Kegiatan)</label>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci..." style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 13px;">
         </div>
         <div>
@@ -57,7 +57,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
             <thead>
                 <tr>
                     <th>Terakhir Diupdate</th>
-                    <th>Nomor SPJ</th>
+                    <th>Kegiatan</th>
                     <th>Nomor SPM</th>
                     <th>Pengaju</th>
                     <th>Nilai (Rp)</th>
@@ -70,7 +70,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                 @forelse($riwayatSpjs as $spj)
                 <tr>
                     <td>{{ $spj->updated_at->format('d M Y') }}</td>
-                    <td><a href="{{ route('bendahara.spj.show', $spj->id) }}" style="color: #2563eb; font-weight: 600; text-decoration: none;">{{ $spj->nomor_spj }}</a><br><small style="color: #64748b;">{{ Str::limit($spj->kegiatan, 20) }}</small></td>
+                    <td><a href="{{ route('bendahara.spj.show', $spj->id) }}" style="color: #0b5a93; font-weight: 600; text-decoration: none;">{{ Str::limit($spj->kegiatan, 40) }}</a></td>
                     <td><strong>{{ $spj->nomor_spm ?? '-' }}</strong></td>
                     <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                     <td>Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
@@ -106,7 +106,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                         @if($spj->status == 'revisi_bendahara' && $spj->catatan_revisi)
                             <span style="color: #dc2626; font-size: 0.75rem;">{{ Str::limit($spj->catatan_revisi, 30) }}</span>
                         @elseif($spj->bukti_transfer)
-                            <span style="color: #0d9488; font-size: 0.85rem; font-weight: 600;">{{ $spj->bukti_transfer }}</span>
+                            <span style="color: #0b5a93; font-size: 0.85rem; font-weight: 600;">{{ $spj->bukti_transfer }}</span>
                         @else
                             <span style="color: #9ca3af;">-</span>
                         @endif

@@ -20,7 +20,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
 <div class="panel" style="margin-bottom: 20px; padding: 20px;">
     <form action="{{ route('bendahara.spj.index') }}" method="GET" style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
         <div style="flex: 1; min-width: 200px;">
-            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Cari (No. SPJ / Nama / Kegiatan)</label>
+            <label style="display: block; font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;">Cari (Nama / Kegiatan)</label>
             <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci..." style="width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 13px;">
         </div>
         <div>
@@ -45,7 +45,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
 <div class="panel">
     <div style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0;">
         <h2 style="font-size: 1rem; color: #1e293b; margin: 0;">Daftar Kotak Masuk</h2>
-        <button type="button" onclick="submitBulkVerify()" class="btn-primary" style="background-color: #0d9488; padding: 0.5rem 1rem; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+        <button type="button" onclick="submitBulkVerify()" class="btn-primary" style="background-color: #0b5a93; padding: 0.5rem 1rem; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 5px;">
             <ion-icon name="cash-outline"></ion-icon> Cairkan Terpilih
         </button>
     </div>
@@ -93,7 +93,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
                         <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
                     </td>
                     <td>
-                        <a href="{{ route('bendahara.spj.show', $spj->id) }}" class="btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem; text-decoration: none; {{ $spj->status == 'disetujui_ppspm' ? 'background-color: #0d9488;' : 'background-color: #6b7280;' }}">
+                        <a href="{{ route('bendahara.spj.show', $spj->id) }}" class="btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem; text-decoration: none; {{ $spj->status == 'disetujui_ppspm' ? 'background-color: #0b5a93;' : 'background-color: #6b7280;' }}">
                             {{ $spj->status == 'disetujui_ppspm' ? 'Cairkan' : 'Detail' }}
                         </a>
                     </td>

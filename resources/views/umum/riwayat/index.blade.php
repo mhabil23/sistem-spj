@@ -164,7 +164,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
         <div class="filter-wrapper">
             <form action="{{ route('umum.riwayat.index') }}" method="GET" class="filter-form">
                 <div class="filter-group" style="flex: 2;">
-                    <label class="filter-label">Cari (No. SPJ / Nama / Kegiatan)</label>
+                    <label class="filter-label">Cari (Nama / Kegiatan)</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
                 </div>
                 <div class="filter-group">
@@ -193,9 +193,8 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                 <thead>
                     <tr>
                         <th>Terakhir Diupdate</th>
-                        <th>Nomor SPJ</th>
-                        <th>Pengaju</th>
                         <th>Kegiatan</th>
+                        <th>Pengaju</th>
                         <th>Status Saat Ini</th>
                         <th>Catatan (Jika Revisi)</th>
                         <th>Aksi</th>
@@ -206,10 +205,9 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                     <tr>
                         <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
                         <td>
-                            <a href="{{ route('umum.spj.show', $spj->id) }}" style="color: #2563eb; font-weight: 600; text-decoration: none;">{{ $spj->nomor_spj }}</a>
+                            <a href="{{ route('umum.spj.show', $spj->id) }}" style="color: #0b5a93; font-weight: 600; text-decoration: none;">{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</a>
                         </td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
-                        <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 30) }}</td>
                         <td>
                             @php
                                 if(str_contains($spj->status, 'revisi')) {
