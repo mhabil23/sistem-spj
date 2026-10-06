@@ -21,6 +21,11 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('umum.dashboard', compact('totalAntrean', 'totalSelesai', 'totalRevisi', 'antreanSpjs'));
+        $recentSpjs = Spj::whereIn('status', ['diajukan', 'revisi_umum', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai'])
+            ->orderBy('updated_at', 'desc')
+            ->take(1)
+            ->get();
+
+        return view('umum.dashboard', compact('totalAntrean', 'totalSelesai', 'totalRevisi', 'antreanSpjs', 'recentSpjs'));
     }
 }

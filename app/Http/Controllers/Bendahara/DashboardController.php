@@ -22,7 +22,12 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
-        return view('bendahara.dashboard', compact('totalAntrean', 'totalSelesai', 'totalRevisi', 'nilaiAntrean', 'nilaiSelesai', 'antreanSpjs'));
+        $recentSpjs = Spj::whereIn('status', ['disetujui_ppspm', 'revisi_bendahara', 'selesai'])
+            ->orderBy('updated_at', 'desc')
+            ->take(1)
+            ->get();
+
+        return view('bendahara.dashboard', compact('totalAntrean', 'totalSelesai', 'totalRevisi', 'nilaiAntrean', 'nilaiSelesai', 'antreanSpjs', 'recentSpjs'));
     }
 }
 
