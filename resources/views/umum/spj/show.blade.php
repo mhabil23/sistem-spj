@@ -221,15 +221,63 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             </form>
         </div>
     </div>
-    @else
-    <div class="show-panel">
-        <div style="padding: 32px 24px; text-align: center; background-color: #f8fafc; border-radius: 12px;">
-            <div style="font-size: 48px; color: #3b82f6; margin-bottom: 12px;">
-                <ion-icon name="information-circle"></ion-icon>
+</div>
+@elseif($spj->status == 'disetujui_ppk')
+<div class="panel" style="border: 2px solid #8b5cf6;">
+    <div class="panel-header" style="background-color: #f5f3ff; border-bottom: 1px solid #ddd6fe;">
+        <h2 style="color: #4c1d95; display: flex; align-items: center; gap: 8px;">
+            <ion-icon name="walk-outline"></ion-icon> Konfirmasi dari PPSPM
+        </h2>
+    </div>
+    <div style="padding: 1.5rem;">
+        <p style="color: #5b21b6; margin-top: 0; margin-bottom: 1.5rem;">
+            Berkas ini seharusnya sedang berada di meja PPSPM. Silakan perbarui status di bawah ini berdasarkan hasil dari PPSPM.
+        </p>
+        
+        <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+            @csrf
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                
+                <!-- OPSI SETUJUI PPSPM -->
+                <div style="border: 1px solid #c4b5fd; border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column; background: #fff;">
+                    <h3 style="color: #6d28d9; margin-top: 0; margin-bottom: 1rem;">PPSPM Menyetujui</h3>
+                    <p style="color: #7c3aed; margin-bottom: 1rem; font-size: 0.875rem;">PPSPM telah menandatangani dokumen. SPJ akan diteruskan ke Bendahara untuk pencairan.</p>
+                    
+                    <button type="submit" name="action" value="setujui_ppspm" class="btn-primary" style="background-color: #7c3aed; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <ion-icon name="cash-outline" style="font-size: 1.25rem;"></ion-icon> PPSPM Setuju (Teruskan ke Bendahara)
+                    </button>
+                </div>
+
+                <!-- OPSI TOLAK PPSPM -->
+                <div style="border: 1px solid #fca5a5; border-radius: 0.5rem; padding: 1.5rem; background: #fff;">
+                    <h3 style="color: #b91c1c; margin-top: 0; margin-bottom: 0.5rem;">PPSPM Menolak / Revisi</h3>
+                    <p style="color: #dc2626; margin-bottom: 1rem; font-size: 0.875rem;">PPSPM meminta perbaikan. Berkas dikembalikan ke Teknis.</p>
+                    
+                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #b91c1c;">Catatan Revisi dari PPSPM (Wajib)</label>
+                    <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #fca5a5; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #fef2f2;" placeholder="Tuliskan alasan PPSPM menolak..."></textarea>
+                    
+                    <button type="submit" name="action" value="tolak_ppspm" class="btn-primary" style="background-color: #ef4444; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <ion-icon name="alert-circle-outline" style="font-size: 1.25rem;"></ion-icon> Kembalikan ke Teknis (Revisi PPSPM)
+                    </button>
+                </div>
+                
             </div>
-            <h3 style="color: #0f172a; margin: 0 0 8px 0; font-size: 20px;">Status SPJ Saat Ini: <span style="color: #3b82f6;">{{ strtoupper(str_replace('_', ' ', $spj->status)) }}</span></h3>
-            <p style="color: #64748b; margin: 0; font-size: 14px;">SPJ ini sudah tidak berada dalam antrean verifikasi Anda (Umum).</p>
-        </div>
+            
+            @error('catatan_revisi')
+            <div style="color: #dc2626; font-size: 0.875rem; margin-top: 1rem; text-align: center;">
+                {{ $message }}
+            </div>
+            @enderror
+
+        </form>
+    </div>
+</div>
+@else
+<div class="panel">
+    <div style="padding: 1.5rem; text-align: center; background-color: #f9fafb;">
+        <h3 style="color: #374151; margin: 0;">Status SPJ Saat Ini: <span style="color: #2563eb;">{{ strtoupper(str_replace('_', ' ', $spj->status)) }}</span></h3>
+        <p style="color: #6b7280; margin: 0.5rem 0 0 0;">SPJ ini sudah tidak berada dalam antrean verifikasi Anda atau sedang diproses di tahap selanjutnya.</p>
     </div>
     @endif
 </div>
