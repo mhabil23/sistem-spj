@@ -148,7 +148,17 @@
                 </div>
 
 
-                <form action="#" method="POST">
+                @if ($errors->any())
+                    <div style="background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem; font-size: 0.875rem;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('login') }}" method="POST">
 
                     @csrf
 

@@ -31,16 +31,16 @@
         </button>
 
 
-        <div class="top-user">
+        <a href="{{ route('teknis.profil.index') }}" class="top-user" style="text-decoration: none; color: inherit;">
 
             <div class="top-avatar">
-                T
+                {{ substr(Auth::user()->name ?? 'T', 0, 1) }}
             </div>
 
             <div class="top-user-info">
 
                 <strong>
-                    Pengguna Teknis
+                    {{ Auth::user()->name ?? 'Pengguna Teknis' }}
                 </strong>
 
                 <small>
@@ -49,7 +49,7 @@
 
             </div>
 
-        </div>
+        </a>
 
     </div>
 
