@@ -59,10 +59,8 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
                             <input type="checkbox" id="selectAll" onclick="toggleSelectAll()" style="cursor: pointer;">
                         </th>
                         <th>Tanggal Pengajuan</th>
-                        <th>Nomor SPJ</th>
-                        <th>Nomor SPM</th>
+                        <th>Kegiatan</th>
                         <th>Pengaju</th>
-                        <th>Nilai (Rp)</th>
                         <th>Status Pencairan</th>
                         <th>Aksi</th>
                     </tr>
@@ -74,10 +72,8 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
                         <input type="checkbox" name="spj_ids[]" value="{{ $spj->id }}" class="spj-checkbox" style="cursor: pointer;">
                     </td>
                     <td>{{ $spj->updated_at->format('d M Y') }}</td>
-                    <td><strong>{{ $spj->nomor_spj }}</strong><br><small style="color: #64748b;">{{ Str::limit($spj->kegiatan, 20) }}</small></td>
-                    <td><strong>{{ $spj->nomor_spm ?? '-' }}</strong></td>
+                    <td><strong>{{ $spj->kegiatan }}</strong></td>
                     <td>{{ $spj->user->name ?? 'Teknis' }}</td>
-                    <td>Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                     <td>
                         @php
                             $badgeClass = 'pending';
@@ -104,7 +100,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="8" style="text-align: center; color: #6b7280; padding: 2rem;">Tidak ada dokumen SPJ yang mengantre.</td>
+                    <td colspan="6" style="text-align: center; color: #6b7280; padding: 2rem;">Tidak ada dokumen SPJ yang mengantre.</td>
                 </tr>
                 @endforelse
             </tbody>

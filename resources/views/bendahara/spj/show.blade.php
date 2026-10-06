@@ -11,7 +11,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem;">
     <div>
-        <h1 style="font-size: 1.5rem; color: #111827; margin: 0 0 0.5rem 0;">Pencairan SPJ: {{ $spj->nomor_spj }}</h1>
+        <h1 style="font-size: 1.5rem; color: #111827; margin: 0 0 0.5rem 0;">Pencairan SPJ: {{ Str::limit($spj->kegiatan, 40) }}</h1>
         <p>Diajukan pada {{ $spj->created_at->format('d M Y, H:i') }} oleh <strong>{{ $spj->user->name ?? 'Teknis' }}</strong>.</p>
     </div>
     <div style="display: flex; gap: 10px;">
@@ -21,52 +21,20 @@ $title = 'Detail Pencairan SPJ - Bendahara';
     </div>
 </div>
 
-@if($spj->status == 'disetujui_ppspm')
-<div class="panel" style="margin-bottom: 2rem; background: #f0fdfa; border: 1px solid #5eead4;">
-    <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #5eead4;">
-        <strong style="color: #0f766e; display: flex; align-items: center; gap: 5px; font-size: 1.1rem;">
-            <ion-icon name="document-text-outline"></ion-icon> Surat Perintah Membayar (SPM)
-        </strong>
-    </div>
-    <div style="padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-            <span style="display: block; color: #134e4a; font-size: 0.875rem; margin-bottom: 0.25rem;">Nomor SPM</span>
-            <strong style="font-size: 1.5rem; color: #0d9488;">{{ $spj->nomor_spm ?? 'Belum ada nomor SPM' }}</strong>
-        </div>
-        <div>
-            <span style="display: block; color: #134e4a; font-size: 0.875rem; margin-bottom: 0.25rem;">Waktu Penerbitan SPM</span>
-            <strong style="font-size: 1.125rem; color: #0d9488;">{{ $spj->disetujui_ppspm_at ? \Carbon\Carbon::parse($spj->disetujui_ppspm_at)->format('d M Y, H:i') : '-' }}</strong>
-        </div>
-        @if($spj->catatan_ppspm)
-        <div style="grid-column: span 2;">
-            <span style="display: block; color: #134e4a; font-size: 0.875rem; margin-bottom: 0.25rem;">Catatan PPSPM</span>
-            <p style="color: #134e4a; margin: 0; white-space: pre-line; padding: 1rem; background: #ccfbf1; border-radius: 0.5rem;">{{ $spj->catatan_ppspm }}</p>
-        </div>
-        @endif
-    </div>
-</div>
-@endif
+
 
 <div class="panel" style="margin-bottom: 2rem;">
     <div class="panel-header">
         <h2>Detail Kegiatan & Biaya</h2>
     </div>
     <div style="padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Nomor SPJ</span>
-            <strong style="font-size: 1.125rem; color: #111827;">{{ $spj->nomor_spj }}</strong>
-        </div>
-        <div>
+        <div style="grid-column: span 2;">
             <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Tanggal Kegiatan</span>
             <strong style="font-size: 1.125rem; color: #111827;">{{ $spj->tanggal->format('d F Y') }}</strong>
         </div>
         <div style="grid-column: span 2;">
-            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Nama Kegiatan</span>
+            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Uraian Kegiatan</span>
             <strong style="font-size: 1.125rem; color: #111827;">{{ $spj->kegiatan }}</strong>
-        </div>
-        <div>
-            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Nilai Pencairan (Rupiah)</span>
-            <strong style="font-size: 1.75rem; color: #059669;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</strong>
         </div>
         <div>
             <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Keterangan / Catatan Teknis</span>
