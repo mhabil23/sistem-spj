@@ -16,21 +16,20 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
         }
 
         .custom-table th {
-            padding: 18px 24px;
+            padding: 16px 24px;
             text-align: left;
-            background: var(--bg-card);
-            color: var(--text-muted);
-            font-size: 13px;
-            font-weight: 700;
-            border-bottom: 2px dashed var(--bg-sage-light);
+            background: #ffffff;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0,0,0,0.03);
         }
 
         .custom-table td {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--bg-sage-light);
-            color: var(--text-dark);
-            font-size: 15px;
-            font-weight: 500;
+            padding: 18px 24px;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
+            color: #334155;
+            font-size: 14px;
             vertical-align: middle;
         }
 
@@ -39,7 +38,7 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
         }
 
         .custom-table tbody tr:hover {
-            background-color: var(--bg-cream);
+            background-color: #f8fafc;
         }
 
         .custom-table tbody tr:last-child td {
@@ -47,91 +46,88 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
         }
 
         .dash-panel {
-            background: var(--bg-card);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(174, 193, 166, 0.15);
-            border: none;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0,0,0,0.03);
             overflow: hidden;
         }
 
         .dash-panel-header {
-            padding: 28px;
-            border-bottom: 2px dashed var(--bg-sage-light);
-            background: var(--bg-card);
+            padding: 24px;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
         .dash-panel-header h2 {
-            font-family: 'Fredoka', sans-serif;
-            font-size: 22px;
-            color: var(--text-dark);
+            font-size: 18px;
+            color: #1e293b;
             margin: 0;
             font-weight: 600;
         }
 
         .dash-panel-header p {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin: 6px 0 0 0;
-            font-weight: 500;
+            font-size: 13px;
+            color: #64748b;
+            margin: 4px 0 0 0;
         }
 
         .dash-panel-header a {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--accent-orange);
+            font-size: 14px;
+            font-weight: 500;
+            color: #0b5a93;
             text-decoration: none;
             transition: all 0.2s;
         }
 
         .dash-panel-header a:hover {
-            color: var(--accent-orange-hover);
+            opacity: 0.7;
         }
 
         .stat-card-custom {
-            background: var(--bg-card);
-            border-radius: 28px;
-            padding: 32px 28px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 28px 24px;
             display: flex;
             align-items: center;
-            gap: 24px;
-            box-shadow: 0 8px 32px rgba(174, 193, 166, 0.15);
-            border: none;
+            gap: 20px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0,0,0,0.03);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .stat-card-custom:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 40px rgba(174, 193, 166, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
         }
 
         .stat-icon-custom {
-            width: 56px;
-            height: 56px;
-            border-radius: 18px 8px 18px 8px; /* Organic */
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
+            font-size: 24px;
             flex-shrink: 0;
         }
 
         .stat-info-custom h3 {
-            font-family: 'Fredoka', sans-serif;
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
-            color: var(--text-dark);
+            color: #1e293b;
             margin: 0;
             line-height: 1.1;
         }
 
         .stat-info-custom p {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin: 8px 0 0 0;
-            font-weight: 600;
+            font-size: 13px;
+            color: #64748b;
+            margin: 6px 0 0 0;
+            font-weight: 500;
         }
     </style>
 @endpush
@@ -140,7 +136,7 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
     <!-- STATISTIK -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 32px;">
         <div class="stat-card-custom">
-            <div class="stat-icon-custom" style="background-color: var(--bg-sage); color: var(--text-dark);">
+            <div class="stat-icon-custom" style="background-color: #ebf3fb; color: #0b5a93;">
                 <ion-icon name="documents-outline"></ion-icon>
             </div>
             <div class="stat-info-custom">
@@ -149,7 +145,7 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
             </div>
         </div>
         <div class="stat-card-custom">
-            <div class="stat-icon-custom" style="background-color: var(--bg-sage); color: var(--text-dark);">
+            <div class="stat-icon-custom" style="background-color: #f0fdf4; color: #10b981;">
                 <ion-icon name="checkmark-done-circle-outline"></ion-icon>
             </div>
             <div class="stat-info-custom">
@@ -158,7 +154,7 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
             </div>
         </div>
         <div class="stat-card-custom">
-            <div class="stat-icon-custom" style="background-color: #fee2e2; color: #dc2626;">
+            <div class="stat-icon-custom" style="background-color: #fff4ed; color: #f58220;">
                 <ion-icon name="arrow-undo-outline"></ion-icon>
             </div>
             <div class="stat-info-custom">
@@ -192,27 +188,27 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
                 <tbody>
                     @forelse($antreanSpjs as $spj)
                     <tr>
-                        <td style="color: var(--text-muted);">{{ $spj->updated_at->format('d M Y') }}</td>
+                        <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>
                         <td>
-                            <span class="badge pending" style="font-size: 12px; padding: 6px 14px; background: var(--bg-sage-light); color: var(--text-dark); border-radius: 8px 16px 8px 16px; font-weight: 700;">Menunggu Pemeriksaan</span>
+                            <span class="badge pending" style="font-size: 11px; padding: 6px 12px; background: #fff4ed; color: #c25b0b; border: 1px solid rgba(245,130,32,0.2); border-radius: 6px; font-weight: 500;">Menunggu Pemeriksaan</span>
                         </td>
                         <td>
                             <a href="{{ route('umum.spj.show', $spj->id) }}" 
-                               style="display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 12px; text-decoration: none; color: white; background-color: var(--accent-orange); transition: all 0.2s;" 
+                               style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none; color: #0b5a93; background-color: #ebf3fb; transition: all 0.2s;" 
                                title="Periksa"
-                               onmouseover="this.style.backgroundColor='var(--accent-orange-hover)';" 
-                               onmouseout="this.style.backgroundColor='var(--accent-orange)';">
-                                <ion-icon name="eye-outline" style="font-size: 20px;"></ion-icon>
+                               onmouseover="this.style.backgroundColor='#d4e6f7';" 
+                               onmouseout="this.style.backgroundColor='#ebf3fb';">
+                                <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
                             </a>
                         </td>
                     </tr>
                     @empty
                     <tr>
                         <td colspan="5">
-                            <div style="text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 15px; font-weight: 500;">
-                                <ion-icon name="checkmark-done-circle-outline" style="font-size: 56px; color: var(--bg-sage); margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
+                            <div style="text-align: center; padding: 48px 24px; color: #64748b; font-size: 14px;">
+                                <ion-icon name="checkmark-done-circle-outline" style="font-size: 48px; color: #10b981; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
                                 Tidak ada antrean SPJ saat ini. Semua sudah diperiksa!
                             </div>
                         </td>
@@ -225,15 +221,15 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
 </div>
 
 <!-- ALUR TIMELINE -->
-<section class="dash-panel" style="animation: slideUp 0.7s ease-out forwards; animation-delay: 0.3s; margin-top: 2rem; background: var(--bg-sage); box-shadow: 0 12px 40px rgba(174, 193, 166, 0.4);">
+<section class="panel" style="animation: slideUp 0.7s ease-out forwards; animation-delay: 0.3s; margin-top: 2rem;">
     @if(isset($recentSpjs) && $recentSpjs->isNotEmpty())
     @php $topSpj = $recentSpjs->first(); @endphp
-    <div class="dash-panel-header" style="background: var(--bg-sage); border-bottom: 2px dashed rgba(255,255,255,0.3);">
+    <div class="panel-header">
         <div>
             <h2 title="{{ $topSpj->kegiatan }}">Alur Kegiatan: {{ Str::limit($topSpj->kegiatan, 40) }}</h2>
-            <p style="color: var(--text-dark);">Posisi dokumen terakhir yang Anda proses</p>
+            <p>Posisi dokumen terakhir yang Anda proses</p>
         </div>
-        <a href="{{ route('umum.spj.show', $topSpj->id) }}" style="color: var(--accent-orange); background: white; padding: 8px 16px; border-radius: 999px;">Lihat detail &rarr;</a>
+        <a href="{{ route('umum.spj.show', $topSpj->id) }}" style="color: var(--primary); font-size: 0.875rem; font-weight: 600; text-decoration: none;">Lihat detail &rarr;</a>
     </div>
 
     <div style="overflow-x: auto; padding: 3rem 2rem;">
@@ -247,59 +243,59 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
             @endphp
             
             <!-- LINE BACKGROUND -->
-            <div style="position: absolute; top: 22px; left: 40px; right: 40px; height: 4px; background: rgba(255,255,255,0.4); z-index: 1; border-radius: 4px;"></div>
+            <div style="position: absolute; top: 20px; left: 40px; right: 40px; height: 2px; background: #e2e8f0; z-index: 1; border-radius: 4px;"></div>
             
             <!-- TEKNIS -->
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--text-dark); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 8px var(--bg-sage);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.05);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 </div>
-                <strong style="font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 600; color: var(--text-dark);">Teknis</strong>
+                <strong style="font-size: 13px; font-weight: 500; color: #1e293b;">Teknis</strong>
             </div>
 
             <!-- UMUM -->
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; background: {{ $isPpk ? 'var(--text-dark)' : ($isUmum ? 'var(--accent-orange)' : 'white') }}; color: {{ $isPpk || $isUmum ? 'white' : 'var(--bg-sage)' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 8px var(--bg-sage);">
-                    @if($isPpk) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isPpk ? '#10b981' : ($isUmum ? '#0b5a93' : '#f1f5f9') }}; color: {{ $isPpk || $isUmum ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.05);">
+                    @if($isPpk) <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     @else 2 @endif
                 </div>
-                <strong style="font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 600; color: {{ $isUmum ? 'var(--text-dark)' : 'rgba(44,63,45,0.5)' }};">Umum</strong>
+                <strong style="font-size: 13px; font-weight: 500; color: {{ $isUmum ? '#1e293b' : '#94a3b8' }};">Umum</strong>
             </div>
 
             <!-- PPK -->
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; background: {{ $isBendahara ? 'var(--text-dark)' : ($isPpk ? 'var(--accent-orange)' : 'white') }}; color: {{ $isBendahara || $isPpk ? 'white' : 'var(--bg-sage)' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 8px var(--bg-sage);">
-                    @if($isBendahara) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isBendahara ? '#10b981' : ($isPpk ? '#0b5a93' : '#f1f5f9') }}; color: {{ $isBendahara || $isPpk ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.05);">
+                    @if($isBendahara) <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     @else 3 @endif
                 </div>
-                <strong style="font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 600; color: {{ $isPpk ? 'var(--text-dark)' : 'rgba(44,63,45,0.5)' }};">PPK</strong>
+                <strong style="font-size: 13px; font-weight: 500; color: {{ $isPpk ? '#1e293b' : '#94a3b8' }};">PPK</strong>
             </div>
 
             <!-- BENDAHARA -->
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; background: {{ $isDone ? 'var(--text-dark)' : ($isBendahara ? 'var(--accent-orange)' : 'white') }}; color: {{ $isDone || $isBendahara ? 'white' : 'var(--bg-sage)' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 8px var(--bg-sage);">
-                    @if($isDone) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isDone ? '#10b981' : ($isBendahara ? '#0b5a93' : '#f1f5f9') }}; color: {{ $isDone || $isBendahara ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.05);">
+                    @if($isDone) <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     @else 4 @endif
                 </div>
-                <strong style="font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 600; color: {{ $isBendahara ? 'var(--text-dark)' : 'rgba(44,63,45,0.5)' }};">Bendahara</strong>
+                <strong style="font-size: 13px; font-weight: 500; color: {{ $isBendahara ? '#1e293b' : '#94a3b8' }};">Bendahara</strong>
             </div>
             
             <!-- ARSIP / SELESAI -->
             <div style="position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0.75rem;">
-                <div style="width: 48px; height: 48px; border-radius: 50%; background: {{ $isDone ? 'var(--text-dark)' : 'white' }}; color: {{ $isDone ? 'white' : 'var(--bg-sage)' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 8px var(--bg-sage);">
-                    @if($isDone) <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: {{ $isDone ? '#10b981' : '#f1f5f9' }}; color: {{ $isDone ? 'white' : '#94a3b8' }}; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 0 0 6px white, 0 4px 10px rgba(0,0,0,0.05);">
+                    @if($isDone) <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     @else 5 @endif
                 </div>
-                <strong style="font-family: 'Fredoka', sans-serif; font-size: 15px; font-weight: 600; color: {{ $isDone ? 'var(--text-dark)' : 'rgba(44,63,45,0.5)' }};">Arsip</strong>
+                <strong style="font-size: 13px; font-weight: 500; color: {{ $isDone ? '#1e293b' : '#94a3b8' }};">Arsip</strong>
             </div>
 
         </div>
     </div>
     @else
-    <div class="dash-panel-header" style="background: var(--bg-sage); border-bottom: 2px dashed rgba(255,255,255,0.3);">
+    <div class="panel-header">
         <div>
-            <h2 style="font-family: 'Fredoka', sans-serif;">Alur SPJ</h2>
-            <p style="color: var(--text-dark);">Belum ada SPJ untuk ditampilkan alurnya.</p>
+            <h2>Alur SPJ</h2>
+            <p>Belum ada SPJ untuk ditampilkan alurnya.</p>
         </div>
     </div>
     @endif
