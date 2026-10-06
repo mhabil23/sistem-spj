@@ -57,7 +57,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 <div style="padding: 32px 40px; box-sizing: border-box; max-width: 100%;">
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
         <div>
-            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Verifikasi SPJ: {{ $spj->nomor_spj }}</h2>
+            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Verifikasi SPJ: {{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</h2>
             <p style="color: #64748b; font-size: 14px; margin: 0;">Diajukan pada {{ $spj->created_at->format('d M Y, H:i') }} oleh <strong>{{ $spj->user->name ?? 'Teknis' }}</strong>.</p>
         </div>
         <div style="display: flex; gap: 12px;">
@@ -113,21 +113,9 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             <h2>Detail Kegiatan & Biaya</h2>
         </div>
         <div class="detail-grid">
-            <div class="detail-item">
-                <span>Nomor SPJ</span>
-                <strong>{{ $spj->nomor_spj }}</strong>
-            </div>
-            <div class="detail-item">
-                <span>Tanggal Kegiatan</span>
-                <strong>{{ $spj->tanggal->format('d F Y') }}</strong>
-            </div>
             <div class="detail-item" style="grid-column: span 2;">
                 <span>Nama Kegiatan</span>
                 <strong style="line-height: 1.5;">{{ $spj->kegiatan }}</strong>
-            </div>
-            <div class="detail-item">
-                <span>Nilai Pengajuan</span>
-                <strong style="font-size: 24px; color: #10b981;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</strong>
             </div>
             <div class="detail-item">
                 <span>Keterangan / Catatan Teknis</span>
@@ -223,46 +211,52 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
     </div>
 </div>
 @elseif($spj->status == 'disetujui_ppk')
-<div class="panel" style="border: 2px solid #8b5cf6;">
-    <div class="panel-header" style="background-color: #f5f3ff; border-bottom: 1px solid #ddd6fe;">
-        <h2 style="color: #4c1d95; display: flex; align-items: center; gap: 8px;">
-            <ion-icon name="walk-outline"></ion-icon> Konfirmasi dari PPSPM
-        </h2>
-    </div>
-    <div style="padding: 1.5rem;">
-        <p style="color: #5b21b6; margin-top: 0; margin-bottom: 1.5rem;">
-            Berkas ini seharusnya sedang berada di meja PPSPM. Silakan perbarui status di bawah ini berdasarkan hasil dari PPSPM.
-        </p>
-        
-        <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
-            @csrf
+    <div class="show-panel" style="border: 1px solid #8b5cf6;">
+        <div class="show-panel-header" style="background-color: #f5f3ff; border-bottom: 1px solid #ddd6fe;">
+            <h2 style="color: #4c1d95; display: flex; align-items: center; gap: 8px;">
+                <ion-icon name="walk-outline" style="font-size: 20px;"></ion-icon> Konfirmasi dari PPSPM
+            </h2>
+        </div>
+        <div style="padding: 24px;">
+            <p style="color: #5b21b6; margin-top: 0; margin-bottom: 24px; font-size: 14px;">
+                Berkas ini seharusnya sedang berada di meja PPSPM. Silakan perbarui status di bawah ini berdasarkan hasil dari PPSPM.
+            </p>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+                @csrf
                 
-                <!-- OPSI SETUJUI PPSPM -->
-                <div style="border: 1px solid #c4b5fd; border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column; background: #fff;">
-                    <h3 style="color: #6d28d9; margin-top: 0; margin-bottom: 1rem;">PPSPM Menyetujui</h3>
-                    <p style="color: #7c3aed; margin-bottom: 1rem; font-size: 0.875rem;">PPSPM telah menandatangani dokumen. SPJ akan diteruskan ke Bendahara untuk pencairan.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                     
-                    <button type="submit" name="action" value="setujui_ppspm" class="btn-primary" style="background-color: #7c3aed; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <ion-icon name="cash-outline" style="font-size: 1.25rem;"></ion-icon> PPSPM Setuju (Teruskan ke Bendahara)
-                    </button>
-                </div>
+                    <!-- OPSI SETUJUI PPSPM -->
+                    <div style="border: 1px solid #c4b5fd; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fff; box-shadow: 0 4px 10px rgba(139,92,246,0.05);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <ion-icon name="checkmark-circle" style="color: #8b5cf6; font-size: 24px;"></ion-icon>
+                            <h3 style="color: #6d28d9; margin: 0; font-size: 18px;">PPSPM Menyetujui</h3>
+                        </div>
+                        <p style="color: #7c3aed; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">PPSPM telah menandatangani dokumen. SPJ akan diteruskan ke Bendahara untuk pencairan.</p>
+                        
+                        <button type="submit" name="action" value="setujui_ppspm" style="background-color: #7c3aed; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(124,58,237,0.25);" onmouseover="this.style.backgroundColor='#6d28d9'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#7c3aed'; this.style.transform='translateY(0)';">
+                            <ion-icon name="cash-outline" style="font-size: 18px;"></ion-icon> Teruskan ke Bendahara
+                        </button>
+                    </div>
 
-                <!-- OPSI TOLAK PPSPM -->
-                <div style="border: 1px solid #fca5a5; border-radius: 0.5rem; padding: 1.5rem; background: #fff;">
-                    <h3 style="color: #b91c1c; margin-top: 0; margin-bottom: 0.5rem;">PPSPM Menolak / Revisi</h3>
-                    <p style="color: #dc2626; margin-bottom: 1rem; font-size: 0.875rem;">PPSPM meminta perbaikan. Berkas dikembalikan ke Teknis.</p>
+                    <!-- OPSI TOLAK PPSPM -->
+                    <div style="border: 1px solid #fca5a5; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
+                            <h3 style="color: #b91c1c; margin: 0; font-size: 18px;">PPSPM Menolak / Revisi</h3>
+                        </div>
+                        <p style="color: #dc2626; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">PPSPM meminta perbaikan. Berkas dikembalikan ke Teknis.</p>
+                        
+                        <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #b91c1c;">Catatan Revisi PPSPM (Wajib)</label>
+                        <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan alasan penolakan PPSPM..."></textarea>
+                        
+                        <button type="submit" name="action" value="tolak_ppspm" style="background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
+                            <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon> Kembalikan ke Teknis
+                        </button>
+                    </div>
                     
-                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #b91c1c;">Catatan Revisi dari PPSPM (Wajib)</label>
-                    <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #fca5a5; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #fef2f2;" placeholder="Tuliskan alasan PPSPM menolak..."></textarea>
-                    
-                    <button type="submit" name="action" value="tolak_ppspm" class="btn-primary" style="background-color: #ef4444; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <ion-icon name="alert-circle-outline" style="font-size: 1.25rem;"></ion-icon> Kembalikan ke Teknis (Revisi PPSPM)
-                    </button>
                 </div>
-                
-            </div>
             
             @error('catatan_revisi')
             <div style="color: #dc2626; font-size: 0.875rem; margin-top: 1rem; text-align: center;">

@@ -193,10 +193,8 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                 <thead>
                     <tr>
                         <th>Tanggal Pengajuan</th>
-                        <th>Nomor SPJ</th>
                         <th>Pengaju</th>
                         <th>Kegiatan</th>
-                        <th>Nilai (Rp)</th>
                         <th>Status Umum</th>
                         <th>Aksi</th>
                     </tr>
@@ -205,18 +203,17 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                     @forelse($spjs as $spj)
                     <tr>
                         <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
-                        <td><strong style="color: #0f172a;">{{ $spj->nomor_spj }}</strong></td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>
-                        <td style="font-weight: 500;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                         <td>
                             @php
                                 $badgeClass = 'pending';
                                 $statusText = 'Menunggu';
-                            } elseif($spj->status == 'revisi_umum') {
-                                $badgeClass = 'returned';
-                                $statusText = 'Dikembalikan';
-                            } elseif($spj->status == 'disetujui_umum') {
+                                
+                                if($spj->status == 'revisi_umum') {
+                                    $badgeClass = 'returned';
+                                    $statusText = 'Dikembalikan';
+                                } elseif($spj->status == 'disetujui_umum') {
                                 $badgeClass = 'completed';
                                 $statusText = 'Di Meja PPK';
                             } elseif($spj->status == 'disetujui_ppk') {
@@ -237,7 +234,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" style="text-align: center; color: #6b7280; padding: 2rem;">Tidak ada data SPJ untuk ditampilkan.</td>
+                    <td colspan="5" style="text-align: center; color: #6b7280; padding: 2rem;">Tidak ada data SPJ untuk ditampilkan.</td>
                 </tr>
                 @endforelse
             </tbody>
