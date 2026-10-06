@@ -49,11 +49,9 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
             <thead>
                 <tr>
                     <th>Tanggal Pengajuan</th>
-                    <th>Nomor SPJ</th>
                     <th>Pengaju</th>
                     <th>Kegiatan</th>
-                    <th>Nilai (Rp)</th>
-                    <th>Status Umum</th>
+                    <th>Status Berkas</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -61,10 +59,8 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                 @forelse($spjs as $spj)
                 <tr>
                     <td>{{ $spj->updated_at->format('d M Y') }}</td>
-                    <td><strong>{{ $spj->nomor_spj }}</strong></td>
                     <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                     <td>{{ $spj->kegiatan }}</td>
-                    <td>Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                     <td>
                         @php
                             $badgeClass = 'pending';
@@ -76,16 +72,19 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                             } elseif($spj->status == 'revisi_umum') {
                                 $badgeClass = 'returned';
                                 $statusText = 'Dikembalikan';
-                            } elseif(in_array($spj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai'])) {
+                            } elseif($spj->status == 'disetujui_umum') {
                                 $badgeClass = 'completed';
-                                $statusText = 'Disetujui';
+                                $statusText = 'Di Meja PPK';
+                            } elseif(in_array($spj->status, ['disetujui_ppk', 'disetujui_ppspm', 'selesai'])) {
+                                $badgeClass = 'completed';
+                                $statusText = 'Disetujui PPK';
                             }
                         @endphp
                         <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
                     </td>
                     <td>
                         <a href="{{ route('umum.spj.show', $spj->id) }}" class="btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem; text-decoration: none; {{ $spj->status == 'diajukan' ? '' : 'background-color: #6b7280;' }}">
-                            {{ $spj->status == 'diajukan' ? 'Periksa' : 'Detail' }}
+                            {{ $spj->status == 'diajukan' ? 'Periksa' : 'Update Status' }}
                         </a>
                     </td>
                 </tr>
