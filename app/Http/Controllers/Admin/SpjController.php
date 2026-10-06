@@ -63,6 +63,16 @@ class SpjController extends Controller
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'status' => $request->status,
+            'kel_daftar_penerima' => $request->has('kel_daftar_penerima'),
+            'kel_bast' => $request->has('kel_bast'),
+            'kel_sk' => $request->has('kel_sk'),
+            'kel_kak' => $request->has('kel_kak'),
+            'kel_form_permintaan' => $request->has('kel_form_permintaan'),
+            'kel_spk' => $request->has('kel_spk'),
+            'kel_surat_tugas' => $request->has('kel_surat_tugas'),
+            'kel_kesesuaian_mrk' => $request->has('kel_kesesuaian_mrk'),
+            'kel_cms' => $request->has('kel_cms'),
+            'kel_cek_sbks' => $request->has('kel_cek_sbks'),
         ]);
 
         return redirect()
@@ -83,6 +93,17 @@ class SpjController extends Controller
             'keterangan' => 'nullable|string',
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
+
+        $validated['kel_daftar_penerima'] = $request->has('kel_daftar_penerima');
+        $validated['kel_bast'] = $request->has('kel_bast');
+        $validated['kel_sk'] = $request->has('kel_sk');
+        $validated['kel_kak'] = $request->has('kel_kak');
+        $validated['kel_form_permintaan'] = $request->has('kel_form_permintaan');
+        $validated['kel_spk'] = $request->has('kel_spk');
+        $validated['kel_surat_tugas'] = $request->has('kel_surat_tugas');
+        $validated['kel_kesesuaian_mrk'] = $request->has('kel_kesesuaian_mrk');
+        $validated['kel_cms'] = $request->has('kel_cms');
+        $validated['kel_cek_sbks'] = $request->has('kel_cek_sbks');
 
         $spj->update($validated);
 
