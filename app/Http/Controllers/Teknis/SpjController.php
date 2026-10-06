@@ -24,22 +24,31 @@ class SpjController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nomor_spj' => 'required|string|max:100|unique:spjs,nomor_spj',
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'nilai' => 'required|numeric|min:0',
-            'keterangan' => 'nullable|string',
             'status' => 'required|in:draft,diajukan'
         ]);
 
+        $dokumenKelengkapan = [];
+        if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
+            foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
+                $isChecked = $request->has("berkas.{$index}");
+                $dokumenKelengkapan[] = [
+                    'nama' => $namaDokumen,
+                    'disiapkan' => $isChecked
+                ];
+            }
+        }
+
         Spj::create([
             'user_id' => Auth::id() ?? 1,
-            'nomor_spj' => $request->nomor_spj,
+            'nomor_spj' => 'SPJ-' . date('YmdHis') . '-' . rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
-            'nilai' => $request->nilai,
-            'keterangan' => $request->keterangan,
+            'nilai' => 0,
+            'keterangan' => null,
             'status' => $request->status,
+            'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' ? now() : null,
         ]);
 
@@ -84,21 +93,28 @@ class SpjController extends Controller
         }
 
         $request->validate([
-            'nomor_spj' => 'required|string|max:100|unique:spjs,nomor_spj,'.$spj->id,
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'nilai' => 'required|numeric|min:0',
-            'keterangan' => 'nullable|string',
             'status' => 'required|in:draft,diajukan'
         ]);
 
+        $dokumenKelengkapan = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
+        if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
+            $dokumenKelengkapan = [];
+            foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
+                $isChecked = $request->has("berkas.{$index}");
+                $dokumenKelengkapan[] = [
+                    'nama' => $namaDokumen,
+                    'disiapkan' => $isChecked
+                ];
+            }
+        }
+
         $spj->update([
-            'nomor_spj' => $request->nomor_spj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
-            'nilai' => $request->nilai,
-            'keterangan' => $request->keterangan,
             'status' => $request->status,
+            'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
         ]);
 

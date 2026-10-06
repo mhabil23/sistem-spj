@@ -10,7 +10,7 @@ class SpjController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Spj::with('user')->where('status', 'diajukan');
+        $query = Spj::with('user')->whereIn('status', ['diajukan', 'disetujui_umum']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -48,30 +48,52 @@ class SpjController extends Controller
     {
         $spj = Spj::findOrFail($id);
 
-        if ($spj->status !== 'diajukan') {
-            return redirect()->route('umum.spj.index')->with('error', 'SPJ ini sudah tidak berada di antrean pemeriksaan Umum.');
+        if (!in_array($spj->status, ['diajukan', 'disetujui_umum'])) {
+            return redirect()->route('umum.spj.index')->with('error', 'SPJ ini sudah tidak berada di antrean pemeriksaan Anda.');
         }
 
-        $request->validate([
-            'action' => 'required|in:setujui,tolak',
-            'catatan_revisi' => 'required_if:action,tolak|nullable|string',
-            'catatan_internal' => 'nullable|string'
-        ]);
+        if ($spj->status === 'diajukan') {
+            $request->validate([
+                'action' => 'required|in:setujui,tolak',
+                'catatan_revisi' => 'required_if:action,tolak|nullable|string',
+                'catatan_internal' => 'nullable|string'
+            ]);
 
-        if ($request->action === 'setujui') {
-            $spj->update([
-                'status' => 'disetujui_umum',
-                'catatan_revisi' => null,
-                'catatan_internal' => $request->catatan_internal,
-                'disetujui_umum_at' => now(),
+            if ($request->action === 'setujui') {
+                $spj->update([
+                    'status' => 'disetujui_umum',
+                    'catatan_revisi' => null,
+                    'catatan_internal' => $request->catatan_internal,
+                    'disetujui_umum_at' => now(),
+                ]);
+                $msg = 'SPJ diverifikasi Umum. Harap bawa dokumen fisik ke PPK untuk ditandatangani.';
+            } else {
+                $spj->update([
+                    'status' => 'revisi_umum',
+                    'catatan_revisi' => $request->catatan_revisi
+                ]);
+                $msg = 'SPJ dikembalikan ke Teknis untuk direvisi.';
+            }
+        } elseif ($spj->status === 'disetujui_umum') {
+            $request->validate([
+                'action' => 'required|in:setujui_ppk,tolak_ppk',
+                'catatan_revisi' => 'required_if:action,tolak_ppk|nullable|string'
             ]);
-            $msg = 'SPJ berhasil disetujui dan diteruskan ke PPK.';
-        } else {
-            $spj->update([
-                'status' => 'revisi_umum',
-                'catatan_revisi' => $request->catatan_revisi
-            ]);
-            $msg = 'SPJ dikembalikan ke Teknis untuk direvisi.';
+
+            if ($request->action === 'setujui_ppk') {
+                $spj->update([
+                    'status' => 'disetujui_ppk',
+                    'catatan_revisi' => null,
+                    'disetujui_ppk_at' => now(),
+                ]);
+                $msg = 'SPJ telah ditandatangani PPK dan diteruskan ke PPSPM.';
+            } else {
+                $spj->update([
+                    'status' => 'revisi_ppk',
+                    'catatan_revisi' => $request->catatan_revisi
+                ]);
+                $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPK.';
+            }
         }
 
         return redirect()->route('umum.spj.index')->with('success', $msg);

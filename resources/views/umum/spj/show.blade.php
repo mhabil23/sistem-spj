@@ -13,7 +13,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 
 <div class="page-heading">
     <div>
-        <h2>Verifikasi SPJ: {{ $spj->nomor_spj }}</h2>
+        <h2>Verifikasi SPJ: {{ Str::limit($spj->kegiatan, 40) }}</h2>
         <p>Diajukan pada {{ $spj->created_at->format('d M Y, H:i') }} oleh <strong>{{ $spj->user->name ?? 'Teknis' }}</strong>.</p>
     </div>
     <div style="display: flex; gap: 10px;">
@@ -69,21 +69,13 @@ $waktuMulai = $spj->diajukan_at ?? $spj->created_at;
         <h2>Detail Kegiatan & Biaya</h2>
     </div>
     <div style="padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div>
-            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Nomor SPJ</span>
-            <strong style="font-size: 1.125rem; color: #111827;">{{ $spj->nomor_spj }}</strong>
-        </div>
-        <div>
+        <div style="grid-column: span 2;">
             <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Tanggal Kegiatan</span>
             <strong style="font-size: 1.125rem; color: #111827;">{{ $spj->tanggal->format('d F Y') }}</strong>
         </div>
         <div style="grid-column: span 2;">
-            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Nama Kegiatan</span>
+            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Uraian Kegiatan</span>
             <strong style="font-size: 1.125rem; color: #111827;">{{ $spj->kegiatan }}</strong>
-        </div>
-        <div>
-            <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Nilai Pengajuan</span>
-            <strong style="font-size: 1.5rem; color: #059669;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</strong>
         </div>
         <div>
             <span style="display: block; color: #6b7280; font-size: 0.875rem; margin-bottom: 0.25rem;">Keterangan / Catatan Teknis</span>
@@ -124,7 +116,7 @@ $waktuMulai = $spj->diajukan_at ?? $spj->created_at;
 @if($spj->status == 'diajukan')
 <div class="panel">
     <div class="panel-header" style="background-color: #f3f4f6;">
-        <h2>Aksi Verifikasi</h2>
+        <h2>Aksi Verifikasi Umum</h2>
     </div>
     <div style="padding: 1.5rem;">
         <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
@@ -134,27 +126,79 @@ $waktuMulai = $spj->diajukan_at ?? $spj->created_at;
                 
                 <!-- OPSI SETUJUI -->
                 <div style="border: 2px solid #10b981; border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column;">
-                    <h3 style="color: #065f46; margin-top: 0; margin-bottom: 1rem;">Opsi 1: Setujui SPJ</h3>
-                    <p style="color: #047857; margin-bottom: 1rem; font-size: 0.875rem;">Dokumen lengkap dan benar. Teruskan pengajuan ini ke tahap persetujuan PPK.</p>
+                    <h3 style="color: #065f46; margin-top: 0; margin-bottom: 1rem;">Opsi 1: Lolos Verifikasi Umum</h3>
+                    <p style="color: #047857; margin-bottom: 1rem; font-size: 0.875rem;">Dokumen lengkap secara fisik. Ubah status agar Anda dapat membawa berkas ini ke meja PPK.</p>
                     
-                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #065f46;">Catatan Internal untuk PPK (Opsional)</label>
-                    <textarea name="catatan_internal" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid #6ee7b7; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #ecfdf5;" placeholder="Cth: Dokumen asli sudah dicek..."></textarea>
+                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #065f46;">Catatan Internal (Opsional)</label>
+                    <textarea name="catatan_internal" rows="2" style="width: 100%; padding: 0.75rem; border: 1px solid #6ee7b7; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #ecfdf5;" placeholder="Cth: Dokumen fisik sudah saya terima..."></textarea>
                     
                     <button type="submit" name="action" value="setujui" class="btn-primary" style="background-color: #10b981; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <ion-icon name="checkmark-circle-outline" style="font-size: 1.25rem;"></ion-icon> Setujui & Teruskan ke PPK
+                        <ion-icon name="checkmark-circle-outline" style="font-size: 1.25rem;"></ion-icon> Berkas Lengkap, Siap ke PPK
                     </button>
                 </div>
 
                 <!-- OPSI TOLAK -->
                 <div style="border: 2px solid #ef4444; border-radius: 0.5rem; padding: 1.5rem;">
                     <h3 style="color: #991b1b; margin-top: 0; margin-bottom: 0.5rem;">Opsi 2: Kembalikan (Revisi)</h3>
-                    <p style="color: #7f1d1d; margin-bottom: 1rem; font-size: 0.875rem;">Ada kesalahan atau dokumen kurang. SPJ akan dikembalikan ke staf Teknis untuk diperbaiki.</p>
+                    <p style="color: #7f1d1d; margin-bottom: 1rem; font-size: 0.875rem;">Ada kekurangan dokumen. SPJ dikembalikan ke Teknis.</p>
                     
-                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #991b1b;">Catatan Kesalahan (Wajib jika menolak)</label>
-                    <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #fca5a5; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #fef2f2;" placeholder="Cth: Dokumen kuitansi belum ditandatangani..."></textarea>
+                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #991b1b;">Catatan Kekurangan (Wajib)</label>
+                    <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #fca5a5; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #fef2f2;" placeholder="Cth: Bukti kuitansi kurang..."></textarea>
                     
                     <button type="submit" name="action" value="tolak" class="btn-primary" style="background-color: #ef4444; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                         <ion-icon name="close-circle-outline" style="font-size: 1.25rem;"></ion-icon> Kembalikan ke Teknis
+                    </button>
+                </div>
+                
+            </div>
+            
+            @error('catatan_revisi')
+            <div style="color: #dc2626; font-size: 0.875rem; margin-top: 1rem; text-align: center;">
+                {{ $message }}
+            </div>
+            @enderror
+
+        </form>
+    </div>
+</div>
+@elseif($spj->status == 'disetujui_umum')
+<div class="panel" style="border: 2px solid #3b82f6;">
+    <div class="panel-header" style="background-color: #eff6ff; border-bottom: 1px solid #bfdbfe;">
+        <h2 style="color: #1e3a8a; display: flex; align-items: center; gap: 8px;">
+            <ion-icon name="walk-outline"></ion-icon> Konfirmasi dari PPK
+        </h2>
+    </div>
+    <div style="padding: 1.5rem;">
+        <p style="color: #1e40af; margin-top: 0; margin-bottom: 1.5rem;">
+            Berkas ini seharusnya sedang berada di meja PPK atau sedang Anda mintakan tanda tangan PPK. 
+            Silakan perbarui status di bawah ini berdasarkan hasil dari PPK.
+        </p>
+        
+        <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+            @csrf
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                
+                <!-- OPSI SETUJUI PPK -->
+                <div style="border: 1px solid #93c5fd; border-radius: 0.5rem; padding: 1.5rem; display: flex; flex-direction: column; background: #fff;">
+                    <h3 style="color: #1d4ed8; margin-top: 0; margin-bottom: 1rem;">PPK Menyetujui</h3>
+                    <p style="color: #2563eb; margin-bottom: 1rem; font-size: 0.875rem;">PPK telah menandatangani lembar checklist. SPJ akan diteruskan ke PPSPM.</p>
+                    
+                    <button type="submit" name="action" value="setujui_ppk" class="btn-primary" style="background-color: #2563eb; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; margin-top: auto; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <ion-icon name="checkmark-done-outline" style="font-size: 1.25rem;"></ion-icon> PPK Setuju (Teruskan ke PPSPM)
+                    </button>
+                </div>
+
+                <!-- OPSI TOLAK PPK -->
+                <div style="border: 1px solid #fca5a5; border-radius: 0.5rem; padding: 1.5rem; background: #fff;">
+                    <h3 style="color: #b91c1c; margin-top: 0; margin-bottom: 0.5rem;">PPK Menolak / Revisi</h3>
+                    <p style="color: #dc2626; margin-bottom: 1rem; font-size: 0.875rem;">PPK meminta perbaikan. Berkas fisik Anda bawa kembali, dan sistem akan mengembalikan ke Teknis.</p>
+                    
+                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #b91c1c;">Catatan Revisi dari PPK (Wajib)</label>
+                    <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 0.75rem; border: 1px solid #fca5a5; border-radius: 0.375rem; outline: none; margin-bottom: 1rem; background-color: #fef2f2;" placeholder="Tuliskan alasan PPK menolak..."></textarea>
+                    
+                    <button type="submit" name="action" value="tolak_ppk" class="btn-primary" style="background-color: #ef4444; width: 100%; font-size: 1rem; padding: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <ion-icon name="alert-circle-outline" style="font-size: 1.25rem;"></ion-icon> Kembalikan ke Teknis (Revisi PPK)
                     </button>
                 </div>
                 
@@ -173,7 +217,7 @@ $waktuMulai = $spj->diajukan_at ?? $spj->created_at;
 <div class="panel">
     <div style="padding: 1.5rem; text-align: center; background-color: #f9fafb;">
         <h3 style="color: #374151; margin: 0;">Status SPJ Saat Ini: <span style="color: #2563eb;">{{ strtoupper(str_replace('_', ' ', $spj->status)) }}</span></h3>
-        <p style="color: #6b7280; margin: 0.5rem 0 0 0;">SPJ ini sudah tidak berada dalam antrean verifikasi Anda.</p>
+        <p style="color: #6b7280; margin: 0.5rem 0 0 0;">SPJ ini sudah tidak berada dalam antrean verifikasi Anda atau sedang diproses di tahap selanjutnya.</p>
     </div>
 </div>
 @endif
