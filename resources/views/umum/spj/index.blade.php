@@ -213,31 +213,40 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                             @php
                                 $badgeClass = 'pending';
                                 $statusText = 'Menunggu';
-                            } elseif($spj->status == 'revisi_umum') {
-                                $badgeClass = 'returned';
-                                $statusText = 'Dikembalikan';
-                            } elseif($spj->status == 'disetujui_umum') {
-                                $badgeClass = 'completed';
-                                $statusText = 'Di Meja PPK';
-                            } elseif($spj->status == 'disetujui_ppk') {
-                                $badgeClass = 'completed';
-                                $statusText = 'Di Meja PPSPM';
-                            } elseif(in_array($spj->status, ['disetujui_ppspm', 'selesai'])) {
-                                $badgeClass = 'completed';
-                                $statusText = 'Diteruskan ke Bendahara';
-                            }
-                        @endphp
-                        <span class="badge {{ $badgeClass }}">{{ $statusText }}</span>
-                    </td>
-                    <td>
-                        <a href="{{ route('umum.spj.show', $spj->id) }}" class="btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem; text-decoration: none; {{ $spj->status == 'diajukan' ? '' : 'background-color: #6b7280;' }}">
-                            {{ $spj->status == 'diajukan' ? 'Periksa' : 'Update Status' }}
-                        </a>
-                    </td>
-                </tr>
+                                
+                                if($spj->status == 'diajukan') {
+                                    $badgeClass = 'pending';
+                                    $statusText = 'Menunggu';
+                                } elseif($spj->status == 'revisi_umum') {
+                                    $badgeClass = 'returned';
+                                    $statusText = 'Dikembalikan';
+                                } elseif(in_array($spj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai'])) {
+                                    $badgeClass = 'completed';
+                                    $statusText = 'Disetujui';
+                                }
+                            @endphp
+                            <span class="badge {{ $badgeClass }}" style="font-size: 10px; padding: 6px 12px;">{{ $statusText }}</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <a href="{{ route('umum.spj.show', $spj->id) }}" 
+                                   style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none; color: white; transition: all 0.2s; {{ $spj->status == 'diajukan' ? 'background-color: #10b981; box-shadow: 0 2px 4px rgba(16,185,129,0.25);' : 'background-color: #94a3b8;' }}" 
+                                   title="{{ $spj->status == 'diajukan' ? 'Periksa' : 'Detail' }}"
+                                   onmouseover="this.style.transform='translateY(-2px)';" 
+                                   onmouseout="this.style.transform='translateY(0)';">
+                                    <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                 @empty
                 <tr>
-                    <td colspan="7" style="text-align: center; color: #6b7280; padding: 2rem;">Tidak ada data SPJ untuk ditampilkan.</td>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <ion-icon name="folder-open-outline" style="font-size: 48px; color: #cbd5e1; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
+                            Tidak ada data SPJ untuk ditampilkan.
+                        </div>
+                    </td>
                 </tr>
                 @endforelse
             </tbody>
