@@ -34,7 +34,7 @@
 
             <div>
                 <span>Total Proses</span>
-                <strong>128</strong>
+                <strong>{{ $totalRiwayat }}</strong>
                 <small>Seluruh proses SPJ</small>
             </div>
 
@@ -49,7 +49,7 @@
 
             <div>
                 <span>Sedang Diproses</span>
-                <strong>18</strong>
+                <strong>{{ $diproses }}</strong>
                 <small>Menunggu proses</small>
             </div>
 
@@ -64,7 +64,7 @@
 
             <div>
                 <span>Selesai</span>
-                <strong>96</strong>
+                <strong>{{ $selesai }}</strong>
                 <small>Proses selesai</small>
             </div>
 
@@ -79,7 +79,7 @@
 
             <div>
                 <span>Dikembalikan</span>
-                <strong>14</strong>
+                <strong>{{ $dikembalikan }}</strong>
                 <small>Perlu diperbaiki</small>
             </div>
 
@@ -276,41 +276,8 @@
         <div class="history-footer">
 
             <span>
-                Menampilkan <strong>3</strong> dari
-                <strong>128</strong> riwayat
+                Menampilkan total <strong>{{ $totalRiwayat }}</strong> riwayat
             </span>
-
-            <div class="pagination">
-
-                <button disabled>
-                    ‹
-                </button>
-
-                <button class="active">
-                    1
-                </button>
-
-                <button>
-                    2
-                </button>
-
-                <button>
-                    3
-                </button>
-
-                <button>
-                    ...
-                </button>
-
-                <button>
-                    10
-                </button>
-
-                <button>
-                    ›
-                </button>
-
-            </div>
 
         </div>
 

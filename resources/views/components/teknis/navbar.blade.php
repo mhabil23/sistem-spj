@@ -1,24 +1,18 @@
 <header class="topbar">
 
-    <button
-        type="button"
-        class="mobile-menu"
-        onclick="toggleSidebar()">
-        ☰
-    </button>
-
-
-    <div class="page-title">
-
-        <h1>
-            {{ $title ?? 'Dashboard' }}
-        </h1>
-
-        <p>
-            {{ $subtitle ?? 'Selamat datang di Sistem SPJ.' }}
-        </p>
-
+    <div style="display: flex; align-items: center;">
+        <button
+            type="button"
+            class="mobile-menu"
+            onclick="toggleSidebar()"
+            style="margin-right: 1rem;">
+            ☰
+        </button>
+        <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="height: 40px; margin-right: 1.5rem;" class="navbar-logo">
     </div>
+
+
+    <div class="page-title"></div>
 
 
     <div class="topbar-right">

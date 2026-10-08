@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Panel Umum/PPSPM' }} | Sistem SPJ</title>
+    <title>{{ $title ?? 'Panel Umum' }} | Sistem SPJ</title>
     @vite(['resources/css/app.css', 'resources/css/umum/layout.css'])
     @stack('styles')
     
@@ -35,5 +35,7 @@
             document.querySelector('.sidebar').classList.toggle('active');
         }
     </script>
+
+    @stack('scripts')
 </body>
 </html>

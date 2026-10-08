@@ -16,7 +16,16 @@ $subtitle = 'Rekap dan laporan data SPJ.';
             <h2>Laporan SPJ</h2>
 
             <p>
-                Rekapitulasi data SPJ berdasarkan periode dan status.
+                @if(request('tanggal_mulai') || request('tanggal_selesai'))
+                    Periode: <strong>{{ request('tanggal_mulai') ? \Carbon\Carbon::parse(request('tanggal_mulai'))->format('d/m/Y') : 'Awal' }}</strong> 
+                    s/d 
+                    <strong>{{ request('tanggal_selesai') ? \Carbon\Carbon::parse(request('tanggal_selesai'))->format('d/m/Y') : 'Akhir' }}</strong>
+                    @if(request('status'))
+                        | Status: <strong>{{ ucfirst(request('status')) }}</strong>
+                    @endif
+                @else
+                    Rekapitulasi seluruh data SPJ dalam sistem.
+                @endif
             </p>
         </div>
 
@@ -117,6 +126,11 @@ $subtitle = 'Rekap dan laporan data SPJ.';
 
 
             <div class="filter-buttons">
+
+                <button type="submit" class="btn-filter">
+                    Terapkan
+                </button>
+
                 <a
                     href="{{ route('admin.laporan.spj') }}"
                     class="btn-reset">
@@ -280,6 +294,7 @@ $subtitle = 'Rekap dan laporan data SPJ.';
         <div class="table-wrapper">
 
             <style>
+                .table-responsive { overflow-x: auto; }
                 .cetak-table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin-bottom: 30px; }
                 .cetak-table th, .cetak-table td { border: 1px solid #333; padding: 5px; }
                 .cetak-table th { background-color: #f5f5f5; font-weight: bold; text-align: center; }
@@ -287,13 +302,36 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                 
                 @media print {
                     @page { size: landscape; margin: 10mm; }
-                    .page-header, .laporan-filter, .laporan-stats, .panel-header { display: none !important; }
+                    .page-header, .laporan-filter, .laporan-stats, .panel-header, .topbar, .sidebar { display: none !important; }
                     .laporan-panel { box-shadow: none; border: none; padding: 0; }
+                    .main-content { margin-left: 0 !important; padding: 0 !important; width: 100% !important; max-width: 100% !important; }
                     body { background: #fff; }
+                    .print-only-logo { display: block !important; }
+                    
+                    /* Penyesuaian khusus agar tabel muat di kertas A4 Landscape */
+                    .table-responsive { overflow: visible !important; width: 100% !important; }
+                    .cetak-table { font-size: 7.5px !important; margin-bottom: 15px !important; table-layout: auto !important; }
+                    .cetak-table th, .cetak-table td { padding: 3px 2px !important; white-space: normal !important; word-wrap: break-word !important; }
+                    
+                    /* Lebar minimum untuk kolom aksi/tanda tangan agar tetap rapi */
+                    .cetak-table th { min-width: 25px; }
                 }
             </style>
 
-            <div style="overflow-x: auto;">
+            <div class="print-only-logo" style="display: none; margin-bottom: 20px; text-align: center;">
+                <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="height: 50px;">
+                <h2 style="font-size: 16px; margin: 10px 0 5px;">LAPORAN REKAPITULASI SPJ</h2>
+                <p style="font-size: 12px; margin: 0;">
+                    @if(request('tanggal_mulai') || request('tanggal_selesai'))
+                        Periode: {{ request('tanggal_mulai') ? \Carbon\Carbon::parse(request('tanggal_mulai'))->format('d/m/Y') : 'Awal' }} s/d {{ request('tanggal_selesai') ? \Carbon\Carbon::parse(request('tanggal_selesai'))->format('d/m/Y') : 'Akhir' }}
+                        {{ request('status') ? ' | Status: ' . ucfirst(request('status')) : '' }}
+                    @else
+                        Seluruh Data SPJ
+                    @endif
+                </p>
+            </div>
+
+            <div class="table-responsive">
                 <table class="cetak-table">
                     <thead>
                         <tr>
@@ -341,7 +379,7 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                             <td>{!! $spj->kel_cms ? '&radic;' : '' !!}</td>
                             <td>{!! $spj->kel_cek_sbks ? '&radic;' : '' !!}</td>
                             <td>{!! $spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
-                            <td>{!! $spj->disetujui_ppk_at ? \Carbon\Carbon::parse($spj->disetujui_ppk_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
+                            <td></td>
                             <td></td>
                             <td></td>
                             

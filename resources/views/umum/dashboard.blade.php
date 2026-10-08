@@ -128,6 +128,14 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
 @endpush
 
 <div style="padding: 32px 40px; box-sizing: border-box; max-width: 100%;">
+    <!-- PAGE HEADER -->
+    <div class="page-heading" style="margin-bottom: 32px;">
+        <div>
+            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Dashboard Umum</h2>
+            <p style="color: #64748b; font-size: 14px; margin: 0;">Ringkasan antrean pemeriksaan SPJ.</p>
+        </div>
+    </div>
+
     <!-- STATISTIK -->
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 32px;">
         <div class="stat-card-custom">

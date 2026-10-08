@@ -138,8 +138,10 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
 
 <div style="padding: 32px 40px; box-sizing: border-box; width: 100%;">
     <div class="page-heading" style="margin-bottom: 32px;">
-        <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Dashboard</h2>
-        <p style="color: #64748b; font-size: 14px; margin: 0;">Selamat datang di Panel Bendahara.</p>
+        <div>
+            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Dashboard</h2>
+            <p style="color: #64748b; font-size: 14px; margin: 0;">Selamat datang di Panel Bendahara.</p>
+        </div>
     </div>
 
     <!-- STATISTIK -->

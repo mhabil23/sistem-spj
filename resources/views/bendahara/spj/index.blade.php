@@ -183,8 +183,10 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
 
 <div style="padding: 32px 40px; box-sizing: border-box; width: 100%;">
     <div class="page-heading" style="margin-bottom: 24px;">
-        <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Semua Antrean Pencairan</h2>
-        <p style="color: #64748b; font-size: 14px; margin: 0;">SPJ yang berstatus 'Siap Dicairkan' harus segera diproses.</p>
+        <div>
+            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Semua Antrean Pencairan</h2>
+            <p style="color: #64748b; font-size: 14px; margin: 0;">SPJ yang berstatus 'Siap Dicairkan' harus segera diproses.</p>
+        </div>
     </div>
 
     <div class="index-panel">

@@ -1,11 +1,11 @@
 <header class="topbar">
-    <button type="button" class="mobile-menu" onclick="toggleSidebar()">
-        ☰
-    </button>
-    <div class="page-title">
-        <h1>{{ $title ?? 'Dashboard' }}</h1>
-        <p>{{ $subtitle ?? 'Selamat datang di Panel Umum/bendahara.' }}</p>
+    <div style="display: flex; align-items: center;">
+        <button type="button" class="mobile-menu" onclick="toggleSidebar()" style="margin-right: 1rem;">
+            ☰
+        </button>
+        <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="height: 40px; margin-right: 1.5rem;" class="navbar-logo">
     </div>
+    <div class="page-title"></div>
     <div class="topbar-right">
         <div class="top-user">
             <div class="top-avatar">
@@ -13,7 +13,7 @@
             </div>
             <div class="top-user-info">
                 <strong>{{ Auth::user()->name ?? 'Pengguna Umum' }}</strong>
-                <small>Umum/bendahara</small>
+                <small>Bendahara</small>
             </div>
         </div>
     </div>
