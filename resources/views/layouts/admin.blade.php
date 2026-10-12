@@ -9,7 +9,7 @@
         content="width=device-width, initial-scale=1.0">
 
     <title>
-        {{ $title ?? 'Dashboard' }} | Sistem SPJ
+        {{ $title ?? 'Dashboard' }} | Sistem Informasi Penyelesaian Tagihan
     </title>
 
     {{-- Bootstrap Icons --}}

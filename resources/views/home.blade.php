@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sistem SPJ</title>
+    <title>Sistem Informasi Penyelesaian Tagihan</title>
 
     @vite(['resources/css/home.css'])
 </head>
@@ -15,11 +15,17 @@
     <!-- NAVBAR -->
     <header class="navbar">
         <div class="brand">
-            <div class="brand-logo">SPJ</div>
+            <div class="brand-logo">
+                @if(file_exists(public_path('images/logo-bps-app.png')))
+                    <img src="{{ asset('images/logo-bps-app.png') }}" alt="Logo BPS">
+                @else
+                    BPS
+                @endif
+            </div>
 
             <div>
-                <h1>Sistem SPJ</h1>
-                <span>Pengelolaan Surat Pertanggungjawaban</span>
+                <h1>SISTEM INFORMASI PENYELESAIAN TAGIHAN</h1>
+                <span>Badan Pusat Statistik</span>
             </div>
         </div>
 
@@ -317,15 +323,15 @@
     <footer>
 
         <div>
-            <strong>Sistem SPJ</strong>
+            <strong>SISTEM INFORMASI PENYELESAIAN TAGIHAN</strong>
 
             <p>
-                Sistem Pengelolaan Surat Pertanggungjawaban
+                Sistem Informasi Penyelesaian Tagihan
             </p>
         </div>
 
         <span>
-            © {{ date('Y') }} Sistem SPJ
+            © {{ date('Y') }} SISTEM INFORMASI PENYELESAIAN TAGIHAN
         </span>
 
     </footer>

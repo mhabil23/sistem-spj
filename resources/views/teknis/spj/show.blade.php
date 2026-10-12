@@ -63,18 +63,36 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
             </div>
         @endif
 
-        <div class="spj-detail-grid" style="grid-template-columns: 1fr;">
+        <div class="spj-detail-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
             
+            <div class="spj-detail-item">
+                <div class="spj-detail-label">Nomor SPJ</div>
+                <div class="spj-detail-value" style="font-weight: 700; color: #344054;">{{ $spj->nomor_spj }}</div>
+            </div>
+
             <div class="spj-detail-item">
                 <div class="spj-detail-label">Tanggal Kegiatan</div>
                 <div class="spj-detail-value">{{ $spj->tanggal->format('d F Y') }}</div>
             </div>
+
+            <div class="spj-detail-item">
+                <div class="spj-detail-label">Nilai</div>
+                <div class="spj-detail-value" style="font-weight: 600;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</div>
+            </div>
+
         </div>
 
         <div style="margin-top: 1.5rem;" class="spj-detail-item">
             <div class="spj-detail-label">Uraian Kegiatan</div>
             <div class="spj-detail-value" style="font-size: 1rem; font-weight: 500; line-height: 1.6;">{{ $spj->kegiatan }}</div>
         </div>
+
+        @if($spj->keterangan)
+        <div style="margin-top: 1.5rem;" class="spj-detail-item">
+            <div class="spj-detail-label">Keterangan / Catatan Teknis</div>
+            <div class="spj-detail-value" style="font-size: 0.95rem; line-height: 1.6; color: #475569;">{{ $spj->keterangan }}</div>
+        </div>
+        @endif
         
         <div style="margin-top: 2rem;">
             <h3 style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">Kelengkapan Dokumen Fisik</h3>

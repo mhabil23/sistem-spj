@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login | Sistem SPJ</title>
+    <title>Login | Sistem Informasi Penyelesaian Tagihan</title>
 
     @vite([
     'resources/css/login.css',
@@ -22,16 +22,7 @@
 
             <div class="info-content">
 
-                <a href="/" class="brand">
-                    <div class="brand-logo">
-                        SPJ
-                    </div>
 
-                    <div>
-                        <strong>Sistem SPJ</strong>
-                        <span>Pengelolaan Surat Pertanggungjawaban</span>
-                    </div>
-                </a>
 
 
                 <div class="info-main">
@@ -108,7 +99,7 @@
 
 
                 <div class="info-footer">
-                    <span>© {{ date('Y') }} Sistem SPJ</span>
+                    <span>© {{ date('Y') }} SISTEM INFORMASI PENYELESAIAN TAGIHAN</span>
                     <span>•</span>
                     <span>Terintegrasi & Terstruktur</span>
                 </div>
@@ -123,11 +114,7 @@
 
             <div class="login-card">
 
-                <div class="mobile-brand">
-                    <div class="brand-logo">
-                        SPJ
-                    </div>
-                </div>
+
 
 
                 <div class="login-header">

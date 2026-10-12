@@ -167,7 +167,6 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
         </div>
     </div>
 
-    <!-- DAFTAR ANTREAN SPJ -->
     <div class="dash-panel">
         <div class="dash-panel-header">
             <div>

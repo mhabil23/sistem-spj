@@ -48,7 +48,6 @@ class SpjController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nomor_spj' => 'required|string|max:100|unique:spjs,nomor_spj',
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'nilai' => 'required|numeric|min:0',
@@ -56,23 +55,27 @@ class SpjController extends Controller
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
 
+        $dokumenKelengkapan = [];
+        if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
+            foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
+                $isChecked = $request->has("berkas.{$index}");
+                $dokumenKelengkapan[] = [
+                    'nama' => $namaDokumen,
+                    'disiapkan' => $isChecked
+                ];
+            }
+        }
+
         Spj::create([
-            'nomor_spj' => $request->nomor_spj,
+            'user_id' => \Illuminate\Support\Facades\Auth::id() ?? 1,
+            'nomor_spj' => 'SPJ-' . date('YmdHis') . '-' . rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'status' => $request->status,
-            'kel_daftar_penerima' => $request->has('kel_daftar_penerima'),
-            'kel_bast' => $request->has('kel_bast'),
-            'kel_sk' => $request->has('kel_sk'),
-            'kel_kak' => $request->has('kel_kak'),
-            'kel_form_permintaan' => $request->has('kel_form_permintaan'),
-            'kel_spk' => $request->has('kel_spk'),
-            'kel_surat_tugas' => $request->has('kel_surat_tugas'),
-            'kel_kesesuaian_mrk' => $request->has('kel_kesesuaian_mrk'),
-            'kel_cms' => $request->has('kel_cms'),
-            'kel_cek_sbks' => $request->has('kel_cek_sbks'),
+            'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
+            'diajukan_at' => $request->status === 'diajukan' ? now() : null,
         ]);
 
         return redirect()
@@ -86,7 +89,6 @@ class SpjController extends Controller
     public function update(Request $request, Spj $spj)
     {
         $validated = $request->validate([
-            'nomor_spj' => 'required|string|max:255|unique:spjs,nomor_spj,' . $spj->id,
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'nilai' => 'required|numeric|min:0',
@@ -94,16 +96,22 @@ class SpjController extends Controller
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
 
-        $validated['kel_daftar_penerima'] = $request->has('kel_daftar_penerima');
-        $validated['kel_bast'] = $request->has('kel_bast');
-        $validated['kel_sk'] = $request->has('kel_sk');
-        $validated['kel_kak'] = $request->has('kel_kak');
-        $validated['kel_form_permintaan'] = $request->has('kel_form_permintaan');
-        $validated['kel_spk'] = $request->has('kel_spk');
-        $validated['kel_surat_tugas'] = $request->has('kel_surat_tugas');
-        $validated['kel_kesesuaian_mrk'] = $request->has('kel_kesesuaian_mrk');
-        $validated['kel_cms'] = $request->has('kel_cms');
-        $validated['kel_cek_sbks'] = $request->has('kel_cek_sbks');
+        $dokumenKelengkapan = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
+        if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
+            $dokumenKelengkapan = [];
+            foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
+                $isChecked = $request->has("berkas.{$index}");
+                $dokumenKelengkapan[] = [
+                    'nama' => $namaDokumen,
+                    'disiapkan' => $isChecked
+                ];
+            }
+        }
+
+        $validated['dokumen_file'] = count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null;
+        if ($request->status === 'diajukan' && $spj->status !== 'diajukan') {
+            $validated['diajukan_at'] = now();
+        }
 
         $spj->update($validated);
 

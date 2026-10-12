@@ -1,14 +1,4 @@
 <aside class="sidebar">
-    <div class="sidebar-brand">
-        <div class="sidebar-logo">
-            T
-        </div>
-        <div class="brand-text">
-            <strong>Sistem SPJ</strong>
-            <span>Panel Teknis</span>
-        </div>
-    </div>
-
     <nav class="sidebar-nav">
         <div class="nav-label">MENU UTAMA</div>
         
@@ -34,6 +24,13 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"></path></svg>
             </span>
             <span>Riwayat SPJ</span>
+        </a>
+
+        <a href="{{ route('teknis.laporan.spj') }}" class="nav-item {{ request()->routeIs('teknis.laporan.spj') ? 'active' : '' }}">
+            <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </span>
+            <span>Laporan SPJ</span>
         </a>
 
         <div class="menu-space"></div>

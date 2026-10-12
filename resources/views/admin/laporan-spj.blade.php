@@ -360,6 +360,22 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            function isChecked($spj, $keywords) {
+                                if (!$spj->dokumen_file) return false;
+                                $docs = json_decode($spj->dokumen_file, true);
+                                if (!is_array($docs)) return false;
+                                $keywordArr = is_array($keywords) ? $keywords : [$keywords];
+                                foreach($docs as $doc) {
+                                    if ($doc['disiapkan']) {
+                                        foreach($keywordArr as $kw) {
+                                            if (stripos($doc['nama'], $kw) !== false) return true;
+                                        }
+                                    }
+                                }
+                                return false;
+                            }
+                        @endphp
                         @forelse($spjs as $index => $spj)
                         <tr>
                             <td>{{ $index + 1 }}</td>
@@ -368,20 +384,20 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                             <td>{!! $spj->tanggal ? \Carbon\Carbon::parse($spj->tanggal)->locale('id')->translatedFormat('d F Y') : '-' !!}</td>
                             
                             {{-- Checkmarks dinamis --}}
-                            <td>{!! $spj->kel_daftar_penerima ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_bast ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_sk ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_kak ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_form_permintaan ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_spk ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_surat_tugas ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_kesesuaian_mrk ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_cms ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->kel_cek_sbks ? '&radic;' : '' !!}</td>
-                            <td>{!! $spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{!! isChecked($spj, ['Daftar Penerima', 'Daftar Hadir', 'Daftar nama']) || $spj->kel_daftar_penerima ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['BAST']) || $spj->kel_bast ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['SK', 'Surat Keputusan']) || $spj->kel_sk ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['KAK']) || $spj->kel_kak ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['FP', 'Form Permintaan']) || $spj->kel_form_permintaan ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['SPK', 'Perjanjian', 'Polis']) || $spj->kel_spk ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['Surat Tugas', 'ST', 'Nota Pesanan']) || $spj->kel_surat_tugas ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['Kesesuaian MRK']) || $spj->kel_kesesuaian_mrk ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['CMS']) || $spj->kel_cms ? '&radic;' : '' !!}</td>
+                            <td>{!! isChecked($spj, ['SBKS']) || $spj->kel_cek_sbks ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at)->locale('id')->translatedFormat('d F Y') : ($spj->created_at ? \Carbon\Carbon::parse($spj->created_at)->locale('id')->translatedFormat('d F Y') : '') !!}</td>
+                            <td>{!! $spj->disetujui_ppk_at ? \Carbon\Carbon::parse($spj->disetujui_ppk_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
+                            <td>{!! $spj->disetujui_ppspm_at ? '&radic;' : '' !!}</td>
+                            <td>{!! $spj->diselesaikan_at ? '&radic;' : '' !!}</td>
                             
                             <td></td>
                         </tr>

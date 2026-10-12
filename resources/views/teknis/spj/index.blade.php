@@ -50,8 +50,10 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
             <table class="spj-table">
                 <thead>
                     <tr>
+                        <th>Nomor SPJ</th>
                         <th>Uraian Kegiatan</th>
                         <th>Tanggal</th>
+                        <th>Nilai</th>
                         <th>Status</th>
                         <th style="text-align: right; padding-right: 2rem;">Aksi</th>
                     </tr>
@@ -59,10 +61,14 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                 <tbody>
                     @forelse($spjs as $spj)
                     <tr>
+                        <td style="font-weight: 600; color: #344054;">
+                            {{ $spj->nomor_spj }}
+                        </td>
                         <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $spj->kegiatan }}">
                             {{ $spj->kegiatan }}
                         </td>
                         <td>{{ $spj->tanggal->format('d M Y') }}</td>
+                        <td style="font-weight: 500;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                         <td>
                             @php
                                 $badgeClass = 'spj-badge-draft';
@@ -75,16 +81,27 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                         </td>
                         <td style="text-align: right; padding-right: 2rem;">
                             <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                                <a href="{{ route('teknis.spj.show', $spj->id) }}" class="spj-action-link spj-action-detail">Detail</a>
-                                @if(in_array($spj->status, ['draft', 'dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm']))
-                                <a href="{{ route('teknis.spj.edit', $spj->id) }}" class="spj-action-link spj-action-edit">Edit</a>
-                                @endif
+                                <a href="{{ route('teknis.spj.show', $spj->id) }}" class="spj-action-link spj-action-detail" title="Detail">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                
+                                <a href="{{ route('teknis.spj.edit', $spj->id) }}" class="spj-action-link spj-action-edit" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="{{ route('teknis.spj.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen SPJ ini?');" style="display: inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="spj-action-link spj-action-delete" title="Hapus" style="background: none; border: none; cursor: pointer; padding: 0.25rem 0.5rem; outline: none; font-size: 0.875rem;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="5" style="text-align:center; padding: 4rem 2rem; color: #94a3b8;">
+                        <td colspan="6" style="text-align:center; padding: 4rem 2rem; color: #94a3b8;">
                             <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                                 <span>Belum ada pengajuan SPJ. Mulai buat SPJ pertama Anda!</span>

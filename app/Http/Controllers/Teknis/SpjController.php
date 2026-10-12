@@ -26,7 +26,9 @@ class SpjController extends Controller
         $request->validate([
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'status' => 'required|in:draft,diajukan'
+            'status' => 'required|in:draft,diajukan',
+            'nilai' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string',
         ]);
 
         $dokumenKelengkapan = [];
@@ -45,8 +47,8 @@ class SpjController extends Controller
             'nomor_spj' => 'SPJ-' . date('YmdHis') . '-' . rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
-            'nilai' => 0,
-            'keterangan' => null,
+            'nilai' => $request->nilai,
+            'keterangan' => $request->keterangan,
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' ? now() : null,
@@ -95,7 +97,9 @@ class SpjController extends Controller
         $request->validate([
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'status' => 'required|in:draft,diajukan'
+            'status' => 'required|in:draft,diajukan',
+            'nilai' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string',
         ]);
 
         $dokumenKelengkapan = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
@@ -113,6 +117,8 @@ class SpjController extends Controller
         $spj->update([
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
+            'nilai' => $request->nilai,
+            'keterangan' => $request->keterangan,
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
@@ -121,5 +127,53 @@ class SpjController extends Controller
         $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan.' : 'Draft SPJ berhasil diperbarui.';
 
         return redirect()->route('teknis.spj.index')->with('success', $msg);
+    }
+
+    public function laporan(Request $request)
+    {
+        $query = Spj::query();
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter tanggal mulai
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal', '>=', $request->tanggal_mulai);
+        }
+
+        // Filter tanggal selesai
+        if ($request->filled('tanggal_selesai')) {
+            $query->whereDate('tanggal', '<=', $request->tanggal_selesai);
+        }
+
+        // Ambil data laporan
+        $spjs = $query
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        // Rekap
+        $totalSpj = $spjs->count();
+
+        $totalNilai = $spjs->sum('nilai');
+
+        $totalDiajukan = $spjs->where('status', 'diajukan')->count();
+
+        $totalDiproses = $spjs->whereIn('status', ['diproses', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])->count();
+
+        $totalSelesai = $spjs->where('status', 'selesai')->count();
+
+        $totalDikembalikan = $spjs->where('status', 'dikembalikan')->count();
+
+        return view('teknis.laporan-spj', compact(
+            'spjs',
+            'totalSpj',
+            'totalNilai',
+            'totalDiajukan',
+            'totalDiproses',
+            'totalSelesai',
+            'totalDikembalikan'
+        ));
     }
 }

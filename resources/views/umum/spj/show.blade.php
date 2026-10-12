@@ -141,29 +141,49 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             <h2>Dokumen Pendukung</h2>
         </div>
         <div style="padding: 24px;">
-            @if($spj->dokumen_file)
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #f8fafc;">
-                    <div style="display: flex; align-items: center; gap: 16px;">
-                        <div style="font-size: 36px; color: #3b82f6; display: flex; align-items: center;">
-                            <ion-icon name="document-text-outline"></ion-icon>
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem;">
+                @if($spj->dokumen_file)
+                    @php
+                        $dokumens = json_decode($spj->dokumen_file, true);
+                    @endphp
+                    
+                    @if(is_array($dokumens) && count($dokumens) > 0)
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+                            @foreach($dokumens as $doc)
+                                <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: white; border: 1px solid {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? '#86efac' : '#e2e8f0' }}; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                    <div style="margin-top: 0.125rem;">
+                                        @if(isset($doc['disiapkan']) && $doc['disiapkan'])
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <span style="font-weight: 500; font-size: 0.9rem; color: {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? '#166534' : '#64748b' }};">{{ $doc['nama'] ?? 'Dokumen' }}</span>
+                                        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">
+                                            {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? 'Telah disiapkan (Fisik)' : 'Tidak diwajibkan untuk Teknis' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                        <div>
-                            <strong style="font-size: 15px; color: #0f172a; display: block; margin-bottom: 2px;">Dokumen SPJ</strong>
-                            <span style="color: #64748b; font-size: 13px;">Disertakan saat pengajuan oleh Staf Teknis</span>
+                    @else
+                        <div style="background-color: #fef2f2; color: #991b1b; padding: 24px; border-radius: 8px; border: 1px dashed #f87171; text-align: center;">
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 16px; margin-bottom: 8px;">
+                                <ion-icon name="warning-outline" style="font-size: 24px; color: #ef4444;"></ion-icon> Tidak Ada Lampiran Dokumen
+                            </div>
+                            <p style="margin: 0; color: #7f1d1d; font-size: 14px;">Staf teknis belum melampirkan checklist dokumen kelengkapan.</p>
                         </div>
+                    @endif
+                @else
+                    <div style="background-color: #fef2f2; color: #991b1b; padding: 24px; border-radius: 8px; border: 1px dashed #f87171; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 16px; margin-bottom: 8px;">
+                            <ion-icon name="warning-outline" style="font-size: 24px; color: #ef4444;"></ion-icon> Tidak Ada Lampiran Dokumen
+                        </div>
+                        <p style="margin: 0; color: #7f1d1d; font-size: 14px;">Staf teknis belum melampirkan checklist dokumen kelengkapan.</p>
                     </div>
-                    <a href="{{ asset('storage/' . $spj->dokumen_file) }}" target="_blank" style="background-color: #3b82f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(59,130,246,0.25); transition: 0.2s;" onmouseover="this.style.backgroundColor='#2563eb';" onmouseout="this.style.backgroundColor='#3b82f6';">
-                        <ion-icon name="download-outline" style="font-size: 16px;"></ion-icon> Lihat / Unduh
-                    </a>
-                </div>
-            @else
-                <div style="background-color: #fef2f2; color: #991b1b; padding: 24px; border-radius: 8px; border: 1px dashed #f87171; text-align: center;">
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 16px; margin-bottom: 8px;">
-                        <ion-icon name="warning-outline" style="font-size: 24px; color: #ef4444;"></ion-icon> Tidak Ada Lampiran Dokumen
-                    </div>
-                    <p style="margin: 0; color: #7f1d1d; font-size: 14px;">Staf teknis belum melampirkan berkas dokumen digital untuk pengajuan SPJ ini.</p>
-                </div>
-            @endif
+                @endif
+            </div>
         </div>
     </div>
 

@@ -46,12 +46,36 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             @csrf
             @method('PUT')
             
+            @php
+                $dokumen = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
+            @endphp
+            
+            <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
+                <div style="margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+                    <label class="spj-label" style="margin-bottom: 0;">Kelengkapan Berkas (Telah Dipilih)</label>
+                    <span style="font-size: 0.75rem; color: #64748b;">Centang berkas fisik yang sudah disiapkan</span>
+                </div>
+                <div id="dokumen_list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                    @if(count($dokumen) > 0)
+                        @foreach($dokumen as $index => $doc)
+                            <div class="checkbox-wrapper" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: white; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                                <input type="hidden" name="nama_dokumen[{{ $index }}]" value="{{ $doc['nama'] }}">
+                                <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ $doc['disiapkan'] ? 'checked' : '' }} style="width: 1rem; height: 1rem; cursor: pointer;">
+                                <label for="doc_{{ $index }}" style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #334155; cursor: pointer; user-select: none;">{{ $doc['nama'] }}</label>
+                            </div>
+                        @endforeach
+                    @else
+                        <p style="font-size: 0.85rem; color: #64748b; font-style: italic;">Tidak ada dokumen yang dipilih sebelumnya.</p>
+                    @endif
+                </div>
+            </div>
 
-
-            <div class="spj-form-group">
-                <label class="spj-label">Kegiatan</label>
-                <input type="text" name="kegiatan" required class="spj-input" value="{{ old('kegiatan', $spj->kegiatan) }}">
-                @error('kegiatan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="spj-form-group">
+                <div>
+                    <label class="spj-label">Uraian Kegiatan</label>
+                    <input type="text" name="kegiatan" required class="spj-input" value="{{ old('kegiatan', $spj->kegiatan) }}">
+                    @error('kegiatan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">

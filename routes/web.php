@@ -76,6 +76,7 @@ Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->g
     Route::get('/dashboard', [TeknisDashboardController::class, 'index'])->name('dashboard');
     Route::resource('spj', TeknisSpjController::class);
     Route::get('/riwayat', [TeknisRiwayatController::class, 'index'])->name('riwayat.index');
+    Route::get('/laporan-spj', [TeknisSpjController::class, 'laporan'])->name('laporan.spj');
     Route::get('/dokumen', [TeknisDokumenController::class, 'index'])->name('dokumen.index');
     Route::post('/dokumen/{spj}/upload', [TeknisDokumenController::class, 'upload'])->name('dokumen.upload');
     Route::get('/profil', [TeknisProfilController::class, 'index'])->name('profil.index');

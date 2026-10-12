@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Panel bendahara' }} | Sistem SPJ</title>
+    <title>{{ $title ?? 'Panel Bendahara' }} | Sistem Informasi Penyelesaian Tagihan</title>
     @vite(['resources/css/app.css', 'resources/css/bendahara/layout.css'])
     @stack('styles')
     

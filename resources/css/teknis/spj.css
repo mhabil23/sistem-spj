@@ -316,6 +316,13 @@
     background: var(--warning-bg);
 }
 
+.spj-action-delete {
+    color: var(--danger-text);
+}
+.spj-action-delete:hover {
+    background: var(--danger-bg);
+}
+
 /* Alert/Notifications */
 .spj-alert {
     padding: 1rem 1.5rem;

@@ -1,17 +1,5 @@
 <aside class="sidebar">
 
-    <!-- BRAND -->
-    <div class="sidebar-brand">
-        <div class="sidebar-logo">
-            SPJ
-        </div>
-        <div class="brand-text">
-            <strong>Sistem SPJ</strong>
-            <span>Administrator</span>
-        </div>
-    </div>
-
-
     <!-- MENU -->
     <nav class="sidebar-nav">
 

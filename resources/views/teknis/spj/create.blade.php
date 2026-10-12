@@ -135,6 +135,14 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             </div>
             <!-- DYNAMIC DROPDOWNS END -->
 
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;" class="spj-form-group">
+                <div>
+                    <label class="spj-label">Nilai (Rp)</label>
+                    <input type="number" name="nilai" class="spj-input" value="{{ old('nilai') }}" placeholder="Contoh: 1500000" min="0" step="0.01" required>
+                    @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
                 <div style="grid-column: span 2;">
                     <label class="spj-label">Uraian Kegiatan</label>
@@ -147,6 +155,12 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     <input type="date" name="tanggal" required class="spj-input" value="{{ old('tanggal') }}">
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
+            </div>
+
+            <div class="spj-form-group" style="margin-top: 1.5rem;">
+                <label class="spj-label">Keterangan Tambahan</label>
+                <textarea name="keterangan" class="spj-input spj-textarea" placeholder="Opsional: Keterangan tambahan untuk SPJ ini...">{{ old('keterangan') }}</textarea>
+                @error('keterangan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
             </div>
 
 
