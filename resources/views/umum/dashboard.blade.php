@@ -191,7 +191,7 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
                 <tbody>
                     @forelse($antreanSpjs as $spj)
                     <tr>
-                        <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
+                        <td style="color: #64748b;">{{ ($spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at) : $spj->created_at)->format('d M Y') }}</td>
                         <td><strong style="color: #0f172a;">{{ $spj->nomor_spj }}</strong></td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>

@@ -18,7 +18,7 @@ class DashboardController extends Controller
 
         $antreanSpjs = Spj::with('user')
             ->where('status', 'disetujui_ppspm')
-            ->orderBy('updated_at', 'asc')
+            ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 

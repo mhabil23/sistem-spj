@@ -27,7 +27,7 @@ class SpjController extends Controller
             $query->whereBetween('tanggal', [$request->start_date, $request->end_date]);
         }
 
-        $spjs = $query->orderBy('updated_at', 'asc')->get();
+        $spjs = $query->orderBy('created_at', 'desc')->get();
 
         return view('bendahara.spj.index', compact('spjs'));
     }

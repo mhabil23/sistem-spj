@@ -10,76 +10,236 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
     @vite(['resources/css/teknis/profil.css'])
 @endpush
 
-
-<div class="page-heading">
-    <div>
-        <h2>Pengaturan Profil</h2>
-        <p>Pastikan data Anda selalu yang paling mutakhir.</p>
-    </div>
+<div class="profile-page-header">
+    <h2>Pengaturan Profil</h2>
+    <p>Kelola informasi identitas, data akun, dan keamanan kata sandi Anda.</p>
 </div>
 
+{{-- Flash Messages --}}
 @if (session('success'))
-    <div style="background-color: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
-        {{ session('success') }}
-    </div>
-@endif
-@if ($errors->any())
-    <div style="background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
-        <ul style="margin: 0; padding-left: 1.5rem;">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<div class="panel">
-    <div class="panel-header">
+    <div class="profile-alert profile-alert-success">
+        <i class="bi bi-check-circle-fill"></i>
         <div>
-            <h2>Data Profil</h2>
+            <strong>Berhasil!</strong> {{ session('success') }}
         </div>
     </div>
-    <div style="padding: 1.5rem;">
-        <form action="{{ route('teknis.profil.update') }}" method="POST">
-            @csrf
-            @method('PUT')
-            
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Nama Lengkap</label>
-                <input type="text" name="name" required style="width: 100%; max-width: 400px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; outline: none;" value="{{ old('name', $user->name) }}">
-            </div>
+@endif
 
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Alamat Email</label>
-                <input type="email" name="email" required style="width: 100%; max-width: 400px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; outline: none;" value="{{ old('email', $user->email) }}">
-            </div>
-
-            <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 2rem 0; max-width: 600px;">
-            <h3 style="margin-bottom: 1rem; color: #111827;">Ubah Kata Sandi</h3>
-            <p style="color: #6b7280; font-size: 0.875rem; margin-bottom: 1.5rem;">Kosongkan jika Anda tidak ingin mengubah kata sandi.</p>
-
-            <div style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Kata Sandi Saat Ini</label>
-                <input type="password" name="current_password" style="width: 100%; max-width: 400px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; outline: none;" autocomplete="current-password">
-            </div>
-
-            <div style="display: flex; gap: 1.5rem; margin-bottom: 1.5rem;">
-                <div style="flex: 1; max-width: 400px;">
-                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Kata Sandi Baru</label>
-                    <input type="password" name="password" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; outline: none;" autocomplete="new-password">
-                </div>
-                <div style="flex: 1; max-width: 400px;">
-                    <label style="display: block; font-weight: 500; margin-bottom: 0.5rem; color: #374151;">Konfirmasi Kata Sandi</label>
-                    <input type="password" name="password_confirmation" style="width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; outline: none;" autocomplete="new-password">
-                </div>
-            </div>
-
-            <div style="margin-top: 2rem;">
-                <button type="submit" class="btn-primary" style="border: none; cursor: pointer; font-family: inherit; font-size: 1rem;">Simpan Perubahan</button>
-            </div>
-        </form>
+@if (isset($errors) && $errors->any())
+    <div class="profile-alert profile-alert-danger">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <div>
+            <strong>Terdapat beberapa kesalahan:</strong>
+            <ul style="margin: 6px 0 0 0; padding-left: 20px;">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
     </div>
-</div>
+@endif
 
+{{-- Form Panel Profil & Keamanan --}}
+<div class="profile-card">
+        <div class="profile-card-header">
+            <div>
+                <h3><i class="bi bi-person-lines-fill"></i> Data Profil & Keamanan</h3>
+                <p>Perbarui data identitas pribadi atau kata sandi akun Anda di bawah ini.</p>
+            </div>
+        </div>
+
+        <div class="profile-card-body">
+            <form action="{{ route('teknis.profil.update') }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                {{-- SECTION 1: DATA IDENTITAS --}}
+                <div class="profile-form-section">
+                    <h4 class="profile-section-title">
+                        <i class="bi bi-person-vcard"></i> Informasi Identitas
+                    </h4>
+                    <p class="profile-section-subtitle">
+                        Data identitas utama yang digunakan saat mengajukan dan mengelola dokumen SPJ.
+                    </p>
+
+                    <div class="profile-grid-2">
+                        <div class="profile-form-group">
+                            <label class="profile-form-label" for="profile_name">Nama Lengkap</label>
+                            <div class="profile-input-wrapper">
+                                <i class="bi bi-person profile-input-icon"></i>
+                                <input 
+                                    type="text" 
+                                    id="profile_name" 
+                                    name="name" 
+                                    class="profile-input @error('name') is-invalid @enderror" 
+                                    value="{{ old('name', $user->name) }}" 
+                                    required 
+                                    placeholder="Masukkan nama lengkap">
+                            </div>
+                            @error('name')
+                                <div class="profile-invalid-feedback">
+                                    <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label class="profile-form-label" for="profile_email">Alamat Email</label>
+                            <div class="profile-input-wrapper">
+                                <i class="bi bi-envelope profile-input-icon"></i>
+                                <input 
+                                    type="email" 
+                                    id="profile_email" 
+                                    name="email" 
+                                    class="profile-input @error('email') is-invalid @enderror" 
+                                    value="{{ old('email', $user->email) }}" 
+                                    required 
+                                    placeholder="nama@email.com">
+                            </div>
+                            @error('email')
+                                <div class="profile-invalid-feedback">
+                                    <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="profile-form-group" style="margin-bottom: 0;">
+                        <label class="profile-form-label">Peran & Hak Akses</label>
+                        <div class="profile-input-wrapper">
+                            <i class="bi bi-shield-check profile-input-icon"></i>
+                            <input 
+                                type="text" 
+                                class="profile-input profile-input-readonly" 
+                                value="Tim Teknis (Pengaju SPJ)" 
+                                readonly 
+                                disabled>
+                        </div>
+                        <div class="profile-form-hint">
+                            <i class="bi bi-info-circle"></i>
+                            Peran hak akses dikelola langsung oleh Administrator sistem.
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="profile-divider" style="margin: 28px 0;">
+
+                {{-- SECTION 2: KATA SANDI --}}
+                <div class="profile-form-section" style="margin-bottom: 12px;">
+                    <h4 class="profile-section-title">
+                        <i class="bi bi-shield-lock"></i> Ubah Kata Sandi
+                    </h4>
+                    <p class="profile-section-subtitle">
+                        Kosongkan bagian ini jika Anda tidak ingin melakukan pergantian kata sandi.
+                    </p>
+
+                    <div class="profile-form-group profile-half-width">
+                        <label class="profile-form-label" for="current_password">Kata Sandi Saat Ini</label>
+                        <div class="profile-input-wrapper">
+                            <i class="bi bi-key profile-input-icon"></i>
+                            <input 
+                                type="password" 
+                                id="current_password" 
+                                name="current_password" 
+                                class="profile-input has-toggle @error('current_password') is-invalid @enderror" 
+                                autocomplete="current-password" 
+                                placeholder="Masukkan kata sandi lama Anda">
+                            <button type="button" class="profile-toggle-password" data-target="current_password" title="Lihat kata sandi">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        @error('current_password')
+                            <div class="profile-invalid-feedback">
+                                <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+
+                    <div class="profile-grid-2">
+                        <div class="profile-form-group">
+                            <label class="profile-form-label" for="new_password">Kata Sandi Baru</label>
+                            <div class="profile-input-wrapper">
+                                <i class="bi bi-lock profile-input-icon"></i>
+                                <input 
+                                    type="password" 
+                                    id="new_password" 
+                                    name="password" 
+                                    class="profile-input has-toggle @error('password') is-invalid @enderror" 
+                                    autocomplete="new-password" 
+                                    placeholder="Minimal 8 karakter baru">
+                                <button type="button" class="profile-toggle-password" data-target="new_password" title="Lihat kata sandi">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            @error('password')
+                                <div class="profile-invalid-feedback">
+                                    <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <div class="profile-form-group">
+                            <label class="profile-form-label" for="password_confirmation">Konfirmasi Kata Sandi Baru</label>
+                            <div class="profile-input-wrapper">
+                                <i class="bi bi-lock-fill profile-input-icon"></i>
+                                <input 
+                                    type="password" 
+                                    id="password_confirmation" 
+                                    name="password_confirmation" 
+                                    class="profile-input has-toggle" 
+                                    autocomplete="new-password" 
+                                    placeholder="Ulangi kata sandi baru">
+                                <button type="button" class="profile-toggle-password" data-target="password_confirmation" title="Lihat kata sandi">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-form-hint">
+                        <i class="bi bi-info-circle"></i>
+                        Jika mengisi kata sandi baru, Anda wajib memasukkan kata sandi saat ini untuk verifikasi keamanan.
+                    </div>
+                </div>
+
+                {{-- Action Button --}}
+                <div class="profile-form-footer">
+                    <button type="submit" class="profile-btn-save">
+                        <i class="bi bi-check2-circle"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.profile-toggle-password');
+        
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
+                if (!input) return;
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                    this.title = 'Sembunyikan kata sandi';
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                    this.title = 'Lihat kata sandi';
+                }
+            });
+        });
+    });
+</script>
+@endpush
 @endsection
-

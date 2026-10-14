@@ -27,7 +27,7 @@ class SpjController extends Controller
             $query->whereBetween('tanggal', [$request->start_date, $request->end_date]);
         }
 
-        $spjs = $query->orderBy('updated_at', 'asc')->get();
+        $spjs = $query->orderBy('created_at', 'desc')->get();
 
         return view('umum.spj.index', compact('spjs'));
     }
@@ -87,6 +87,8 @@ class SpjController extends Controller
                     'disetujui_ppk_at' => now(),
                 ]);
                 $msg = 'SPJ telah ditandatangani PPK. Harap bawa dokumen fisik ke PPSPM untuk persetujuan selanjutnya.';
+
+                return redirect()->route('umum.spj.show', $spj->id)->with('success', $msg);
             } else {
                 $spj->update([
                     'status' => 'revisi_ppk',

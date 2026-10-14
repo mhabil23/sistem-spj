@@ -335,6 +335,131 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                 </p>
             </div>
 
+            @php
+                $masterDocDefs = [
+                    'kak' => [
+                        'label' => 'KAK',
+                        'keywords' => ['KAK'],
+                        'legacy' => ['kel_kak']
+                    ],
+                    'fp' => [
+                        'label' => 'Form Permintaan',
+                        'keywords' => ['FP', 'Form Permintaan'],
+                        'legacy' => ['kel_form_permintaan']
+                    ],
+                    'surat_tugas' => [
+                        'label' => 'Surat Tugas',
+                        'keywords' => ['Surat Tugas', 'SPPD', 'Visum'],
+                        'legacy' => ['kel_surat_tugas']
+                    ],
+                    'sk_spk' => [
+                        'label' => 'SK / SPK',
+                        'keywords' => ['SK KPA', 'Surat Keputusan', 'Surat kontrak', 'SPK', 'Polis', 'Perjanjian'],
+                        'legacy' => ['kel_sk', 'kel_spk']
+                    ],
+                    'undangan' => [
+                        'label' => 'Undangan',
+                        'keywords' => ['Undangan', 'Surat Undangan'],
+                        'legacy' => []
+                    ],
+                    'daftar_hadir' => [
+                        'label' => 'Daftar Hadir / Penerima',
+                        'keywords' => ['Daftar Hadir', 'Daftar Penerima', 'Daftar nama', 'Daftar Alokasi', 'Daftar rekap kuitansi'],
+                        'legacy' => ['kel_daftar_penerima']
+                    ],
+                    'notula' => [
+                        'label' => 'Notula / Laporan',
+                        'keywords' => ['Notula', 'Notulensi', 'Laporan tim', 'Laporan pengajar', 'Laporan pelaksanaan', 'Laporan perjalanan dinas'],
+                        'legacy' => []
+                    ],
+                    'bukti_beli' => [
+                        'label' => 'Bukti Beli / Nota',
+                        'keywords' => ['Bukti pembelian', 'Bukti Pembelian', 'nota', 'kwitansi', 'Kuitansi', 'invoice', 'Invoice', 'Tagihan', 'Tiket', 'Kwitansi Transpor', 'Daftar Pengeluaran riil'],
+                        'legacy' => []
+                    ],
+                    'bast' => [
+                        'label' => 'BAST',
+                        'keywords' => ['BAST', 'BAPP'],
+                        'legacy' => ['kel_bast']
+                    ],
+                    'pajak' => [
+                        'label' => 'Bukti Bayar / Pajak',
+                        'keywords' => ['Faktur Pajak', 'SSP', 'PPh', 'PPn', 'Screenshoot bukti transfer'],
+                        'legacy' => []
+                    ],
+                    'mrk' => [
+                        'label' => 'Kesesuaian MRK',
+                        'keywords' => ['Kesesuaian MRK'],
+                        'legacy' => ['kel_kesesuaian_mrk']
+                    ],
+                    'cms' => [
+                        'label' => 'CMS',
+                        'keywords' => ['CMS'],
+                        'legacy' => ['kel_cms']
+                    ],
+                    'sbks' => [
+                        'label' => 'Cek SBKS',
+                        'keywords' => ['SBKS'],
+                        'legacy' => ['kel_cek_sbks']
+                    ],
+                ];
+
+                if (!function_exists('isDocChecked')) {
+                    function isDocChecked($spj, $def) {
+                        if (!empty($def['legacy'])) {
+                            foreach ($def['legacy'] as $col) {
+                                if (!empty($spj->$col)) return true;
+                            }
+                        }
+                        if ($spj->dokumen_file) {
+                            $docs = json_decode($spj->dokumen_file, true);
+                            if (is_array($docs)) {
+                                foreach ($docs as $doc) {
+                                    if (!empty($doc['disiapkan'])) {
+                                        $docName = $doc['nama'] ?? '';
+                                        foreach ($def['keywords'] as $kw) {
+                                            if (stripos($docName, $kw) !== false) {
+                                                return true;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                }
+
+                // Hanya tampilkan kolom dokumen yang tercentang di setidaknya 1 SPJ yang sedang ditampilkan
+                $activeDocColumns = [];
+                foreach ($masterDocDefs as $key => $def) {
+                    $hasAny = false;
+                    foreach ($spjs as $spj) {
+                        if (isDocChecked($spj, $def)) {
+                            $hasAny = true;
+                            break;
+                        }
+                    }
+                    if ($hasAny) {
+                        $activeDocColumns[$key] = $def;
+                    }
+                }
+
+                // Jika data kosong atau belum ada yang diceklis sama sekali, sediakan kolom standar minimal
+                if (empty($activeDocColumns)) {
+                    $activeDocColumns = [
+                        'kak' => $masterDocDefs['kak'],
+                        'fp' => $masterDocDefs['fp'],
+                        'daftar_hadir' => $masterDocDefs['daftar_hadir'],
+                        'bast' => $masterDocDefs['bast'],
+                    ];
+                }
+
+                $totalDocCols = count($activeDocColumns);
+                $totalKelengkapanColspan = $totalDocCols + 4; // Ditambah 4 kolom: Tgl Masuk, Tgl Periksa, Paraf PPSPM, Paraf Bendahara
+                $totalTableColumns = 4 + $totalKelengkapanColspan + 1; // 4 kolom awal + kelengkapan + 1 keterangan
+            @endphp
+
             <div class="table-responsive">
                 <table class="cetak-table">
                     <thead>
@@ -343,20 +468,13 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                             <th rowspan="2" style="width: 200px;">Nama Kegiatan</th>
                             <th rowspan="2" style="width: 100px;">Jumlah Anggaran</th>
                             <th rowspan="2" style="width: 80px;">Tanggal Pembuatan Daftar</th>
-                            <th colspan="14">Kelengkapan Administrasi</th>
+                            <th colspan="{{ $totalKelengkapanColspan }}">Kelengkapan Administrasi</th>
                             <th rowspan="2" style="width: 80px;">Keterangan</th>
                         </tr>
                         <tr>
-                            <th>Daftar Penerima</th>
-                            <th>BAST</th>
-                            <th>SK</th>
-                            <th>KAK</th>
-                            <th>Form Permintaan</th>
-                            <th>SPK</th>
-                            <th>Surat Tugas</th>
-                            <th>Kesesuaian MRK dg SPK</th>
-                            <th>CMS</th>
-                            <th>Cek SBKS</th>
+                            @foreach($activeDocColumns as $colDef)
+                                <th>{{ $colDef['label'] }}</th>
+                            @endforeach
                             <th>Tgl Masuk SPJ</th>
                             <th>Tgl Periksa PPK</th>
                             <th>Paraf PPSPM</th>
@@ -364,42 +482,18 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            if(!function_exists('isChecked')){
-                                function isChecked($spj, $keywords) {
-                                    if (!$spj->dokumen_file) return false;
-                                    $docs = json_decode($spj->dokumen_file, true);
-                                    if (!is_array($docs)) return false;
-                                    $keywordArr = is_array($keywords) ? $keywords : [$keywords];
-                                    foreach($docs as $doc) {
-                                        if ($doc['disiapkan']) {
-                                            foreach($keywordArr as $kw) {
-                                                if (stripos($doc['nama'], $kw) !== false) return true;
-                                            }
-                                        }
-                                    }
-                                    return false;
-                                }
-                            }
-                        @endphp
                         @forelse($spjs as $index => $spj)
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td style="text-align: left;">{{ $spj->kegiatan }}</td>
-                            <td style="text-align: right;">{{ number_format($spj->nilai, 0, ',', '.') }}</td>
+                            <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                             <td>{!! $spj->tanggal ? \Carbon\Carbon::parse($spj->tanggal)->locale('id')->translatedFormat('d F Y') : '-' !!}</td>
                             
-                            {{-- Checkmarks dinamis --}}
-                            <td>{!! isChecked($spj, ['Daftar Penerima', 'Daftar Hadir', 'Daftar nama']) || $spj->kel_daftar_penerima ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['BAST']) || $spj->kel_bast ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['SK', 'Surat Keputusan']) || $spj->kel_sk ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['KAK']) || $spj->kel_kak ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['FP', 'Form Permintaan']) || $spj->kel_form_permintaan ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['SPK', 'Perjanjian', 'Polis']) || $spj->kel_spk ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['Surat Tugas', 'ST', 'Nota Pesanan']) || $spj->kel_surat_tugas ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['Kesesuaian MRK']) || $spj->kel_kesesuaian_mrk ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['CMS']) || $spj->kel_cms ? '&radic;' : '' !!}</td>
-                            <td>{!! isChecked($spj, ['SBKS']) || $spj->kel_cek_sbks ? '&radic;' : '' !!}</td>
+                            {{-- Checkmarks dinamis untuk kolom yang aktif --}}
+                            @foreach($activeDocColumns as $colDef)
+                                <td>{!! isDocChecked($spj, $colDef) ? '&radic;' : '' !!}</td>
+                            @endforeach
+
                             <td>{!! $spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at)->locale('id')->translatedFormat('d F Y') : ($spj->created_at ? \Carbon\Carbon::parse($spj->created_at)->locale('id')->translatedFormat('d F Y') : '') !!}</td>
                             <td>{!! $spj->disetujui_ppk_at ? \Carbon\Carbon::parse($spj->disetujui_ppk_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
                             <td>{!! $spj->disetujui_ppspm_at ? '&radic;' : '' !!}</td>
@@ -409,7 +503,7 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="19" style="padding: 20px; font-style: italic;">Tidak ada data SPJ</td>
+                            <td colspan="{{ $totalTableColumns }}" style="padding: 20px; font-style: italic;">Tidak ada data SPJ</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -417,8 +511,8 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                     <tfoot>
                         <tr>
                             <th colspan="2" style="text-align: right; padding-right: 15px;">TOTAL</th>
-                            <th style="text-align: right;">{{ number_format($totalNilai, 0, ',', '.') }}</th>
-                            <th colspan="16"></th>
+                            <th style="text-align: right; white-space: nowrap;">Rp. {{ number_format($totalNilai, 0, ',', '.') }}</th>
+                            <th colspan="{{ $totalTableColumns - 3 }}"></th>
                         </tr>
                     </tfoot>
                     @endif
