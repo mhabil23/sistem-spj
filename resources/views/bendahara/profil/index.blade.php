@@ -149,6 +149,19 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                     </div>
                 </div>
 
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
+                    <div class="form-group">
+                        <label class="form-label">Nomor WhatsApp (Aktif)</label>
+                        <input type="text" name="no_wa" class="form-input" value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 081234567890">
+                        <small style="color: #64748b; font-size: 11px; margin-top: 4px; display: block;">Nomor WhatsApp untuk menerima notifikasi sistem.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Peran & Hak Akses</label>
+                        <input type="text" class="form-input" value="Bendahara Pengeluaran" disabled style="background-color: #f8fafc; color: #64748b;">
+                    </div>
+                </div>
+
                 <hr class="section-divider">
                 
                 <h3 style="margin: 0 0 4px 0; color: #0f172a; font-size: 16px; font-weight: 700;">Keamanan & Kata Sandi</h3>

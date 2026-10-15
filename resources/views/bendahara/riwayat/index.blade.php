@@ -296,6 +296,13 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px; align-items: center;">
+                                <a href="{{ route('bendahara.spj.show', $spj->id) }}" 
+                                   style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: none; background-color: #e0f2fe; color: #0284c7; text-decoration: none; transition: all 0.2s;"
+                                   onmouseover="this.style.backgroundColor='#bae6fd'; this.style.transform='scale(1.05)';"
+                                   onmouseout="this.style.backgroundColor='#e0f2fe'; this.style.transform='scale(1)';"
+                                   title="Lihat Detail">
+                                    <ion-icon name="eye-outline" style="font-size: 16px;"></ion-icon>
+                                </a>
                                 <form action="{{ route('bendahara.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat pengajuan ini?');" style="margin: 0;">
                                     @csrf
                                     @method('DELETE')

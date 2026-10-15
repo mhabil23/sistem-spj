@@ -197,7 +197,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                         <th>Pengaju</th>
                         <th>Kegiatan</th>
                         <th>Nilai (Rp)</th>
-                        <th>Status Umum</th>
+                        <th>Status / Tahapan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -211,27 +211,49 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                         <td style="font-weight: 500;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
                         <td>
                             @php
-                                $badgeClass = 'pending';
+                                $badgeStyle = '';
                                 $statusText = 'Menunggu';
-                                
+                                $btnBg = '#64748b';
+                                $btnTitle = 'Detail';
+
                                 if($spj->status == 'diajukan') {
-                                    $badgeClass = 'pending';
-                                    $statusText = 'Menunggu';
-                                } elseif($spj->status == 'revisi_umum') {
-                                    $badgeClass = 'returned';
-                                    $statusText = 'Dikembalikan';
-                                } elseif(in_array($spj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai'])) {
-                                    $badgeClass = 'completed';
-                                    $statusText = 'Disetujui';
+                                    $badgeStyle = 'background: #fffbeb; color: #b45309; border: 1px solid #fde68a;';
+                                    $statusText = 'Menunggu Diperiksa';
+                                    $btnBg = '#10b981';
+                                    $btnTitle = 'Periksa Dokumen';
+                                } elseif($spj->status == 'disetujui_umum') {
+                                    $badgeStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
+                                    $statusText = 'Diteruskan ke PPK';
+                                    $btnBg = '#3b82f6';
+                                    $btnTitle = 'Input Keputusan PPK';
+                                } elseif($spj->status == 'disetujui_ppk') {
+                                    $badgeStyle = 'background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe;';
+                                    $statusText = 'Diteruskan ke PPSPM';
+                                    $btnBg = '#8b5cf6';
+                                    $btnTitle = 'Input Keputusan PPSPM';
+                                } elseif($spj->status == 'disetujui_ppspm') {
+                                    $badgeStyle = 'background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;';
+                                    $statusText = 'Di Bendahara';
+                                } elseif(str_contains($spj->status, 'revisi')) {
+                                    $badgeStyle = 'background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;';
+                                    $statusText = 'Dikembalikan (' . strtoupper(str_replace('revisi_', '', $spj->status)) . ')';
+                                    $btnBg = '#ef4444';
+                                    $btnTitle = 'Lihat Catatan Revisi';
+                                } elseif($spj->status == 'selesai') {
+                                    $badgeStyle = 'background: #f0fdf4; color: #15803d; border: 1px solid #86efac;';
+                                    $statusText = 'Selesai (Cair)';
+                                } else {
+                                    $badgeStyle = 'background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;';
+                                    $statusText = strtoupper(str_replace('_', ' ', $spj->status));
                                 }
                             @endphp
-                            <span class="badge {{ $badgeClass }}" style="font-size: 10px; padding: 6px 12px;">{{ $statusText }}</span>
+                            <span class="badge" style="font-size: 11px; padding: 5px 12px; border-radius: 999px; font-weight: 600; display: inline-block; {{ $badgeStyle }}">{{ $statusText }}</span>
                         </td>
                         <td>
                             <div style="display: flex; gap: 8px; align-items: center;">
                                 <a href="{{ route('umum.spj.show', $spj->id) }}" 
-                                   style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none; color: white; transition: all 0.2s; {{ $spj->status == 'diajukan' ? 'background-color: #10b981; box-shadow: 0 2px 4px rgba(16,185,129,0.25);' : 'background-color: #94a3b8;' }}" 
-                                   title="{{ $spj->status == 'diajukan' ? 'Periksa' : 'Detail' }}"
+                                   style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none; color: white; transition: all 0.2s; background-color: {{ $btnBg }}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
+                                   title="{{ $btnTitle }}"
                                    onmouseover="this.style.transform='translateY(-2px)';" 
                                    onmouseout="this.style.transform='translateY(0)';">
                                     <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>

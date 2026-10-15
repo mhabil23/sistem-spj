@@ -12,6 +12,7 @@ class Spj extends Model
         'tanggal',
         'nilai',
         'keterangan',
+        'no_wa',
         'status',
         'user_id',
         'dokumen_file',

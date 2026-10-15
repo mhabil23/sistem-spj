@@ -13,6 +13,7 @@ class ProfilController extends Controller
     public function index()
     {
         $user = Auth::user();
+
         return view('teknis.profil.index', compact('user'));
     }
 
@@ -23,15 +24,17 @@ class ProfilController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
+            'no_wa' => 'nullable|string|max:25',
             'current_password' => 'nullable|required_with:password',
             'password' => ['nullable', 'confirmed', Password::defaults()],
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->no_wa = $request->no_wa;
 
         if ($request->filled('password')) {
-            if (!Hash::check($request->current_password, $user->password)) {
+            if (! Hash::check($request->current_password, $user->password)) {
                 return back()->withErrors(['current_password' => 'Password saat ini tidak cocok.']);
             }
             $user->password = Hash::make($request->password);

@@ -251,6 +251,7 @@
                             href="{{ route('admin.spj.edit', $history->spj_id) }}"
                             class="history-action"
                             title="Lihat SPJ">
+                            <i class="bi bi-eye"></i>
                         </a>
 
                     </td>

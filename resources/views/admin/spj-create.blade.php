@@ -155,6 +155,13 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     <input type="date" name="tanggal" required class="spj-input" value="{{ old('tanggal') }}">
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
+
+                <div>
+                    <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
+                    <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa') }}" placeholder="Contoh: 081234567890">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp PIC agar Bagian Umum & Bendahara dapat menghubungi langsung.</span>
+                    @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
             </div>
 
             <div class="spj-form-group" style="margin-top: 1.5rem;">

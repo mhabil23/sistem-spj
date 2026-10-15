@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Teknis;
 
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
+use App\Services\WhatsAppService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SpjController extends Controller
 {
@@ -13,6 +15,7 @@ class SpjController extends Controller
     {
         $userId = Auth::id() ?? 1;
         $spjs = Spj::where('user_id', $userId)->latest()->get();
+
         return view('teknis.spj.index', compact('spjs'));
     }
 
@@ -29,6 +32,7 @@ class SpjController extends Controller
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
+            'no_wa' => 'nullable|string|max:25',
         ]);
 
         $dokumenKelengkapan = [];
@@ -37,22 +41,27 @@ class SpjController extends Controller
                 $isChecked = $request->has("berkas.{$index}");
                 $dokumenKelengkapan[] = [
                     'nama' => $namaDokumen,
-                    'disiapkan' => $isChecked
+                    'disiapkan' => $isChecked,
                 ];
             }
         }
 
-        Spj::create([
+        $spj = Spj::create([
             'user_id' => Auth::id() ?? 1,
-            'nomor_spj' => 'SPJ-' . date('YmdHis') . '-' . rand(100, 999),
+            'nomor_spj' => 'SPJ-'.date('YmdHis').'-'.rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
+            'no_wa' => $request->no_wa,
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' ? now() : null,
         ]);
+
+        if ($request->status === 'diajukan') {
+            WhatsAppService::notifySubmitted($spj);
+        }
 
         $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan ke Umum.' : 'SPJ berhasil dibuat dan disimpan sebagai Draft.';
 
@@ -76,7 +85,7 @@ class SpjController extends Controller
             abort(403, 'Akses tidak diizinkan.');
         }
 
-        if (!in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
+        if (! in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
             return redirect()->route('teknis.spj.index')->with('error', 'SPJ tidak dapat diubah karena sudah dalam proses.');
         }
 
@@ -90,7 +99,7 @@ class SpjController extends Controller
             abort(403, 'Akses tidak diizinkan.');
         }
 
-        if (!in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
+        if (! in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
             return redirect()->route('teknis.spj.index')->with('error', 'SPJ tidak dapat diubah karena sudah dalam proses.');
         }
 
@@ -100,6 +109,7 @@ class SpjController extends Controller
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
+            'no_wa' => 'nullable|string|max:25',
         ]);
 
         $dokumenKelengkapan = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
@@ -109,24 +119,46 @@ class SpjController extends Controller
                 $isChecked = $request->has("berkas.{$index}");
                 $dokumenKelengkapan[] = [
                     'nama' => $namaDokumen,
-                    'disiapkan' => $isChecked
+                    'disiapkan' => $isChecked,
                 ];
             }
         }
 
+        $wasDraftOrRevisi = $spj->status !== 'diajukan';
         $spj->update([
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
+            'no_wa' => $request->no_wa,
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
         ]);
 
+        if ($request->status === 'diajukan' && $wasDraftOrRevisi) {
+            WhatsAppService::notifySubmitted($spj);
+        }
+
         $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan.' : 'Draft SPJ berhasil diperbarui.';
 
         return redirect()->route('teknis.spj.index')->with('success', $msg);
+    }
+
+    public function destroy(Spj $spj)
+    {
+        $userId = Auth::id() ?? 1;
+        if ($spj->user_id !== $userId) {
+            abort(403, 'Akses tidak diizinkan.');
+        }
+
+        if ($spj->dokumen_file && ! str_starts_with($spj->dokumen_file, '[')) {
+            Storage::disk('public')->delete($spj->dokumen_file);
+        }
+
+        $spj->delete();
+
+        return redirect()->route('teknis.spj.index')->with('success', 'Dokumen SPJ berhasil dihapus.');
     }
 
     public function laporan(Request $request)

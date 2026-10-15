@@ -92,6 +92,13 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             </div>
 
             <div class="spj-form-group">
+                <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
+                <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa', $spj->no_wa) }}" placeholder="Contoh: 081234567890">
+                <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp Anda agar Bagian Umum & Bendahara dapat menghubungi Anda langsung.</span>
+                @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="spj-form-group">
                 <label class="spj-label">Keterangan Tambahan</label>
                 <textarea name="keterangan" class="spj-input spj-textarea">{{ old('keterangan', $spj->keterangan) }}</textarea>
                 @error('keterangan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror

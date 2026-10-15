@@ -12,6 +12,7 @@ class ProfilController extends Controller
     public function index()
     {
         $user = auth()->user();
+
         return view('bendahara.profil.index', compact('user'));
     }
 
@@ -22,12 +23,14 @@ class ProfilController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'no_wa' => ['nullable', 'string', 'max:25'],
             'current_password' => ['nullable', 'required_with:password', 'current_password'],
             'password' => ['nullable', 'confirmed', Password::defaults()],
         ]);
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->no_wa = $request->no_wa;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
@@ -38,5 +41,3 @@ class ProfilController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 }
-
-

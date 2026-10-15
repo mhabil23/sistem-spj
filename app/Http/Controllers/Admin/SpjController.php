@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SpjController extends Controller
 {
@@ -52,6 +53,7 @@ class SpjController extends Controller
             'tanggal' => 'required|date',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
+            'no_wa' => 'nullable|string|max:25',
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
 
@@ -61,18 +63,19 @@ class SpjController extends Controller
                 $isChecked = $request->has("berkas.{$index}");
                 $dokumenKelengkapan[] = [
                     'nama' => $namaDokumen,
-                    'disiapkan' => $isChecked
+                    'disiapkan' => $isChecked,
                 ];
             }
         }
 
         Spj::create([
-            'user_id' => \Illuminate\Support\Facades\Auth::id() ?? 1,
-            'nomor_spj' => 'SPJ-' . date('YmdHis') . '-' . rand(100, 999),
+            'user_id' => Auth::id() ?? 1,
+            'nomor_spj' => 'SPJ-'.date('YmdHis').'-'.rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
+            'no_wa' => $request->no_wa,
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' ? now() : null,
@@ -93,6 +96,7 @@ class SpjController extends Controller
             'tanggal' => 'required|date',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
+            'no_wa' => 'nullable|string|max:25',
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
 
@@ -103,7 +107,7 @@ class SpjController extends Controller
                 $isChecked = $request->has("berkas.{$index}");
                 $dokumenKelengkapan[] = [
                     'nama' => $namaDokumen,
-                    'disiapkan' => $isChecked
+                    'disiapkan' => $isChecked,
                 ];
             }
         }

@@ -104,20 +104,45 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                         </div>
                     </div>
 
-                    <div class="profile-form-group" style="margin-bottom: 0;">
-                        <label class="profile-form-label">Peran & Hak Akses</label>
-                        <div class="profile-input-wrapper">
-                            <i class="bi bi-shield-check profile-input-icon"></i>
-                            <input 
-                                type="text" 
-                                class="profile-input profile-input-readonly" 
-                                value="Tim Teknis (Pengaju SPJ)" 
-                                readonly 
-                                disabled>
+                    <div class="profile-grid-2" style="margin-top: 16px;">
+                        <div class="profile-form-group" style="margin-bottom: 0;">
+                            <label class="profile-form-label" for="profile_no_wa">Nomor WhatsApp (Aktif)</label>
+                            <div class="profile-input-wrapper">
+                                <i class="bi bi-whatsapp profile-input-icon" style="color: #25d366;"></i>
+                                <input 
+                                    type="text" 
+                                    id="profile_no_wa" 
+                                    name="no_wa" 
+                                    class="profile-input @error('no_wa') is-invalid @enderror" 
+                                    value="{{ old('no_wa', $user->no_wa) }}" 
+                                    placeholder="Contoh: 081234567890">
+                            </div>
+                            <div class="profile-form-hint">
+                                <i class="bi bi-info-circle"></i>
+                                Untuk menerima notifikasi otomatis saat SPJ disetujui / direvisi.
+                            </div>
+                            @error('no_wa')
+                                <div class="profile-invalid-feedback">
+                                    <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                                </div>
+                            @enderror
                         </div>
-                        <div class="profile-form-hint">
-                            <i class="bi bi-info-circle"></i>
-                            Peran hak akses dikelola langsung oleh Administrator sistem.
+
+                        <div class="profile-form-group" style="margin-bottom: 0;">
+                            <label class="profile-form-label">Peran & Hak Akses</label>
+                            <div class="profile-input-wrapper">
+                                <i class="bi bi-shield-check profile-input-icon"></i>
+                                <input 
+                                    type="text" 
+                                    class="profile-input profile-input-readonly" 
+                                    value="Tim Teknis (Pengaju SPJ)" 
+                                    readonly 
+                                    disabled>
+                            </div>
+                            <div class="profile-form-hint">
+                                <i class="bi bi-info-circle"></i>
+                                Peran hak akses dikelola langsung oleh Administrator sistem.
+                            </div>
                         </div>
                     </div>
                 </div>

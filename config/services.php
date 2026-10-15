@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'token' => env('FONNTE_TOKEN', env('WHATSAPP_TOKEN')),
+        'target_umum' => env('WHATSAPP_TARGET_UMUM'),
+    ],
+
 ];

@@ -249,17 +249,26 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                             @endif
                         </td>
                         <td>
-                            <form action="{{ route('umum.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat pengajuan ini? Tindakan ini tidak dapat dibatalkan.');" style="margin:0;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background-color: #ef4444; color: white; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(239,68,68,0.25);" 
-                                        title="Hapus Permanen"
-                                        onmouseover="this.style.transform='translateY(-2px)';" 
-                                        onmouseout="this.style.transform='translateY(0)';">
-                                    <ion-icon name="trash-outline" style="font-size: 18px;"></ion-icon>
-                                </button>
-                            </form>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <a href="{{ route('umum.spj.show', $spj->id) }}" 
+                                   style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background-color: #3b82f6; color: white; text-decoration: none; transition: all 0.2s; box-shadow: 0 2px 4px rgba(59,130,246,0.25);" 
+                                   title="Lihat Detail"
+                                   onmouseover="this.style.transform='translateY(-2px)'; this.style.backgroundColor='#2563eb';" 
+                                   onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='#3b82f6';">
+                                    <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
+                                </a>
+                                <form action="{{ route('umum.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat pengajuan ini? Tindakan ini tidak dapat dibatalkan.');" style="margin:0;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background-color: #ef4444; color: white; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(239,68,68,0.25);" 
+                                            title="Hapus Permanen"
+                                            onmouseover="this.style.transform='translateY(-2px)';" 
+                                            onmouseout="this.style.transform='translateY(0)';">
+                                        <ion-icon name="trash-outline" style="font-size: 18px;"></ion-icon>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     @empty

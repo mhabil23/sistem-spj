@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Umum;
 
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
+use App\Services\WhatsAppService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class SpjController extends Controller
@@ -14,12 +16,12 @@ class SpjController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nomor_spj', 'like', "%{$search}%")
-                  ->orWhere('kegiatan', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($qu) use ($search) {
-                      $qu->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhere('kegiatan', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -35,7 +37,7 @@ class SpjController extends Controller
     public function show($id)
     {
         $spj = Spj::with('user')->findOrFail($id);
-        
+
         // Umum hanya boleh melihat SPJ yang statusnya tidak draft
         if ($spj->status == 'draft') {
             abort(404);
@@ -46,17 +48,19 @@ class SpjController extends Controller
 
     public function verify(Request $request, $id)
     {
-        $spj = Spj::findOrFail($id);
+        $spj = Spj::with('user')->findOrFail($id);
 
-        if (!in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk'])) {
+        if (! in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk'])) {
             return redirect()->route('umum.spj.index')->with('error', 'SPJ ini sudah tidak berada di antrean pemeriksaan Anda.');
         }
+
+        $triggerWa = 'setuju_umum';
 
         if ($spj->status === 'diajukan') {
             $request->validate([
                 'action' => 'required|in:setujui,tolak',
                 'catatan_revisi' => 'required_if:action,tolak|nullable|string',
-                'catatan_internal' => 'nullable|string'
+                'catatan_internal' => 'nullable|string',
             ]);
 
             if ($request->action === 'setujui') {
@@ -66,18 +70,22 @@ class SpjController extends Controller
                     'catatan_internal' => $request->catatan_internal,
                     'disetujui_umum_at' => now(),
                 ]);
+                WhatsAppService::notifyApproved($spj, 'Umum');
                 $msg = 'SPJ diverifikasi Umum. Harap bawa dokumen fisik ke PPK untuk ditandatangani.';
+                $triggerWa = 'setuju_umum';
             } else {
                 $spj->update([
                     'status' => 'revisi_umum',
-                    'catatan_revisi' => $request->catatan_revisi
+                    'catatan_revisi' => $request->catatan_revisi,
                 ]);
+                WhatsAppService::notifyRevised($spj, 'Umum', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis untuk direvisi.';
+                $triggerWa = 'revisi_umum';
             }
         } elseif ($spj->status === 'disetujui_umum') {
             $request->validate([
                 'action' => 'required|in:setujui_ppk,tolak_ppk',
-                'catatan_revisi' => 'required_if:action,tolak_ppk|nullable|string'
+                'catatan_revisi' => 'required_if:action,tolak_ppk|nullable|string',
             ]);
 
             if ($request->action === 'setujui_ppk') {
@@ -86,47 +94,54 @@ class SpjController extends Controller
                     'catatan_revisi' => null,
                     'disetujui_ppk_at' => now(),
                 ]);
+                WhatsAppService::notifyApproved($spj, 'PPK');
                 $msg = 'SPJ telah ditandatangani PPK. Harap bawa dokumen fisik ke PPSPM untuk persetujuan selanjutnya.';
-
-                return redirect()->route('umum.spj.show', $spj->id)->with('success', $msg);
+                $triggerWa = 'setuju_ppk';
             } else {
                 $spj->update([
                     'status' => 'revisi_ppk',
-                    'catatan_revisi' => $request->catatan_revisi
+                    'catatan_revisi' => $request->catatan_revisi,
                 ]);
+                WhatsAppService::notifyRevised($spj, 'PPK', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPK.';
+                $triggerWa = 'revisi_ppk';
             }
         } elseif ($spj->status === 'disetujui_ppk') {
             $request->validate([
                 'action' => 'required|in:setujui_ppspm,tolak_ppspm',
-                'catatan_revisi' => 'required_if:action,tolak_ppspm|nullable|string'
+                'catatan_revisi' => 'required_if:action,tolak_ppspm|nullable|string',
             ]);
 
             if ($request->action === 'setujui_ppspm') {
                 $spj->update([
                     'status' => 'disetujui_ppspm',
                     'catatan_revisi' => null,
-                    // We don't have disetujui_ppspm_at column in migration, just update status
                 ]);
+                WhatsAppService::notifyApproved($spj, 'PPSPM');
                 $msg = 'SPJ telah disetujui PPSPM dan diteruskan ke Bendahara.';
+                $triggerWa = 'setuju_ppspm';
             } else {
                 $spj->update([
                     'status' => 'revisi_ppspm',
-                    'catatan_revisi' => $request->catatan_revisi
+                    'catatan_revisi' => $request->catatan_revisi,
                 ]);
+                WhatsAppService::notifyRevised($spj, 'PPSPM', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPSPM.';
+                $triggerWa = 'revisi_ppspm';
             }
         }
 
-        return redirect()->route('umum.spj.index')->with('success', $msg);
+        return redirect()->route('umum.spj.show', $spj->id)
+            ->with('success', $msg)
+            ->with('trigger_wa', $triggerWa);
     }
 
     public function print($id)
     {
         $spj = Spj::with('user')->findOrFail($id);
-        
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('umum.spj.pdf-checklist', compact('spj'));
-        
+
+        $pdf = Pdf::loadView('umum.spj.pdf-checklist', compact('spj'));
+
         return $pdf->stream('Checklist-Verifikasi-'.$spj->nomor_spj.'.pdf');
     }
 
