@@ -17,7 +17,14 @@
     ])
 </head>
 
-<body style="background: #d8e9f8 url('{{ asset('images/bg-login.jpg') }}?v={{ file_exists(public_path('images/bg-login.jpg')) ? filemtime(public_path('images/bg-login.jpg')) : time() }}') no-repeat center center fixed !important; background-size: cover !important;">
+<body class="etoile-login-body">
+
+    <!-- Abstract Floating Transparent BPS Logos Background (22 scattered nodes) -->
+    <div class="bg-bps-decor-container" aria-hidden="true">
+        @for ($i = 1; $i <= 22; $i++)
+            <img src="{{ asset('images/logo-bps-app.png') }}" alt="" class="bg-bps-logo bps-node-{{ $i }}">
+        @endfor
+    </div>
 
     <main class="water-login-page">
 
