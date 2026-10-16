@@ -140,6 +140,19 @@
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
+.spj-btn-print {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    border: none;
+}
+
+.spj-btn-print:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
 /* Form Inputs */
 .spj-form-group {
     margin-bottom: 1.5rem;

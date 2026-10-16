@@ -467,7 +467,7 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                             <th rowspan="2" style="width: 30px;">No</th>
                             <th rowspan="2" style="width: 200px;">Nama Kegiatan</th>
                             <th rowspan="2" style="width: 100px;">Jumlah Anggaran</th>
-                            <th rowspan="2" style="width: 80px;">Tanggal Pembuatan Daftar</th>
+                            <th rowspan="2" style="width: 80px;">Tanggal Penginputan SPJ</th>
                             <th colspan="{{ $totalKelengkapanColspan }}">Kelengkapan Administrasi</th>
                             <th rowspan="2" style="width: 80px;">Keterangan</th>
                         </tr>
@@ -487,14 +487,14 @@ $subtitle = 'Rekap dan laporan data SPJ.';
                             <td>{{ $index + 1 }}</td>
                             <td style="text-align: left;">{{ $spj->kegiatan }}</td>
                             <td style="text-align: right; white-space: nowrap;">Rp. {{ number_format($spj->nilai, 0, ',', '.') }}</td>
-                            <td>{!! $spj->tanggal ? \Carbon\Carbon::parse($spj->tanggal)->locale('id')->translatedFormat('d F Y') : '-' !!}</td>
+                            <td>{!! $spj->created_at ? $spj->created_at->locale('id')->translatedFormat('d F Y') : '-' !!}</td>
                             
                             {{-- Checkmarks dinamis untuk kolom yang aktif --}}
                             @foreach($activeDocColumns as $colDef)
                                 <td>{!! isDocChecked($spj, $colDef) ? '&radic;' : '' !!}</td>
                             @endforeach
 
-                            <td>{!! $spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at)->locale('id')->translatedFormat('d F Y') : ($spj->created_at ? \Carbon\Carbon::parse($spj->created_at)->locale('id')->translatedFormat('d F Y') : '') !!}</td>
+                            <td>{!! $spj->disetujui_umum_at ? \Carbon\Carbon::parse($spj->disetujui_umum_at)->locale('id')->translatedFormat('d F Y') : '-' !!}</td>
                             <td>{!! $spj->disetujui_ppk_at ? \Carbon\Carbon::parse($spj->disetujui_ppk_at)->locale('id')->translatedFormat('d F Y') : '' !!}</td>
                             <td>{!! $spj->disetujui_ppspm_at ? '&radic;' : '' !!}</td>
                             <td>{!! $spj->diselesaikan_at ? '&radic;' : '' !!}</td>

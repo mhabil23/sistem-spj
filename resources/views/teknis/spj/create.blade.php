@@ -124,9 +124,9 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 </div>
 
                 <div id="dokumen_container" style="display: none;">
-                    <div style="margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="margin-bottom: 0.75rem;">
                         <label class="spj-label" style="margin-bottom: 0;">Dokumen Wajib</label>
-                        <span style="font-size: 0.75rem; color: #64748b;">Centang berkas fisik yang sudah disiapkan</span>
+                        <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
                     </div>
                     <div id="dokumen_list">
                         <!-- File inputs will be generated here -->
@@ -193,8 +193,16 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 @error('status') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap;">
                 <a href="{{ route('teknis.spj.index') }}" class="spj-btn spj-btn-secondary">Batal</a>
+                <button type="button" id="btn_cetak_langsung" onclick="cetakLangsung()" class="spj-btn spj-btn-print" title="Cetak langsung lembar checklist berkas fisik SPJ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    Print
+                </button>
                 <button type="submit" class="spj-btn spj-btn-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                     Simpan Pengajuan
@@ -206,7 +214,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
 
 @endsection
 
-@push('styles')
+@push('scripts')
 <script>
     // Data Kategori SPJ
     const spjData = {
@@ -536,6 +544,309 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             });
         } else {
             docContainer.style.display = "none";
+        }
+    }
+
+    function formatRupiah(number) {
+        if (!number || isNaN(number)) return 'Rp 0';
+        return 'Rp ' + Number(number).toLocaleString('id-ID');
+    }
+
+    function formatDateIndo(dateStr) {
+        if (!dateStr) return '—';
+        const months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            const year = parts[0];
+            const month = months[parseInt(parts[1], 10) - 1] || parts[1];
+            const day = parseInt(parts[2], 10);
+            return `${day} ${month} ${year}`;
+        }
+        return dateStr;
+    }
+
+    const masterDocDefs = [
+        { label: 'KAK', keywords: ['KAK'] },
+        { label: 'Form Permintaan', keywords: ['FP', 'Form Permintaan'] },
+        { label: 'Surat Tugas', keywords: ['Surat Tugas', 'SPPD', 'Visum'] },
+        { label: 'SK / SPK', keywords: ['SK KPA', 'Surat Keputusan', 'Surat kontrak', 'SPK', 'Polis', 'Perjanjian'] },
+        { label: 'Undangan', keywords: ['Undangan', 'Surat Undangan'] },
+        { label: 'Daftar Hadir / Penerima', keywords: ['Daftar Hadir', 'Daftar Penerima', 'Daftar nama', 'Daftar Alokasi', 'Daftar rekap kuitansi'] },
+        { label: 'Notula / Laporan', keywords: ['Notula', 'Notulensi', 'Laporan tim', 'Laporan pengajar', 'Laporan pelaksanaan', 'Laporan perjalanan dinas'] },
+        { label: 'Bukti Beli / Nota', keywords: ['Bukti pembelian', 'Bukti Pembelian', 'nota', 'kwitansi', 'Kuitansi', 'invoice', 'Invoice', 'Tagihan', 'Tiket', 'Kwitansi Transpor', 'Daftar Pengeluaran riil'] },
+        { label: 'BAST', keywords: ['BAST', 'BAPP'] },
+        { label: 'Bukti Bayar / Pajak', keywords: ['Faktur Pajak', 'SSP', 'PPh', 'PPn', 'Screenshoot bukti transfer'] },
+        { label: 'Kesesuaian MRK', keywords: ['Kesesuaian MRK'] },
+        { label: 'CMS', keywords: ['CMS'] },
+        { label: 'Cek SBKS', keywords: ['SBKS'] }
+    ];
+
+    function getCleanDocLabel(docName) {
+        for (let i = 0; i < masterDocDefs.length; i++) {
+            const def = masterDocDefs[i];
+            for (let j = 0; j < def.keywords.length; j++) {
+                if (docName.toLowerCase().indexOf(def.keywords[j].toLowerCase()) !== -1) {
+                    return def.label;
+                }
+            }
+        }
+        return docName.length > 25 ? docName.substring(0, 22) + '...' : docName;
+    }
+
+    function cetakLangsung() {
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        const namaBelanja = selNamaBelanja ? selNamaBelanja.value : '';
+        const jenisBelanja = selJenisBelanja ? selJenisBelanja.value : '';
+
+        if (!namaBelanja || !jenisBelanja) {
+            alert("Silakan pilih Nama Belanja dan Jenis Belanja terlebih dahulu serta centang berkas fisik yang sudah disiapkan.");
+            if (selNamaBelanja) selNamaBelanja.focus();
+            return;
+        }
+
+        const docInputs = document.querySelectorAll('input[name^="nama_dokumen"]');
+        if (docInputs.length === 0) {
+            alert("Daftar dokumen belum tersedia. Silakan pilih Jenis Belanja terlebih dahulu.");
+            return;
+        }
+
+        const kegiatan = document.querySelector('[name="kegiatan"]')?.value.trim() || '—';
+        const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
+        const nilai = document.querySelector('[name="nilai"]')?.value || '0';
+        const noWa = document.querySelector('[name="no_wa"]')?.value.trim() || '—';
+        const keterangan = document.querySelector('[name="keterangan"]')?.value.trim() || '—';
+        const pengajuName = "{{ Auth::user()->name ?? 'Staf Teknis' }}";
+        const logoUrl = "{{ asset('images/logo-bps.png') }}";
+        const tanggalCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const tanggalFormatted = formatDateIndo(tanggal) || tanggalCetak;
+
+        const seenLabels = {};
+        const docCols = [];
+        docInputs.forEach((input, i) => {
+            const match = input.name.match(/\[(\d+)\]/);
+            const idx = match ? match[1] : i;
+            const checkbox = document.querySelector(`input[name="berkas[${idx}]"]`);
+            const docName = input.value;
+            let label = getCleanDocLabel(docName);
+            if (seenLabels[label]) {
+                seenLabels[label]++;
+                label = label + ' (' + seenLabels[label] + ')';
+            } else {
+                seenLabels[label] = 1;
+            }
+            docCols.push({
+                label: label,
+                fullName: docName,
+                isChecked: checkbox ? checkbox.checked : false
+            });
+        });
+
+        const totalDocCols = docCols.length;
+        const totalKelengkapanColspan = totalDocCols + 4;
+
+        let docHeadersHtml = '';
+        docCols.forEach(col => {
+            docHeadersHtml += '                    <th>' + col.label + '<\/th>\n';
+        });
+
+        let docValuesHtml = '';
+        docCols.forEach(col => {
+            docValuesHtml += '                    <td style="font-size: 11pt; font-weight: bold; text-align: center;">' + (col.isChecked ? '&radic;' : '') + '<\/td>\n';
+        });
+
+        const printHtml = '<!DOCTYPE html>\n'
+            + '<html lang="id">\n'
+            + '<head>\n'
+            + '    <meta charset="UTF-8">\n'
+            + '    <title>Laporan SPJ - ' + (kegiatan !== '—' ? kegiatan : 'Kegiatan') + '<\/title>\n'
+            + '    <style>\n'
+            + '        @page {\n'
+            + '            size: landscape;\n'
+            + '            margin: 10mm;\n'
+            + '        }\n'
+            + '        * { box-sizing: border-box; }\n'
+            + '        body {\n'
+            + '            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;\n'
+            + '            background: #fff;\n'
+            + '            color: #111;\n'
+            + '            margin: 0;\n'
+            + '            padding: 0;\n'
+            + '            font-size: 10px;\n'
+            + '        }\n'
+            + '        .print-only-logo {\n'
+            + '            text-align: center;\n'
+            + '            margin-bottom: 18px;\n'
+            + '        }\n'
+            + '        .print-only-logo img {\n'
+            + '            height: 50px;\n'
+            + '            margin-bottom: 6px;\n'
+            + '        }\n'
+            + '        .print-only-logo h2 {\n'
+            + '            font-size: 16px;\n'
+            + '            margin: 5px 0 3px;\n'
+            + '            font-weight: bold;\n'
+            + '            text-transform: uppercase;\n'
+            + '            letter-spacing: 0.5px;\n'
+            + '        }\n'
+            + '        .print-only-logo p {\n'
+            + '            font-size: 12px;\n'
+            + '            margin: 0;\n'
+            + '            color: #374151;\n'
+            + '        }\n'
+            + '        .meta-info {\n'
+            + '            display: flex;\n'
+            + '            justify-content: space-between;\n'
+            + '            align-items: center;\n'
+            + '            font-size: 11px;\n'
+            + '            margin-bottom: 10px;\n'
+            + '            padding: 0 4px;\n'
+            + '        }\n'
+            + '        .table-responsive {\n'
+            + '            overflow: visible !important;\n'
+            + '            width: 100% !important;\n'
+            + '        }\n'
+            + '        .cetak-table {\n'
+            + '            width: 100%;\n'
+            + '            border-collapse: collapse;\n'
+            + '            font-size: 8px;\n'
+            + '            text-align: center;\n'
+            + '            margin-bottom: 15px;\n'
+            + '            table-layout: auto;\n'
+            + '        }\n'
+            + '        .cetak-table th, .cetak-table td {\n'
+            + '            border: 1px solid #333;\n'
+            + '            padding: 4px 2px;\n'
+            + '            white-space: normal;\n'
+            + '            word-wrap: break-word;\n'
+            + '        }\n'
+            + '        .cetak-table th {\n'
+            + '            background-color: #f5f5f5;\n'
+            + '            font-weight: bold;\n'
+            + '            text-align: center;\n'
+            + '            min-width: 25px;\n'
+            + '        }\n'
+            + '        .ttd-container {\n'
+            + '            display: flex;\n'
+            + '            justify-content: flex-end;\n'
+            + '            padding-right: 50px;\n'
+            + '            text-align: left;\n'
+            + '            font-size: 12px;\n'
+            + '            margin-top: 35px;\n'
+            + '            page-break-inside: avoid;\n'
+            + '        }\n'
+            + '    <\/style>\n'
+            + '<\/head>\n'
+            + '<body>\n'
+            + '    <div class="print-only-logo">\n'
+            + '        <img src="' + logoUrl + '" alt="Logo BPS" onerror="this.style.display=\'none\'">\n'
+            + '        <h2>LAPORAN REKAPITULASI SPJ<\/h2>\n'
+            + '        <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
+            + '    <\/div>\n'
+            + '    <div class="meta-info">\n'
+            + '        <div>Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '        <div>Belanja: <strong>' + namaBelanja + ' (' + jenisBelanja + ')<\/strong><\/div>\n'
+            + '    <\/div>\n'
+            + '    <div class="table-responsive">\n'
+            + '        <table class="cetak-table">\n'
+            + '            <thead>\n'
+            + '                <tr>\n'
+            + '                    <th rowspan="2" style="width: 30px;">No<\/th>\n'
+            + '                    <th rowspan="2" style="min-width: 170px;">Nama Kegiatan<\/th>\n'
+            + '                    <th rowspan="2" style="min-width: 95px;">Jumlah Anggaran<\/th>\n'
+            + '                    <th rowspan="2" style="min-width: 80px;">Tanggal Penginputan SPJ<\/th>\n'
+            + '                    <th colspan="' + totalKelengkapanColspan + '">Kelengkapan Administrasi<\/th>\n'
+            + '                    <th rowspan="2" style="min-width: 80px;">Keterangan<\/th>\n'
+            + '                <\/tr>\n'
+            + '                <tr>\n'
+            + docHeadersHtml
+            + '                    <th style="min-width: 65px;">Tgl Masuk SPJ<\/th>\n'
+            + '                    <th style="min-width: 65px;">Tgl Periksa PPK<\/th>\n'
+            + '                    <th style="min-width: 45px;">Paraf PPSPM<\/th>\n'
+            + '                    <th style="min-width: 45px;">Paraf Bendahara<\/th>\n'
+            + '                <\/tr>\n'
+            + '            <\/thead>\n'
+            + '            <tbody>\n'
+            + '                <tr>\n'
+            + '                    <td>1<\/td>\n'
+            + '                    <td style="text-align: left; padding: 5px 6px;">' + kegiatan + '<\/td>\n'
+            + '                    <td style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '<\/td>\n'
+            + '                    <td>' + tanggalCetak + '<\/td>\n'
+            + docValuesHtml
+            + '                    <td>-<\/td>\n'
+            + '                    <td>-<\/td>\n'
+            + '                    <td><\/td>\n'
+            + '                    <td><\/td>\n'
+            + '                    <td style="text-align: left; padding: 5px 6px;">' + (keterangan !== '—' ? keterangan : '') + '<\/td>\n'
+            + '                <\/tr>\n'
+            + '            <\/tbody>\n'
+            + '            <tfoot>\n'
+            + '                <tr>\n'
+            + '                    <th colspan="2" style="text-align: right; padding-right: 15px;">TOTAL<\/th>\n'
+            + '                    <th style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '<\/th>\n'
+            + '                    <th colspan="' + (totalKelengkapanColspan + 2) + '"><\/th>\n'
+            + '                <\/tr>\n'
+            + '            <\/tfoot>\n'
+            + '        <\/table>\n'
+            + '    <\/div>\n'
+            + '    <div class="ttd-container">\n'
+            + '        <div>\n'
+            + '            <p style="margin: 0;">setor ke PPSPM :<\/p>\n'
+            + '            <p style="margin: 0;">Lasusua, ' + tanggalCetak + '<\/p>\n'
+            + '            <p style="margin: 0;">Pejabat Pembuat Komitmen<\/p>\n'
+            + '            <br><br><br><br>\n'
+            + '            <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah<\/p>\n'
+            + '            <p style="margin: 0;">NIP.198510292011011009<\/p>\n'
+            + '        <\/div>\n'
+            + '    <\/div>\n'
+            + '<\/body>\n'
+            + '<\/html>';
+
+        let printFrame = document.getElementById('spj_print_iframe');
+        if (!printFrame) {
+            printFrame = document.createElement('iframe');
+            printFrame.id = 'spj_print_iframe';
+            printFrame.style.position = 'fixed';
+            printFrame.style.right = '0';
+            printFrame.style.bottom = '0';
+            printFrame.style.width = '0';
+            printFrame.style.height = '0';
+            printFrame.style.border = '0';
+            document.body.appendChild(printFrame);
+        }
+
+        const frameDoc = printFrame.contentWindow.document;
+        frameDoc.open();
+        frameDoc.write(printHtml);
+        frameDoc.close();
+
+        const doPrint = function() {
+            try {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+            } catch (err) {
+                const printWin = window.open('', '_blank');
+                if (printWin) {
+                    printWin.document.write(printHtml);
+                    printWin.document.close();
+                    printWin.focus();
+                    printWin.print();
+                } else {
+                    alert("Gagal membuka jendela cetak. Pastikan pop-up diizinkan.");
+                }
+            }
+        };
+
+        const logoImg = frameDoc.querySelector('img');
+        if (logoImg && !logoImg.complete) {
+            logoImg.onload = doPrint;
+            logoImg.onerror = doPrint;
+            setTimeout(doPrint, 500);
+        } else {
+            setTimeout(doPrint, 200);
         }
     }
 </script>
