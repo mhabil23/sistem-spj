@@ -50,7 +50,7 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
             <table class="spj-table">
                 <thead>
                     <tr>
-                        <th>Nomor SPJ</th>
+                        <th style="width: 50px; text-align: center;">No</th>
                         <th>Uraian Kegiatan</th>
                         <th>Tanggal</th>
                         <th>Nilai</th>
@@ -61,8 +61,8 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                 <tbody>
                     @forelse($spjs as $spj)
                     <tr>
-                        <td style="font-weight: 600; color: #344054;">
-                            {{ $spj->nomor_spj }}
+                        <td style="text-align: center; font-weight: 600; color: #64748b;">
+                            {{ $loop->iteration }}
                         </td>
                         <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $spj->kegiatan }}">
                             {{ $spj->kegiatan }}

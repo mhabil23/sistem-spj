@@ -58,7 +58,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
         <div>
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap;">
-                <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin: 0;">Verifikasi SPJ: {{ $spj->nomor_spj }}</h2>
+                <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin: 0;">Verifikasi SPJ: {{ $spj->kegiatan }}</h2>
                 @php
                     $headerBadgeStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
                     $headerStatusText = 'Diteruskan ke PPK';
@@ -171,10 +171,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             <h2>Detail Kegiatan & Biaya</h2>
         </div>
         <div class="detail-grid">
-            <div class="detail-item">
-                <span>Nomor SPJ</span>
-                <strong>{{ $spj->nomor_spj }}</strong>
-            </div>
             <div class="detail-item">
                 <span>Tanggal Kegiatan</span>
                 <strong>{{ $spj->tanggal->format('d F Y') }}</strong>
@@ -575,7 +571,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 
 @php
     $spjJsData = [
-        'nomor' => $spj->nomor_spj,
         'pengaju' => $spj->user->name ?? 'Staf Teknis',
         'kegiatan' => $spj->kegiatan,
         'nilai' => 'Rp ' . number_format($spj->nilai, 0, ',', '.'),
@@ -674,7 +669,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Pengajuan SPJ Anda telah diverifikasi oleh Subbagian Umum dan dinyatakan *LENGKAP & BENAR*:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Nilai*    : ${spjData.nilai}\n`
                     + `• *Status*   : DISETUJUI UMUM (Menunggu TTD PPK)\n\n`
@@ -690,7 +684,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Dokumen fisik SPJ Anda telah *DITANDATANGANI OLEH PPK*:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Nilai*    : ${spjData.nilai}\n`
                     + `• *Status*   : DISETUJUI PPK (Menuju Persetujuan PPSPM)\n\n`
@@ -706,7 +699,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Dokumen pengajuan SPJ Anda telah *DISETUJUI OLEH PPSPM* dan kini telah diteruskan ke Bendahara Pengeluaran:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Nilai*    : ${spjData.nilai}\n`
                     + `• *Status*   : DISETUJUI PPSPM (Dalam Proses Pencairan Bendahara)\n\n`
@@ -722,7 +714,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Dokumen SPJ Anda memerlukan *PERBAIKAN / REVISI* dari Subbagian Umum:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Catatan Verifikator Umum*:\n"${noteText}"\n\n`
                     + `Mohon segera perbaiki berkas dan ajukan kembali melalui tautan berikut:\n`
@@ -735,7 +726,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Dokumen SPJ Anda dikembalikan dengan *CATATAN REVISI DARI PPK*:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Catatan Perbaikan PPK*:\n"${noteText}"\n\n`
                     + `Mohon segera lakukan penyesuaian berkas melalui tautan berikut:\n`
@@ -748,7 +738,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Dokumen SPJ Anda dikembalikan dengan *CATATAN REVISI DARI PPSPM*:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Catatan Perbaikan PPSPM*:\n"${noteText}"\n\n`
                     + `Mohon segera perbaiki berkas melalui tautan berikut:\n`
@@ -761,7 +750,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Mengingatkan untuk pengajuan SPJ Anda berikut:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Nilai*    : ${spjData.nilai}\n\n`
                     + `Mohon segera menyerahkan berkas fisik SPJ ke meja verifikasi Umum untuk kelengkapan administrasi.\n\n`

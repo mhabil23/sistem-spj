@@ -30,10 +30,6 @@
 
     <table class="info-table">
         <tr>
-            <td>Nomor SPJ</td>
-            <td>: {{ $spj->nomor_spj }}</td>
-        </tr>
-        <tr>
             <td>Tanggal Pengajuan</td>
             <td>: {{ \Carbon\Carbon::parse($spj->diajukan_at ?? $spj->created_at)->format('d F Y, H:i') }}</td>
         </tr>

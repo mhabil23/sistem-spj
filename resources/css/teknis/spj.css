@@ -153,6 +153,23 @@
     background: linear-gradient(135deg, #059669, #047857);
 }
 
+.spj-btn-print.is-printed {
+    background: linear-gradient(135deg, #047857, #065f46) !important;
+    box-shadow: 0 4px 14px rgba(4, 120, 87, 0.4) !important;
+}
+
+@keyframes shakePrint {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+.print-btn-shake {
+    animation: shakePrint 0.5s ease-in-out 2, pulseSoft 1s infinite;
+    outline: 2px solid #ef4444 !important;
+    outline-offset: 3px;
+}
+
 /* Form Inputs */
 .spj-form-group {
     margin-bottom: 1.5rem;

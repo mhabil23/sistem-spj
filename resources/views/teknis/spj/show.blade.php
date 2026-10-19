@@ -72,11 +72,6 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
         <div class="spj-detail-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
             
             <div class="spj-detail-item">
-                <div class="spj-detail-label">Nomor SPJ</div>
-                <div class="spj-detail-value" style="font-weight: 700; color: #344054;">{{ $spj->nomor_spj }}</div>
-            </div>
-
-            <div class="spj-detail-item">
                 <div class="spj-detail-label">Tanggal Kegiatan</div>
                 <div class="spj-detail-value">{{ $spj->tanggal->format('d F Y') }}</div>
             </div>
@@ -214,7 +209,6 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
 
 @php
     $spjJsData = [
-        'nomor' => $spj->nomor_spj,
         'pengaju' => $spj->user->name ?? 'Staf Teknis',
         'kegiatan' => $spj->kegiatan,
         'nilai' => 'Rp ' . number_format($spj->nilai, 0, ',', '.'),
@@ -262,7 +256,6 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Yth. Tim Verifikasi Umum BPS,\n\n`
                     + `Saya telah mengajukan dokumen SPJ melalui sistem SPJ:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Pengaju*  : ${spjData.pengaju}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Nilai*    : ${spjData.nilai}\n\n`
@@ -278,7 +271,7 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
             message = `*KONSULTASI KELENGKAPAN BERKAS SPJ*\n`
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Tim Umum,\n\n`
-                    + `Terkait pengajuan SPJ *${spjData.nomor}* (${spjData.kegiatan}), mohon petunjuk apakah berkas fisik yang saya siapkan sudah lengkap atau ada dokumen pendukung lain yang perlu ditambahkan?\n\n`
+                    + `Terkait pengajuan SPJ *${spjData.kegiatan}*, mohon petunjuk apakah berkas fisik yang saya siapkan sudah lengkap atau ada dokumen pendukung lain yang perlu ditambahkan?\n\n`
                     + `Terima kasih.\n`
                     + `_Salam, ${spjData.pengaju}_`;
         }

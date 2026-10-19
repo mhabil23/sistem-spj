@@ -12,7 +12,7 @@ class RiwayatController extends Controller
     {
         $query = SpjHistory::with([
             'spj',
-            'user'
+            'user',
         ]);
 
         // Pencarian
@@ -21,9 +21,7 @@ class RiwayatController extends Controller
             $search = $request->search;
 
             $query->whereHas('spj', function ($q) use ($search) {
-
-                $q->where('nomor_spj', 'like', "%{$search}%")
-                    ->orWhere('kegiatan', 'like', "%{$search}%");
+                $q->where('kegiatan', 'like', "%{$search}%");
             });
         }
 

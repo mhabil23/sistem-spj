@@ -57,6 +57,12 @@ class SpjController extends Controller
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
 
+        if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
+            return back()->withInput()->withErrors([
+                'status' => 'SPJ tidak dapat diajukan jika belum menekan Print sampai tercetak. Silakan cetak lembar checklist berkas terlebih dahulu.',
+            ]);
+        }
+
         $dokumenKelengkapan = [];
         if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
             foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
@@ -70,7 +76,6 @@ class SpjController extends Controller
 
         Spj::create([
             'user_id' => Auth::id() ?? 1,
-            'nomor_spj' => 'SPJ-'.date('YmdHis').'-'.rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,
@@ -99,6 +104,12 @@ class SpjController extends Controller
             'no_wa' => 'nullable|string|max:25',
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',
         ]);
+
+        if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
+            return back()->withInput()->withErrors([
+                'status' => 'SPJ tidak dapat diajukan jika belum menekan Print sampai tercetak. Silakan cetak lembar checklist berkas terlebih dahulu.',
+            ]);
+        }
 
         $dokumenKelengkapan = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
         if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {

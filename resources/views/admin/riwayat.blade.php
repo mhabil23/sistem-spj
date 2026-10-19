@@ -122,7 +122,7 @@
                                 </strong>
 
                                 <span>
-                                    {{ $history->spj?->nomor_spj ?? '-' }}
+                                    {{ $history->spj?->user?->name ?? 'Staf Teknis' }}
                                 </span>
                             </div>
 

@@ -192,7 +192,6 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
                 <thead>
                     <tr>
                         <th>Tanggal Pengajuan</th>
-                        <th>Nomor SPJ</th>
                         <th>Pengaju (Teknis)</th>
                         <th>Kegiatan</th>
                         <th>Status</th>
@@ -203,7 +202,6 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
                     @forelse($antreanSpjs as $spj)
                     <tr>
                         <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
-                        <td><strong style="color: #0f172a;">{{ $spj->nomor_spj }}</strong></td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>
                         <td>
@@ -219,7 +217,7 @@ $subtitle = 'Ringkasan antrean pemeriksaan SPJ.';
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; color: #64748b; padding: 48px 24px;">
+                        <td colspan="5" style="text-align: center; color: #64748b; padding: 48px 24px;">
                             <ion-icon name="folder-open-outline" style="font-size: 48px; color: #cbd5e1; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
                             Tidak ada antrean SPJ saat ini. Semua sudah diperiksa! 🎉
                         </td>

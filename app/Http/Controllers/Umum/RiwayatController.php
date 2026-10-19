@@ -15,12 +15,11 @@ class RiwayatController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('nomor_spj', 'like', "%{$search}%")
-                  ->orWhere('kegiatan', 'like', "%{$search}%")
-                  ->orWhereHas('user', function($qu) use ($search) {
-                      $qu->where('name', 'like', "%{$search}%");
-                  });
+            $query->where(function ($q) use ($search) {
+                $q->where('kegiatan', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($qu) use ($search) {
+                        $qu->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -36,14 +35,14 @@ class RiwayatController extends Controller
     public function destroy($id)
     {
         $spj = Spj::findOrFail($id);
-        
+
         // Pastikan hanya bisa menghapus jika status bukan diajukan (sudah ada di riwayat)
         if ($spj->status === 'diajukan') {
             return back()->with('error', 'SPJ yang masih dalam antrean tidak dapat dihapus.');
         }
-        
+
         $spj->delete();
-        
+
         return back()->with('success', 'Riwayat SPJ berhasil dihapus selamanya.');
     }
 }

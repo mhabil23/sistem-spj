@@ -40,7 +40,7 @@ $subtitle = 'Kelola file dokumen pendukung (PDF/Gambar) untuk SPJ Anda.';
         <table>
             <thead>
                 <tr>
-                    <th>Nomor SPJ</th>
+                    <th style="width: 50px; text-align: center;">No</th>
                     <th>Kegiatan</th>
                     <th>Status</th>
                     <th>Dokumen Terlampir</th>
@@ -50,7 +50,7 @@ $subtitle = 'Kelola file dokumen pendukung (PDF/Gambar) untuk SPJ Anda.';
             <tbody>
                 @forelse($spjs as $spj)
                 <tr>
-                    <td><strong>{{ $spj->nomor_spj }}</strong></td>
+                    <td style="text-align: center; font-weight: 600; color: #6b7280;">{{ $loop->iteration }}</td>
                     <td>{{ $spj->kegiatan }}</td>
                     <td>
                         @php

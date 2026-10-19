@@ -164,7 +164,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
         <div class="filter-wrapper">
             <form action="{{ route('umum.riwayat.index') }}" method="GET" class="filter-form">
                 <div class="filter-group" style="flex: 2;">
-                    <label class="filter-label">Cari (No. SPJ / Nama / Kegiatan)</label>
+                    <label class="filter-label">Cari (Nama / Kegiatan)</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
                 </div>
                 <div class="filter-group">
@@ -193,7 +193,6 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                 <thead>
                     <tr>
                         <th>Terakhir Diupdate</th>
-                        <th>Nomor SPJ</th>
                         <th>Pengaju</th>
                         <th>Kegiatan</th>
                         <th>Status Saat Ini</th>
@@ -205,11 +204,10 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                     @forelse($riwayatSpjs as $spj)
                     <tr>
                         <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
-                        <td>
-                            <a href="{{ route('umum.spj.show', $spj->id) }}" style="color: #2563eb; font-weight: 600; text-decoration: none;">{{ $spj->nomor_spj }}</a>
-                        </td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
-                        <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 30) }}</td>
+                        <td>
+                            <a href="{{ route('umum.spj.show', $spj->id) }}" style="color: #2563eb; font-weight: 600; text-decoration: none;">{{ \Illuminate\Support\Str::limit($spj->kegiatan, 30) }}</a>
+                        </td>
                         <td>
                             @php
                                 if(str_contains($spj->status, 'revisi')) {
@@ -273,7 +271,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7">
+                        <td colspan="6">
                             <div class="empty-state">
                                 <ion-icon name="folder-open-outline" style="font-size: 48px; color: #cbd5e1; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
                                 Belum ada riwayat pemeriksaan SPJ.

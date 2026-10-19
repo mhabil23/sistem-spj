@@ -193,7 +193,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang telah dilengkapi Nomor SPM oleh
         <div class="filter-wrapper">
             <form action="{{ route('bendahara.spj.index') }}" method="GET" class="filter-form">
                 <div class="filter-group" style="flex: 2;">
-                    <label class="filter-label">Cari (No. SPJ / Nama / Kegiatan)</label>
+                    <label class="filter-label">Cari (Nama / Kegiatan)</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
                 </div>
                 <div class="filter-group">

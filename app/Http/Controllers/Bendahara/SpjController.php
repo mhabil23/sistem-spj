@@ -16,8 +16,7 @@ class SpjController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('nomor_spj', 'like', "%{$search}%")
-                    ->orWhere('kegiatan', 'like', "%{$search}%")
+                $q->where('kegiatan', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($qu) use ($search) {
                         $qu->where('name', 'like', "%{$search}%");
                     });

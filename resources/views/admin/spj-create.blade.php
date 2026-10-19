@@ -191,6 +191,17 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     </label>
                 </div>
                 @error('status') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+
+                <div id="print_status_banner" style="display: none; width: 100%; margin-top: 1.25rem; padding: 0.85rem 1.25rem; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 500;"></div>
+
+                <div id="print_requirement_hint" style="display: none; margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-md); background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; font-size: 0.825rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        <span><strong>Wajib Print:</strong> Anda memilih opsi <strong>Ajukan Sekarang</strong>. Sesuai ketentuan, Anda <u>wajib menekan tombol Print</u> dan mencetak lembar checklist berkas SPJ terlebih dahulu sebelum pengajuan dapat disimpan.</span>
+                    </div>
+                </div>
+
+                <input type="hidden" name="is_printed" id="is_printed_input" value="{{ old('is_printed', '0') }}">
             </div>
 
             <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap;">
@@ -469,6 +480,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
     });
 
     function handleNamaBelanjaChange() {
+        resetPrintStatus();
         const nama = document.getElementById("nama_belanja").value;
         const selJenisBelanja = document.getElementById("jenis_belanja");
         const docContainer = document.getElementById("dokumen_container");
@@ -491,6 +503,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
     }
 
     function handleJenisBelanjaChange() {
+        resetPrintStatus();
         const nama = document.getElementById("nama_belanja").value;
         const jenis = document.getElementById("jenis_belanja").value;
         const docContainer = document.getElementById("dokumen_container");
@@ -823,13 +836,76 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         frameDoc.write(printHtml);
         frameDoc.close();
 
+        let printCompleted = false;
+        const markAsPrinted = function() {
+            if (printCompleted) return;
+            printCompleted = true;
+            isPrinted = true;
+
+            const isPrintedInput = document.getElementById('is_printed_input');
+            if (isPrintedInput) isPrintedInput.value = '1';
+
+            const printBtn = document.getElementById('btn_cetak_langsung');
+            if (printBtn) {
+                printBtn.classList.remove('print-btn-shake');
+                printBtn.classList.add('is-printed');
+                printBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Sudah Dicetak
+                `;
+            }
+
+            const banner = document.getElementById('print_status_banner');
+            if (banner) {
+                banner.style.display = 'flex';
+                banner.style.alignItems = 'center';
+                banner.style.gap = '0.5rem';
+                banner.style.backgroundColor = '#d1fae5';
+                banner.style.color = '#065f46';
+                banner.style.border = '1px solid #34d399';
+                banner.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak. Anda sekarang dapat melanjutkan pengajuan SPJ.</span>
+                `;
+            }
+
+            const hint = document.getElementById('print_requirement_hint');
+            if (hint) {
+                hint.style.display = 'none';
+            }
+        };
+
         const doPrint = function() {
             try {
+                try {
+                    printFrame.contentWindow.addEventListener('afterprint', markAsPrinted, { once: true });
+                } catch(e) {}
+                window.addEventListener('afterprint', markAsPrinted, { once: true });
+
+                const onFocusBack = function() {
+                    window.removeEventListener('focus', onFocusBack);
+                    setTimeout(markAsPrinted, 300);
+                };
+                window.addEventListener('focus', onFocusBack, { once: true });
+
                 printFrame.contentWindow.focus();
                 printFrame.contentWindow.print();
             } catch (err) {
                 const printWin = window.open('', '_blank');
                 if (printWin) {
+                    try {
+                        printWin.addEventListener('afterprint', markAsPrinted, { once: true });
+                    } catch(e) {}
+                    window.addEventListener('afterprint', markAsPrinted, { once: true });
+
+                    const onFocusBack = function() {
+                        window.removeEventListener('focus', onFocusBack);
+                        setTimeout(markAsPrinted, 300);
+                    };
+                    window.addEventListener('focus', onFocusBack, { once: true });
+
                     printWin.document.write(printHtml);
                     printWin.document.close();
                     printWin.focus();
@@ -849,5 +925,102 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             setTimeout(doPrint, 200);
         }
     }
+
+    let isPrinted = {{ old('is_printed', '0') == '1' ? 'true' : 'false' }};
+
+    function resetPrintStatus() {
+        isPrinted = false;
+        const input = document.getElementById('is_printed_input');
+        if (input) input.value = '0';
+
+        const printBtn = document.getElementById('btn_cetak_langsung');
+        if (printBtn) {
+            printBtn.classList.remove('is-printed');
+            printBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                Print
+            `;
+        }
+
+        const banner = document.getElementById('print_status_banner');
+        if (banner) {
+            banner.style.display = 'none';
+        }
+
+        updatePrintNotice();
+    }
+
+    function updatePrintNotice() {
+        const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+        const hint = document.getElementById('print_requirement_hint');
+        if (hint) {
+            if (selectedStatus === 'diajukan' && !isPrinted) {
+                hint.style.display = 'block';
+            } else {
+                hint.style.display = 'none';
+            }
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const statusRadios = document.querySelectorAll('input[name="status"]');
+        statusRadios.forEach(radio => {
+            radio.addEventListener('change', updatePrintNotice);
+        });
+
+        if (isPrinted) {
+            const printBtn = document.getElementById('btn_cetak_langsung');
+            if (printBtn) {
+                printBtn.classList.add('is-printed');
+                printBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Sudah Dicetak
+                `;
+            }
+        }
+
+        updatePrintNotice();
+
+        const form = document.querySelector('form[action="{{ route('admin.spj.store') }}"]') || document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+                if (selectedStatus === 'diajukan' && !isPrinted) {
+                    e.preventDefault();
+
+                    const banner = document.getElementById('print_status_banner');
+                    if (banner) {
+                        banner.style.display = 'flex';
+                        banner.style.alignItems = 'center';
+                        banner.style.gap = '0.5rem';
+                        banner.style.backgroundColor = '#fee2e2';
+                        banner.style.color = '#991b1b';
+                        banner.style.border = '1px solid #f87171';
+                        banner.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            <span><strong>Belum Dicetak:</strong> Tidak dapat mengajukan SPJ jika belum menekan <strong>Print</strong> sampai tercetak. Silakan klik tombol Print terlebih dahulu.</span>
+                        `;
+                    }
+
+                    const printBtn = document.getElementById('btn_cetak_langsung');
+                    if (printBtn) {
+                        printBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        printBtn.classList.remove('print-btn-shake');
+                        void printBtn.offsetWidth;
+                        printBtn.classList.add('print-btn-shake');
+                    }
+
+                    alert("SPJ tidak dapat diajukan jika belum menekan tombol Print sampai tercetak!\nSilakan cetak lembar checklist berkas fisik SPJ terlebih dahulu.");
+                    return false;
+                }
+            });
+        }
+    });
 </script>
 @endpush

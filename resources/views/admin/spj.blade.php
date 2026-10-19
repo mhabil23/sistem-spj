@@ -86,7 +86,7 @@
 
                     <input
                         type="text"
-                        placeholder="Cari nomor SPJ atau uraian...">
+                        placeholder="Cari uraian atau kegiatan...">
                 </div>
 
                 <select class="filter-select">
@@ -118,7 +118,6 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nomor SPJ</th>
                         <th>Uraian</th>
                         <th>Nilai</th>
                         <th>Tanggal</th>
@@ -136,14 +135,6 @@
                         {{-- NO --}}
                         <td>
                             {{ $index + 1 }}
-                        </td>
-
-
-                        {{-- NOMOR SPJ --}}
-                        <td>
-                            <strong>
-                                {{ $spj->nomor_spj }}
-                            </strong>
                         </td>
 
 
@@ -215,7 +206,7 @@
                     <tr>
 
                         <td
-                            colspan="8"
+                            colspan="6"
                             style="text-align:center; padding:30px;">
                             Belum ada data SPJ.
                         </td>

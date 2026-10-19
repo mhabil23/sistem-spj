@@ -208,7 +208,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
         <div class="filter-wrapper">
             <form action="{{ route('bendahara.riwayat.index') }}" method="GET" class="filter-form">
                 <div class="filter-group" style="flex: 2;">
-                    <label class="filter-label">Cari (No. SPJ / Nama / Kegiatan)</label>
+                    <label class="filter-label">Cari (Nama / Kegiatan)</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
                 </div>
                 <div class="filter-group">
@@ -237,7 +237,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                 <thead>
                     <tr>
                         <th>Terakhir Diupdate</th>
-                        <th>Nomor SPJ / Kegiatan</th>
+                        <th>Kegiatan</th>
                         <th>Nomor SPM</th>
                         <th>Pengaju</th>
                         <th>Nilai (Rp)</th>
@@ -251,8 +251,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                     <tr>
                         <td style="color: #64748b;">{{ $spj->updated_at->format('d M Y') }}</td>
                         <td>
-                            <a href="{{ route('bendahara.spj.show', $spj->id) }}" style="color: #3b82f6; font-weight: 700; text-decoration: none;">{{ $spj->nomor_spj }}</a><br>
-                            <small style="color: #64748b;">{{ \Illuminate\Support\Str::limit($spj->kegiatan, 30) }}</small>
+                            <a href="{{ route('bendahara.spj.show', $spj->id) }}" style="color: #3b82f6; font-weight: 700; text-decoration: none;">{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</a>
                         </td>
                         <td><strong style="color: #0f172a;">{{ $spj->nomor_spm ?? '-' }}</strong></td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>

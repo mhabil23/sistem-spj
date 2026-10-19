@@ -22,7 +22,7 @@
             <tr>
                 <th>No</th>
                 <th>Tanggal Cair</th>
-                <th>Nomor SPJ</th>
+                <th>Kegiatan</th>
                 <th>Nomor SPM</th>
                 <th>Pengaju</th>
                 <th>Nilai (Rp)</th>
@@ -34,7 +34,7 @@
             <tr>
                 <td class="text-center">{{ $index + 1 }}</td>
                 <td>{{ $spj->diselesaikan_at ? \Carbon\Carbon::parse($spj->diselesaikan_at)->format('d M Y H:i') : $spj->updated_at->format('d M Y H:i') }}</td>
-                <td>{{ $spj->nomor_spj }}</td>
+                <td>{{ $spj->kegiatan }}</td>
                 <td>{{ $spj->nomor_spm ?? '-' }}</td>
                 <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                 <td>{{ number_format($spj->nilai, 0, ',', '.') }}</td>

@@ -224,7 +224,6 @@ $title = 'Detail Pencairan SPJ - Bendahara';
 
 @php
     $spjJsData = [
-        'nomor' => $spj->nomor_spj,
         'pengaju' => $spj->user->name ?? 'Staf Teknis',
         'kegiatan' => $spj->kegiatan,
         'nilai' => 'Rp ' . number_format($spj->nilai, 0, ',', '.'),
@@ -299,7 +298,6 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                     + `Bendahara Pengeluaran BPS Kab. Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Dana untuk SPJ Anda telah berhasil *DICAIRKAN*:\n\n`
-                    + `• *No. SPJ*   : ${spjData.nomor}\n`
                     + `• *Kegiatan*  : ${spjData.kegiatan}\n`
                     + `• *Nilai*     : ${spjData.nilai}\n`
                     + `• *Ref/Bukti* : ${bukti}\n\n`
@@ -316,7 +314,6 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                     + `Bendahara Pengeluaran BPS Kab. Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Terdapat kendala dalam pencairan SPJ Anda:\n\n`
-                    + `• *No. SPJ*  : ${spjData.nomor}\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Kendala / Catatan*:\n"${catatan}"\n\n`
                     + `Mohon segera konfirmasi ke Bendahara Pengeluaran.\n\n`

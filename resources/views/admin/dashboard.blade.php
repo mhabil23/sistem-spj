@@ -137,8 +137,8 @@
 
                     <tr>
 
-                        <th>
-                            Nomor SPJ
+                        <th style="width: 50px; text-align: center;">
+                            No
                         </th>
 
                         <th>
@@ -168,11 +168,8 @@
 
                     <tr>
 
-                        {{-- NOMOR SPJ --}}
-                        <td>
-                            <strong>
-                                {{ $spj->nomor_spj }}
-                            </strong>
+                        <td style="text-align: center;">
+                            {{ $loop->iteration }}
                         </td>
 
 
@@ -316,23 +313,23 @@
 
                         @if($spj->status === 'selesai')
 
-                        {{ $spj->nomor_spj }} selesai
+                        SPJ selesai
 
                         @elseif($spj->status === 'dikembalikan')
 
-                        {{ $spj->nomor_spj }} dikembalikan
+                        SPJ dikembalikan
 
                         @elseif($spj->status === 'diajukan')
 
-                        {{ $spj->nomor_spj }} diajukan
+                        SPJ diajukan
 
                         @elseif($spj->status === 'diproses')
 
-                        {{ $spj->nomor_spj }} sedang diproses
+                        SPJ sedang diproses
 
                         @else
 
-                        {{ $spj->nomor_spj }} dibuat
+                        SPJ dibuat
 
                         @endif
 

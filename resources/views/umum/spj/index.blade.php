@@ -164,7 +164,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
         <div class="filter-wrapper">
             <form action="{{ route('umum.spj.index') }}" method="GET" class="filter-form">
                 <div class="filter-group" style="flex: 2;">
-                    <label class="filter-label">Cari (No. SPJ / Nama / Kegiatan)</label>
+                    <label class="filter-label">Cari (Nama / Kegiatan)</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
                 </div>
                 <div class="filter-group">
@@ -193,7 +193,6 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                 <thead>
                     <tr>
                         <th>Tanggal Pengajuan</th>
-                        <th>Nomor SPJ</th>
                         <th>Pengaju</th>
                         <th>Kegiatan</th>
                         <th>Nilai (Rp)</th>
@@ -205,7 +204,6 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                     @forelse($spjs as $spj)
                     <tr>
                         <td style="color: #64748b;">{{ ($spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at) : $spj->created_at)->format('d M Y') }}</td>
-                        <td><strong style="color: #0f172a;">{{ $spj->nomor_spj }}</strong></td>
                         <td>{{ $spj->user->name ?? 'Teknis' }}</td>
                         <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>
                         <td style="font-weight: 500;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
@@ -263,7 +261,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                     </tr>
                 @empty
                 <tr>
-                    <td colspan="7">
+                    <td colspan="6">
                         <div class="empty-state">
                             <ion-icon name="folder-open-outline" style="font-size: 48px; color: #cbd5e1; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
                             Tidak ada data SPJ untuk ditampilkan.
