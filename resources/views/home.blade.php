@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
     @vite(['resources/css/home.css'])
 </head>
@@ -167,33 +168,10 @@
             <!-- Left Hero Content -->
             <div class="hero-content">
 
-                <span class="hero-badge">
-                    SISTEM PENGELOLAAN SPJ
-                </span>
-
                 <h1 class="hero-main-title">
                     Kelola SPJ Cerdas <br>
                     <span class="gradient-text">&amp; Transparan</span>
                 </h1>
-
-                <p class="hero-description">
-                    Sistem untuk mengelola pengajuan, pemeriksaan, persetujuan,
-                    pembayaran, hingga pengarsipan Surat Pertanggungjawaban secara
-                    terintegrasi di BPS Kabupaten Kolaka Utara.
-                </p>
-
-                <div class="hero-buttons">
-                    <a href="{{ auth()->check() ? url('/' . auth()->user()->role . '/dashboard') : route('login') }}" class="btn-primary">
-                        <span>Mulai Pengajuan</span>
-                        <svg class="btn-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="9 18 15 12 9 6"></polyline>
-                        </svg>
-                    </a>
-
-                    <a href="#alur" class="btn-secondary">
-                        Lihat Alur
-                    </a>
-                </div>
 
             </div>
 
@@ -206,7 +184,6 @@
                     <div class="glass-card-header">
                         <div>
                             <span class="card-status-label">STATUS SPJ</span>
-                            <h3 class="card-spj-id">SPJ-2026-001</h3>
                         </div>
 
                         <div class="badge-status-diproses">
@@ -420,7 +397,9 @@
             <div class="feature-grid">
 
                 <div class="feature">
-                    <div class="feature-icon">📑</div>
+                    <div class="feature-icon feat-blue">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
                     <h3>Pengajuan SPJ</h3>
                     <p>
                         Pengajuan SPJ dilakukan secara
@@ -429,7 +408,9 @@
                 </div>
 
                 <div class="feature">
-                    <div class="feature-icon">🔍</div>
+                    <div class="feature-icon feat-green">
+                        <i class="bi bi-search"></i>
+                    </div>
                     <h3>Pemeriksaan</h3>
                     <p>
                         Setiap dokumen dapat diperiksa
@@ -438,7 +419,9 @@
                 </div>
 
                 <div class="feature">
-                    <div class="feature-icon">🔔</div>
+                    <div class="feature-icon feat-amber">
+                        <i class="bi bi-bell"></i>
+                    </div>
                     <h3>Status Real-time</h3>
                     <p>
                         Pantau posisi SPJ dari pengajuan
@@ -447,7 +430,9 @@
                 </div>
 
                 <div class="feature">
-                    <div class="feature-icon">🗂️</div>
+                    <div class="feature-icon feat-purple">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
                     <h3>Arsip Digital</h3>
                     <p>
                         Dokumen dan riwayat SPJ tersimpan
