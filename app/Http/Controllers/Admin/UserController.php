@@ -54,7 +54,7 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,teknis,umum,ppk,bendahara',
             'status' => 'required|in:aktif,nonaktif',
             'password' => 'nullable|min:8|confirmed',
@@ -66,7 +66,7 @@ class UserController extends Controller
         $user->status = $validated['status'];
 
         // Password hanya diubah kalau diisi
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 

@@ -10,29 +10,31 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
     @vite(['resources/css/umum/spj.css'])
     <style>
         .show-panel {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e2e8f0;
+            background-color: var(--dash-card-bg);
+            border-radius: 20px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--dash-border);
             margin-bottom: 24px;
             overflow: hidden;
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
 
         .show-panel-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
+            padding: 22px 26px;
+            border-bottom: 1px solid var(--dash-border);
+            background-color: var(--dash-table-header-bg);
+            transition: background-color 0.25s ease, border-color 0.25s ease;
         }
         
         .show-panel-header h2 {
             font-size: 16px;
-            color: #0f172a;
+            color: var(--dash-text-dark);
             margin: 0;
             font-weight: 700;
         }
 
         .detail-grid {
-            padding: 24px;
+            padding: 24px 26px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
@@ -40,7 +42,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         
         .detail-item span {
             display: block;
-            color: #64748b;
+            color: var(--dash-text-muted);
             font-size: 12px;
             font-weight: 600;
             margin-bottom: 6px;
@@ -48,17 +50,134 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         
         .detail-item strong {
             font-size: 16px;
-            color: #0f172a;
+            color: var(--dash-text-dark);
             display: block;
+        }
+
+        /* Dark Theme Adaptations for Show View */
+        html.dark-theme .sla-panel {
+            background: rgba(16, 185, 129, 0.12) !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+        }
+
+        html.dark-theme .sla-panel strong,
+        html.dark-theme .sla-panel span {
+            color: #4ade80 !important;
+        }
+
+        html.dark-theme .sla-panel > div:last-child {
+            background: rgba(16, 185, 129, 0.18) !important;
+            border-color: rgba(16, 185, 129, 0.3) !important;
+        }
+
+        html.dark-theme .doc-box-container {
+            background-color: var(--dash-table-header-bg) !important;
+            border-color: var(--dash-border) !important;
+        }
+
+        html.dark-theme .doc-card-item {
+            background: var(--dash-card-bg) !important;
+            border-color: var(--dash-border) !important;
+        }
+
+        html.dark-theme .doc-card-item span {
+            color: var(--dash-text-dark) !important;
+        }
+
+        html.dark-theme .action-box-approve {
+            background: rgba(16, 185, 129, 0.1) !important;
+            border-color: rgba(16, 185, 129, 0.35) !important;
+        }
+
+        html.dark-theme .action-box-approve h3,
+        html.dark-theme .action-box-approve label {
+            color: #34d399 !important;
+        }
+
+        html.dark-theme .action-box-approve p {
+            color: #a7f3d0 !important;
+        }
+
+        html.dark-theme .action-box-reject {
+            background: rgba(239, 68, 68, 0.1) !important;
+            border-color: rgba(239, 68, 68, 0.35) !important;
+        }
+
+        html.dark-theme .action-box-reject h3,
+        html.dark-theme .action-box-reject label {
+            color: #f87171 !important;
+        }
+
+        html.dark-theme .action-box-reject p {
+            color: #fecaca !important;
+        }
+
+        html.dark-theme .action-box-ppspm {
+            background: rgba(139, 92, 246, 0.1) !important;
+            border-color: rgba(139, 92, 246, 0.35) !important;
+        }
+
+        html.dark-theme .action-box-ppspm h3 {
+            color: #a78bfa !important;
+        }
+
+        html.dark-theme .action-box-ppspm p {
+            color: #ddd6fe !important;
+        }
+
+        html.dark-theme .action-textarea {
+            background-color: var(--dash-input-bg) !important;
+            border-color: var(--dash-input-border) !important;
+            color: var(--dash-text-dark) !important;
+        }
+
+        html.dark-theme .status-info-box {
+            background-color: var(--dash-table-header-bg) !important;
+        }
+
+        html.dark-theme .status-info-box h3 {
+            color: var(--dash-text-dark) !important;
+        }
+
+        html.dark-theme .status-info-box p {
+            color: var(--dash-text-muted) !important;
+        }
+
+        html.dark-theme .wa-modal-card {
+            background: var(--dash-card-bg) !important;
+            border: 1px solid var(--dash-border) !important;
+            color: var(--dash-text-dark) !important;
+        }
+
+        html.dark-theme .wa-modal-label {
+            color: var(--dash-text-dark) !important;
+        }
+
+        html.dark-theme .wa-modal-input {
+            background-color: var(--dash-input-bg) !important;
+            border-color: var(--dash-input-border) !important;
+            color: var(--dash-text-dark) !important;
+        }
+
+        html.dark-theme .wa-tpl-btn {
+            background-color: var(--dash-table-header-bg) !important;
+            border-color: var(--dash-border) !important;
+            color: var(--dash-text-muted) !important;
+        }
+
+        html.dark-theme .btn-wa-close {
+            background-color: var(--dash-table-header-bg) !important;
+            border-color: var(--dash-border) !important;
+            color: var(--dash-text-muted) !important;
         }
     </style>
 @endpush
 
-<div style="padding: 32px 40px; box-sizing: border-box; max-width: 100%;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+<div style="padding-top: 8px; box-sizing: border-box; max-width: 100%;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
         <div>
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap;">
-                <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin: 0;">Verifikasi SPJ: {{ $spj->kegiatan }}</h2>
+                <h2 style="font-size: 24px; font-weight: 700; color: var(--dash-text-dark); margin: 0;">Verifikasi SPJ: {{ $spj->kegiatan }}</h2>
                 @php
                     $headerBadgeStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
                     $headerStatusText = 'Diteruskan ke PPK';
@@ -90,7 +209,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             <button type="button" onclick="openWaModal()" style="background-color: #25d366; color: white; padding: 10px 16px; border-radius: 8px; border: none; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(37, 211, 102, 0.25); cursor: pointer; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a'; this.style.transform='translateY(-1px)';" onmouseout="this.style.backgroundColor='#25d366'; this.style.transform='translateY(0)';">
                 <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WhatsApp
             </button>
-            <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" style="background-color: #10b981; color: white; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2); transition: 0.2s;" onmouseover="this.style.backgroundColor='#059669'; this.style.transform='translateY(-1px)';" onmouseout="this.style.backgroundColor='#10b981'; this.style.transform='translateY(0)';">
+            <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="btn-dash-primary" style="height: 38px; padding: 0 16px; font-size: 13px; text-decoration: none;">
                 <ion-icon name="print-outline" style="font-size: 16px;"></ion-icon> Cetak Lembar Checklist
             </a>
             <a href="{{ route('umum.spj.index') }}" style="background-color: #f1f5f9; color: #475569; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #cbd5e1; transition: 0.2s;" onmouseover="this.style.backgroundColor='#e2e8f0';" onmouseout="this.style.backgroundColor='#f1f5f9';">
@@ -99,12 +218,6 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         </div>
     </div>
 
-    @if(session('success'))
-    <div style="background-color: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: 16px 20px; border-radius: 10px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(16,185,129,0.1);">
-        <ion-icon name="checkmark-circle" style="font-size: 22px; color: #10b981; flex-shrink: 0;"></ion-icon>
-        <span>{{ session('success') }}</span>
-    </div>
-    @endif
     @if(session('trigger_wa'))
     <div style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid #10b981; border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); flex-wrap: wrap; gap: 16px;">
         <div style="display: flex; align-items: center; gap: 14px;">
@@ -121,18 +234,12 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         </button>
     </div>
     @endif
-    @if(session('error'))
-    <div style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 16px 20px; border-radius: 10px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(239,68,68,0.1);">
-        <ion-icon name="alert-circle" style="font-size: 22px; color: #ef4444; flex-shrink: 0;"></ion-icon>
-        <span>{{ session('error') }}</span>
-    </div>
-    @endif
 
     @php
     $waktuMulai = $spj->diajukan_at ?? $spj->created_at;
     @endphp
     @if($waktuMulai)
-    <div class="show-panel" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+    <div class="show-panel sla-panel" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
         <div style="padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <strong style="color: #166534; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 15px;">
@@ -195,7 +302,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             </div>
             <div class="detail-item" style="grid-column: span 2;">
                 <span>Keterangan / Catatan Teknis</span>
-                <p style="color: #475569; margin: 0; font-size: 14px; line-height: 1.5; white-space: pre-line;">{{ $spj->keterangan ?: '-' }}</p>
+                <p style="color: var(--dash-text-muted); margin: 0; font-size: 14px; line-height: 1.5; white-space: pre-line;">{{ $spj->keterangan ?: '-' }}</p>
             </div>
         </div>
     </div>
@@ -205,7 +312,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             <h2>Dokumen Pendukung</h2>
         </div>
         <div style="padding: 24px;">
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem;">
+            <div class="doc-box-container" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem;">
                 @if($spj->dokumen_file)
                     @php
                         $dokumens = json_decode($spj->dokumen_file, true);
@@ -214,7 +321,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     @if(is_array($dokumens) && count($dokumens) > 0)
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
                             @foreach($dokumens as $doc)
-                                <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: white; border: 1px solid {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? '#86efac' : '#e2e8f0' }}; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                                <div class="doc-card-item" style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: white; border: 1px solid {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? '#86efac' : '#e2e8f0' }}; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
                                     <div style="margin-top: 0.125rem;">
                                         @if(isset($doc['disiapkan']) && $doc['disiapkan'])
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -263,7 +370,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                     
                     <!-- OPSI SETUJUI -->
-                    <div style="border: 1px solid #10b981; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f0fdf4; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
+                    <div class="action-box-approve" style="border: 1px solid #10b981; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f0fdf4; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <ion-icon name="checkmark-circle" style="color: #10b981; font-size: 24px;"></ion-icon>
                             <h3 style="color: #065f46; margin: 0; font-size: 18px;">Setujui SPJ</h3>
@@ -271,10 +378,10 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                         <p style="color: #047857; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika dokumen telah lengkap dan benar. Pengajuan akan diteruskan ke PPK.</p>
                         
                         <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #065f46;">Catatan Internal (Dilihat oleh PPK - Opsional)</label>
-                        <textarea name="catatan_internal" rows="2" style="width: 100%; padding: 12px; border: 1px solid #6ee7b7; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Cth: Kuitansi asli sudah dicek dan sesuai..."></textarea>
+                        <textarea name="catatan_internal" class="action-textarea" rows="2" style="width: 100%; padding: 12px; border: 1px solid #6ee7b7; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Cth: Kuitansi asli sudah dicek dan sesuai..."></textarea>
                         
                         <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="setujui" style="flex: 1; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(16,185,129,0.25);" onmouseover="this.style.backgroundColor='#059669'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#10b981'; this.style.transform='translateY(0)';">
+                            <button type="submit" name="action" value="setujui" style="flex: 1; background-color: var(--dash-btn-primary-bg); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px var(--dash-btn-primary-shadow);" onmouseover="this.style.backgroundColor='var(--dash-btn-primary-hover)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='var(--dash-btn-primary-bg)'; this.style.transform='translateY(0)';">
                                 <ion-icon name="send-outline" style="font-size: 18px;"></ion-icon> Teruskan ke PPK
                             </button>
                             <button type="button" onclick="openWaModal('setuju_umum')" title="Kirim Notifikasi WhatsApp ke Teknis" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
@@ -284,7 +391,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     </div>
 
                     <!-- OPSI TOLAK -->
-                    <div style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
+                    <div class="action-box-reject" style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
                             <h3 style="color: #991b1b; margin: 0; font-size: 18px;">Kembalikan (Revisi)</h3>
@@ -292,7 +399,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                         <p style="color: #7f1d1d; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika ada kesalahan atau dokumen kurang. SPJ akan dikembalikan ke Teknis.</p>
                         
                         <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #991b1b;">Catatan Kesalahan (Wajib diisi jika dikembalikan)</label>
-                        <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Cth: Dokumen invoice bulan lalu belum dilampirkan..."></textarea>
+                        <textarea name="catatan_revisi" class="action-textarea" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Cth: Dokumen invoice bulan lalu belum dilampirkan..."></textarea>
                         
                         <div style="display: flex; gap: 10px; margin-top: auto;">
                             <button type="submit" name="action" value="tolak" style="flex: 1; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
@@ -324,7 +431,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             </span>
         </div>
         <div style="padding: 24px;">
-            <p style="color: #475569; margin-top: 0; margin-bottom: 20px; font-size: 14px;">
+            <p style="color: var(--dash-text-muted); margin-top: 0; margin-bottom: 20px; font-size: 14px;">
                 Dokumen fisik sedang berada di meja PPK untuk diperiksa dan ditandatangani. Perbarui status berdasarkan keputusan PPK di bawah ini.
             </p>
             <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
@@ -333,7 +440,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                     
                     <!-- OPSI SETUJUI PPK -->
-                    <div style="border: 1px solid #10b981; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f0fdf4; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
+                    <div class="action-box-approve" style="border: 1px solid #10b981; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f0fdf4; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <ion-icon name="checkmark-circle" style="color: #10b981; font-size: 24px;"></ion-icon>
                             <h3 style="color: #065f46; margin: 0; font-size: 18px;">Persetujuan PPK</h3>
@@ -341,7 +448,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                         <p style="color: #047857; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika Pejabat Pembuat Komitmen (PPK) telah menyetujui dan menandatangani dokumen fisik SPJ. Status akan otomatis diteruskan ke PPSPM.</p>
                         
                         <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="setujui_ppk" style="flex: 1; background-color: #10b981; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(16,185,129,0.25);" onmouseover="this.style.backgroundColor='#059669'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#10b981'; this.style.transform='translateY(0)';">
+                            <button type="submit" name="action" value="setujui_ppk" style="flex: 1; background-color: var(--dash-btn-primary-bg); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px var(--dash-btn-primary-shadow);" onmouseover="this.style.backgroundColor='var(--dash-btn-primary-hover)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='var(--dash-btn-primary-bg)'; this.style.transform='translateY(0)';">
                                 <ion-icon name="checkmark-done-outline" style="font-size: 18px;"></ion-icon> PPK Menyetujui (TTD)
                             </button>
                             <button type="button" onclick="openWaModal('setuju_ppk')" title="Kirim Notifikasi WhatsApp ke Teknis" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
@@ -351,7 +458,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     </div>
 
                     <!-- OPSI TOLAK PPK -->
-                    <div style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
+                    <div class="action-box-reject" style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
                             <h3 style="color: #991b1b; margin: 0; font-size: 18px;">Kembalikan / Revisi PPK</h3>
@@ -359,7 +466,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                         <p style="color: #7f1d1d; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika PPK menolak atau meminta perbaikan berkas fisik. SPJ akan dikembalikan ke Teknis.</p>
                         
                         <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #991b1b;">Catatan Revisi dari PPK (Wajib jika dikembalikan)</label>
-                        <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan catatan perbaikan dari PPK..."></textarea>
+                        <textarea name="catatan_revisi" class="action-textarea" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan catatan perbaikan dari PPK..."></textarea>
                         
                         <div style="display: flex; gap: 10px; margin-top: auto;">
                             <button type="submit" name="action" value="tolak_ppk" style="flex: 1; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
@@ -391,7 +498,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             </span>
         </div>
         <div style="padding: 24px;">
-            <p style="color: #475569; margin-top: 0; margin-bottom: 20px; font-size: 14px;">
+            <p style="color: var(--dash-text-muted); margin-top: 0; margin-bottom: 20px; font-size: 14px;">
                 Berkas ini sedang berada di meja PPSPM. Silakan perbarui status di bawah ini berdasarkan hasil pemeriksaan PPSPM. Jika disetujui, berkas otomatis diteruskan ke Bendahara.
             </p>
             
@@ -401,7 +508,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                     
                     <!-- OPSI SETUJUI PPSPM -->
-                    <div style="border: 1px solid #8b5cf6; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f5f3ff; box-shadow: 0 4px 10px rgba(139,92,246,0.05);">
+                    <div class="action-box-ppspm" style="border: 1px solid #8b5cf6; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f5f3ff; box-shadow: 0 4px 10px rgba(139,92,246,0.05);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <ion-icon name="checkmark-circle" style="color: #8b5cf6; font-size: 24px;"></ion-icon>
                             <h3 style="color: #5b21b6; margin: 0; font-size: 18px;">PPSPM Menyetujui</h3>
@@ -419,7 +526,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     </div>
 
                     <!-- OPSI TOLAK PPSPM -->
-                    <div style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
+                    <div class="action-box-reject" style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                             <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
                             <h3 style="color: #991b1b; margin: 0; font-size: 18px;">PPSPM Menolak / Revisi</h3>
@@ -427,7 +534,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                         <p style="color: #7f1d1d; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">PPSPM meminta perbaikan. Berkas dikembalikan ke Teknis.</p>
                         
                         <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #991b1b;">Catatan Revisi dari PPSPM (Wajib jika dikembalikan)</label>
-                        <textarea name="catatan_revisi" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan alasan PPSPM menolak..."></textarea>
+                        <textarea name="catatan_revisi" class="action-textarea" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan alasan PPSPM menolak..."></textarea>
                         
                         <div style="display: flex; gap: 10px; margin-top: auto;">
                             <button type="submit" name="action" value="tolak_ppspm" style="flex: 1; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
@@ -452,14 +559,14 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
     </div>
     @else
     <div class="show-panel">
-        <div style="padding: 28px 24px; text-align: center; background-color: #f8fafc; border-radius: 12px;">
+        <div class="status-info-box" style="padding: 28px 24px; text-align: center; background-color: #f8fafc; border-radius: 12px;">
             <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
                 <ion-icon name="information-circle" style="font-size: 32px;"></ion-icon>
             </div>
-            <h3 style="color: #1e293b; margin: 0; font-size: 17px; font-weight: 700;">
+            <h3 style="color: var(--dash-text-dark); margin: 0; font-size: 17px; font-weight: 700;">
                 Status SPJ: <span style="color: #2563eb;">{{ strtoupper(str_replace('_', ' ', $spj->status)) }}</span>
             </h3>
-            <p style="color: #64748b; margin: 8px auto 0 auto; font-size: 14px; max-width: 500px; line-height: 1.5;">
+            <p style="color: var(--dash-text-muted); margin: 8px auto 0 auto; font-size: 14px; max-width: 500px; line-height: 1.5;">
                 @if($spj->status === 'disetujui_ppspm')
                     Dokumen telah disetujui PPSPM dan kini berada di <strong>Bendahara Pengeluaran</strong> untuk proses pencairan dana.
                 @elseif(str_contains($spj->status, 'revisi'))
@@ -482,7 +589,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 
 <!-- MODAL WHATSAPP MANUAL -->
 <div id="waModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-    <div style="background: #ffffff; border-radius: 16px; max-width: 600px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; animation: popIn 0.2s ease-out;">
+    <div class="wa-modal-card" style="background: #ffffff; border-radius: 16px; max-width: 600px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; animation: popIn 0.2s ease-out;">
         <div style="background: linear-gradient(135deg, #25d366, #128c7e); color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 12px;">
                 <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
@@ -504,11 +611,11 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                 $recipientWa = $spj->no_wa ?: ($spj->user->no_wa ?? '');
             @endphp
             <div style="margin-bottom: 16px;">
-                <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 6px;">
+                <label class="wa-modal-label" style="display: block; font-size: 13px; font-weight: 600; color: var(--dash-text-dark); margin-bottom: 6px;">
                     Nomor WhatsApp Pengaju ({{ $spj->user->name ?? 'Teknis' }}):
                 </label>
                 <div style="position: relative;">
-                    <input type="text" id="waRecipient" value="{{ $recipientWa }}" placeholder="Contoh: 081234567890 (atau biarkan kosong untuk pilih kontak di WA)" style="width: 100%; box-sizing: border-box; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; font-family: inherit;">
+                    <input type="text" id="waRecipient" class="wa-modal-input" value="{{ $recipientWa }}" placeholder="Contoh: 081234567890 (atau biarkan kosong untuk pilih kontak di WA)" style="width: 100%; box-sizing: border-box; padding: 10px 14px; border: 1.5px solid var(--dash-input-border); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background-color: var(--dash-input-bg); color: var(--dash-text-dark);">
                 </div>
                 @if(empty($recipientWa))
                 <small style="color: #d97706; font-size: 11px; display: flex; align-items: center; gap: 4px; margin-top: 5px;">
@@ -519,27 +626,27 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 
             <!-- PILIHAN TEMPLATE CEPAT -->
             <div style="margin-bottom: 16px;">
-                <label style="display: block; font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px;">Pilih Template Pesan:</label>
+                <label class="wa-modal-label" style="display: block; font-size: 13px; font-weight: 600; color: var(--dash-text-dark); margin-bottom: 8px;">Pilih Template Pesan:</label>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" id="btnTplSetujuUmum" onclick="setWaTemplate('setuju_umum')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #10b981; background: #ecfdf5; color: #047857; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplSetujuUmum" class="wa-tpl-btn" onclick="setWaTemplate('setuju_umum')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #10b981; background: #ecfdf5; color: #047857; cursor: pointer; transition: 0.2s;">
                         ✅ 1. Teruskan ke PPK
                     </button>
-                    <button type="button" id="btnTplSetujuPpk" onclick="setWaTemplate('setuju_ppk')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplSetujuPpk" class="wa-tpl-btn" onclick="setWaTemplate('setuju_ppk')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
                         ✍️ 2. Persetujuan PPK
                     </button>
-                    <button type="button" id="btnTplSetujuPpspm" onclick="setWaTemplate('setuju_ppspm')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplSetujuPpspm" class="wa-tpl-btn" onclick="setWaTemplate('setuju_ppspm')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
                         💵 3. Teruskan ke Bendahara
                     </button>
-                    <button type="button" id="btnTplRevisiUmum" onclick="setWaTemplate('revisi_umum')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplRevisiUmum" class="wa-tpl-btn" onclick="setWaTemplate('revisi_umum')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
                         ⚠️ Revisi Umum
                     </button>
-                    <button type="button" id="btnTplRevisiPpk" onclick="setWaTemplate('revisi_ppk')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplRevisiPpk" class="wa-tpl-btn" onclick="setWaTemplate('revisi_ppk')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
                         ⚠️ Revisi PPK
                     </button>
-                    <button type="button" id="btnTplRevisiPpspm" onclick="setWaTemplate('revisi_ppspm')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplRevisiPpspm" class="wa-tpl-btn" onclick="setWaTemplate('revisi_ppspm')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
                         ⚠️ Revisi PPSPM
                     </button>
-                    <button type="button" id="btnTplFisik" onclick="setWaTemplate('fisik')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #cbd5e1; background: #ffffff; color: #64748b; cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplFisik" class="wa-tpl-btn" onclick="setWaTemplate('fisik')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
                         📄 Berkas Fisik
                     </button>
                 </div>
@@ -548,17 +655,17 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             <!-- PREVIEW TEXTAREA -->
             <div style="margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <label style="font-size: 13px; font-weight: 600; color: #334155;">Isi Pesan (Bisa Diedit Sesuai Kebutuhan):</label>
+                    <label class="wa-modal-label" style="font-size: 13px; font-weight: 600; color: var(--dash-text-dark);">Isi Pesan (Bisa Diedit Sesuai Kebutuhan):</label>
                     <button type="button" onclick="copyWaText()" id="btnCopyWa" style="background: none; border: none; color: #2563eb; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
                         <ion-icon name="copy-outline"></ion-icon> <span>Salin Teks</span>
                     </button>
                 </div>
-                <textarea id="waMessageText" rows="9" style="width: 100%; box-sizing: border-box; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; line-height: 1.5; font-family: inherit; outline: none; background: #f8fafc; color: #0f172a; resize: vertical;"></textarea>
+                <textarea id="waMessageText" class="action-textarea" rows="9" style="width: 100%; box-sizing: border-box; padding: 12px; border: 1.5px solid var(--dash-input-border); border-radius: 8px; font-size: 13px; line-height: 1.5; font-family: inherit; outline: none; background: var(--dash-input-bg); color: var(--dash-text-dark); resize: vertical;"></textarea>
             </div>
 
             <!-- BUTTONS ACTION -->
             <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button type="button" onclick="closeWaModal()" style="padding: 10px 18px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #475569; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+                <button type="button" class="btn-wa-close" onclick="closeWaModal()" style="padding: 10px 18px; border: 1px solid var(--dash-border); background: var(--dash-table-header-bg); color: var(--dash-text-muted); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
                     Tutup
                 </button>
                 <button type="button" onclick="sendWhatsAppNow()" style="padding: 10px 22px; border: none; background: #25d366; color: white; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.25); transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
@@ -633,12 +740,14 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             'fisik': document.getElementById('btnTplFisik'),
         };
 
+        const isDark = document.documentElement.classList.contains('dark-theme');
+
         // Reset semua style button
         Object.values(btnMap).forEach(btn => {
             if (btn) {
-                btn.style.background = '#ffffff';
-                btn.style.color = '#64748b';
-                btn.style.borderColor = '#cbd5e1';
+                btn.style.background = isDark ? 'var(--dash-input-bg)' : '#ffffff';
+                btn.style.color = 'var(--dash-text-muted)';
+                btn.style.borderColor = 'var(--dash-border)';
             }
         });
 
@@ -646,16 +755,16 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         const activeBtn = btnMap[tpl];
         if (activeBtn) {
             if (tpl.startsWith('setuju')) {
-                activeBtn.style.background = '#ecfdf5';
-                activeBtn.style.color = '#047857';
+                activeBtn.style.background = isDark ? 'rgba(16, 185, 129, 0.25)' : '#ecfdf5';
+                activeBtn.style.color = isDark ? '#34d399' : '#047857';
                 activeBtn.style.borderColor = '#10b981';
             } else if (tpl.startsWith('revisi')) {
-                activeBtn.style.background = '#fef2f2';
-                activeBtn.style.color = '#b91c1c';
+                activeBtn.style.background = isDark ? 'rgba(239, 68, 68, 0.25)' : '#fef2f2';
+                activeBtn.style.color = isDark ? '#f87171' : '#b91c1c';
                 activeBtn.style.borderColor = '#f87171';
             } else {
-                activeBtn.style.background = '#eff6ff';
-                activeBtn.style.color = '#1d4ed8';
+                activeBtn.style.background = isDark ? 'rgba(2, 132, 199, 0.25)' : '#eff6ff';
+                activeBtn.style.color = isDark ? '#38bdf8' : '#1d4ed8';
                 activeBtn.style.borderColor = '#60a5fa';
             }
         }

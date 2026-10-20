@@ -108,12 +108,6 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
         </div>
     </div>
 
-    @if (session('success'))
-        <div style="background-color: #f0fdf4; color: #166534; padding: 16px; border-radius: 8px; border: 1px solid #bbf7d0; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; width: 100%;">
-            <ion-icon name="checkmark-circle" style="font-size: 20px; color: #10b981;"></ion-icon>
-            {{ session('success') }}
-        </div>
-    @endif
     @if ($errors->any())
         <div style="background-color: #fef2f2; color: #991b1b; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 24px; width: 100%;">
             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600;">
@@ -133,9 +127,42 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
             <p>Perbarui informasi identitas dan keamanan akun Anda.</p>
         </div>
         <div style="padding: 32px 24px;">
-            <form action="{{ route('bendahara.profil.update') }}" method="POST">
+            <form action="{{ route('bendahara.profil.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                <!-- Avatar / Foto Profil Section -->
+                <div class="avatar-upload-container" style="display: flex; align-items: center; gap: 24px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap;">
+                    <div style="position: relative;">
+                        <div class="profile-avatar-preview-ring" style="width: 88px; height: 88px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, #0284c7, #10b981); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
+                            <img id="avatarPreview" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #ffffff; display: block;">
+                        </div>
+                        <label for="avatarInput" title="Unggah Foto Baru" style="position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; border-radius: 50%; background: #10b981; color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); transition: transform 0.15s ease;">
+                            <ion-icon name="camera" style="font-size: 16px;"></ion-icon>
+                        </label>
+                    </div>
+
+                    <div style="flex: 1; min-width: 240px;">
+                        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #0f172a;">Foto Profil</h4>
+                        <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b; line-height: 1.4;">
+                            Format gambar yang didukung: JPG, JPEG, PNG, atau WEBP. Maksimal ukuran file 2 MB.
+                        </p>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" id="avatarInput" name="avatar" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" onchange="previewAvatar(event)">
+                            <button type="button" onclick="document.getElementById('avatarInput').click()" style="height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                <ion-icon name="cloud-upload-outline" style="font-size: 16px;"></ion-icon> Pilih Foto Baru
+                            </button>
+
+                            @if($user->avatar)
+                            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #ef4444; cursor: pointer; padding: 6px 12px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; transition: 0.2s;">
+                                <input type="checkbox" name="remove_avatar" value="1" onchange="toggleRemoveAvatar(this)">
+                                <span>Hapus Foto Kustom</span>
+                            </label>
+                            @endif
+                        </div>
+                    </div>
+                </div>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div class="form-group">
@@ -211,6 +238,27 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 
 @push('scripts')
 <script>
+    function previewAvatar(event) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('avatarPreview');
+                if (preview) {
+                    preview.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function toggleRemoveAvatar(checkbox) {
+        const preview = document.getElementById('avatarPreview');
+        if (preview) {
+            preview.style.opacity = checkbox.checked ? '0.35' : '1';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const toggleButtons = document.querySelectorAll('.btn-toggle-password');
         

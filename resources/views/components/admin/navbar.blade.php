@@ -35,8 +35,8 @@
         <!-- USER -->
         <div class="top-user">
 
-            <div class="top-avatar">
-                A
+            <div class="top-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name ?? 'Administrator' }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
             </div>
 
             <div class="top-user-info">

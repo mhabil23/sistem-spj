@@ -6,83 +6,102 @@ $subtitle = 'Kelola file dokumen pendukung (PDF/Gambar) untuk SPJ Anda.';
 @endphp
 
 @section('content')
+@push('styles')
+    @vite(['resources/css/teknis/spj.css'])
+@endpush
 
-<div class="page-heading">
-    <div>
-        <h2>Dokumen SPJ</h2>
-        <p>Unggah bukti kuitansi atau dokumen pendukung untuk SPJ Anda.</p>
-    </div>
-</div>
-
-@if (session('success'))
-    <div style="background-color: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
-        {{ session('success') }}
-    </div>
-@endif
-@if ($errors->any())
-    <div style="background-color: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
-        <ul style="margin: 0; padding-left: 1.5rem;">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-<div class="panel">
-    <div class="panel-header">
+<div style="padding-top: 4px;">
+    <!-- PAGE HEADING -->
+    <div class="dashboard-heading">
         <div>
-            <h2>Data SPJ & Dokumen</h2>
+            <h2 class="dashboard-heading-title">Kelengkapan Dokumen SPJ</h2>
+            <p class="dashboard-heading-subtitle">Unggah bukti kuitansi, nota, atau berkas pendukung digital untuk SPJ Anda.</p>
         </div>
     </div>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 50px; text-align: center;">No</th>
-                    <th>Kegiatan</th>
-                    <th>Status</th>
-                    <th>Dokumen Terlampir</th>
-                    <th>Aksi Upload</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($spjs as $spj)
-                <tr>
-                    <td style="text-align: center; font-weight: 600; color: #6b7280;">{{ $loop->iteration }}</td>
-                    <td>{{ $spj->kegiatan }}</td>
-                    <td>
-                        @php
-                            $badgeClass = 'pending';
-                            if($spj->status == 'selesai') $badgeClass = 'completed';
-                            if(str_contains($spj->status, 'revisi')) $badgeClass = 'returned';
-                            if($spj->status == 'draft') $badgeClass = 'draft';
-                        @endphp
-                        <span class="badge {{ $badgeClass }}">{{ str_replace('_', ' ', ucfirst($spj->status)) }}</span>
-                    </td>
-                    <td>
-                        @if($spj->dokumen_file)
-                            <a href="{{ Storage::url($spj->dokumen_file) }}" target="_blank" style="color: #10b981; text-decoration: none; font-weight: 500;">Lihat Dokumen</a>
-                        @else
-                            <span style="color: #6b7280; font-style: italic;">Belum ada dokumen</span>
-                        @endif
-                    </td>
-                    <td>
-                        <form action="{{ route('teknis.dokumen.upload', $spj->id) }}" method="POST" enctype="multipart/form-data" style="display: flex; gap: 0.5rem; align-items: center;">
-                            @csrf
-                            <input type="file" name="dokumen_file" required accept=".pdf,.jpg,.jpeg,.png" style="font-size: 0.875rem;">
-                            <button type="submit" class="btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem; border: none; cursor: pointer; border-radius: 0.25rem;">Upload</button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" style="text-align:center; padding:30px;">Belum ada SPJ.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <!-- MAIN PANEL -->
+    <div class="spj-panel">
+        <div class="spj-panel-header">
+            <div>
+                <h2>Data Berkas Dokumen</h2>
+                <p>Daftar pengajuan SPJ dan status lampiran file pendukung.</p>
+            </div>
+            <div class="header-stat-pill">
+                Total: <strong>{{ $spjs->count() }}</strong> Berkas
+            </div>
+        </div>
+
+        <div class="spj-table-container">
+            <table class="spj-table">
+                <thead>
+                    <tr>
+                        <th style="width: 55px; text-align: center;">No</th>
+                        <th>Uraian Kegiatan</th>
+                        <th>Status SPJ</th>
+                        <th>Dokumen Terlampir</th>
+                        <th style="text-align: right; padding-right: 24px;">Aksi Unggah</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($spjs as $spj)
+                    <tr>
+                        <td style="text-align: center; font-weight: 700; color: var(--dash-text-muted);">
+                            {{ $loop->iteration }}
+                        </td>
+                        <td style="max-width: 280px; font-weight: 600;" title="{{ $spj->kegiatan }}">
+                            <div style="font-size: 13.5px; color: var(--dash-text-dark); line-height: 1.4;">{{ $spj->kegiatan }}</div>
+                            <div style="font-size: 11px; color: var(--dash-text-muted); margin-top: 2px;">
+                                Rp {{ number_format($spj->nilai, 0, ',', '.') }} &bull; {{ $spj->tanggal->format('d M Y') }}
+                            </div>
+                        </td>
+                        <td>
+                            @php
+                                $badgeClass = 'dash-badge-draft';
+                                if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
+                                elseif(in_array($spj->status, ['diajukan'])) $badgeClass = 'dash-badge-cyan';
+                                elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
+                            @endphp
+                            <span class="dash-badge {{ $badgeClass }}">
+                                <span class="badge-dot"></span>
+                                {{ str_replace('_', ' ', strtoupper($spj->status)) }}
+                            </span>
+                        </td>
+                        <td>
+                            @if($spj->dokumen_file)
+                                <a href="{{ Storage::url($spj->dokumen_file) }}" target="_blank" class="action-btn action-btn-view" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                                    <ion-icon name="document-attach-outline" style="font-size: 16px;"></ion-icon>
+                                    <span>Lihat File</span>
+                                </a>
+                            @else
+                                <span style="color: var(--dash-text-muted); font-size: 12px; font-style: italic; display: inline-flex; align-items: center; gap: 4px;">
+                                    <ion-icon name="alert-circle-outline"></ion-icon>
+                                    Belum ada file
+                                </span>
+                            @endif
+                        </td>
+                        <td style="text-align: right; padding-right: 24px;">
+                            <form action="{{ route('teknis.dokumen.upload', $spj->id) }}" method="POST" enctype="multipart/form-data" style="display: inline-flex; gap: 8px; align-items: center; justify-content: flex-end;">
+                                @csrf
+                                <input type="file" name="dokumen_file" required accept=".pdf,.jpg,.jpeg,.png" style="font-size: 12px; max-width: 190px; padding: 6px 10px; border-radius: 8px; border: 1px dashed var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-dark);">
+                                <button type="submit" class="btn-dash-primary" style="height: 36px; padding: 0 14px; font-size: 12.5px;">
+                                    <ion-icon name="cloud-upload-outline" style="font-size: 16px;"></ion-icon> Upload
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 56px 24px; color: var(--dash-text-muted);">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                <ion-icon name="folder-open-outline" style="font-size: 46px; opacity: 0.6;"></ion-icon>
+                                <span style="font-size: 14px; font-weight: 500;">Belum ada SPJ yang perlu dilampirkan dokumen.</span>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

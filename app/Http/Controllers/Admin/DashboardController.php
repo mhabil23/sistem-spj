@@ -18,13 +18,12 @@ class DashboardController extends Controller
 
         $menungguProses = Spj::whereIn('status', [
             'diajukan',
-            'diproses'
+            'diproses',
         ])->count();
 
         $selesai = Spj::where('status', 'selesai')->count();
 
         $dikembalikan = Spj::where('status', 'dikembalikan')->count();
-
 
         // ==============================
         // STATISTIK PENGGUNA
@@ -34,7 +33,6 @@ class DashboardController extends Controller
 
         $penggunaAktif = User::where('status', 'aktif')->count();
 
-
         // ==============================
         // SPJ TERBARU
         // ==============================
@@ -42,7 +40,6 @@ class DashboardController extends Controller
         $spjTerbaru = Spj::latest()
             ->take(5)
             ->get();
-
 
         // ==============================
         // MONITORING ALUR SPJ
@@ -59,7 +56,6 @@ class DashboardController extends Controller
 
         // Tahap Pembayaran - Bendahara
         $pembayaran = 0;
-
 
         // ==============================
         // KIRIM DATA KE DASHBOARD

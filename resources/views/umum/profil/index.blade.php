@@ -8,118 +8,21 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 @section('content')
 @push('styles')
     @vite(['resources/css/umum/profil.css'])
-    <style>
-        .profil-panel {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 24px;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .profil-panel-header {
-            padding: 24px;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .profil-panel-header h2 {
-            font-size: 18px;
-            color: #0f172a;
-            margin: 0 0 4px 0;
-            font-weight: 700;
-        }
-
-        .profil-panel-header p {
-            color: #64748b;
-            font-size: 13px;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #334155;
-            font-size: 13px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background-color: #ffffff;
-            color: #0f172a;
-            font-size: 14px;
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .btn-save {
-            height: 46px;
-            padding: 0 24px;
-            font-size: 14px;
-            font-weight: 600;
-            background-color: #10b981;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: inherit;
-        }
-
-        .btn-save:hover {
-            background-color: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);
-        }
-
-        .section-divider {
-            border: 0;
-            border-top: 1px solid #e2e8f0;
-            margin: 32px 0;
-        }
-    </style>
 @endpush
 
-<div style="padding: 32px 40px; box-sizing: border-box; max-width: 100%;">
-    <div class="page-heading" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
-        <div>
-            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Pengaturan Profil Umum</h2>
-            <p style="color: #64748b; font-size: 14px; margin: 0;">Pastikan data Anda selalu yang paling mutakhir.</p>
-        </div>
+<div style="padding-top: 8px;">
+    <!-- Page Heading -->
+    <div style="margin-bottom: 24px;">
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--dash-text-dark); margin: 0 0 4px 0; letter-spacing: -0.01em;">Pengaturan Profil Umum</h2>
+        <p style="color: var(--dash-text-muted); font-size: 14px; margin: 0;">Kelola informasi profil, kontak WhatsApp verifikator, dan keamanan sandi akun Anda.</p>
     </div>
 
-    @if (session('success'))
-        <div style="background-color: #f0fdf4; color: #166534; padding: 16px; border-radius: 8px; border: 1px solid #bbf7d0; margin-bottom: 24px; display: flex; align-items: center; gap: 8px; width: 100%;">
-            <ion-icon name="checkmark-circle" style="font-size: 20px; color: #10b981;"></ion-icon>
-            {{ session('success') }}
-        </div>
-    @endif
     @if ($errors->any())
-        <div style="background-color: #fef2f2; color: #991b1b; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 24px; width: 100%;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600;">
-                <ion-icon name="warning" style="font-size: 20px; color: #ef4444;"></ion-icon> Terdapat beberapa kesalahan:
+        <div class="alert-box alert-error" style="margin: 0 0 24px 0; display: block;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 600;">
+                <ion-icon name="warning" style="font-size: 18px;"></ion-icon> Terdapat beberapa kesalahan pengisian:
             </div>
-            <ul style="margin: 0; padding-left: 32px; font-size: 13px;">
+            <ul style="margin: 0; padding-left: 24px; font-size: 13px; line-height: 1.5;">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -127,71 +30,106 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
         </div>
     @endif
 
-    <div class="profil-panel">
-        <div class="profil-panel-header">
-            <h2>Data Profil & Akun</h2>
-            <p>Perbarui informasi identitas dan keamanan akun Anda.</p>
+    <div class="panel-card">
+        <div class="panel-header">
+            <div>
+                <h2>Data Profil & Akun</h2>
+                <p>Perbarui informasi identitas dan nomor WhatsApp verifikator.</p>
+            </div>
         </div>
-        <div style="padding: 32px 24px;">
-            <form action="{{ route('umum.profil.update') }}" method="POST">
+        <div class="panel-body">
+            <form action="{{ route('umum.profil.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="form-group">
-                        <label class="form-label">Nama Lengkap</label>
-                        <input type="text" name="name" required class="form-input" value="{{ old('name', $user->name) }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Alamat Email</label>
-                        <input type="email" name="email" required class="form-input" value="{{ old('email', $user->email) }}">
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
-                    <div class="form-group">
-                        <label class="form-label">Nomor WhatsApp (Aktif)</label>
-                        <input type="text" name="no_wa" class="form-input" value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 081234567890">
-                        <small style="color: #64748b; font-size: 11px; margin-top: 4px; display: block;">Untuk menerima notifikasi WhatsApp saat ada pengajuan SPJ baru dari Teknis.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Peran & Hak Akses</label>
-                        <input type="text" class="form-input" value="Verifikator Umum" disabled style="background-color: #f8fafc; color: #64748b;">
-                    </div>
-                </div>
-
-                <hr class="section-divider">
-                
-                <h3 style="margin: 0 0 4px 0; color: #0f172a; font-size: 16px; font-weight: 700;">Keamanan & Kata Sandi</h3>
-                <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">Kosongkan bidang ini jika Anda tidak ingin mengubah kata sandi Anda saat ini.</p>
-
-                <div class="form-group" style="max-width: 50%;">
-                    <label class="form-label">Kata Sandi Saat Ini</label>
+                <!-- Avatar / Foto Profil Section -->
+                <div class="avatar-upload-container" style="display: flex; align-items: center; gap: 24px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--dash-border); flex-wrap: wrap;">
                     <div style="position: relative;">
-                        <input type="password" name="current_password" class="form-input" autocomplete="current-password" placeholder="Masukkan kata sandi lama..." style="padding-right: 40px;">
-                        <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
+                        <div class="profile-avatar-preview-ring" style="width: 88px; height: 88px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, #0284c7, #10b981); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
+                            <img id="avatarPreview" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--dash-card-bg); display: block;">
+                        </div>
+                        <label for="avatarInput" title="Unggah Foto Baru" style="position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--dash-btn-primary-bg); color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); transition: transform 0.15s ease;">
+                            <ion-icon name="camera" style="font-size: 16px;"></ion-icon>
+                        </label>
+                    </div>
+
+                    <div style="flex: 1; min-width: 240px;">
+                        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: var(--dash-text-dark);">Foto Profil</h4>
+                        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--dash-text-muted); line-height: 1.4;">
+                            Format gambar yang didukung: JPG, JPEG, PNG, atau WEBP. Maksimal ukuran file 2 MB.
+                        </p>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" id="avatarInput" name="avatar" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" onchange="previewAvatar(event)">
+                            <button type="button" onclick="document.getElementById('avatarInput').click()" class="btn-dash-primary" style="height: 36px; padding: 0 16px; font-size: 12px;">
+                                <ion-icon name="cloud-upload-outline" style="font-size: 16px;"></ion-icon> Pilih Foto Baru
+                            </button>
+
+                            @if($user->avatar)
+                            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #ef4444; cursor: pointer; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--dash-peach-border); background: var(--dash-peach-bg); transition: 0.2s;">
+                                <input type="checkbox" name="remove_avatar" value="1" onchange="toggleRemoveAvatar(this)">
+                                <span>Hapus Foto Kustom</span>
+                            </label>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                    <div>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Nama Lengkap</label>
+                        <input type="text" name="name" required class="dash-input" value="{{ old('name', $user->name) }}">
+                    </div>
+
+                    <div>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Alamat Email</label>
+                        <input type="email" name="email" required class="dash-input" value="{{ old('email', $user->email) }}">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">
+                    <div>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Nomor WhatsApp (Aktif)</label>
+                        <input type="text" name="no_wa" class="dash-input" value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 081234567890">
+                        <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 5px; display: block;">Digunakan untuk menerima notifikasi pengajuan SPJ baru dan komunikasi langsung.</small>
+                    </div>
+
+                    <div>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Peran & Hak Akses</label>
+                        <input type="text" class="dash-input" value="Verifikator Bagian Umum" disabled style="opacity: 0.7; cursor: not-allowed; background-color: var(--dash-table-header-bg);">
+                    </div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--dash-border); margin: 30px 0;">
+                
+                <h3 style="margin: 0 0 4px 0; color: var(--dash-text-dark); font-size: 16px; font-weight: 700;">Keamanan & Kata Sandi</h3>
+                <p style="color: var(--dash-text-muted); font-size: 13px; margin: 0 0 20px 0;">Kosongkan bidang berikut jika Anda tidak bermaksud mengganti kata sandi saat ini.</p>
+
+                <div style="max-width: 460px; margin-bottom: 20px;">
+                    <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Kata Sandi Saat Ini</label>
+                    <div style="position: relative;">
+                        <input type="password" name="current_password" class="dash-input" autocomplete="current-password" placeholder="Masukkan kata sandi lama..." style="padding-right: 42px;">
+                        <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--dash-text-muted); cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
                             <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
                         </button>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px;">
-                    <div class="form-group">
-                        <label class="form-label">Kata Sandi Baru</label>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">
+                    <div>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Kata Sandi Baru</label>
                         <div style="position: relative;">
-                            <input type="password" name="password" class="form-input" autocomplete="new-password" placeholder="Minimal 8 karakter..." style="padding-right: 40px;">
-                            <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
+                            <input type="password" name="password" class="dash-input" autocomplete="new-password" placeholder="Minimal 8 karakter..." style="padding-right: 42px;">
+                            <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--dash-text-muted); cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
                                 <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
                             </button>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Konfirmasi Kata Sandi Baru</label>
+                    <div>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Konfirmasi Kata Sandi Baru</label>
                         <div style="position: relative;">
-                            <input type="password" name="password_confirmation" class="form-input" autocomplete="new-password" placeholder="Ketik ulang kata sandi baru..." style="padding-right: 40px;">
-                            <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
+                            <input type="password" name="password_confirmation" class="dash-input" autocomplete="new-password" placeholder="Ketik ulang kata sandi baru..." style="padding-right: 42px;">
+                            <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--dash-text-muted); cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
                                 <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
                             </button>
                         </div>
@@ -199,8 +137,8 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                 </div>
 
                 <div style="margin-top: 32px; display: flex; justify-content: flex-end;">
-                    <button type="submit" class="btn-save">
-                        <ion-icon name="save-outline" style="font-size: 18px;"></ion-icon> Simpan Perubahan
+                    <button type="submit" class="btn-dash-primary" style="height: 46px; padding: 0 28px; font-size: 14px;">
+                        <ion-icon name="save-outline" style="font-size: 18px;"></ion-icon> Simpan Perubahan Profil
                     </button>
                 </div>
             </form>
@@ -211,6 +149,27 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 
 @push('scripts')
 <script>
+    function previewAvatar(event) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('avatarPreview');
+                if (preview) {
+                    preview.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function toggleRemoveAvatar(checkbox) {
+        const preview = document.getElementById('avatarPreview');
+        if (preview) {
+            preview.style.opacity = checkbox.checked ? '0.35' : '1';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const toggleButtons = document.querySelectorAll('.btn-toggle-password');
         
@@ -233,4 +192,3 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
     });
 </script>
 @endpush
-

@@ -11,10 +11,20 @@ use Illuminate\Support\Facades\Storage;
 
 class SpjController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $userId = Auth::id() ?? 1;
-        $spjs = Spj::where('user_id', $userId)->latest()->get();
+        $query = Spj::where('user_id', $userId);
+
+        if ($request->filled('search')) {
+            $query->where('kegiatan', 'like', '%'.$request->search.'%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $spjs = $query->latest()->get();
 
         return view('teknis.spj.index', compact('spjs'));
     }

@@ -27,7 +27,7 @@ return new class extends Migration
                 'diajukan',
                 'diproses',
                 'selesai',
-                'dikembalikan'
+                'dikembalikan',
             ])->default('draft')->change();
         });
     }

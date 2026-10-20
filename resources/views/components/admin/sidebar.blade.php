@@ -71,8 +71,8 @@
     <!-- BOTTOM -->
     <div class="sidebar-bottom">
         <div class="admin-mini">
-            <div class="admin-avatar">
-                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+            <div class="admin-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name ?? 'Administrator' }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
             </div>
             <div class="admin-info">
                 <strong>{{ Auth::user()->name ?? 'Administrator' }}</strong>

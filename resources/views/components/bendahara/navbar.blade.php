@@ -8,8 +8,8 @@
     <div class="page-title"></div>
     <div class="topbar-right">
         <div class="top-user">
-            <div class="top-avatar">
-                {{ substr(Auth::user()->name ?? 'U', 0, 1) }}
+            <div class="top-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0;">
+                <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name ?? 'Bendahara' }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
             </div>
             <div class="top-user-info">
                 <strong>{{ Auth::user()->name ?? 'Pengguna Umum' }}</strong>

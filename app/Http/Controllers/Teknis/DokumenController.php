@@ -13,6 +13,7 @@ class DokumenController extends Controller
     public function index()
     {
         $spjs = Spj::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();
+
         return view('teknis.dokumen.index', compact('spjs'));
     }
 

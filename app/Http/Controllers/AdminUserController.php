@@ -39,24 +39,24 @@ class AdminUserController extends Controller
                 'required',
                 'email',
                 'max:255',
-                'unique:users,email'
+                'unique:users,email',
             ],
 
             'role' => [
                 'required',
-                'in:admin,teknis,umum,ppk,bendahara'
+                'in:admin,teknis,umum,ppk,bendahara',
             ],
 
             'status' => [
                 'required',
-                'in:aktif,nonaktif'
+                'in:aktif,nonaktif',
             ],
 
             'password' => [
                 'required',
                 'string',
                 'min:8',
-                'confirmed'
+                'confirmed',
             ],
         ]);
 
@@ -90,31 +90,31 @@ class AdminUserController extends Controller
             'name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
 
             'email' => [
                 'required',
                 'email',
                 'max:255',
-                Rule::unique('users', 'email')->ignore($user->id)
+                Rule::unique('users', 'email')->ignore($user->id),
             ],
 
             'role' => [
                 'required',
-                'in:admin,teknis,umum,ppk,bendahara'
+                'in:admin,teknis,umum,ppk,bendahara',
             ],
 
             'status' => [
                 'required',
-                'in:aktif,nonaktif'
+                'in:aktif,nonaktif',
             ],
 
             'password' => [
                 'nullable',
                 'string',
                 'min:8',
-                'confirmed'
+                'confirmed',
             ],
         ]);
 
@@ -124,7 +124,7 @@ class AdminUserController extends Controller
         $user->status = $validated['status'];
 
         // Password hanya diubah jika diisi
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 

@@ -10,63 +10,110 @@ $subtitle = 'Lihat riwayat pengajuan SPJ Anda yang telah diajukan.';
     @vite(['resources/css/teknis/spj.css'])
 @endpush
 
-<!-- PAGE HEADER -->
-<div class="page-heading" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; animation: slideUp 0.4s ease-out forwards;">
-    <div>
-        <h2 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">Riwayat SPJ</h2>
-        <p style="color: #64748b; font-size: 0.95rem;">Daftar dokumen SPJ yang telah diajukan dan sedang/selesai diproses.</p>
-    </div>
-</div>
-
-<!-- PANEL -->
-<div class="spj-panel" style="animation-delay: 0.1s;">
-    <div class="spj-panel-header">
+<div style="padding-top: 4px;">
+    <!-- PAGE HEADING -->
+    <div class="dashboard-heading">
         <div>
-            <h2>Data Riwayat SPJ</h2>
-            <p>Pantau status terkini dari SPJ yang Anda ajukan.</p>
+            <h2 class="dashboard-heading-title">Riwayat SPJ</h2>
+            <p class="dashboard-heading-subtitle">Daftar dokumen SPJ yang telah diajukan dan sedang atau telah selesai diproses.</p>
         </div>
     </div>
 
-    <div class="spj-panel-body" style="padding: 0;">
+    <!-- MAIN PANEL -->
+    <div class="spj-panel">
+        <div class="spj-panel-header">
+            <div>
+                <h2>Data Riwayat SPJ</h2>
+                <p>Pantau perkembangan status dan proses verifikasi pengajuan SPJ Anda.</p>
+            </div>
+            <div class="header-stat-pill">
+                Total: <strong>{{ $riwayatSpjs->count() }}</strong> Riwayat
+            </div>
+        </div>
+
+        <!-- FILTER & SEARCH BAR -->
+        <div class="filter-box">
+            <form action="{{ route('teknis.riwayat.index') }}" method="GET" class="filter-grid">
+                <div class="filter-field" style="flex: 2; min-width: 240px;">
+                    <label class="filter-label">Cari Uraian Kegiatan</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci kegiatan..." class="dash-input">
+                </div>
+
+                <div style="display: flex; gap: 8px;">
+                    <button type="submit" class="btn-dash-primary" style="height: 40px; padding: 0 18px;">
+                        <ion-icon name="funnel-outline" style="font-size: 16px;"></ion-icon> Filter
+                    </button>
+                    @if(request()->filled('search'))
+                        <a href="{{ route('teknis.riwayat.index') }}" class="btn-dash-reset">Reset</a>
+                    @endif
+                </div>
+            </form>
+        </div>
+
+        <!-- TABLE CONTAINER -->
         <div class="spj-table-container">
             <table class="spj-table">
                 <thead>
                     <tr>
+                        <th style="width: 55px; text-align: center;">No</th>
                         <th>Uraian Kegiatan</th>
                         <th>Tanggal Diperbarui</th>
+                        <th>Nilai Anggaran</th>
                         <th>Status Akhir</th>
-                        <th style="text-align: right; padding-right: 2rem;">Aksi</th>
+                        <th style="text-align: right; padding-right: 24px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($riwayatSpjs as $spj)
                     <tr>
-                        <td style="max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $spj->kegiatan }}">
-                            {{ $spj->kegiatan }}
+                        <td style="text-align: center; font-weight: 700; color: var(--dash-text-muted);">
+                            {{ $loop->iteration }}
                         </td>
-                        <td>{{ $spj->updated_at->format('d M Y, H:i') }}</td>
+                        <td style="max-width: 300px; font-weight: 600;" title="{{ $spj->kegiatan }}">
+                            <div style="font-size: 13.5px; color: var(--dash-text-dark); line-height: 1.4;">{{ $spj->kegiatan }}</div>
+                            @if($spj->keterangan)
+                                <div style="font-size: 11px; color: var(--dash-text-muted); margin-top: 2px;">{{ Str::limit($spj->keterangan, 40) }}</div>
+                            @endif
+                        </td>
+                        <td style="color: var(--dash-text-muted); white-space: nowrap;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <ion-icon name="time-outline" style="font-size: 14px;"></ion-icon>
+                                <span>{{ $spj->updated_at->format('d M Y, H:i') }}</span>
+                            </div>
+                        </td>
+                        <td style="font-weight: 700; color: var(--dash-text-dark); white-space: nowrap;">
+                            Rp {{ number_format($spj->nilai, 0, ',', '.') }}
+                        </td>
                         <td>
                             @php
-                                $badgeClass = 'spj-badge-draft';
-                                if(in_array($spj->status, ['selesai'])) $badgeClass = 'spj-badge-selesai';
-                                elseif(in_array($spj->status, ['diajukan', 'disetujui_ppk'])) $badgeClass = 'spj-badge-diajukan';
-                                elseif(in_array($spj->status, ['disetujui_ppspm'])) $badgeClass = 'spj-badge-disetujui';
-                                elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm'])) $badgeClass = 'spj-badge-dikembalikan';
+                                $badgeClass = 'dash-badge-draft';
+                                if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
+                                elseif(in_array($spj->status, ['diajukan'])) $badgeClass = 'dash-badge-cyan';
+                                elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
                             @endphp
-                            <span class="spj-badge {{ $badgeClass }}">{{ str_replace('_', ' ', strtoupper($spj->status)) }}</span>
+                            <span class="dash-badge {{ $badgeClass }}">
+                                <span class="badge-dot"></span>
+                                {{ str_replace('_', ' ', strtoupper($spj->status)) }}
+                            </span>
                         </td>
-                        <td style="text-align: right; padding-right: 2rem;">
-                            <div style="display: flex; gap: 0.75rem; justify-content: flex-end;">
-                                <a href="{{ route('teknis.spj.show', $spj->id) }}" class="spj-action-link spj-action-detail">Detail</a>
+                        <td style="text-align: right; padding-right: 24px; white-space: nowrap;">
+                            <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
+                                <a href="{{ route('teknis.spj.show', $spj->id) }}" class="action-btn action-btn-view" title="Lihat Detail SPJ">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                    <span>Detail</span>
+                                </a>
                             </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" style="text-align:center; padding: 4rem 2rem; color: #94a3b8;">
-                            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                                <span>Belum ada riwayat SPJ yang diajukan.</span>
+                        <td colspan="6" style="text-align: center; padding: 56px 24px; color: var(--dash-text-muted);">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+                                <ion-icon name="time-outline" style="font-size: 46px; opacity: 0.6;"></ion-icon>
+                                <span style="font-size: 14px; font-weight: 500;">Belum ada riwayat SPJ yang diajukan.</span>
+                                @if(request()->filled('search'))
+                                    <a href="{{ route('teknis.riwayat.index') }}" class="btn-dash-reset" style="margin-top: 6px;">Bersihkan Filter Pencarian</a>
+                                @endif
                             </div>
                         </td>
                     </tr>

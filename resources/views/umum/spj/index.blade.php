@@ -1,278 +1,157 @@
 @extends('layouts.umum')
 
 @php
-$title = 'Daftar Antrean SPJ';
+$title = 'Kotak Masuk SPJ';
 $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
 @endphp
 
 @section('content')
 @push('styles')
     @vite(['resources/css/umum/riwayat.css'])
-    <style>
-        .index-panel {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .filter-wrapper {
-            padding: 24px;
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .filter-form {
-            display: flex;
-            gap: 16px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filter-label {
-            display: block;
-            font-size: 12px;
-            color: #475569;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .filter-input {
-            width: 100%;
-            padding: 10px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-family: inherit;
-            font-size: 13px;
-            transition: all 0.2s;
-            outline: none;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02) inset;
-        }
-
-        .filter-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-        }
-
-        .btn-search {
-            height: 42px;
-            padding: 0 24px;
-            font-size: 13px;
-            font-weight: 600;
-            background-color: #10b981; /* Hijau */
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .btn-search:hover {
-            background-color: #059669; /* Hijau lebih gelap */
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);
-        }
-
-        .btn-reset {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 42px;
-            padding: 0 20px;
-            font-size: 13px;
-            color: #ef4444;
-            text-decoration: none;
-            font-weight: 600;
-            border: 1px solid #fca5a5;
-            border-radius: 8px;
-            background: #fef2f2;
-            transition: all 0.2s;
-        }
-
-        .btn-reset:hover {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .custom-table {
-            width: 100%;
-            border-collapse: collapse;
-            white-space: nowrap;
-        }
-
-        .custom-table th {
-            padding: 16px 24px;
-            text-align: left;
-            background: #ffffff;
-            color: #64748b;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        .custom-table td {
-            padding: 18px 24px;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-
-        .custom-table tbody tr {
-            transition: background-color 0.15s;
-        }
-
-        .custom-table tbody tr:hover {
-            background-color: #f8fafc;
-        }
-
-        .custom-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .empty-state {
-            text-align: center;
-            padding: 48px 24px;
-            color: #64748b;
-            font-size: 14px;
-        }
-    </style>
 @endpush
 
-
-<div style="padding: 32px 40px;">
-    <div class="page-heading" style="margin-bottom: 24px;">
+<div style="padding-top: 8px;">
+    <!-- Page Heading -->
+    <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px;">
         <div>
-            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Semua Antrean SPJ</h2>
-            <p style="color: #64748b; font-size: 14px;">SPJ yang berstatus 'Menunggu' harus segera diperiksa.</p>
+            <h2 style="font-size: 24px; font-weight: 700; color: var(--dash-text-dark); margin: 0 0 4px 0; letter-spacing: -0.01em;">Kotak Masuk SPJ</h2>
+            <p style="color: var(--dash-text-muted); font-size: 14px; margin: 0;">SPJ yang berstatus 'Menunggu Pemeriksaan' harus segera ditinjau dan diproses.</p>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; color: var(--dash-text-muted); background-color: var(--dash-card-bg); padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--dash-border);">
+            Total: <span style="color: var(--dash-text-dark); font-weight: 700;">{{ $spjs->count() }}</span> Pengajuan
         </div>
     </div>
 
-    <div class="index-panel">
-        <div class="filter-wrapper">
-            <form action="{{ route('umum.spj.index') }}" method="GET" class="filter-form">
-                <div class="filter-group" style="flex: 2;">
-                    <label class="filter-label">Cari (Nama / Kegiatan)</label>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="filter-input">
+    <!-- Main Table Panel -->
+    <div class="panel-card">
+        <!-- Filter Bar -->
+        <div class="filter-box">
+            <form action="{{ route('umum.spj.index') }}" method="GET" class="filter-grid">
+                <div class="filter-field" style="flex: 2; min-width: 240px;">
+                    <label class="filter-label">Cari Pengaju / Kegiatan</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik kata kunci pencarian..." class="dash-input">
                 </div>
-                <div class="filter-group">
+                <div class="filter-field">
                     <label class="filter-label">Dari Tanggal</label>
-                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="filter-input">
+                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="dash-input">
                 </div>
-                <div class="filter-group">
+                <div class="filter-field">
                     <label class="filter-label">Sampai Tanggal</label>
-                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="filter-input">
+                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="dash-input">
                 </div>
-                <div>
-                    <button type="submit" class="btn-search">
-                        <ion-icon name="funnel-outline" style="margin-right: 6px; font-size: 16px;"></ion-icon> Terapkan Filter
+                <div style="display: flex; gap: 8px;">
+                    <button type="submit" class="btn-dash-primary">
+                        <ion-icon name="funnel-outline" style="font-size: 16px;"></ion-icon> Filter
                     </button>
+                    @if(request()->hasAny(['search', 'start_date', 'end_date']))
+                        <a href="{{ route('umum.spj.index') }}" class="btn-dash-reset">Reset</a>
+                    @endif
                 </div>
-                @if(request()->hasAny(['search', 'start_date', 'end_date']))
-                <div>
-                    <a href="{{ route('umum.spj.index') }}" class="btn-reset">Reset</a>
-                </div>
-                @endif
             </form>
         </div>
 
-        <div style="overflow-x: auto;">
-            <table class="custom-table">
+        <!-- Table Container -->
+        <div class="modern-table-wrapper">
+            <table class="dash-table">
                 <thead>
                     <tr>
                         <th>Tanggal Pengajuan</th>
-                        <th>Pengaju</th>
-                        <th>Kegiatan</th>
-                        <th>Nilai (Rp)</th>
+                        <th>Nomor SPJ</th>
+                        <th>Pengaju (Teknis)</th>
+                        <th>Nama Kegiatan</th>
+                        <th>Nilai Pengajuan</th>
                         <th>Status / Tahapan</th>
-                        <th>Aksi</th>
+                        <th style="text-align: center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($spjs as $spj)
                     <tr>
-                        <td style="color: #64748b;">{{ ($spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at) : $spj->created_at)->format('d M Y') }}</td>
-                        <td>{{ $spj->user->name ?? 'Teknis' }}</td>
-                        <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>
-                        <td style="font-weight: 500;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</td>
+                        <td style="color: var(--dash-text-muted); font-size: 13px;">
+                            {{ ($spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at) : $spj->created_at)->format('d M Y') }}
+                        </td>
+                        <td style="font-weight: 600; color: var(--dash-text-dark);">
+                            {{ $spj->nomor_spj ?: '-' }}
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: var(--dash-text-dark);">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
+                            <div style="font-size: 11px; color: var(--dash-text-muted);">{{ $spj->user->seksi ?? 'Seksi Teknis' }}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 500; max-width: 280px; white-space: normal; line-height: 1.4; color: var(--dash-text-dark);">
+                                {{ $spj->kegiatan }}
+                            </div>
+                        </td>
+                        <td style="font-weight: 700; color: #10b981; font-size: 13px;">
+                            Rp {{ number_format($spj->nilai, 0, ',', '.') }}
+                        </td>
                         <td>
                             @php
-                                $badgeStyle = '';
+                                $badgeClass = 'dash-badge-diajukan';
                                 $statusText = 'Menunggu';
-                                $btnBg = '#64748b';
+                                $btnBg = 'var(--dash-btn-primary-bg)';
                                 $btnTitle = 'Detail';
 
                                 if($spj->status == 'diajukan') {
-                                    $badgeStyle = 'background: #fffbeb; color: #b45309; border: 1px solid #fde68a;';
-                                    $statusText = 'Menunggu Diperiksa';
-                                    $btnBg = '#10b981';
+                                    $badgeClass = 'dash-badge-diajukan';
+                                    $statusText = 'Menunggu Pemeriksaan';
+                                    $btnBg = 'var(--dash-btn-primary-bg)';
                                     $btnTitle = 'Periksa Dokumen';
                                 } elseif($spj->status == 'disetujui_umum') {
-                                    $badgeStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
+                                    $badgeClass = 'dash-badge-disetujui_umum';
                                     $statusText = 'Diteruskan ke PPK';
-                                    $btnBg = '#3b82f6';
+                                    $btnBg = '#0284c7';
                                     $btnTitle = 'Input Keputusan PPK';
                                 } elseif($spj->status == 'disetujui_ppk') {
-                                    $badgeStyle = 'background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe;';
+                                    $badgeClass = 'dash-badge-disetujui_ppk';
                                     $statusText = 'Diteruskan ke PPSPM';
                                     $btnBg = '#8b5cf6';
                                     $btnTitle = 'Input Keputusan PPSPM';
                                 } elseif($spj->status == 'disetujui_ppspm') {
-                                    $badgeStyle = 'background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;';
+                                    $badgeClass = 'dash-badge-disetujui_ppspm';
                                     $statusText = 'Di Bendahara';
+                                    $btnBg = 'var(--dash-btn-primary-bg)';
+                                    $btnTitle = 'Lihat Status';
                                 } elseif(str_contains($spj->status, 'revisi')) {
-                                    $badgeStyle = 'background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;';
+                                    $badgeClass = 'dash-badge-revisi';
                                     $statusText = 'Dikembalikan (' . strtoupper(str_replace('revisi_', '', $spj->status)) . ')';
                                     $btnBg = '#ef4444';
                                     $btnTitle = 'Lihat Catatan Revisi';
                                 } elseif($spj->status == 'selesai') {
-                                    $badgeStyle = 'background: #f0fdf4; color: #15803d; border: 1px solid #86efac;';
+                                    $badgeClass = 'dash-badge-selesai';
                                     $statusText = 'Selesai (Cair)';
+                                    $btnBg = '#0284c7';
+                                    $btnTitle = 'Lihat Arsip';
                                 } else {
-                                    $badgeStyle = 'background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;';
+                                    $badgeClass = 'dash-badge-diajukan';
                                     $statusText = strtoupper(str_replace('_', ' ', $spj->status));
                                 }
                             @endphp
-                            <span class="badge" style="font-size: 11px; padding: 5px 12px; border-radius: 999px; font-weight: 600; display: inline-block; {{ $badgeStyle }}">{{ $statusText }}</span>
+                            <span class="dash-badge {{ $badgeClass }}">{{ $statusText }}</span>
                         </td>
-                        <td>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <a href="{{ route('umum.spj.show', $spj->id) }}" 
-                                   style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; text-decoration: none; color: white; transition: all 0.2s; background-color: {{ $btnBg }}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);" 
-                                   title="{{ $btnTitle }}"
-                                   onmouseover="this.style.transform='translateY(-2px)';" 
-                                   onmouseout="this.style.transform='translateY(0)';">
-                                    <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
-                                </a>
+                        <td style="text-align: center;">
+                            <a href="{{ route('umum.spj.show', $spj->id) }}" 
+                               class="btn-table-view" 
+                               style="background-color: {{ $btnBg }};" 
+                               title="{{ $btnTitle }}">
+                                <ion-icon name="eye-outline"></ion-icon>
+                            </a>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7">
+                            <div class="dash-empty-state">
+                                <ion-icon name="folder-open-outline" class="dash-empty-icon"></ion-icon>
+                                <p style="margin: 0; font-weight: 500;">Tidak ada antrean SPJ untuk ditampilkan.</p>
+                                <p style="margin: 4px 0 0 0; font-size: 12px; opacity: 0.8;">SPJ baru yang diajukan oleh staf Teknis akan muncul di tabel ini.</p>
                             </div>
                         </td>
                     </tr>
-                @empty
-                <tr>
-                    <td colspan="6">
-                        <div class="empty-state">
-                            <ion-icon name="folder-open-outline" style="font-size: 48px; color: #cbd5e1; margin-bottom: 12px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
-                            Tidak ada data SPJ untuk ditampilkan.
-                        </div>
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-
 @endsection
-

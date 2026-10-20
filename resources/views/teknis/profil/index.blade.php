@@ -15,15 +15,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
     <p>Kelola informasi identitas, data akun, dan keamanan kata sandi Anda.</p>
 </div>
 
-{{-- Flash Messages --}}
-@if (session('success'))
-    <div class="profile-alert profile-alert-success">
-        <i class="bi bi-check-circle-fill"></i>
-        <div>
-            <strong>Berhasil!</strong> {{ session('success') }}
-        </div>
-    </div>
-@endif
+
 
 @if (isset($errors) && $errors->any())
     <div class="profile-alert profile-alert-danger">
@@ -49,9 +41,42 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
         </div>
 
         <div class="profile-card-body">
-            <form action="{{ route('teknis.profil.update') }}" method="POST">
+            <form action="{{ route('teknis.profil.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+
+                {{-- SECTION 0: FOTO PROFIL --}}
+                <div class="profile-avatar-section" style="display: flex; align-items: center; gap: 24px; padding-bottom: 24px; margin-bottom: 24px; border-bottom: 1px solid var(--dash-border); flex-wrap: wrap;">
+                    <div style="position: relative;">
+                        <div style="width: 88px; height: 88px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, #0284c7, #10b981); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
+                            <img id="avatarPreview" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: var(--dash-card-bg); display: block;">
+                        </div>
+                        <label for="avatarInput" title="Unggah Foto Baru" style="position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--dash-btn-primary-bg); color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); transition: transform 0.15s ease;">
+                            <i class="bi bi-camera-fill" style="font-size: 14px;"></i>
+                        </label>
+                    </div>
+
+                    <div style="flex: 1; min-width: 240px;">
+                        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: var(--dash-text-dark);">Foto Profil</h4>
+                        <p style="margin: 0 0 12px 0; font-size: 13px; color: var(--dash-text-muted); line-height: 1.4;">
+                            Format gambar yang didukung: JPG, JPEG, PNG, atau WEBP. Maksimal ukuran file 2 MB.
+                        </p>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="file" id="avatarInput" name="avatar" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" onchange="previewAvatar(event)">
+                            <button type="button" onclick="document.getElementById('avatarInput').click()" style="height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600; background: var(--dash-input-bg); color: var(--dash-text-dark); border: 1px solid var(--dash-input-border); border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                <i class="bi bi-cloud-arrow-up" style="font-size: 15px;"></i> Pilih Foto Baru
+                            </button>
+
+                            @if($user->avatar)
+                            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #ef4444; cursor: pointer; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--dash-peach-border); background: var(--dash-peach-bg); transition: 0.2s;">
+                                <input type="checkbox" name="remove_avatar" value="1" onchange="toggleRemoveAvatar(this)">
+                                <span>Hapus Foto Kustom</span>
+                            </label>
+                            @endif
+                        </div>
+                    </div>
+                </div>
 
                 {{-- SECTION 1: DATA IDENTITAS --}}
                 <div class="profile-form-section">
@@ -239,6 +264,27 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 
 @push('scripts')
 <script>
+    function previewAvatar(event) {
+        const input = event.target;
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('avatarPreview');
+                if (preview) {
+                    preview.src = e.target.result;
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function toggleRemoveAvatar(checkbox) {
+        const preview = document.getElementById('avatarPreview');
+        if (preview) {
+            preview.style.opacity = checkbox.checked ? '0.35' : '1';
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const toggleButtons = document.querySelectorAll('.profile-toggle-password');
         

@@ -35,13 +35,10 @@ $subtitle = 'Rekap dan laporan data SPJ.';
 
         <button
             type="button"
-            class="btn-print"
+            class="btn-dash-primary"
             onclick="window.print()">
-
-            <i class="bi bi-printer"></i>
-
+            <ion-icon name="print-outline" style="font-size: 18px;"></ion-icon>
             Cetak Laporan
-
         </button>
 
     </div>
@@ -131,7 +128,7 @@ $subtitle = 'Rekap dan laporan data SPJ.';
 
             <div class="filter-buttons">
 
-                <button type="submit" class="btn-filter">
+                <button type="submit" class="btn-dash-primary" style="height: 40px; padding: 0 18px;">
                     Terapkan
                 </button>
 

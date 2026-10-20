@@ -12,7 +12,7 @@ class DashboardController extends Controller
         $totalAntrean = Spj::where('status', 'disetujui_ppspm')->count();
         $totalSelesai = Spj::whereIn('status', ['selesai'])->count();
         $totalRevisi = Spj::where('status', 'revisi_bendahara')->count();
-        
+
         $nilaiAntrean = Spj::where('status', 'disetujui_ppspm')->sum('nilai');
         $nilaiSelesai = Spj::whereIn('status', ['selesai'])->sum('nilai');
 
@@ -25,5 +25,3 @@ class DashboardController extends Controller
         return view('bendahara.dashboard', compact('totalAntrean', 'totalSelesai', 'totalRevisi', 'nilaiAntrean', 'nilaiSelesai', 'antreanSpjs'));
     }
 }
-
-

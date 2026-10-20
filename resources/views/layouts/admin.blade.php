@@ -46,6 +46,8 @@
             {{-- NAVBAR --}}
             @include('components.admin.navbar')
 
+            <x-center-toast />
+
 
             {{-- CONTENT --}}
             <div class="content">

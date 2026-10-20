@@ -16,17 +16,7 @@
     <div class="main-content">
         <x-bendahara.navbar />
 
-        @if(session('success'))
-        <div style="background-color: #d1fae5; color: #065f46; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; border: 1px solid #34d399;">
-            {{ session('success') }}
-        </div>
-        @endif
-
-        @if(session('error'))
-        <div style="background-color: #fee2e2; color: #b91c1c; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; border: 1px solid #f87171;">
-            {{ session('error') }}
-        </div>
-        @endif
+        <x-center-toast />
 
         @yield('content')
     </div>

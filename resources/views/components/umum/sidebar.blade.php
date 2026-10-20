@@ -1,34 +1,61 @@
 <aside class="sidebar">
-    <nav class="sidebar-nav" style="padding: 1.5rem 1rem 1rem 1rem;">
-        <div class="nav-label" style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.5rem; margin-top: 0.5rem; padding-left: 0.5rem;">MENU UTAMA</div>
+    <!-- User Profile Header -->
+    <div class="sidebar-profile">
+        <div class="profile-avatar-ring">
+            <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name ?? 'Profile Avatar' }}" class="profile-avatar-img">
+        </div>
+        <div class="profile-name">{{ Auth::user()->name ?? 'Pengguna Umum' }}</div>
+        <div class="profile-email">{{ Auth::user()->email ?? 'umum@bps.go.id' }}</div>
+    </div>
+
+    <!-- Navigation Menu (SPJ Modul Umum) -->
+    <nav class="sidebar-nav">
+        <div class="sidebar-section-label">MENU UTAMA</div>
+
+        <!-- Dashboard -->
         <a href="{{ route('umum.dashboard') }}" class="nav-item {{ request()->routeIs('umum.dashboard') ? 'active' : '' }}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            Dashboard
+            <span class="nav-icon-wrap">
+                <ion-icon name="grid" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Dashboard</span>
         </a>
+
+        <!-- Kotak Masuk SPJ -->
         <a href="{{ route('umum.spj.index') }}" class="nav-item {{ request()->routeIs('umum.spj.*') ? 'active' : '' }}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            Kotak Masuk SPJ
+            <span class="nav-icon-wrap">
+                <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Kotak Masuk SPJ</span>
         </a>
 
-        <div class="nav-label" style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.5rem; margin-top: 1.5rem; padding-left: 0.5rem;">ARSIP</div>
+        <div class="sidebar-section-label" style="margin-top: 14px;">ARSIP & AKUN</div>
+
+        <!-- Riwayat Pemeriksaan -->
         <a href="{{ route('umum.riwayat.index') }}" class="nav-item {{ request()->routeIs('umum.riwayat.*') ? 'active' : '' }}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            Riwayat Pemeriksaan
+            <span class="nav-icon-wrap">
+                <ion-icon name="time-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Riwayat Pemeriksaan</span>
         </a>
 
-        <div class="nav-label" style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.5rem; margin-top: 1.5rem; padding-left: 0.5rem;">PENGATURAN</div>
+        <!-- Profil Akun -->
         <a href="{{ route('umum.profil.index') }}" class="nav-item {{ request()->routeIs('umum.profil.*') ? 'active' : '' }}">
-            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            Profil Akun
+            <span class="nav-icon-wrap">
+                <ion-icon name="person-circle-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Profil Akun</span>
         </a>
     </nav>
     
-    <div class="sidebar-footer" style="padding: 1rem; margin-top: auto; border-top: 1px solid #f1f5f9;">
+    <!-- Logout Footer -->
+    <div class="sidebar-bottom">
         <form action="{{ route('logout') }}" method="POST">
             @csrf
-            <button type="submit" class="nav-item" style="width: 100%; border: none; background: transparent; cursor: pointer; color: #ef4444;">
-                <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                Keluar
+            <button type="submit" class="nav-item nav-logout-btn">
+                <span class="nav-icon-wrap">
+                    <ion-icon name="power-outline" class="nav-icon"></ion-icon>
+                </span>
+                <span class="nav-label">Keluar</span>
             </button>
         </form>
     </div>

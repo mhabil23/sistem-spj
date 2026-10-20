@@ -442,3 +442,76 @@
     }
 
 }
+
+/* ==========================================================================
+   DARK THEME FOR LAPORAN SPJ
+   ========================================================================== */
+html.dark-theme .laporan-page .page-header h2 {
+    color: var(--dash-text-dark, #f0f6fa);
+}
+
+html.dark-theme .laporan-page .page-header p {
+    color: var(--dash-text-muted, #8ea8b8);
+}
+
+html.dark-theme .laporan-filter,
+html.dark-theme .laporan-stat-card,
+html.dark-theme .total-nilai-card,
+html.dark-theme .laporan-panel {
+    background: var(--dash-card-bg, #142530) !important;
+    border-color: var(--dash-border, #1f3747) !important;
+}
+
+html.dark-theme .filter-group label {
+    color: var(--dash-text-muted, #8ea8b8);
+}
+
+html.dark-theme .filter-group input,
+html.dark-theme .filter-group select {
+    background: var(--dash-input-bg, #12212b) !important;
+    border-color: var(--dash-input-border, #243e4f) !important;
+    color: var(--dash-text-dark, #f0f6fa) !important;
+}
+
+html.dark-theme .btn-reset {
+    background: var(--dash-input-bg, #12212b);
+    border-color: var(--dash-border, #1f3747);
+    color: var(--dash-text-muted, #8ea8b8);
+}
+
+html.dark-theme .laporan-stat-card strong,
+html.dark-theme .total-nilai-card strong,
+html.dark-theme .laporan-panel .panel-header h3,
+html.dark-theme .laporan-table td strong {
+    color: var(--dash-text-dark, #f0f6fa) !important;
+}
+
+html.dark-theme .laporan-stat-card span,
+html.dark-theme .total-nilai-card span,
+html.dark-theme .laporan-panel .panel-header p {
+    color: var(--dash-text-muted, #8ea8b8) !important;
+}
+
+html.dark-theme .laporan-panel .panel-header {
+    border-bottom-color: var(--dash-border, #1f3747) !important;
+}
+
+html.dark-theme .jumlah-data {
+    background: var(--dash-input-bg, #12212b) !important;
+    color: var(--dash-text-muted, #8ea8b8) !important;
+}
+
+html.dark-theme .laporan-table th {
+    background: var(--dash-table-header-bg, #10212c) !important;
+    color: var(--dash-text-muted, #8ea8b8) !important;
+    border-bottom-color: var(--dash-border, #1f3747) !important;
+}
+
+html.dark-theme .laporan-table td {
+    color: var(--dash-text-dark, #f0f6fa) !important;
+    border-bottom-color: var(--dash-border, #1f3747) !important;
+}
+
+html.dark-theme .laporan-table tbody tr:hover td {
+    background: var(--dash-table-row-hover, #192d3b) !important;
+}

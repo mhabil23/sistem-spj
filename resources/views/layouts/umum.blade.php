@@ -3,7 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $title ?? 'Panel Umum' }} | Sistem Informasi Penyelesaian Tagihan</title>
+    <title>{{ $title ?? 'Dashboard' }} | Sistem Informasi Penyelesaian Tagihan</title>
+    
+    <!-- Theme Flash Prevention Script -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme-mode');
+            if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark-theme');
+            } else {
+                document.documentElement.classList.remove('dark-theme');
+            }
+        })();
+    </script>
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     @vite(['resources/css/app.css', 'resources/css/umum/layout.css'])
     @stack('styles')
     
@@ -11,29 +29,45 @@
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
-<body>
-    <x-umum.sidebar />
-    <div class="main-content">
-        <x-umum.navbar />
+<body class="dashboard-body">
+    <div class="dashboard-app-wrapper">
+        <x-umum.sidebar />
+        
+        <div class="main-content">
+            <x-umum.navbar :title="$title ?? ''" />
 
-        @if(session('success'))
-        <div style="background-color: #d1fae5; color: #065f46; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; border: 1px solid #34d399;">
-            {{ session('success') }}
+            <x-center-toast />
+
+            <div class="page-content-wrapper">
+                @yield('content')
+            </div>
         </div>
-        @endif
-
-        @if(session('error'))
-        <div style="background-color: #fee2e2; color: #b91c1c; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; border: 1px solid #f87171;">
-            {{ session('error') }}
-        </div>
-        @endif
-
-        @yield('content')
     </div>
+
     <script>
         function toggleSidebar() {
             document.querySelector('.sidebar').classList.toggle('active');
         }
+
+        function toggleThemeMode() {
+            const isDark = document.documentElement.classList.toggle('dark-theme');
+            localStorage.setItem('theme-mode', isDark ? 'dark' : 'light');
+            syncThemeToggleState();
+        }
+
+        function syncThemeToggleState() {
+            const isDark = document.documentElement.classList.contains('dark-theme');
+            const toggles = document.querySelectorAll('.theme-toggle-pill');
+            toggles.forEach(toggle => {
+                if (isDark) {
+                    toggle.classList.add('active');
+                } else {
+                    toggle.classList.remove('active');
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', syncThemeToggleState);
     </script>
 
     @stack('scripts')

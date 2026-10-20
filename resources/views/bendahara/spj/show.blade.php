@@ -24,12 +24,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
     </div>
 </div>
 
-@if(session('success'))
-<div style="background-color: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; padding: 16px 20px; border-radius: 10px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(16,185,129,0.1);">
-    <ion-icon name="checkmark-circle" style="font-size: 22px; color: #10b981; flex-shrink: 0;"></ion-icon>
-    <span>{{ session('success') }}</span>
-</div>
-@endif
+
 @if(session('trigger_wa'))
 <div style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid #10b981; border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); flex-wrap: wrap; gap: 16px;">
     <div style="display: flex; align-items: center; gap: 14px;">
@@ -46,12 +41,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
     </button>
 </div>
 @endif
-@if(session('error'))
-<div style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 16px 20px; border-radius: 10px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; box-shadow: 0 2px 4px rgba(239,68,68,0.1);">
-    <ion-icon name="alert-circle" style="font-size: 22px; color: #ef4444; flex-shrink: 0;"></ion-icon>
-    <span>{{ session('error') }}</span>
-</div>
-@endif
+
 
 <div class="panel" style="margin-bottom: 2rem;">
     <div class="panel-header">

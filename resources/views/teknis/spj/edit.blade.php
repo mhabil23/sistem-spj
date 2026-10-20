@@ -10,13 +10,13 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
     @vite(['resources/css/teknis/spj.css'])
 @endpush
 
-<div class="page-heading" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; animation: slideUp 0.4s ease-out forwards;">
+<div class="dashboard-heading">
     <div>
-        <h2 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">Edit Pengajuan SPJ</h2>
-        <p style="color: #64748b; font-size: 0.95rem;">Anda dapat mengedit SPJ ini karena statusnya <strong style="color: #0f172a;">{{ str_replace('_', ' ', strtoupper($spj->status)) }}</strong>.</p>
+        <h2 class="dashboard-heading-title">Edit Pengajuan SPJ</h2>
+        <p class="dashboard-heading-subtitle">Anda dapat mengedit SPJ ini karena statusnya <strong style="color: var(--dash-peach-text);">{{ str_replace('_', ' ', strtoupper($spj->status)) }}</strong>.</p>
     </div>
     <a href="{{ route('teknis.spj.index') }}" class="spj-btn spj-btn-secondary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <ion-icon name="arrow-back-outline"></ion-icon>
         Kembali
     </a>
 </div>
@@ -32,12 +32,12 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
     <div class="spj-panel-body">
         @if(in_array($spj->status, ['dikembalikan', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara']) && $spj->catatan_revisi)
             <div class="spj-alert spj-alert-error" style="align-items: flex-start; margin-bottom: 2rem;">
-                <div style="flex-shrink: 0; margin-top: 0.125rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <div style="flex-shrink: 0; margin-top: 0.125rem; font-size: 22px; color: var(--dash-peach-text);">
+                    <ion-icon name="alert-circle"></ion-icon>
                 </div>
                 <div>
-                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem;">Catatan Revisi dari {{ strtoupper(explode('_', $spj->status)[1] ?? 'Pemeriksa') }}</h3>
-                    <p style="font-weight: 400; margin: 0; white-space: pre-line; line-height: 1.5;">{{ $spj->catatan_revisi }}</p>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--dash-peach-text);">Catatan Revisi dari {{ strtoupper(explode('_', $spj->status)[1] ?? 'Pemeriksa') }}</h3>
+                    <p style="font-weight: 400; margin: 0; white-space: pre-line; line-height: 1.5; color: var(--dash-text-dark);">{{ $spj->catatan_revisi }}</p>
                 </div>
             </div>
         @endif
@@ -50,22 +50,22 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 $dokumen = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
             @endphp
             
-            <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
+            <div style="padding: 1.5rem; background: var(--dash-input-bg); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
                 <div style="margin-bottom: 0.75rem;">
                     <label class="spj-label" style="margin-bottom: 0;">Kelengkapan Berkas (Telah Dipilih)</label>
-                    <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                    <span style="font-size: 0.75rem; color: var(--dash-text-muted); display: block;">Centang berkas fisik yang sudah disiapkan</span>
                 </div>
                 <div id="dokumen_list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                     @if(count($dokumen) > 0)
                         @foreach($dokumen as $index => $doc)
-                            <div class="checkbox-wrapper" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: white; border: 1px solid var(--border); border-radius: var(--radius-md);">
+                            <div class="checkbox-wrapper" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--dash-card-bg); border: 1px solid var(--border); border-radius: var(--radius-md);">
                                 <input type="hidden" name="nama_dokumen[{{ $index }}]" value="{{ $doc['nama'] }}">
                                 <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ $doc['disiapkan'] ? 'checked' : '' }} style="width: 1rem; height: 1rem; cursor: pointer;">
-                                <label for="doc_{{ $index }}" style="margin: 0; font-size: 0.85rem; font-weight: 500; color: #334155; cursor: pointer; user-select: none;">{{ $doc['nama'] }}</label>
+                                <label for="doc_{{ $index }}" style="margin: 0; font-size: 0.85rem; font-weight: 500; color: var(--dash-text-dark); cursor: pointer; user-select: none;">{{ $doc['nama'] }}</label>
                             </div>
                         @endforeach
                     @else
-                        <p style="font-size: 0.85rem; color: #64748b; font-style: italic;">Tidak ada dokumen yang dipilih sebelumnya.</p>
+                        <p style="font-size: 0.85rem; color: var(--dash-text-muted); font-style: italic;">Tidak ada dokumen yang dipilih sebelumnya.</p>
                     @endif
                 </div>
             </div>

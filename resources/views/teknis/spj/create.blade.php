@@ -14,15 +14,15 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             justify-content: space-between;
             align-items: center;
             padding: 1rem;
-            background: #f8fafc;
-            border: 1px solid var(--border);
+            background: var(--dash-input-bg);
+            border: 1px solid var(--dash-border);
             border-radius: var(--radius-md);
             margin-bottom: 0.75rem;
             transition: var(--transition);
         }
         .upload-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+            border-color: #0284c7;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.15);
         }
         .upload-info {
             flex: 1;
@@ -30,46 +30,47 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         .upload-label {
             font-size: 0.9rem;
             font-weight: 600;
-            color: var(--text-main);
+            color: var(--dash-text-dark);
             display: block;
             margin-bottom: 0.25rem;
         }
         .upload-desc {
             font-size: 0.75rem;
-            color: var(--text-muted);
+            color: var(--dash-text-muted);
         }
         .upload-action {
             margin-left: 1rem;
         }
         .file-input {
             font-size: 0.85rem;
+            color: var(--dash-text-dark);
         }
         .file-input::file-selector-button {
-            background: #e2e8f0;
-            border: none;
+            background: var(--dash-card-bg);
+            border: 1px solid var(--dash-border);
             padding: 0.5rem 1rem;
             border-radius: var(--radius-md);
-            color: var(--text-main);
+            color: var(--dash-text-dark);
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
             margin-right: 1rem;
         }
         .file-input::file-selector-button:hover {
-            background: #cbd5e1;
+            background: var(--dash-table-header-bg);
         }
         .badge-assignee {
             font-size: 0.7rem;
             padding: 0.15rem 0.5rem;
             border-radius: 4px;
-            background: #e0f2fe;
-            color: #0284c7;
+            background: var(--dash-cyan-badge);
+            color: var(--dash-cyan-text);
             margin-left: 0.5rem;
             display: inline-block;
         }
         .badge-bendahara {
-            background: #fef3c7;
-            color: #d97706;
+            background: var(--dash-peach-badge);
+            color: var(--dash-peach-text);
         }
         .badge-ppk {
             background: #fce7f3;
@@ -78,13 +79,13 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
     </style>
 @endpush
 
-<div class="page-heading" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; animation: slideUp 0.4s ease-out forwards;">
+<div class="dashboard-heading">
     <div>
-        <h2 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">Pengajuan SPJ</h2>
-        <p style="color: #64748b; font-size: 0.95rem;">Isi formulir berikut dengan lengkap untuk mengajukan SPJ baru.</p>
+        <h2 class="dashboard-heading-title">Pengajuan SPJ</h2>
+        <p class="dashboard-heading-subtitle">Isi formulir berikut dengan lengkap untuk mengajukan SPJ baru.</p>
     </div>
     <a href="{{ route('teknis.spj.index') }}" class="spj-btn spj-btn-secondary">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        <ion-icon name="arrow-back-outline"></ion-icon>
         Kembali
     </a>
 </div>

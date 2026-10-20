@@ -1,1 +1,40 @@
-/* Profil CSS untuk umum */
+/* ==========================================================================
+   PROFIL MODULE STYLES (UMUM)
+   ========================================================================== */
+
+.profil-page-wrapper {
+    padding-top: 8px;
+}
+
+.profil-card {
+    background-color: var(--dash-card-bg);
+    border-radius: 20px;
+    border: 1px solid var(--dash-border);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+    margin-bottom: 24px;
+    transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+.profil-card-header {
+    padding: 22px 26px;
+    background-color: var(--dash-table-header-bg);
+    border-bottom: 1px solid var(--dash-border);
+}
+
+.profil-card-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--dash-text-dark);
+    margin: 0;
+}
+
+.profil-card-header p {
+    font-size: 13px;
+    color: var(--dash-text-muted);
+    margin: 4px 0 0 0;
+}
+
+.profil-card-body {
+    padding: 28px 26px;
+}

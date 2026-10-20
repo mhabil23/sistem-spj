@@ -21,7 +21,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             $role = Auth::user()->role;
             if ($role === 'admin') {
                 return redirect()->route('admin.dashboard');
@@ -36,7 +36,7 @@ class AuthController extends Controller
             } elseif ($role === 'bendahara') {
                 return redirect()->route('bendahara.dashboard');
             }
-            
+
             return redirect()->intended('/');
         }
 

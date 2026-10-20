@@ -17,42 +17,42 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pengguna Teknis',
             'email' => 'teknis@example.com',
             'role' => 'teknis',
             'password' => bcrypt('password'),
         ]);
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pengguna Admin',
             'email' => 'admin@example.com',
             'role' => 'admin',
             'password' => bcrypt('password'),
         ]);
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pengguna Umum',
             'email' => 'umum@example.com',
             'role' => 'umum',
             'password' => bcrypt('password'),
         ]);
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pengguna PPK',
             'email' => 'ppk@example.com',
             'role' => 'ppk',
             'password' => bcrypt('password'),
         ]);
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pengguna PPSPM',
             'email' => 'ppspm@example.com',
             'role' => 'ppspm',
             'password' => bcrypt('password'),
         ]);
 
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Pengguna Bendahara',
             'email' => 'bendahara@example.com',
             'role' => 'bendahara',
