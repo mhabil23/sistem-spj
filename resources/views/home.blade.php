@@ -37,8 +37,7 @@
         <!-- Right Side Nav (Links + Login Button matching Reference) -->
         <div class="navbar-right">
             <nav class="nav-links">
-                <a href="#" class="nav-link active">Beranda</a>
-                <a href="#tentang" class="nav-link">Tentang</a>
+                <a href="#beranda" class="nav-link active">Beranda</a>
                 <a href="#alur" class="nav-link">Alur</a>
                 <a href="#panduan" class="nav-link">Panduan</a>
             </nav>
@@ -163,7 +162,7 @@
         </div>
 
         <!-- HERO SECTION -->
-        <section class="hero">
+        <section class="hero" id="beranda">
 
             <!-- Left Hero Content -->
             <div class="hero-content">
@@ -383,7 +382,7 @@
 
 
         <!-- FEATURES -->
-        <section class="features">
+        <section class="features" id="panduan">
 
             <div class="section-title">
                 <span class="section-label">FITUR SISTEM</span>
@@ -464,6 +463,53 @@
 
     </footer>
 
+    <!-- Sticky Navbar & Scrollspy Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelectorAll('.nav-links .nav-link');
+            const sections = [
+                { id: 'beranda', el: document.getElementById('beranda') },
+                { id: 'alur', el: document.getElementById('alur') },
+                { id: 'panduan', el: document.getElementById('panduan') }
+            ];
+
+            const onScroll = () => {
+                if (!navbar) return;
+
+                if (window.scrollY > 20) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+
+                let currentId = 'beranda';
+                sections.forEach(({ id, el }) => {
+                    if (el) {
+                        const top = el.getBoundingClientRect().top;
+                        if (top <= 140) {
+                            currentId = id;
+                        }
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (
+                        href === '#' + currentId ||
+                        (currentId === 'beranda' && (href === '#' || href === '#beranda'))
+                    ) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            onScroll();
+        });
+    </script>
 </body>
 
 </html>
