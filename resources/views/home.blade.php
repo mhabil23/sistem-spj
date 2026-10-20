@@ -174,60 +174,90 @@
 
             </div>
 
-            <!-- Right Hero Visual (Glassmorphic Neumorphic Card matching image) -->
-            <div class="hero-card-wrapper">
+            <!-- Right Hero Visual (Glassmorphic Neumorphic Card with 3D Tilt & Live Stepper) -->
+            <div class="hero-card-wrapper" id="heroCardWrapper">
 
-                <div class="hero-glass-card">
+                <!-- Floating Micro-Badges -->
+                <div class="floating-stat-badge float-top-left" id="floatBadge1">
+                    <div class="float-icon mint-glow">
+                        <i class="bi bi-shield-fill-check"></i>
+                    </div>
+                    <div>
+                        <strong>100% Tervalidasi</strong>
+                        <small>Standar KPPN &amp; BPS</small>
+                    </div>
+                </div>
+
+
+                <!-- Interactive 3D Glass Card -->
+                <div class="hero-glass-card" id="heroInteractiveCard">
 
                     <!-- Header -->
                     <div class="glass-card-header">
                         <div>
-                            <span class="card-status-label">STATUS SPJ</span>
+                            <span class="card-status-label">
+                                <span class="live-indicator-dot"></span>
+                                LIVE STATUS SPJ
+                            </span>
+                            <div class="card-spj-id" id="cardSpjCode">SPJ/2026/04/012</div>
                         </div>
 
-                        <div class="badge-status-diproses">
+                        <div class="live-status-pill status-diproses" id="cardStatusBadge">
                             <span class="badge-icon-warn">!</span>
-                            <span>Diproses</span>
+                            <span id="cardStatusText">Diproses Umum</span>
                         </div>
                     </div>
 
-                    <!-- Stepper Progress Bar -->
-                    <div class="stepper-container">
+                    <!-- Stepper Progress Bar (5 Steps) -->
+                    <div class="stepper-container" id="heroStepper">
 
-                        <div class="stepper-step step-done">
+                        <div class="stepper-step step-done" data-step="0" title="Klik untuk simulasi tahap Teknis">
                             <div class="step-circle">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
+                                <i class="bi bi-check-lg"></i>
                             </div>
                             <span class="step-label">Teknis</span>
                         </div>
 
-                        <div class="step-line line-glow"></div>
+                        <div class="step-line line-glow" data-line="0"></div>
 
-                        <div class="stepper-step step-active-now">
-                            <div class="step-circle step-glow">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                            </div>
+                        <div class="stepper-step step-active-now" data-step="1" title="Klik untuk simulasi tahap Subbagian Umum">
+                            <div class="step-circle">2</div>
                             <span class="step-label">Umum</span>
                         </div>
 
-                        <div class="step-line"></div>
+                        <div class="step-line" data-line="1"></div>
 
-                        <div class="stepper-step">
+                        <div class="stepper-step" data-step="2" title="Klik untuk simulasi tahap PPK">
                             <div class="step-circle step-pending">3</div>
                             <span class="step-label">PPK</span>
                         </div>
 
-                        <div class="step-line"></div>
+                        <div class="step-line" data-line="2"></div>
 
-                        <div class="stepper-step">
+                        <div class="stepper-step" data-step="3" title="Klik untuk simulasi tahap PPSPM">
                             <div class="step-circle step-pending">4</div>
+                            <span class="step-label">PPSPM</span>
+                        </div>
+
+                        <div class="step-line" data-line="3"></div>
+
+                        <div class="stepper-step" data-step="4" title="Klik untuk simulasi tahap Bendahara">
+                            <div class="step-circle step-pending">5</div>
                             <span class="step-label">Bendahara</span>
                         </div>
 
+                    </div>
+
+                    <!-- Live Stage Detail Note Box -->
+                    <div class="live-detail-box" id="simDetailBox">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2px;">
+                            <span style="font-size:10.5px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.4px;" id="simStageRole">Posisi: Subbagian Umum</span>
+                            <span style="font-size:10.5px; font-weight:700; color:#0284c7;" id="simStageSla">Estimasi: 1 - 2 Hari</span>
+                        </div>
+                        <div class="live-detail-note">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span id="simStageDesc">Memeriksa kelengkapan administrasi berkas kuitansi, daftar hadir, dan rincian riil kegiatan.</span>
+                        </div>
                     </div>
 
                     <!-- Bottom Info Cards -->
@@ -236,29 +266,35 @@
                         <div class="info-pill-card">
                             <div class="info-pill-text">
                                 <small>Kegiatan</small>
-                                <strong>Perjalanan Dinas</strong>
+                                <strong id="cardKegiatanText">Survei Pertanian 2026</strong>
                             </div>
                             <div class="info-pill-icon icon-blue">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M3 21h18M3 10h18M5 10v11M9 10v11M15 10v11M19 10v11M4 10l8-6 8 6"/>
-                                </svg>
+                                <i class="bi bi-briefcase-fill" style="font-size:15px;"></i>
                             </div>
                         </div>
 
                         <div class="info-pill-card">
                             <div class="info-pill-text">
                                 <small>Nilai SPJ</small>
-                                <strong>Rp 5.000.000</strong>
+                                <strong id="cardNominalText">Rp 4.750.000</strong>
                             </div>
                             <div class="info-pill-icon icon-orange">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="2" y="6" width="20" height="12" rx="2"/>
-                                    <circle cx="12" cy="12" r="3"/>
-                                    <path d="M6 12h.01M18 12h.01"/>
-                                </svg>
+                                <i class="bi bi-cash-stack" style="font-size:16px;"></i>
                             </div>
                         </div>
 
+                    </div>
+
+                    <!-- Simulation Controls Bar -->
+                    <div class="live-controls-bar">
+                        <div class="live-cycle-tag">
+                            <i class="bi bi-arrow-repeat"></i>
+                            <span id="simLiveTag">Simulasi Otomatis Aktif</span>
+                        </div>
+                        <button type="button" class="live-playback-btn" id="btnToggleSim" title="Jeda atau lanjutkan simulasi siklus SPJ">
+                            <i class="bi bi-pause-fill" id="simPlayPauseIcon"></i>
+                            <span id="simPlayPauseText">Jeda</span>
+                        </button>
                     </div>
 
                 </div>
@@ -267,108 +303,108 @@
 
         </section>
 
-        <!-- ALUR -->
+        <!-- ALUR 5 TAHAPAN LENGKAP -->
         <section class="workflow" id="alur">
 
             <div class="section-title">
-                <span class="section-label">ALUR PROSES</span>
+                <span class="section-label">ALUR PROSES TERSTANDAR</span>
 
                 <h2 class="section-heading">
-                    Alur Pengajuan SPJ
+                    Alur Pengajuan &amp; Penyelesaian SPJ
                 </h2>
 
                 <p class="section-desc">
-                    Setiap SPJ diproses melalui tahapan pemeriksaan sebelum pembayaran dan pengarsipan.
+                    Setiap SPJ diproses melalui 5 tahapan pemeriksaan terstandar SOP untuk menjamin akuntabilitas belanja APBN.
                 </p>
             </div>
 
             <div class="flow-container">
 
-                <!-- TEKNIS -->
+                <!-- 01: TEKNIS -->
                 <div class="flow-card blue">
                     <div class="number">01</div>
                     <div class="icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                        </svg>
+                        <i class="bi bi-file-earmark-text" style="font-size: 20px;"></i>
                     </div>
                     <h3>Teknis</h3>
-                    <p>Mengajukan dan menyerahkan dokumen SPJ.</p>
+                    <p>Mengajukan dan menyerahkan dokumen SPJ ke Subbagian Umum.</p>
                 </div>
 
                 <div class="arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
                 </div>
 
-                <!-- SUBBAGIAN UMUM -->
+                <!-- 02: SUBBAGIAN UMUM -->
                 <div class="flow-card green">
                     <div class="number">02</div>
                     <div class="icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-                            <line x1="9" y1="12" x2="15" y2="12"></line>
-                            <line x1="9" y1="16" x2="15" y2="16"></line>
-                        </svg>
+                        <i class="bi bi-clipboard2-check" style="font-size: 20px;"></i>
                     </div>
                     <h3>Subbagian Umum</h3>
-                    <p>Memeriksa kelengkapan dokumen SPJ.</p>
+                    <p>Memeriksa kelengkapan administrasi dan berkas pendukung SPJ.</p>
                 </div>
 
                 <div class="arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
                 </div>
 
-                <!-- PPK -->
-                <div class="flow-card yellow">
+                <!-- 03: PPK -->
+                <div class="flow-card orange">
                     <div class="number">03</div>
                     <div class="icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
+                        <i class="bi bi-patch-check" style="font-size: 20px;"></i>
                     </div>
                     <h3>PPK</h3>
-                    <p>Melakukan pemeriksaan dan persetujuan SPJ.</p>
+                    <p>Memeriksa substansi kegiatan dan menerbitkan persetujuan.</p>
                 </div>
 
                 <div class="arrow">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
                     </svg>
                 </div>
 
-                <!-- BENDAHARA -->
+                <!-- 04: PPSPM -->
                 <div class="flow-card purple">
                     <div class="number">04</div>
                     <div class="icon">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6 9c0-2.5 2.5-4 6-4s6 1.5 6 4c0 1.5-1 3-2.5 4.5 1.5 1.5 2.5 3 2.5 4.5 0 2.5-2.5 4-6 4s-6-1.5-6-4c0-1.5 1-3 2.5-4.5C7 12 6 10.5 6 9z"></path>
-                            <circle cx="12" cy="10" r="1.5" fill="#7c3aed"></circle>
-                        </svg>
+                        <i class="bi bi-award" style="font-size: 20px;"></i>
+                    </div>
+                    <h3>PPSPM</h3>
+                    <p>Menguji dokumen tagihan dan menerbitkan SPM ke KPPN.</p>
+                </div>
+
+                <div class="arrow">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+
+                <!-- 05: BENDAHARA -->
+                <div class="flow-card emerald">
+                    <div class="number">05</div>
+                    <div class="icon">
+                        <i class="bi bi-cash-coin" style="font-size: 20px;"></i>
                     </div>
                     <h3>Bendahara</h3>
-                    <p>Melakukan pembayaran dan pengarsipan.</p>
+                    <p>Melakukan pembayaran tagihan SPJ dan pengarsipan bukti sah.</p>
                 </div>
 
             </div>
 
-            <!-- DECISION -->
+            <!-- DECISION & SOP DOWNLOAD AREA -->
             <div class="decision-area">
                 <div class="decision-box">
                     <span class="decision-check-circle">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
+                        <i class="bi bi-check-lg" style="font-size: 14px;"></i>
                     </span>
                     <strong class="decision-label">Memenuhi Syarat?</strong>
                 </div>
@@ -376,6 +412,11 @@
                 <div class="decision-text">
                     Jika tidak memenuhi syarat, SPJ dikembalikan kepada Teknis untuk diperbaiki.
                 </div>
+
+                <a href="{{ route('flowchart.preview') }}" target="_blank" class="btn-download-sop" title="Buka & Unduh Flowchart SOP SPJ Resmi BPS Kolaka Utara">
+                    <i class="bi bi-file-earmark-pdf-fill" style="color: #ef4444; font-size: 16px;"></i>
+                    <span>Lihat Dokumen SOP Lengkap</span>
+                </a>
             </div>
 
         </section>
@@ -463,9 +504,12 @@
 
     </footer>
 
-    <!-- Sticky Navbar & Scrollspy Script -->
+    <!-- Sticky Navbar, 3D Tilt & Live SPJ Simulation Scripts -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            /* ---------------------------------------------
+               1. STICKY NAVBAR & SCROLLSPY
+            --------------------------------------------- */
             const navbar = document.querySelector('.navbar');
             const navLinks = document.querySelectorAll('.nav-links .nav-link');
             const sections = [
@@ -508,6 +552,256 @@
 
             window.addEventListener('scroll', onScroll, { passive: true });
             onScroll();
+
+            /* ---------------------------------------------
+               2. 3D TILT EFFECT (PARALLAX ON HERO CARD)
+            --------------------------------------------- */
+            const cardWrapper = document.getElementById('heroCardWrapper');
+            const glassCard = document.getElementById('heroInteractiveCard');
+            const floatBadge1 = document.getElementById('floatBadge1');
+            const floatBadge2 = document.getElementById('floatBadge2');
+
+            if (cardWrapper && glassCard) {
+                let isHovering = false;
+
+                cardWrapper.addEventListener('mouseenter', () => {
+                    isHovering = true;
+                    glassCard.style.transition = 'transform 0.1s ease-out';
+                });
+
+                cardWrapper.addEventListener('mousemove', (e) => {
+                    if (!isHovering) return;
+                    const rect = cardWrapper.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+                    const maxTilt = 12; // degrees
+                    const tiltX = -y * maxTilt;
+                    const tiltY = x * maxTilt;
+
+                    glassCard.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+
+                    if (floatBadge1) {
+                        floatBadge1.style.transform = `translate3d(${(-x * 14).toFixed(1)}px, ${(-y * 14).toFixed(1)}px, 20px)`;
+                    }
+                    if (floatBadge2) {
+                        floatBadge2.style.transform = `translate3d(${(-x * 18).toFixed(1)}px, ${(-y * 18).toFixed(1)}px, 25px)`;
+                    }
+                });
+
+                cardWrapper.addEventListener('mouseleave', () => {
+                    isHovering = false;
+                    glassCard.style.transition = 'transform 0.5s ease-out';
+                    glassCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+
+                    if (floatBadge1) {
+                        floatBadge1.style.transform = '';
+                    }
+                    if (floatBadge2) {
+                        floatBadge2.style.transform = '';
+                    }
+                });
+            }
+
+            /* ---------------------------------------------
+               3. 5-STAGE LIVE INTERACTIVE STEPPER SIMULATION
+            --------------------------------------------- */
+            const stages = [
+                {
+                    name: 'Teknis',
+                    role: 'Posisi: Tim Teknis Kegiatan',
+                    statusClass: 'status-ready',
+                    statusText: 'Pengajuan Dibuat',
+                    statusIcon: 'bi bi-file-earmark-arrow-up',
+                    sla: 'Estimasi: Hari H',
+                    desc: 'Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.',
+                    kegiatan: 'Survei Pertanian 2026',
+                    nominal: 'Rp 4.750.000',
+                    wa: 'Notifikasi: SPJ berhasil diajukan',
+                    code: 'SPJ/2026/04/012'
+                },
+                {
+                    name: 'Umum',
+                    role: 'Posisi: Subbagian Umum',
+                    statusClass: 'status-diproses',
+                    statusText: 'Verifikasi Berkas',
+                    statusIcon: 'bi bi-search',
+                    sla: 'Estimasi: 1 - 2 Hari',
+                    desc: 'Memeriksa kelengkapan administrasi kuitansi, daftar hadir, dan rincian riil kegiatan.',
+                    kegiatan: 'Survei Pertanian 2026',
+                    nominal: 'Rp 4.750.000',
+                    wa: 'Notifikasi: Sedang diverifikasi Umum',
+                    code: 'SPJ/2026/04/012'
+                },
+                {
+                    name: 'PPK',
+                    role: 'Posisi: Pejabat Pembuat Komitmen (PPK)',
+                    statusClass: 'status-ppk',
+                    statusText: 'Disetujui PPK',
+                    statusIcon: 'bi bi-patch-check',
+                    sla: 'Estimasi: 1 - 2 Hari',
+                    desc: 'Pengujian kesesuaian anggaran DIPA/POK, substansi hasil kegiatan, dan persetujuan SPJ.',
+                    kegiatan: 'Sensus Ekonomi Lanjutan',
+                    nominal: 'Rp 6.200.000',
+                    wa: 'Notifikasi: PPK menyetujui SPJ',
+                    code: 'SPJ/2026/04/015'
+                },
+                {
+                    name: 'PPSPM',
+                    role: 'Posisi: Pejabat Penandatangan SPM (PPSPM)',
+                    statusClass: 'status-ppspm',
+                    statusText: 'Penerbitan SPM',
+                    statusIcon: 'bi bi-award',
+                    sla: 'Estimasi: 1 - 2 Hari',
+                    desc: 'Pengujian dokumen tagihan, validasi ketersediaan dana, dan penerbitan SPM ke KPPN.',
+                    kegiatan: 'Survei Angkatan Kerja',
+                    nominal: 'Rp 8.450.000',
+                    wa: 'Notifikasi: SPM diterbitkan ke KPPN',
+                    code: 'SPJ/2026/04/018'
+                },
+                {
+                    name: 'Bendahara',
+                    role: 'Posisi: Bendahara Pengeluaran',
+                    statusClass: 'status-selesai',
+                    statusText: 'Selesai & Lunas',
+                    statusIcon: 'bi bi-check-circle-fill',
+                    sla: 'Estimasi: 1 Hari Kerja',
+                    desc: 'Pencairan dana SP2D, pembayaran ke pelaksana kegiatan, dan pengarsipan bukti setor sah.',
+                    kegiatan: 'Survei Sosial Ekonomi (Susenas)',
+                    nominal: 'Rp 12.300.000',
+                    wa: 'Notifikasi: Pembayaran SPJ Selesai!',
+                    code: 'SPJ/2026/04/020'
+                }
+            ];
+
+            let currentStep = 1; // start on 'Umum'
+            let isAutoPlaying = true;
+            let simInterval = null;
+
+            const elSpjCode = document.getElementById('cardSpjCode');
+            const elStatusBadge = document.getElementById('cardStatusBadge');
+            const elStatusText = document.getElementById('cardStatusText');
+            const elStageRole = document.getElementById('simStageRole');
+            const elStageSla = document.getElementById('simStageSla');
+            const elStageDesc = document.getElementById('simStageDesc');
+            const elKegiatanText = document.getElementById('cardKegiatanText');
+            const elNominalText = document.getElementById('cardNominalText');
+            const elWaNote = document.getElementById('heroWaNote');
+            const btnToggleSim = document.getElementById('btnToggleSim');
+            const iconPlayPause = document.getElementById('simPlayPauseIcon');
+            const textPlayPause = document.getElementById('simPlayPauseText');
+            const elLiveTag = document.getElementById('simLiveTag');
+
+            const stepperEl = document.getElementById('heroStepper');
+            const stepItems = stepperEl ? stepperEl.querySelectorAll('.stepper-step') : [];
+            const stepLines = stepperEl ? stepperEl.querySelectorAll('.step-line') : [];
+
+            const renderStep = (idx) => {
+                const s = stages[idx];
+                if (!s) return;
+
+                // Update text & info
+                if (elSpjCode) elSpjCode.textContent = s.code;
+                if (elStageRole) elStageRole.textContent = s.role;
+                if (elStageSla) elStageSla.textContent = s.sla;
+                if (elStageDesc) elStageDesc.textContent = s.desc;
+                if (elKegiatanText) elKegiatanText.textContent = s.kegiatan;
+                if (elNominalText) elNominalText.textContent = s.nominal;
+                if (elWaNote) elWaNote.textContent = s.wa;
+
+                // Update dynamic badge
+                if (elStatusBadge) {
+                    elStatusBadge.className = `live-status-pill ${s.statusClass}`;
+                    elStatusBadge.innerHTML = `<i class="${s.statusIcon}"></i> <span>${s.statusText}</span>`;
+                }
+
+                // Update stepper items
+                stepItems.forEach((stepNode, i) => {
+                    const circle = stepNode.querySelector('.step-circle');
+                    stepNode.classList.remove('step-done', 'step-active-now');
+
+                    if (i < idx) {
+                        stepNode.classList.add('step-done');
+                        if (circle) {
+                            circle.className = 'step-circle';
+                            circle.innerHTML = '<i class="bi bi-check-lg"></i>';
+                        }
+                    } else if (i === idx) {
+                        stepNode.classList.add('step-active-now');
+                        if (circle) {
+                            circle.className = 'step-circle step-glow';
+                            circle.innerHTML = (i + 1).toString();
+                        }
+                    } else {
+                        if (circle) {
+                            circle.className = 'step-circle step-pending';
+                            circle.textContent = (i + 1).toString();
+                        }
+                    }
+                });
+
+                // Update line glow
+                stepLines.forEach((lineNode, i) => {
+                    if (i < idx) {
+                        lineNode.classList.add('line-glow');
+                    } else {
+                        lineNode.classList.remove('line-glow');
+                    }
+                });
+            };
+
+            const startSimulation = () => {
+                if (simInterval) clearInterval(simInterval);
+                simInterval = setInterval(() => {
+                    if (!isAutoPlaying) return;
+                    currentStep = (currentStep + 1) % stages.length;
+                    renderStep(currentStep);
+                }, 3500);
+            };
+
+            // Click on step dots to jump
+            stepItems.forEach((stepNode) => {
+                stepNode.addEventListener('click', () => {
+                    const stepIdx = parseInt(stepNode.getAttribute('data-step'), 10);
+                    if (!isNaN(stepIdx)) {
+                        currentStep = stepIdx;
+                        renderStep(currentStep);
+                        // Reset timer so it gives 3.5s from click
+                        startSimulation();
+                    }
+                });
+            });
+
+            // Toggle play / pause button
+            if (btnToggleSim) {
+                btnToggleSim.addEventListener('click', () => {
+                    isAutoPlaying = !isAutoPlaying;
+                    if (isAutoPlaying) {
+                        iconPlayPause.className = 'bi bi-pause-fill';
+                        textPlayPause.textContent = 'Jeda';
+                        if (elLiveTag) elLiveTag.textContent = 'Simulasi Otomatis Aktif';
+                    } else {
+                        iconPlayPause.className = 'bi bi-play-fill';
+                        textPlayPause.textContent = 'Lanjut';
+                        if (elLiveTag) elLiveTag.textContent = 'Simulasi Dijeda';
+                    }
+                });
+            }
+
+            // Pause auto play temporarily while user hovers card to inspect details
+            if (glassCard) {
+                glassCard.addEventListener('mouseenter', () => {
+                    if (simInterval) clearInterval(simInterval);
+                });
+
+                glassCard.addEventListener('mouseleave', () => {
+                    if (isAutoPlaying) startSimulation();
+                });
+            }
+
+            // Initialize on start
+            renderStep(currentStep);
+            startSimulation();
         });
     </script>
 </body>

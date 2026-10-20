@@ -11,6 +11,10 @@ Route::get('/', function () {
 });
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FlowchartPdfController;
+
+Route::get('/flowchart-sop/pdf', [FlowchartPdfController::class, 'preview'])->name('flowchart.preview');
+Route::get('/flowchart-sop/download', [FlowchartPdfController::class, 'download'])->name('flowchart.download');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
