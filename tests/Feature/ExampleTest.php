@@ -15,5 +15,10 @@ class ExampleTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
+        $response->assertDontSee('SPJ/2026/04/012');
+        $response->assertDontSee('100% Tervalidasi');
+        $response->assertDontSee('Simulasi Otomatis Aktif');
+        $response->assertDontSee('btnToggleSim');
+        $response->assertDontSee('simPlayPauseIcon');
     }
 }

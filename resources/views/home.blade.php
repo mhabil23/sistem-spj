@@ -174,74 +174,57 @@
 
             </div>
 
-            <!-- Right Hero Visual (Glassmorphic Neumorphic Card with 3D Tilt & Live Stepper) -->
+            <!-- Right Hero Visual (Glassmorphic Neumorphic Card with 3D Tilt & Stepper) -->
             <div class="hero-card-wrapper" id="heroCardWrapper">
-
-                <!-- Floating Micro-Badges -->
-                <div class="floating-stat-badge float-top-left" id="floatBadge1">
-                    <div class="float-icon mint-glow">
-                        <i class="bi bi-shield-fill-check"></i>
-                    </div>
-                    <div>
-                        <strong>100% Tervalidasi</strong>
-                        <small>Standar KPPN &amp; BPS</small>
-                    </div>
-                </div>
-
 
                 <!-- Interactive 3D Glass Card -->
                 <div class="hero-glass-card" id="heroInteractiveCard">
 
                     <!-- Header -->
                     <div class="glass-card-header">
-                        <div>
-                            <span class="card-status-label">
-                                <span class="live-indicator-dot"></span>
-                                LIVE STATUS SPJ
-                            </span>
-                            <div class="card-spj-id" id="cardSpjCode">SPJ/2026/04/012</div>
-                        </div>
+                        <span class="card-status-label">
+                            <span class="live-indicator-dot"></span>
+                            LIVE STATUS SPJ
+                        </span>
 
-                        <div class="live-status-pill status-diproses" id="cardStatusBadge">
-                            <span class="badge-icon-warn">!</span>
-                            <span id="cardStatusText">Diproses Umum</span>
+                        <div class="live-status-pill status-ready smooth-crossfade" id="cardStatusBadge">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                            <span id="cardStatusText">Pengajuan Dibuat</span>
                         </div>
                     </div>
 
                     <!-- Stepper Progress Bar (5 Steps) -->
                     <div class="stepper-container" id="heroStepper">
 
-                        <div class="stepper-step step-done" data-step="0" title="Klik untuk simulasi tahap Teknis">
-                            <div class="step-circle">
-                                <i class="bi bi-check-lg"></i>
-                            </div>
+                        <div class="stepper-step step-active-now" data-step="0" title="Tahap 1: Teknis">
+                            <div class="step-circle step-glow">1</div>
                             <span class="step-label">Teknis</span>
                         </div>
 
-                        <div class="step-line line-glow" data-line="0"></div>
+                        <div class="step-line" data-line="0"></div>
 
-                        <div class="stepper-step step-active-now" data-step="1" title="Klik untuk simulasi tahap Subbagian Umum">
-                            <div class="step-circle">2</div>
+                        <div class="stepper-step" data-step="1" title="Tahap 2: Subbagian Umum">
+                            <div class="step-circle step-pending">2</div>
                             <span class="step-label">Umum</span>
                         </div>
 
                         <div class="step-line" data-line="1"></div>
 
-                        <div class="stepper-step" data-step="2" title="Klik untuk simulasi tahap PPK">
+                        <div class="stepper-step" data-step="2" title="Tahap 3: PPK">
                             <div class="step-circle step-pending">3</div>
                             <span class="step-label">PPK</span>
                         </div>
 
                         <div class="step-line" data-line="2"></div>
 
-                        <div class="stepper-step" data-step="3" title="Klik untuk simulasi tahap PPSPM">
+                        <div class="stepper-step" data-step="3" title="Tahap 4: PPSPM">
                             <div class="step-circle step-pending">4</div>
                             <span class="step-label">PPSPM</span>
                         </div>
 
                         <div class="step-line" data-line="3"></div>
 
-                        <div class="stepper-step" data-step="4" title="Klik untuk simulasi tahap Bendahara">
+                        <div class="stepper-step" data-step="4" title="Tahap 5: Bendahara">
                             <div class="step-circle step-pending">5</div>
                             <span class="step-label">Bendahara</span>
                         </div>
@@ -249,14 +232,14 @@
                     </div>
 
                     <!-- Live Stage Detail Note Box -->
-                    <div class="live-detail-box" id="simDetailBox">
+                    <div class="live-detail-box smooth-crossfade" id="simDetailBox">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2px;">
-                            <span style="font-size:10.5px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.4px;" id="simStageRole">Posisi: Subbagian Umum</span>
-                            <span style="font-size:10.5px; font-weight:700; color:#0284c7;" id="simStageSla">Estimasi: 1 - 2 Hari</span>
+                            <span style="font-size:10.5px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.4px;" id="simStageRole">Posisi: Tim Teknis Kegiatan</span>
+                            <span style="font-size:10.5px; font-weight:700; color:#0284c7;" id="simStageSla">Estimasi: Hari H</span>
                         </div>
                         <div class="live-detail-note">
                             <i class="bi bi-info-circle-fill"></i>
-                            <span id="simStageDesc">Memeriksa kelengkapan administrasi berkas kuitansi, daftar hadir, dan rincian riil kegiatan.</span>
+                            <span id="simStageDesc">Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.</span>
                         </div>
                     </div>
 
@@ -266,7 +249,7 @@
                         <div class="info-pill-card">
                             <div class="info-pill-text">
                                 <small>Kegiatan</small>
-                                <strong id="cardKegiatanText">Survei Pertanian 2026</strong>
+                                <strong id="cardKegiatanText" class="smooth-crossfade">Survei Pertanian 2026</strong>
                             </div>
                             <div class="info-pill-icon icon-blue">
                                 <i class="bi bi-briefcase-fill" style="font-size:15px;"></i>
@@ -276,25 +259,13 @@
                         <div class="info-pill-card">
                             <div class="info-pill-text">
                                 <small>Nilai SPJ</small>
-                                <strong id="cardNominalText">Rp 4.750.000</strong>
+                                <strong id="cardNominalText" class="smooth-crossfade">Rp 4.750.000</strong>
                             </div>
                             <div class="info-pill-icon icon-orange">
                                 <i class="bi bi-cash-stack" style="font-size:16px;"></i>
                             </div>
                         </div>
 
-                    </div>
-
-                    <!-- Simulation Controls Bar -->
-                    <div class="live-controls-bar">
-                        <div class="live-cycle-tag">
-                            <i class="bi bi-arrow-repeat"></i>
-                            <span id="simLiveTag">Simulasi Otomatis Aktif</span>
-                        </div>
-                        <button type="button" class="live-playback-btn" id="btnToggleSim" title="Jeda atau lanjutkan simulasi siklus SPJ">
-                            <i class="bi bi-pause-fill" id="simPlayPauseIcon"></i>
-                            <span id="simPlayPauseText">Jeda</span>
-                        </button>
                     </div>
 
                 </div>
@@ -558,8 +529,6 @@
             --------------------------------------------- */
             const cardWrapper = document.getElementById('heroCardWrapper');
             const glassCard = document.getElementById('heroInteractiveCard');
-            const floatBadge1 = document.getElementById('floatBadge1');
-            const floatBadge2 = document.getElementById('floatBadge2');
 
             if (cardWrapper && glassCard) {
                 let isHovering = false;
@@ -580,31 +549,17 @@
                     const tiltY = x * maxTilt;
 
                     glassCard.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
-
-                    if (floatBadge1) {
-                        floatBadge1.style.transform = `translate3d(${(-x * 14).toFixed(1)}px, ${(-y * 14).toFixed(1)}px, 20px)`;
-                    }
-                    if (floatBadge2) {
-                        floatBadge2.style.transform = `translate3d(${(-x * 18).toFixed(1)}px, ${(-y * 18).toFixed(1)}px, 25px)`;
-                    }
                 });
 
                 cardWrapper.addEventListener('mouseleave', () => {
                     isHovering = false;
                     glassCard.style.transition = 'transform 0.5s ease-out';
                     glassCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-
-                    if (floatBadge1) {
-                        floatBadge1.style.transform = '';
-                    }
-                    if (floatBadge2) {
-                        floatBadge2.style.transform = '';
-                    }
                 });
             }
 
             /* ---------------------------------------------
-               3. 5-STAGE LIVE INTERACTIVE STEPPER SIMULATION
+               3. 5-STAGE INTERACTIVE STEPPER
             --------------------------------------------- */
             const stages = [
                 {
@@ -617,8 +572,7 @@
                     desc: 'Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.',
                     kegiatan: 'Survei Pertanian 2026',
                     nominal: 'Rp 4.750.000',
-                    wa: 'Notifikasi: SPJ berhasil diajukan',
-                    code: 'SPJ/2026/04/012'
+                    wa: 'Notifikasi: SPJ berhasil diajukan'
                 },
                 {
                     name: 'Umum',
@@ -628,10 +582,9 @@
                     statusIcon: 'bi bi-search',
                     sla: 'Estimasi: 1 - 2 Hari',
                     desc: 'Memeriksa kelengkapan administrasi kuitansi, daftar hadir, dan rincian riil kegiatan.',
-                    kegiatan: 'Survei Pertanian 2026',
-                    nominal: 'Rp 4.750.000',
-                    wa: 'Notifikasi: Sedang diverifikasi Umum',
-                    code: 'SPJ/2026/04/012'
+                    kegiatan: 'Survei Industri Manufaktur',
+                    nominal: 'Rp 5.850.000',
+                    wa: 'Notifikasi: Sedang diverifikasi Umum'
                 },
                 {
                     name: 'PPK',
@@ -643,8 +596,7 @@
                     desc: 'Pengujian kesesuaian anggaran DIPA/POK, substansi hasil kegiatan, dan persetujuan SPJ.',
                     kegiatan: 'Sensus Ekonomi Lanjutan',
                     nominal: 'Rp 6.200.000',
-                    wa: 'Notifikasi: PPK menyetujui SPJ',
-                    code: 'SPJ/2026/04/015'
+                    wa: 'Notifikasi: PPK menyetujui SPJ'
                 },
                 {
                     name: 'PPSPM',
@@ -654,10 +606,9 @@
                     statusIcon: 'bi bi-award',
                     sla: 'Estimasi: 1 - 2 Hari',
                     desc: 'Pengujian dokumen tagihan, validasi ketersediaan dana, dan penerbitan SPM ke KPPN.',
-                    kegiatan: 'Survei Angkatan Kerja',
+                    kegiatan: 'Survei Angkatan Kerja (Sakernas)',
                     nominal: 'Rp 8.450.000',
-                    wa: 'Notifikasi: SPM diterbitkan ke KPPN',
-                    code: 'SPJ/2026/04/018'
+                    wa: 'Notifikasi: SPM diterbitkan ke KPPN'
                 },
                 {
                     name: 'Bendahara',
@@ -669,53 +620,32 @@
                     desc: 'Pencairan dana SP2D, pembayaran ke pelaksana kegiatan, dan pengarsipan bukti setor sah.',
                     kegiatan: 'Survei Sosial Ekonomi (Susenas)',
                     nominal: 'Rp 12.300.000',
-                    wa: 'Notifikasi: Pembayaran SPJ Selesai!',
-                    code: 'SPJ/2026/04/020'
+                    wa: 'Notifikasi: Pembayaran SPJ Selesai!'
                 }
             ];
 
-            let currentStep = 1; // start on 'Umum'
-            let isAutoPlaying = true;
-            let simInterval = null;
+            let currentStep = 0; // start on 'Teknis'
+            let autoStepInterval = null;
+            let transitionTimeout = null;
 
-            const elSpjCode = document.getElementById('cardSpjCode');
             const elStatusBadge = document.getElementById('cardStatusBadge');
-            const elStatusText = document.getElementById('cardStatusText');
             const elStageRole = document.getElementById('simStageRole');
             const elStageSla = document.getElementById('simStageSla');
             const elStageDesc = document.getElementById('simStageDesc');
             const elKegiatanText = document.getElementById('cardKegiatanText');
             const elNominalText = document.getElementById('cardNominalText');
             const elWaNote = document.getElementById('heroWaNote');
-            const btnToggleSim = document.getElementById('btnToggleSim');
-            const iconPlayPause = document.getElementById('simPlayPauseIcon');
-            const textPlayPause = document.getElementById('simPlayPauseText');
-            const elLiveTag = document.getElementById('simLiveTag');
+            const elDetailBox = document.getElementById('simDetailBox');
 
             const stepperEl = document.getElementById('heroStepper');
             const stepItems = stepperEl ? stepperEl.querySelectorAll('.stepper-step') : [];
             const stepLines = stepperEl ? stepperEl.querySelectorAll('.step-line') : [];
 
-            const renderStep = (idx) => {
+            const renderStep = (idx, immediate = false) => {
                 const s = stages[idx];
                 if (!s) return;
 
-                // Update text & info
-                if (elSpjCode) elSpjCode.textContent = s.code;
-                if (elStageRole) elStageRole.textContent = s.role;
-                if (elStageSla) elStageSla.textContent = s.sla;
-                if (elStageDesc) elStageDesc.textContent = s.desc;
-                if (elKegiatanText) elKegiatanText.textContent = s.kegiatan;
-                if (elNominalText) elNominalText.textContent = s.nominal;
-                if (elWaNote) elWaNote.textContent = s.wa;
-
-                // Update dynamic badge
-                if (elStatusBadge) {
-                    elStatusBadge.className = `live-status-pill ${s.statusClass}`;
-                    elStatusBadge.innerHTML = `<i class="${s.statusIcon}"></i> <span>${s.statusText}</span>`;
-                }
-
-                // Update stepper items
+                // 1. Instantly update stepper circles and animated progress lines
                 stepItems.forEach((stepNode, i) => {
                     const circle = stepNode.querySelector('.step-circle');
                     stepNode.classList.remove('step-done', 'step-active-now');
@@ -740,7 +670,7 @@
                     }
                 });
 
-                // Update line glow
+                // Fluid line glow animation
                 stepLines.forEach((lineNode, i) => {
                     if (i < idx) {
                         lineNode.classList.add('line-glow');
@@ -748,60 +678,85 @@
                         lineNode.classList.remove('line-glow');
                     }
                 });
+
+                const applyContent = () => {
+                    if (elStageRole) elStageRole.textContent = s.role;
+                    if (elStageSla) elStageSla.textContent = s.sla;
+                    if (elStageDesc) elStageDesc.textContent = s.desc;
+                    if (elKegiatanText) elKegiatanText.textContent = s.kegiatan;
+                    if (elNominalText) elNominalText.textContent = s.nominal;
+                    if (elWaNote) elWaNote.textContent = s.wa;
+
+                    if (elStatusBadge) {
+                        elStatusBadge.className = `live-status-pill ${s.statusClass} smooth-crossfade`;
+                        elStatusBadge.innerHTML = `<i class="${s.statusIcon}"></i> <span>${s.statusText}</span>`;
+                    }
+                };
+
+                if (immediate) {
+                    applyContent();
+                    return;
+                }
+
+                // 2. Ultra-smooth crossfade for text, badges, and card values
+                if (transitionTimeout) clearTimeout(transitionTimeout);
+
+                const fadeTargets = [elStatusBadge, elDetailBox, elKegiatanText, elNominalText].filter(Boolean);
+
+                // Fade out softly
+                fadeTargets.forEach(el => el.classList.add('fading-out'));
+
+                transitionTimeout = setTimeout(() => {
+                    applyContent();
+
+                    fadeTargets.forEach(el => {
+                        el.classList.remove('fading-out');
+                        el.classList.add('prep-in');
+                    });
+
+                    // Force browser reflow to register starting position
+                    void (elDetailBox ? elDetailBox.offsetWidth : 0);
+
+                    requestAnimationFrame(() => {
+                        fadeTargets.forEach(el => el.classList.remove('prep-in'));
+                    });
+                }, 180);
             };
 
-            const startSimulation = () => {
-                if (simInterval) clearInterval(simInterval);
-                simInterval = setInterval(() => {
-                    if (!isAutoPlaying) return;
+            const startAutoStep = () => {
+                if (autoStepInterval) clearInterval(autoStepInterval);
+                autoStepInterval = setInterval(() => {
                     currentStep = (currentStep + 1) % stages.length;
                     renderStep(currentStep);
-                }, 3500);
+                }, 3200);
             };
 
-            // Click on step dots to jump
+            // Pause auto progression when hovered to inspect details
+            if (glassCard) {
+                glassCard.addEventListener('mouseenter', () => {
+                    if (autoStepInterval) clearInterval(autoStepInterval);
+                });
+
+                glassCard.addEventListener('mouseleave', () => {
+                    startAutoStep();
+                });
+            }
+
+            // Click on step dots to inspect stage and continue auto progression
             stepItems.forEach((stepNode) => {
                 stepNode.addEventListener('click', () => {
                     const stepIdx = parseInt(stepNode.getAttribute('data-step'), 10);
                     if (!isNaN(stepIdx)) {
                         currentStep = stepIdx;
                         renderStep(currentStep);
-                        // Reset timer so it gives 3.5s from click
-                        startSimulation();
+                        startAutoStep();
                     }
                 });
             });
 
-            // Toggle play / pause button
-            if (btnToggleSim) {
-                btnToggleSim.addEventListener('click', () => {
-                    isAutoPlaying = !isAutoPlaying;
-                    if (isAutoPlaying) {
-                        iconPlayPause.className = 'bi bi-pause-fill';
-                        textPlayPause.textContent = 'Jeda';
-                        if (elLiveTag) elLiveTag.textContent = 'Simulasi Otomatis Aktif';
-                    } else {
-                        iconPlayPause.className = 'bi bi-play-fill';
-                        textPlayPause.textContent = 'Lanjut';
-                        if (elLiveTag) elLiveTag.textContent = 'Simulasi Dijeda';
-                    }
-                });
-            }
-
-            // Pause auto play temporarily while user hovers card to inspect details
-            if (glassCard) {
-                glassCard.addEventListener('mouseenter', () => {
-                    if (simInterval) clearInterval(simInterval);
-                });
-
-                glassCard.addEventListener('mouseleave', () => {
-                    if (isAutoPlaying) startSimulation();
-                });
-            }
-
-            // Initialize on start
-            renderStep(currentStep);
-            startSimulation();
+            // Initialize on start immediately without flash
+            renderStep(currentStep, true);
+            startAutoStep();
         });
     </script>
 </body>
