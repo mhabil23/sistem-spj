@@ -3,673 +3,1078 @@
 @php
 $title = 'Pemeriksaan SPJ';
 $subtitle = 'Review dokumen pengajuan SPJ.';
+
+$waktuMulai = $spj->pemeriksaan_dimulai_at ?? ($spj->berkas_fisik_diterima_at ?? ($spj->diajukan_at ?? $spj->created_at));
+$endTime = in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']) ? now() : $spj->updated_at;
+$diff = $waktuMulai ? \Carbon\Carbon::parse($waktuMulai)->diff($endTime) : null;
+$timeString = '';
+if($diff) {
+    if($diff->d > 0) $timeString .= $diff->d . ' Hari ';
+    if($diff->h > 0) $timeString .= $diff->h . ' Jam ';
+    $timeString .= $diff->i . ' Menit';
+}
+
+// Decode dokumen_file (bisa berupa JSON array checklist atau path file upload)
+$dokumens = [];
+$isAttachmentFile = false;
+$attachmentFilePath = null;
+
+if ($spj->dokumen_file) {
+    $decoded = json_decode($spj->dokumen_file, true);
+    if (is_array($decoded)) {
+        $dokumens = $decoded;
+    } else {
+        $isAttachmentFile = true;
+        $attachmentFilePath = $spj->dokumen_file;
+    }
+}
+
+// Hitung persentase dokumen yang telah disiapkan staf teknis
+$totalDocs = count($dokumens);
+$readyDocs = 0;
+if ($totalDocs > 0) {
+    foreach($dokumens as $d) {
+        if (!empty($d['disiapkan'])) {
+            $readyDocs++;
+        }
+    }
+    $docPercentage = round(($readyDocs / $totalDocs) * 100);
+} else {
+    $docPercentage = 0;
+}
+
+// Tentukan status tahapan untuk Stepper
+$stepStages = [
+    'diajukan' => 1,
+    'disetujui_umum' => 2,
+    'disetujui_ppk' => 3,
+    'disetujui_ppspm' => 4,
+    'selesai' => 5,
+];
+
+$isRevision = str_contains($spj->status, 'revisi');
+$currentStep = $stepStages[$spj->status] ?? 1;
+if ($isRevision) {
+    if ($spj->status === 'revisi_umum') $currentStep = 2;
+    elseif ($spj->status === 'revisi_ppk') $currentStep = 3;
+    elseif ($spj->status === 'revisi_ppspm') $currentStep = 4;
+    else $currentStep = 1;
+}
 @endphp
 
-@section('content')
 @push('styles')
     @vite(['resources/css/umum/spj.css'])
-    <style>
-        .show-panel {
-            background-color: var(--dash-card-bg);
-            border-radius: 20px;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
-            border: 1px solid var(--dash-border);
-            margin-bottom: 24px;
-            overflow: hidden;
-            transition: background-color 0.25s ease, border-color 0.25s ease;
-        }
-
-        .show-panel-header {
-            padding: 22px 26px;
-            border-bottom: 1px solid var(--dash-border);
-            background-color: var(--dash-table-header-bg);
-            transition: background-color 0.25s ease, border-color 0.25s ease;
-        }
-        
-        .show-panel-header h2 {
-            font-size: 16px;
-            color: var(--dash-text-dark);
-            margin: 0;
-            font-weight: 700;
-        }
-
-        .detail-grid {
-            padding: 24px 26px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-        
-        .detail-item span {
-            display: block;
-            color: var(--dash-text-muted);
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        
-        .detail-item strong {
-            font-size: 16px;
-            color: var(--dash-text-dark);
-            display: block;
-        }
-
-        /* Dark Theme Adaptations for Show View */
-        html.dark-theme .sla-panel {
-            background: rgba(16, 185, 129, 0.12) !important;
-            border-color: rgba(16, 185, 129, 0.3) !important;
-        }
-
-        html.dark-theme .sla-panel strong,
-        html.dark-theme .sla-panel span {
-            color: #4ade80 !important;
-        }
-
-        html.dark-theme .sla-panel > div:last-child {
-            background: rgba(16, 185, 129, 0.18) !important;
-            border-color: rgba(16, 185, 129, 0.3) !important;
-        }
-
-        html.dark-theme .doc-box-container {
-            background-color: var(--dash-table-header-bg) !important;
-            border-color: var(--dash-border) !important;
-        }
-
-        html.dark-theme .doc-card-item {
-            background: var(--dash-card-bg) !important;
-            border-color: var(--dash-border) !important;
-        }
-
-        html.dark-theme .doc-card-item span {
-            color: var(--dash-text-dark) !important;
-        }
-
-        html.dark-theme .action-box-approve {
-            background: rgba(16, 185, 129, 0.1) !important;
-            border-color: rgba(16, 185, 129, 0.35) !important;
-        }
-
-        html.dark-theme .action-box-approve h3,
-        html.dark-theme .action-box-approve label {
-            color: #34d399 !important;
-        }
-
-        html.dark-theme .action-box-approve p {
-            color: #a7f3d0 !important;
-        }
-
-        html.dark-theme .action-box-reject {
-            background: rgba(239, 68, 68, 0.1) !important;
-            border-color: rgba(239, 68, 68, 0.35) !important;
-        }
-
-        html.dark-theme .action-box-reject h3,
-        html.dark-theme .action-box-reject label {
-            color: #f87171 !important;
-        }
-
-        html.dark-theme .action-box-reject p {
-            color: #fecaca !important;
-        }
-
-        html.dark-theme .action-box-ppspm {
-            background: rgba(139, 92, 246, 0.1) !important;
-            border-color: rgba(139, 92, 246, 0.35) !important;
-        }
-
-        html.dark-theme .action-box-ppspm h3 {
-            color: #a78bfa !important;
-        }
-
-        html.dark-theme .action-box-ppspm p {
-            color: #ddd6fe !important;
-        }
-
-        html.dark-theme .action-textarea {
-            background-color: var(--dash-input-bg) !important;
-            border-color: var(--dash-input-border) !important;
-            color: var(--dash-text-dark) !important;
-        }
-
-        html.dark-theme .status-info-box {
-            background-color: var(--dash-table-header-bg) !important;
-        }
-
-        html.dark-theme .status-info-box h3 {
-            color: var(--dash-text-dark) !important;
-        }
-
-        html.dark-theme .status-info-box p {
-            color: var(--dash-text-muted) !important;
-        }
-
-        html.dark-theme .wa-modal-card {
-            background: var(--dash-card-bg) !important;
-            border: 1px solid var(--dash-border) !important;
-            color: var(--dash-text-dark) !important;
-        }
-
-        html.dark-theme .wa-modal-label {
-            color: var(--dash-text-dark) !important;
-        }
-
-        html.dark-theme .wa-modal-input {
-            background-color: var(--dash-input-bg) !important;
-            border-color: var(--dash-input-border) !important;
-            color: var(--dash-text-dark) !important;
-        }
-
-        html.dark-theme .wa-tpl-btn {
-            background-color: var(--dash-table-header-bg) !important;
-            border-color: var(--dash-border) !important;
-            color: var(--dash-text-muted) !important;
-        }
-
-        html.dark-theme .btn-wa-close {
-            background-color: var(--dash-table-header-bg) !important;
-            border-color: var(--dash-border) !important;
-            color: var(--dash-text-muted) !important;
-        }
-    </style>
 @endpush
 
-<div style="padding-top: 8px; box-sizing: border-box; max-width: 100%;">
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
-        <div>
-            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap;">
-                <h2 style="font-size: 24px; font-weight: 700; color: var(--dash-text-dark); margin: 0;">Verifikasi SPJ: {{ $spj->kegiatan }}</h2>
+@section('content')
+<div class="verify-container">
+
+    <!-- ====================================================================
+         1. PAGE HEADER CARD
+         ==================================================================== -->
+    <div class="verify-header-card">
+        <div class="verify-header-left">
+            <div class="verify-breadcrumbs">
+                <a href="{{ route('umum.dashboard') }}">Dashboard</a>
+                <ion-icon name="chevron-forward-outline" style="font-size: 10px;"></ion-icon>
+                <a href="{{ route('umum.spj.index') }}">Kotak Masuk SPJ</a>
+                <ion-icon name="chevron-forward-outline" style="font-size: 10px;"></ion-icon>
+                <span>Pemeriksaan SPJ #{{ $spj->id }}</span>
+            </div>
+
+            <div class="verify-title-row">
+                <h1 class="verify-page-title">Pemeriksaan SPJ: {{ $spj->kegiatan }}</h1>
+
                 @php
-                    $headerBadgeStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
-                    $headerStatusText = 'Diteruskan ke PPK';
-                    if($spj->status == 'diajukan') {
-                        $headerBadgeStyle = 'background: #fffbeb; color: #b45309; border: 1px solid #fde68a;';
-                        $headerStatusText = 'Menunggu Diperiksa';
-                    } elseif($spj->status == 'disetujui_umum') {
-                        $headerBadgeStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
-                        $headerStatusText = 'Diteruskan ke PPK (Menunggu TTD)';
-                    } elseif($spj->status == 'disetujui_ppk') {
-                        $headerBadgeStyle = 'background: #f5f3ff; color: #6d28d9; border: 1px solid #ddd6fe;';
-                        $headerStatusText = 'Diteruskan ke PPSPM';
-                    } elseif($spj->status == 'disetujui_ppspm') {
-                        $headerBadgeStyle = 'background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;';
-                        $headerStatusText = 'Di Bendahara';
-                    } elseif(str_contains($spj->status, 'revisi')) {
-                        $headerBadgeStyle = 'background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;';
-                        $headerStatusText = 'Dikembalikan (' . strtoupper(str_replace('revisi_', '', $spj->status)) . ')';
-                    } elseif($spj->status == 'selesai') {
-                        $headerBadgeStyle = 'background: #f0fdf4; color: #15803d; border: 1px solid #86efac;';
-                        $headerStatusText = 'Selesai (Cair)';
+                    $statusBadgeClass = 'dash-badge-diajukan';
+                    $statusText = 'Menunggu';
+
+                    if ($spj->status == 'diajukan') {
+                        if (!$spj->berkas_fisik_diterima_at) {
+                            $statusBadgeClass = 'dash-badge-revisi';
+                            $statusText = '1. Menunggu Penyerahan Berkas Fisik';
+                        } elseif (!$spj->pemeriksaan_dimulai_at) {
+                            $statusBadgeClass = 'dash-badge-disetujui_ppk';
+                            $statusText = '2. Fisik Diterima (Siap Cek)';
+                        } else {
+                            $statusBadgeClass = 'dash-badge-diajukan';
+                            $statusText = '3. Sedang Diperiksa Umum';
+                        }
+                    } elseif ($spj->status == 'disetujui_umum') {
+                        $statusBadgeClass = 'dash-badge-disetujui_umum';
+                        $statusText = 'Diteruskan ke PPK (Menunggu TTD)';
+                    } elseif ($spj->status == 'disetujui_ppk') {
+                        $statusBadgeClass = 'dash-badge-disetujui_ppk';
+                        $statusText = 'Diteruskan ke PPSPM';
+                    } elseif ($spj->status == 'disetujui_ppspm') {
+                        $statusBadgeClass = 'dash-badge-disetujui_ppspm';
+                        $statusText = 'Di Bendahara (Pencairan)';
+                    } elseif ($isRevision) {
+                        $statusBadgeClass = 'dash-badge-revisi';
+                        $statusText = 'Perlu Revisi (' . strtoupper(str_replace('revisi_', '', $spj->status)) . ')';
+                    } elseif ($spj->status == 'selesai') {
+                        $statusBadgeClass = 'dash-badge-selesai';
+                        $statusText = 'Selesai (Cair)';
                     }
                 @endphp
-                <span style="font-size: 11px; padding: 4px 10px; border-radius: 999px; font-weight: 600; {{ $headerBadgeStyle }}">{{ $headerStatusText }}</span>
+                <span class="dash-badge {{ $statusBadgeClass }}">
+                    <span class="badge-dot"></span>
+                    {{ $statusText }}
+                </span>
             </div>
-            <p style="color: #64748b; font-size: 14px; margin: 0;">Diajukan pada {{ $spj->created_at->format('d M Y, H:i') }} oleh <strong>{{ $spj->user->name ?? 'Teknis' }}</strong>.</p>
+
+            <p class="verify-header-meta">
+                <span>Diajukan pada: <strong>{{ $spj->created_at->format('d M Y, H:i') }}</strong></span>
+                <span>&bull;</span>
+                <span>Pengaju: <strong>{{ $spj->user->name ?? 'Staf Teknis' }}</strong> ({{ $spj->user->seksi ?? 'Seksi Teknis' }})</span>
+                @if($spj->nomor_spj)
+                    <span>&bull;</span>
+                    <span>No. SPJ: <strong>{{ $spj->nomor_spj }}</strong></span>
+                @endif
+            </p>
         </div>
-        <div style="display: flex; gap: 12px; align-items: center;">
-            <button type="button" onclick="openWaModal()" style="background-color: #25d366; color: white; padding: 10px 16px; border-radius: 8px; border: none; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(37, 211, 102, 0.25); cursor: pointer; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a'; this.style.transform='translateY(-1px)';" onmouseout="this.style.backgroundColor='#25d366'; this.style.transform='translateY(0)';">
-                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WhatsApp
+
+        <div class="verify-header-actions">
+            <button type="button" onclick="openWaModal()" class="btn-wa-header" title="Kirim Pesan WhatsApp ke Pengaju">
+                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                <span>WhatsApp Pengaju</span>
             </button>
-            <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="btn-dash-primary" style="height: 38px; padding: 0 16px; font-size: 13px; text-decoration: none;">
-                <ion-icon name="print-outline" style="font-size: 16px;"></ion-icon> Cetak Lembar Checklist
+
+            <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="btn-print-header" title="Cetak Lembar Kendali / Checklist SOP">
+                <ion-icon name="print-outline" style="font-size: 18px;"></ion-icon>
+                <span>Cetak Lembar Checklist</span>
             </a>
-            <a href="{{ route('umum.spj.index') }}" style="background-color: #f1f5f9; color: #475569; padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; border: 1px solid #cbd5e1; transition: 0.2s;" onmouseover="this.style.backgroundColor='#e2e8f0';" onmouseout="this.style.backgroundColor='#f1f5f9';">
-                Kembali
+
+            <a href="{{ route('umum.spj.index') }}" class="btn-back-header" title="Kembali ke Kotak Masuk SPJ">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+                <span>Kembali</span>
             </a>
         </div>
     </div>
 
+    <!-- ====================================================================
+         2. WA TRIGGER BANNER (Jika Baru Saja Melakukan Verifikasi)
+         ==================================================================== -->
     @if(session('trigger_wa'))
-    <div style="background: linear-gradient(135deg, #ecfdf5, #d1fae5); border: 2px solid #10b981; border-radius: 12px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); flex-wrap: wrap; gap: 16px;">
-        <div style="display: flex; align-items: center; gap: 14px;">
-            <div style="width: 44px; height: 44px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);">
-                <ion-icon name="logo-whatsapp" style="font-size: 26px;"></ion-icon>
+    <div class="wa-trigger-banner">
+        <div class="wa-trigger-content">
+            <div class="wa-trigger-icon">
+                <ion-icon name="logo-whatsapp"></ion-icon>
             </div>
-            <div>
-                <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #065f46;">Langkah Selanjutnya: Kirim Notifikasi WhatsApp ke Pengaju</h4>
-                <p style="margin: 4px 0 0 0; font-size: 13px; color: #047857;">Status SPJ berhasil diperbarui. Pastikan Anda mengirimkan notifikasi WA ke staf pengaju agar langsung mengetahui instruksi selanjutnya.</p>
+            <div class="wa-trigger-texts">
+                <h4>Status SPJ Berhasil Diperbarui! Kirim Notifikasi WhatsApp ke Pengaju</h4>
+                <p>Kirimkan template pesan resmi agar staf pengaju langsung mengetahui instruksi lanjutan dokumen fisiknya.</p>
             </div>
         </div>
-        <button type="button" onclick="openWaModal('{{ session('trigger_wa') }}')" style="background-color: #25d366; color: white; padding: 10px 20px; border-radius: 8px; border: none; font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 8px rgba(37,211,102,0.3); transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-            <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Buka Pesan WhatsApp
+        <button type="button" onclick="openWaModal('{{ session('trigger_wa') }}')" class="btn-decision-wa-quick" style="padding: 10px 20px; font-size: 13.5px;">
+            <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+            <span>Kirim Pesan WhatsApp Sekarang</span>
         </button>
     </div>
     @endif
 
-    @php
-    $waktuMulai = $spj->diajukan_at ?? $spj->created_at;
-    @endphp
+    <!-- ====================================================================
+         3. WORKFLOW STEPPER ALUR BIROKRASI SPJ (5 TAHAPAN)
+         ==================================================================== -->
+    <div class="verify-stepper-card">
+        <div class="stepper-header-title">
+            <span>Alur Penyelesaian Tagihan (SOP 5 Pintu BPS)</span>
+            <span>
+                @if($isRevision)
+                    <strong style="color: #ef4444;">Status: Dikembalikan ke Teknis</strong>
+                @elseif($spj->status === 'selesai')
+                    <strong style="color: #10b981;">Status: Selesai Dicairkan</strong>
+                @else
+                    Tahap Aktif: <strong>Tahap {{ $currentStep }} dari 5</strong>
+                @endif
+            </span>
+        </div>
+
+        <div class="stepper-track">
+            <!-- TAHAP 1: TEKNIS -->
+            <div class="stepper-item {{ $currentStep > 1 || $spj->status === 'selesai' ? 'completed' : ($currentStep === 1 && !$isRevision ? 'active' : '') }}">
+                <div class="stepper-connector"></div>
+                <div class="stepper-node">
+                    @if($currentStep > 1 || $spj->status === 'selesai')
+                        <ion-icon name="checkmark"></ion-icon>
+                    @else
+                        1
+                    @endif
+                </div>
+                <div class="stepper-content">
+                    <span class="stepper-step-title">Pengajuan Teknis</span>
+                    <span class="stepper-step-sub">{{ $spj->user->name ?? 'Staf Teknis' }}</span>
+                    @if($spj->diajukan_at || $spj->created_at)
+                        <span class="stepper-step-time">{{ ($spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at) : $spj->created_at)->format('d/m/Y H:i') }}</span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- TAHAP 2: SUBBAG UMUM -->
+            @php
+                $step2Class = '';
+                if ($spj->disetujui_umum_at || $currentStep > 2 || $spj->status === 'selesai') {
+                    $step2Class = 'completed';
+                } elseif ($currentStep === 2 && $isRevision) {
+                    $step2Class = 'revision';
+                } elseif ($currentStep === 2) {
+                    $step2Class = 'active';
+                }
+            @endphp
+            <div class="stepper-item {{ $step2Class }}">
+                <div class="stepper-connector"></div>
+                <div class="stepper-node">
+                    @if($step2Class === 'completed')
+                        <ion-icon name="checkmark"></ion-icon>
+                    @elseif($step2Class === 'revision')
+                        <ion-icon name="alert"></ion-icon>
+                    @else
+                        2
+                    @endif
+                </div>
+                <div class="stepper-content">
+                    <span class="stepper-step-title">Verifikasi Umum</span>
+                    <span class="stepper-step-sub">Subbagian Umum</span>
+                    @if($spj->disetujui_umum_at)
+                        <span class="stepper-step-time">{{ \Carbon\Carbon::parse($spj->disetujui_umum_at)->format('d/m/Y H:i') }}</span>
+                    @elseif($spj->status === 'diajukan')
+                        @if(!$spj->berkas_fisik_diterima_at)
+                            <span class="stepper-step-time" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">Menunggu Fisik</span>
+                        @elseif(!$spj->pemeriksaan_dimulai_at)
+                            <span class="stepper-step-time" style="background: rgba(2, 132, 199, 0.2); color: #0284c7;">Fisik Diterima</span>
+                        @else
+                            <span class="stepper-step-time" style="background: rgba(16, 185, 129, 0.2); color: #059669;">Sedang Dicek</span>
+                        @endif
+                    @endif
+                </div>
+            </div>
+
+            <!-- TAHAP 3: PPK -->
+            @php
+                $step3Class = '';
+                if ($spj->disetujui_ppk_at || $currentStep > 3 || $spj->status === 'selesai') $step3Class = 'completed';
+                elseif ($currentStep === 3 && $isRevision) $step3Class = 'revision';
+                elseif ($currentStep === 3) $step3Class = 'active';
+            @endphp
+            <div class="stepper-item {{ $step3Class }}">
+                <div class="stepper-connector"></div>
+                <div class="stepper-node">
+                    @if($step3Class === 'completed')
+                        <ion-icon name="checkmark"></ion-icon>
+                    @elseif($step3Class === 'revision')
+                        <ion-icon name="alert"></ion-icon>
+                    @else
+                        3
+                    @endif
+                </div>
+                <div class="stepper-content">
+                    <span class="stepper-step-title">Tanda Tangan PPK</span>
+                    <span class="stepper-step-sub">Pejabat Pembuat Komitmen</span>
+                    @if($spj->disetujui_ppk_at)
+                        <span class="stepper-step-time">{{ \Carbon\Carbon::parse($spj->disetujui_ppk_at)->format('d/m/Y H:i') }}</span>
+                    @elseif($currentStep === 3 && !$isRevision)
+                        <span class="stepper-step-time" style="background: rgba(2, 132, 199, 0.2); color: #0284c7;">Menunggu TTD</span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- TAHAP 4: PPSPM -->
+            @php
+                $step4Class = '';
+                if ($spj->disetujui_ppspm_at || $currentStep > 4 || $spj->status === 'selesai') $step4Class = 'completed';
+                elseif ($currentStep === 4 && $isRevision) $step4Class = 'revision';
+                elseif ($currentStep === 4) $step4Class = 'active';
+            @endphp
+            <div class="stepper-item {{ $step4Class }}">
+                <div class="stepper-connector"></div>
+                <div class="stepper-node">
+                    @if($step4Class === 'completed')
+                        <ion-icon name="checkmark"></ion-icon>
+                    @elseif($step4Class === 'revision')
+                        <ion-icon name="alert"></ion-icon>
+                    @else
+                        4
+                    @endif
+                </div>
+                <div class="stepper-content">
+                    <span class="stepper-step-title">Persetujuan PPSPM</span>
+                    <span class="stepper-step-sub">Penerbitan SPM</span>
+                    @if($spj->disetujui_ppspm_at)
+                        <span class="stepper-step-time">{{ \Carbon\Carbon::parse($spj->disetujui_ppspm_at)->format('d/m/Y H:i') }}</span>
+                    @elseif($currentStep === 4 && !$isRevision)
+                        <span class="stepper-step-time" style="background: rgba(2, 132, 199, 0.2); color: #0284c7;">Pemeriksaan SPM</span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- TAHAP 5: BENDAHARA -->
+            <div class="stepper-item {{ $spj->status === 'selesai' ? 'completed' : ($currentStep === 5 ? 'active' : '') }}">
+                <div class="stepper-connector"></div>
+                <div class="stepper-node">
+                    @if($spj->status === 'selesai')
+                        <ion-icon name="checkmark"></ion-icon>
+                    @else
+                        5
+                    @endif
+                </div>
+                <div class="stepper-content">
+                    <span class="stepper-step-title">Pencairan Dana</span>
+                    <span class="stepper-step-sub">Bendahara Pengeluaran</span>
+                    @if($spj->diselesaikan_at)
+                        <span class="stepper-step-time" style="background: rgba(16, 185, 129, 0.2); color: #059669;">{{ \Carbon\Carbon::parse($spj->diselesaikan_at)->format('d/m/Y') }}</span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         4. SLA & DURASI PROSES VERIFIKASI
+         ==================================================================== -->
     @if($waktuMulai)
-    <div class="show-panel sla-panel" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
-        <div style="padding: 20px 24px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <strong style="color: #166534; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-size: 15px;">
-                    <ion-icon name="hourglass-outline"></ion-icon> Waktu SLA (Proses Verifikasi)
-                </strong>
-                <span style="color: #15803d; font-size: 13px;">
-                    SPJ diajukan pada: {{ \Carbon\Carbon::parse($waktuMulai)->format('d M Y, H:i') }}
+    <div class="verify-sla-banner {{ $spj->status === 'selesai' ? 'sla-banner-done' : 'sla-banner-normal' }}">
+        <div class="sla-info-group">
+            <div class="sla-icon-box">
+                <ion-icon name="timer-outline"></ion-icon>
+            </div>
+            <div class="sla-texts">
+                <h4>Target Waktu & Standar Layanan (SLA SOP BPS)</h4>
+                <p>
+                    @if(!$spj->berkas_fisik_diterima_at)
+                        SPJ diajukan secara sistem pada <strong>{{ \Carbon\Carbon::parse($spj->created_at)->format('d F Y, H:i') }} WITA</strong>. <em>Menunggu penyerahan fisik ke meja Umum.</em>
+                    @else
+                        Berkas fisik disetor pada <strong>{{ \Carbon\Carbon::parse($spj->berkas_fisik_diterima_at)->format('d F Y, H:i') }} WITA</strong>. Batas verifikasi: <strong>Maksimal 2 Hari Kerja</strong>.
+                    @endif
+                </p>
+            </div>
+        </div>
+        <div class="sla-timer-box">
+            <div class="sla-timer-val">
+                {{ in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk']) ? 'Waktu Berjalan: ' : 'Total Durasi: ' }}
+                {{ $timeString ?: 'Kurang dari 1 menit' }}
+            </div>
+            <div class="sla-timer-label">
+                @if(!$spj->berkas_fisik_diterima_at)
+                    <span style="color: #d97706;">⏳ Menunggu berkas fisik disetor</span>
+                @elseif($diff && $diff->d >= 2)
+                    <span style="color: #ea580c;">⚠️ Melewati target 2 hari kerja</span>
+                @else
+                    <span style="color: #10b981;">✔ Masih dalam batas waktu normal</span>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- ====================================================================
+         5. DETAIL INFORMASI KEGIATAN & ANGGARAN
+         ==================================================================== -->
+    <div class="verify-content-grid">
+        <div class="verify-card">
+            <div class="verify-card-header">
+                <h3 class="verify-card-title">
+                    <ion-icon name="reader-outline" style="color: #0284c7; font-size: 20px;"></ion-icon>
+                    Detail Kegiatan & Rincian Anggaran
+                </h3>
+                @if($spj->catatan_internal)
+                    <span style="font-size: 11.5px; font-weight: 700; background: #ecfdf5; color: #047857; padding: 4px 10px; border-radius: 999px; border: 1px solid #a7f3d0;">
+                        Ada Catatan Internal PPK
+                    </span>
+                @endif
+            </div>
+            <div class="verify-card-body">
+                <div class="detail-info-grid">
+                    <!-- Nilai Pengajuan -->
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Total Nilai Pengajuan</span>
+                        <div class="detail-info-value amount">
+                            Rp {{ number_format($spj->nilai, 0, ',', '.') }}
+                        </div>
+                    </div>
+
+                    <!-- Tanggal Kegiatan -->
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Tanggal Pelaksanaan Kegiatan</span>
+                        <div class="detail-info-value">
+                            {{ $spj->tanggal ? $spj->tanggal->format('d F Y') : '-' }}
+                        </div>
+                    </div>
+
+                    <!-- PIC / Kontak WhatsApp -->
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Staf PIC & Kontak WhatsApp</span>
+                        <div class="detail-info-value">
+                            @if($spj->no_wa || ($spj->user && $spj->user->no_wa))
+                                @php
+                                    $waNumber = $spj->no_wa ?: $spj->user->no_wa;
+                                    $cleanPhone = preg_replace('/[^0-9]/', '', $waNumber);
+                                    if (str_starts_with($cleanPhone, '0')) $cleanPhone = '62' . substr($cleanPhone, 1);
+                                    elseif (str_starts_with($cleanPhone, '8')) $cleanPhone = '62' . $cleanPhone;
+                                @endphp
+                                <a href="https://wa.me/{{ $cleanPhone }}" target="_blank" class="pic-badge-wa" title="Buka WhatsApp">
+                                    <ion-icon name="logo-whatsapp" style="font-size: 18px; color: #25d366;"></ion-icon>
+                                    <span>{{ $waNumber }} ({{ $spj->user->name ?? 'Pengaju' }})</span>
+                                </a>
+                            @else
+                                <span style="color: var(--dash-text-muted); font-weight: 500; font-size: 13.5px;">- Tidak dicantumkan -</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Seksi / Fungsi -->
+                    <div class="detail-info-item">
+                        <span class="detail-info-label">Fungsi / Seksi Teknis</span>
+                        <div class="detail-info-value">
+                            {{ $spj->user->seksi ?? 'Seksi / Tim Teknis BPS' }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Uraian Nama Kegiatan -->
+                <div style="margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--dash-border);">
+                    <span class="detail-info-label">Nama Kegiatan</span>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--dash-text-dark); line-height: 1.5; margin-top: 4px;">
+                        {{ $spj->kegiatan }}
+                    </div>
+                </div>
+
+                <!-- Keterangan Teknis -->
+                @if($spj->keterangan)
+                <div style="margin-top: 16px; padding: 14px 18px; background: var(--dash-input-bg); border-radius: 12px; border: 1px solid var(--dash-border);">
+                    <span class="detail-info-label">Keterangan / Catatan dari Pengaju:</span>
+                    <p style="margin: 4px 0 0 0; font-size: 13.5px; color: var(--dash-text-dark); line-height: 1.5; white-space: pre-line;">
+                        {{ $spj->keterangan }}
+                    </p>
+                </div>
+                @endif
+
+                <!-- Catatan Internal untuk PPK jika sudah ada -->
+                @if($spj->catatan_internal)
+                <div style="margin-top: 16px; padding: 14px 18px; background: rgba(16, 185, 129, 0.08); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.35);">
+                    <span class="detail-info-label" style="color: #047857;">Catatan Internal untuk PPK:</span>
+                    <p style="margin: 4px 0 0 0; font-size: 13.5px; color: #065f46; line-height: 1.5; white-space: pre-line;">
+                        {{ $spj->catatan_internal }}
+                    </p>
+                </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- ====================================================================
+             6. CHECKLIST KELENGKAPAN DOKUMEN FISIK / SOP
+             ==================================================================== -->
+        <div class="verify-card">
+            <div class="verify-card-header">
+                <h3 class="verify-card-title">
+                    <ion-icon name="checkbox-outline" style="color: #10b981; font-size: 20px;"></ion-icon>
+                    Checklist Kelengkapan Dokumen Fisik (SOP)
+                </h3>
+                <span style="font-size: 12px; font-weight: 700; color: var(--dash-text-muted);">
+                    Standar Operasional Prosedur BPS Kolaka Utara
                 </span>
             </div>
-            <div>
-                <strong style="color: #166534; font-size: 18px;">
-                    @php
-                        $endTime = $spj->status == 'diajukan' ? now() : $spj->updated_at;
-                        $diff = \Carbon\Carbon::parse($waktuMulai)->diff($endTime);
-                        $timeString = '';
-                        if($diff->d > 0) $timeString .= $diff->d . ' Hari ';
-                        if($diff->h > 0) $timeString .= $diff->h . ' Jam ';
-                        $timeString .= $diff->i . ' Menit';
-                    @endphp
-                    {{ $spj->status == 'diajukan' ? 'Berjalan: ' : 'Selesai dalam: ' }} {{ $timeString }}
-                </strong>
-            </div>
-        </div>
-        
-        @if($spj->status !== 'diajukan' && $spj->catatan_internal)
-        <div style="padding: 16px 24px; border-top: 1px solid #bbf7d0; background: #dcfce7;">
-            <strong style="color: #166534; display: block; font-size: 13px; margin-bottom: 4px;">Catatan Internal untuk PPK:</strong>
-            <p style="margin: 0; color: #15803d; font-size: 13px; white-space: pre-line;">{{ $spj->catatan_internal }}</p>
-        </div>
-        @endif
-    </div>
-    @endif
+            <div class="verify-card-body">
 
-    <div class="show-panel">
-        <div class="show-panel-header">
-            <h2>Detail Kegiatan & Biaya</h2>
-        </div>
-        <div class="detail-grid">
-            <div class="detail-item">
-                <span>Tanggal Kegiatan</span>
-                <strong>{{ $spj->tanggal->format('d F Y') }}</strong>
-            </div>
-            <div class="detail-item" style="grid-column: span 2;">
-                <span>Nama Kegiatan</span>
-                <strong style="line-height: 1.5;">{{ $spj->kegiatan }}</strong>
-            </div>
-            <div class="detail-item">
-                <span>Nilai Pengajuan</span>
-                <strong style="font-size: 24px; color: #10b981;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</strong>
-            </div>
-            <div class="detail-item">
-                <span>Kontak WhatsApp Pengaju (PIC)</span>
-                @if($spj->no_wa)
-                    <strong style="color: #0f766e; display: flex; align-items: center; gap: 6px;">
-                        <ion-icon name="logo-whatsapp" style="color: #25d366; font-size: 18px;"></ion-icon> {{ $spj->no_wa }}
-                    </strong>
-                @else
-                    <span style="color: #94a3b8; font-style: italic;">Tidak dicantumkan pada SPJ</span>
-                @endif
-            </div>
-            <div class="detail-item" style="grid-column: span 2;">
-                <span>Keterangan / Catatan Teknis</span>
-                <p style="color: var(--dash-text-muted); margin: 0; font-size: 14px; line-height: 1.5; white-space: pre-line;">{{ $spj->keterangan ?: '-' }}</p>
-            </div>
-        </div>
-    </div>
+                @if($totalDocs > 0)
+                    <!-- Tracker Progress Bar -->
+                    <div class="doc-tracker-bar">
+                        <div class="doc-tracker-info">
+                            <ion-icon name="documents-outline" style="font-size: 28px; color: #0284c7;"></ion-icon>
+                            <div>
+                                <div class="doc-tracker-title">{{ $readyDocs }} dari {{ $totalDocs }} Berkas Telah Disiapkan</div>
+                                <div class="doc-tracker-sub">Staf teknis menyatakan dokumen telah dicetak dan siap diverifikasi di meja Umum.</div>
+                            </div>
+                        </div>
+                        <div class="doc-progress-wrap">
+                            <div class="doc-progress-bar-bg">
+                                <div class="doc-progress-fill" style="width: {{ $docPercentage }}%;"></div>
+                            </div>
+                            <div class="doc-progress-text">{{ $docPercentage }}% Terpenuhi</div>
+                        </div>
+                    </div>
 
-    <div class="show-panel">
-        <div class="show-panel-header">
-            <h2>Dokumen Pendukung</h2>
-        </div>
-        <div style="padding: 24px;">
-            <div class="doc-box-container" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem;">
-                @if($spj->dokumen_file)
-                    @php
-                        $dokumens = json_decode($spj->dokumen_file, true);
-                    @endphp
-                    
-                    @if(is_array($dokumens) && count($dokumens) > 0)
-                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
-                            @foreach($dokumens as $doc)
-                                <div class="doc-card-item" style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; background: white; border: 1px solid {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? '#86efac' : '#e2e8f0' }}; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
-                                    <div style="margin-top: 0.125rem;">
-                                        @if(isset($doc['disiapkan']) && $doc['disiapkan'])
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <!-- Dokumen Cards Grid -->
+                    <div class="doc-cards-grid">
+                        @foreach($dokumens as $doc)
+                            @php
+                                $isReady = !empty($doc['disiapkan']);
+                            @endphp
+                            <div class="doc-item-card {{ $isReady ? 'is-ready' : '' }}">
+                                <div class="doc-item-icon {{ $isReady ? 'ready' : 'pending' }}">
+                                    @if($isReady)
+                                        <ion-icon name="checkmark-circle"></ion-icon>
+                                    @else
+                                        <ion-icon name="remove-circle-outline"></ion-icon>
+                                    @endif
+                                </div>
+                                <div style="flex: 1;">
+                                    <div class="doc-item-name">{{ $doc['nama'] ?? 'Dokumen Pendukung' }}</div>
+                                    <div class="doc-item-status-tag">
+                                        @if($isReady)
+                                            <span>✔ Telah Disiapkan (Fisik)</span>
                                         @else
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                                            <span>Tidak diwajibkan untuk Teknis / Disiapkan Bendahara/PPK</span>
                                         @endif
                                     </div>
-                                    <div>
-                                        <span style="font-weight: 500; font-size: 0.9rem; color: {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? '#166534' : '#64748b' }};">{{ $doc['nama'] ?? 'Dokumen' }}</span>
-                                        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.25rem;">
-                                            {{ isset($doc['disiapkan']) && $doc['disiapkan'] ? 'Telah disiapkan (Fisik)' : 'Tidak diwajibkan untuk Teknis' }}
-                                        </div>
-                                    </div>
                                 </div>
-                            @endforeach
-                        </div>
-                    @else
-                        <div style="background-color: #fef2f2; color: #991b1b; padding: 24px; border-radius: 8px; border: 1px dashed #f87171; text-align: center;">
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 16px; margin-bottom: 8px;">
-                                <ion-icon name="warning-outline" style="font-size: 24px; color: #ef4444;"></ion-icon> Tidak Ada Lampiran Dokumen
                             </div>
-                            <p style="margin: 0; color: #7f1d1d; font-size: 14px;">Staf teknis belum melampirkan checklist dokumen kelengkapan.</p>
+                        @endforeach
+                    </div>
+                @elseif($isAttachmentFile)
+                    <!-- Single File Upload Mode -->
+                    <div style="background: var(--dash-table-header-bg); border: 1px solid var(--dash-border); border-radius: 12px; padding: 24px; text-align: center;">
+                        <ion-icon name="document-attach-outline" style="font-size: 40px; color: #0284c7; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
+                        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: var(--dash-text-dark);">Berkas Digital Terlampir</h4>
+                        <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--dash-text-muted);">Staf teknis telah melampirkan berkas bukti dokumen digital untuk pengajuan ini.</p>
+                        <a href="{{ Storage::url($attachmentFilePath) }}" target="_blank" class="btn-dash-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 20px; font-size: 13px;">
+                            <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon> Buka & Periksa File Terlampir
+                        </a>
+                    </div>
+                @else
+                    <!-- Default Checklist Panduan jika belum ada checklist spesifik -->
+                    <div style="background: var(--dash-table-header-bg); border: 1.5px dashed var(--dash-border); border-radius: 12px; padding: 24px;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                            <ion-icon name="information-circle-outline" style="font-size: 22px; color: #0284c7;"></ion-icon>
+                            <h4 style="margin: 0; font-size: 14.5px; font-weight: 700; color: var(--dash-text-dark);">Daftar Kelengkapan Standar SPJ</h4>
                         </div>
+                        <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--dash-text-muted); line-height: 1.5;">
+                            Belum ada checklist berkas kustom yang dikirimkan. Harap periksa kelengkapan berkas fisik berikut sesuai SOP:
+                        </p>
+                        <div class="doc-cards-grid">
+                            <div class="doc-item-card"><div class="doc-item-icon pending"><ion-icon name="document-text-outline"></ion-icon></div><div class="doc-item-name">Kuitansi Pembayaran Bermaterai (jika > Rp5.000.000)</div></div>
+                            <div class="doc-item-card"><div class="doc-item-icon pending"><ion-icon name="document-text-outline"></ion-icon></div><div class="doc-item-name">Nota / Faktur / Invoice Asli Toko</div></div>
+                            <div class="doc-item-card"><div class="doc-item-icon pending"><ion-icon name="document-text-outline"></ion-icon></div><div class="doc-item-name">Berita Acara Serah Terima (BAST) Pekerjaan</div></div>
+                            <div class="doc-item-card"><div class="doc-item-icon pending"><ion-icon name="document-text-outline"></ion-icon></div><div class="doc-item-name">Surat Tugas & Daftar Hadir Peserta/Petugas</div></div>
+                            <div class="doc-item-card"><div class="doc-item-icon pending"><ion-icon name="document-text-outline"></ion-icon></div><div class="doc-item-name">Laporan Hasil Kegiatan disertai Foto Dokumentasi</div></div>
+                            <div class="doc-item-card"><div class="doc-item-icon pending"><ion-icon name="document-text-outline"></ion-icon></div><div class="doc-item-name">Kesesuaian Nominal Kuitansi dengan Pagu Anggaran</div></div>
+                        </div>
+                    </div>
+                @endif
+
+            </div>
+        </div>
+
+        <!-- ====================================================================
+             7. ALUR BERTINGKAT: PENERIMAAN FISIK -> TERIMA SPJ & CEK -> KEPUTUSAN VERIFIKASI
+             ==================================================================== -->
+        
+        <!-- ==================== TAHAP 1: STATUS DIAJUKAN (MEJA UMUM) ==================== -->
+        @if($spj->status === 'diajukan')
+        
+            <!-- SUB-KONDISI A: BERKAS FISIK BELUM DISETOR / DITERIMA -->
+            @if(!$spj->berkas_fisik_diterima_at)
+            <div class="verify-stage-flow-card verify-stage-waiting-physical">
+                <div class="stage-flow-top">
+                    <div class="stage-flow-icon">
+                        <ion-icon name="file-tray-outline"></ion-icon>
+                    </div>
+                    <div>
+                        <span class="stage-flow-badge-step">Tahap 1: Penyerahan Berkas Fisik SPJ</span>
+                        <h3 class="stage-flow-title">Menunggu Berkas Fisik Disetor ke Meja Subbagian Umum</h3>
+                    </div>
+                </div>
+
+                <p class="stage-flow-desc">
+                    Staf pengaju <strong>{{ $spj->user->name ?? 'Staf Teknis' }}</strong> telah mengajukan SPJ ini secara sistem pada 
+                    <strong>{{ $spj->created_at->format('d F Y, H:i') }} WITA</strong>. 
+                    Namun berkas dokumen fisik (kuitansi asli, nota/faktur toko, BAST, dll.) <strong>belum disetor</strong> ke meja Subbagian Umum. 
+                    SPJ ini <strong>belum masuk antrean pemeriksaan aktif</strong> sampai Anda mengonfirmasi penerimaan berkas fisiknya.
+                </p>
+
+                <div class="stage-flow-actions">
+                    <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="terima_fisik">
+                        <button type="submit" class="btn-decision-submit approve" style="font-size: 14px; padding: 14px 22px;">
+                            <ion-icon name="checkbox-outline" style="font-size: 20px;"></ion-icon>
+                            <span>Konfirmasi Berkas Fisik Telah Disetor & Diterima</span>
+                        </button>
+                    </form>
+
+                    <button type="button" onclick="openWaModal('fisik')" class="btn-wa-header" style="height: 46px;">
+                        <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                        <span>Ingatkan Pengaju via WA (Bawa Berkas Fisik)</span>
+                    </button>
+                </div>
+
+                <div class="stage-notice-pill">
+                    <ion-icon name="information-circle-outline" style="font-size: 16px; color: #d97706;"></ion-icon>
+                    <span>Tombol penerimaan SPJ dan formulir keputusan (Teruskan ke PPK / Revisi) baru akan terbuka setelah fisik berkas diterima.</span>
+                </div>
+            </div>
+
+            <!-- SUB-KONDISI B: BERKAS FISIK SUDAH DITERIMA, TAPI BELUM MASUK CEK -->
+            @elseif(!$spj->pemeriksaan_dimulai_at)
+            <div class="verify-stage-flow-card verify-stage-physical-received">
+                <div class="stage-flow-top">
+                    <div class="stage-flow-icon">
+                        <ion-icon name="file-tray-full-outline"></ion-icon>
+                    </div>
+                    <div>
+                        <span class="stage-flow-badge-step">Tahap 2: Berkas Fisik Diterima</span>
+                        <h3 class="stage-flow-title">Berkas Fisik Telah Diterima — Siap Masuk Antrean Cek</h3>
+                    </div>
+                </div>
+
+                <p class="stage-flow-desc">
+                    Berkas fisik dokumen SPJ telah dikonfirmasi diterima di meja Subbagian Umum pada 
+                    <strong>{{ $spj->berkas_fisik_diterima_at->format('d F Y, H:i') }} WITA</strong>. 
+                    Silakan klik tombol di bawah untuk menerima SPJ secara resmi dan memasukkannya ke dalam antrean pemeriksaan aktif meja Anda.
+                </p>
+
+                <div class="stage-flow-actions">
+                    <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="mulai_periksa">
+                        <button type="submit" class="btn-decision-submit approve" style="font-size: 15px; padding: 15px 26px; background: #0284c7; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);">
+                            <ion-icon name="search-outline" style="font-size: 20px;"></ion-icon>
+                            <span>Terima SPJ & Masuk untuk Dicek</span>
+                        </button>
+                    </form>
+
+                    <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan status penerimaan berkas fisik ini?')">
+                        @csrf
+                        <input type="hidden" name="action" value="batal_fisik">
+                        <button type="submit" class="btn-back-header" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.3); background: rgba(239, 68, 68, 0.05); font-size: 12px; padding: 10px 14px;" title="Batalkan status penerimaan fisik jika salah klik">
+                            <ion-icon name="close-circle-outline"></ion-icon>
+                            <span>Batal Terima Fisik</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="stage-notice-pill">
+                    <ion-icon name="information-circle-outline" style="font-size: 16px; color: #0284c7;"></ion-icon>
+                    <span>Setelah menekan tombol "Terima SPJ & Masuk untuk Dicek", formulir keputusan verifikasi (Teruskan ke PPK atau Revisi) akan aktif.</span>
+                </div>
+            </div>
+
+            <!-- SUB-KONDISI C: BERKAS FISIK DITERIMA & PEMERIKSAAN AKTIF DIMULAI -->
+            @else
+            <div class="verify-stage-flow-card verify-stage-inspecting-active" style="margin-bottom: 22px;">
+                <div class="stage-flow-top" style="margin-bottom: 8px;">
+                    <div class="stage-flow-icon">
+                        <ion-icon name="clipboard-outline"></ion-icon>
+                    </div>
+                    <div>
+                        <span class="stage-flow-badge-step">Tahap 3: Pengecekan Dokumen Aktif</span>
+                        <h3 class="stage-flow-title">SPJ Sedang Dalam Pemeriksaan Meja Umum</h3>
+                    </div>
+                </div>
+                <p class="stage-flow-desc" style="margin-bottom: 0;">
+                    Pengecekan berkas aktif dimulai sejak <strong>{{ $spj->pemeriksaan_dimulai_at->format('d F Y, H:i') }} WITA</strong>. 
+                    Silakan telaah kelengkapan bukti fisik di atas, lalu tentukan keputusan verifikasi di bawah ini:
+                </p>
+            </div>
+
+            <div class="verify-card">
+                <div class="verify-card-header">
+                    <h3 class="verify-card-title">
+                        <ion-icon name="shield-checkmark-outline" style="color: #0284c7; font-size: 20px;"></ion-icon>
+                        Keputusan Verifikasi Subbagian Umum
+                    </h3>
+                    <span style="font-size: 12px; font-weight: 700; color: #0284c7; background: var(--dash-cyan-badge); padding: 4px 10px; border-radius: 999px;">
+                        Pilih Tindak Lanjut Berkas
+                    </span>
+                </div>
+                <div class="verify-card-body">
+                    <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST" id="formVerifikasiUmum">
+                        @csrf
+
+                        <div class="decision-grid-two">
+                            
+                            <!-- OPSI 1: SETUJUI & TERUSKAN KE PPK -->
+                            <div class="decision-box decision-box-approve">
+                                <h4 class="decision-box-title">
+                                    <ion-icon name="checkmark-circle" style="color: #10b981; font-size: 22px;"></ion-icon>
+                                    <span>Setujui Berkas SPJ</span>
+                                </h4>
+                                <p class="decision-box-desc">
+                                    Berkas fisik dan rincian administrasi telah lengkap, benar, dan sesuai SOP. Berkas akan diteruskan ke meja PPK untuk ditandatangani.
+                                </p>
+
+                                <label class="decision-label" for="catatan_internal">
+                                    Catatan Internal untuk PPK (Opsional)
+                                </label>
+                                <textarea name="catatan_internal" id="catatan_internal" class="decision-textarea" rows="3" placeholder="Contoh: Kuitansi asli sudah dicocokkan dengan nota dan dokumen BAST fisik lengkap..."></textarea>
+
+                                <div class="decision-actions-row">
+                                    <button type="submit" name="action" value="setujui" class="btn-decision-submit approve" title="Setujui SPJ dan teruskan ke PPK">
+                                        <ion-icon name="send-outline" style="font-size: 18px;"></ion-icon>
+                                        <span>Setujui & Teruskan ke PPK</span>
+                                    </button>
+                                    <button type="button" onclick="openWaModal('setuju_umum')" class="btn-decision-wa-quick" title="Kirim Pesan WhatsApp">
+                                        <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                                        <span>Kirim WA</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- OPSI 2: TOLAK / KEMBALIKAN KE TEKNIS -->
+                            <div class="decision-box decision-box-reject">
+                                <h4 class="decision-box-title">
+                                    <ion-icon name="close-circle" style="color: #ef4444; font-size: 22px;"></ion-icon>
+                                    <span>Kembalikan untuk Revisi</span>
+                                </h4>
+                                <p class="decision-box-desc">
+                                    Berkas belum lengkap atau ada ketidaksesuaian administrasi. SPJ akan dikembalikan ke staf Teknis untuk diperbaiki.
+                                </p>
+
+                                <!-- Quick Template Chips -->
+                                <div class="quick-chips-label">
+                                    <ion-icon name="flash-outline"></ion-icon>
+                                    <span>Klik chip untuk isi catatan cepat:</span>
+                                </div>
+                                <div class="quick-chips-wrap">
+                                    <button type="button" class="quick-chip-btn" onclick="addRevisionChip('Kuitansi asli belum dibubuhi materai yang sesuai.')">Materai belum ada</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addRevisionChip('Nota/faktur belum memiliki tanda tangan basah dan cap.')">Tanda tangan/cap toko</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addRevisionChip('Daftar hadir dan foto dokumentasi kegiatan belum dilampirkan.')">Daftar hadir/foto</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addRevisionChip('Jumlah nominal kuitansi tidak sesuai dengan rincian biaya.')">Nominal tidak cocok</button>
+                                    <button type="button" class="quick-chip-btn" onclick="addRevisionChip('Berita Acara Serah Terima (BAST) belum ditandatangani.')">BAST belum TTD</button>
+                                </div>
+
+                                <label class="decision-label" for="catatan_revisi">
+                                    Rincian Kesalahan / Catatan Revisi (Wajib jika dikembalikan)
+                                </label>
+                                <textarea name="catatan_revisi" id="catatan_revisi" class="decision-textarea" rows="3" placeholder="Tuliskan poin-poin yang harus diperbaiki oleh staf teknis..."></textarea>
+
+                                <div class="decision-actions-row">
+                                    <button type="submit" name="action" value="tolak" class="btn-decision-submit reject" title="Kembalikan SPJ ke Staf Teknis">
+                                        <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon>
+                                        <span>Kembalikan ke Teknis</span>
+                                    </button>
+                                    <button type="button" onclick="openWaModalWithNote('revisi_umum')" class="btn-decision-wa-quick" title="Kirim Catatan via WhatsApp">
+                                        <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                                        <span>Kirim WA</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        @error('catatan_revisi')
+                        <div style="color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 8px;">
+                            <ion-icon name="warning" style="vertical-align: middle;"></ion-icon> {{ $message }}
+                        </div>
+                        @enderror
+                    </form>
+                </div>
+            </div>
+            @endif
+
+        <!-- ==================== TAHAP 2: STATUS DISETUJUI_UMUM (MEJA PPK) ==================== -->
+        @elseif($spj->status === 'disetujui_umum')
+        <div class="verify-card">
+            <div class="verify-card-header">
+                <h3 class="verify-card-title">
+                    <ion-icon name="create-outline" style="color: #0284c7; font-size: 20px;"></ion-icon>
+                    Input Keputusan Pejabat Pembuat Komitmen (PPK)
+                </h3>
+                <span style="font-size: 12px; font-weight: 700; color: #1d4ed8; background: #eff6ff; padding: 4px 10px; border-radius: 999px; border: 1px solid #bfdbfe;">
+                    Tahap 2: Tanda Tangan PPK
+                </span>
+            </div>
+            <div class="verify-card-body">
+                <p style="color: var(--dash-text-muted); margin-top: 0; margin-bottom: 22px; font-size: 14px; line-height: 1.5;">
+                    Dokumen fisik SPJ saat ini berada di meja <strong>Pejabat Pembuat Komitmen (PPK)</strong> untuk diperiksa dan ditandatangani. Perbarui status berdasarkan hasil tindak lanjut PPK di bawah ini:
+                </p>
+
+                <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+                    @csrf
+
+                    <div class="decision-grid-two">
+                        
+                        <!-- SETUJUI PPK -->
+                        <div class="decision-box decision-box-approve">
+                            <h4 class="decision-box-title">
+                                <ion-icon name="checkmark-circle" style="color: #10b981; font-size: 22px;"></ion-icon>
+                                <span>PPK Telah Menyetujui (TTD)</span>
+                            </h4>
+                            <p class="decision-box-desc">
+                                PPK telah menandatangani berkas fisik SPJ. Status otomatis berlanjut ke meja PPSPM untuk proses penerbitan Surat Perintah Membayar (SPM).
+                            </p>
+
+                            <div class="decision-actions-row">
+                                <button type="submit" name="action" value="setujui_ppk" class="btn-decision-submit approve">
+                                    <ion-icon name="checkmark-done-outline" style="font-size: 18px;"></ion-icon>
+                                    <span>PPK Setuju & TTD (Lanjut PPSPM)</span>
+                                </button>
+                                <button type="button" onclick="openWaModal('setuju_ppk')" class="btn-decision-wa-quick">
+                                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                                    <span>Kirim WA</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TOLAK / REVISI PPK -->
+                        <div class="decision-box decision-box-reject">
+                            <h4 class="decision-box-title">
+                                <ion-icon name="close-circle" style="color: #ef4444; font-size: 22px;"></ion-icon>
+                                <span>PPK Meminta Revisi</span>
+                            </h4>
+                            <p class="decision-box-desc">
+                                PPK menemukan catatan atau penyesuaian yang harus diperbaiki oleh staf pengaju sebelum ditandatangani.
+                            </p>
+
+                            <label class="decision-label" for="catatan_revisi_ppk">
+                                Catatan Perbaikan dari PPK (Wajib jika dikembalikan)
+                            </label>
+                            <textarea name="catatan_revisi" id="catatan_revisi_ppk" class="decision-textarea" rows="3" placeholder="Tuliskan catatan perbaikan langsung dari PPK..."></textarea>
+
+                            <div class="decision-actions-row">
+                                <button type="submit" name="action" value="tolak_ppk" class="btn-decision-submit reject">
+                                    <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon>
+                                    <span>Kembalikan ke Teknis (Revisi PPK)</span>
+                                </button>
+                                <button type="button" onclick="openWaModalWithNote('revisi_ppk')" class="btn-decision-wa-quick">
+                                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                                    <span>Kirim WA</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @error('catatan_revisi')
+                    <div style="color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 8px;">
+                        <ion-icon name="warning" style="vertical-align: middle;"></ion-icon> {{ $message }}
+                    </div>
+                    @enderror
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== TAHAP 3: STATUS DISETUJUI_PPK (MEJA PPSPM) ==================== -->
+        @elseif($spj->status === 'disetujui_ppk')
+        <div class="verify-card">
+            <div class="verify-card-header">
+                <h3 class="verify-card-title">
+                    <ion-icon name="wallet-outline" style="color: #8b5cf6; font-size: 20px;"></ion-icon>
+                    Input Konfirmasi Persetujuan PPSPM
+                </h3>
+                <span style="font-size: 12px; font-weight: 700; color: #6d28d9; background: #f5f3ff; padding: 4px 10px; border-radius: 999px; border: 1px solid #ddd6fe;">
+                    Tahap 3: Persetujuan PPSPM
+                </span>
+            </div>
+            <div class="verify-card-body">
+                <p style="color: var(--dash-text-muted); margin-top: 0; margin-bottom: 22px; font-size: 14px; line-height: 1.5;">
+                    Berkas SPJ sedang diperiksa oleh <strong>Pejabat Penandatangan Surat Perintah Membayar (PPSPM)</strong>. Silakan perbarui status berdasarkan hasil pengujian PPSPM:
+                </p>
+
+                <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
+                    @csrf
+
+                    <div class="decision-grid-two">
+                        
+                        <!-- SETUJUI PPSPM -->
+                        <div class="decision-box" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(2, 132, 199, 0.04)); border: 1.5px solid rgba(139, 92, 246, 0.4);">
+                            <h4 class="decision-box-title" style="color: #5b21b6;">
+                                <ion-icon name="checkmark-circle" style="color: #8b5cf6; font-size: 22px;"></ion-icon>
+                                <span>PPSPM Menyetujui (Lanjut ke Bendahara)</span>
+                            </h4>
+                            <p class="decision-box-desc" style="color: #6d28d9;">
+                                PPSPM telah menguji dan menerbitkan SPM. Berkas resmi diteruskan ke Bendahara Pengeluaran untuk proses pencairan dana.
+                            </p>
+
+                            <div class="decision-actions-row">
+                                <button type="submit" name="action" value="setujui_ppspm" class="btn-decision-submit purple">
+                                    <ion-icon name="cash-outline" style="font-size: 18px;"></ion-icon>
+                                    <span>PPSPM Setuju (Teruskan Bendahara)</span>
+                                </button>
+                                <button type="button" onclick="openWaModal('setuju_ppspm')" class="btn-decision-wa-quick">
+                                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                                    <span>Kirim WA</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- TOLAK / REVISI PPSPM -->
+                        <div class="decision-box decision-box-reject">
+                            <h4 class="decision-box-title">
+                                <ion-icon name="close-circle" style="color: #ef4444; font-size: 22px;"></ion-icon>
+                                <span>PPSPM Menolak / Revisi</span>
+                            </h4>
+                            <p class="decision-box-desc">
+                                PPSPM menemukan ketidaksesuaian SPM atau dokumen pendukung. Berkas dikembalikan ke staf Teknis.
+                            </p>
+
+                            <label class="decision-label" for="catatan_revisi_ppspm">
+                                Catatan Revisi dari PPSPM (Wajib jika dikembalikan)
+                            </label>
+                            <textarea name="catatan_revisi" id="catatan_revisi_ppspm" class="decision-textarea" rows="3" placeholder="Tuliskan alasan penolakan/perbaikan dari PPSPM..."></textarea>
+
+                            <div class="decision-actions-row">
+                                <button type="submit" name="action" value="tolak_ppspm" class="btn-decision-submit reject">
+                                    <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon>
+                                    <span>Kembalikan ke Teknis (Revisi PPSPM)</span>
+                                </button>
+                                <button type="button" onclick="openWaModalWithNote('revisi_ppspm')" class="btn-decision-wa-quick">
+                                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                                    <span>Kirim WA</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @error('catatan_revisi')
+                    <div style="color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 600; background: #fee2e2; padding: 10px; border-radius: 8px;">
+                        <ion-icon name="warning" style="vertical-align: middle;"></ion-icon> {{ $message }}
+                    </div>
+                    @enderror
+                </form>
+            </div>
+        </div>
+
+        <!-- ==================== TAHAP 4 & LAINNYA (DI BENDAHARA / SELESAI / REVISI) ==================== -->
+        @else
+        <div class="verify-card">
+            <div class="verify-card-body">
+                <div class="verify-status-banner">
+                    <div class="verify-status-icon-circle">
+                        @if($spj->status === 'disetujui_ppspm')
+                            <ion-icon name="wallet-outline"></ion-icon>
+                        @elseif($spj->status === 'selesai')
+                            <ion-icon name="checkmark-done-circle-outline" style="color: #10b981;"></ion-icon>
+                        @elseif($isRevision)
+                            <ion-icon name="alert-circle-outline" style="color: #ef4444;"></ion-icon>
+                        @else
+                            <ion-icon name="information-circle-outline"></ion-icon>
+                        @endif
+                    </div>
+
+                    <h3 class="verify-status-title">
+                        Status Terkini: 
+                        <span style="color: #0284c7;">{{ strtoupper(str_replace('_', ' ', $spj->status)) }}</span>
+                    </h3>
+
+                    <p class="verify-status-sub">
+                        @if($spj->status === 'disetujui_ppspm')
+                            Dokumen telah disetujui oleh PPSPM dan kini berada di <strong>Bendahara Pengeluaran</strong> untuk proses pencairan dana dan transfer ke penerima.
+                        @elseif($spj->status === 'selesai')
+                            SPJ ini telah <strong>selesai dicairkan</strong> oleh Bendahara Pengeluaran dan masuk ke dalam arsip resmi.
+                        @elseif($isRevision)
+                            SPJ ini telah dikembalikan ke staf <strong>Teknis</strong> untuk diperbaiki sesuai catatan perbaikan. Anda dapat menghubungi pengaju untuk konfirmasi perbaikan.
+                        @else
+                            SPJ ini sudah tidak berada dalam antrean pemeriksaan Subbagian Umum.
+                        @endif
+                    </p>
+
+                    @if($spj->catatan_revisi)
+                    <div style="margin: 20px auto 0 auto; max-width: 500px; padding: 14px 18px; background: rgba(239, 68, 68, 0.08); border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3); text-align: left;">
+                        <span style="font-size: 11px; font-weight: 700; color: #ef4444; text-transform: uppercase;">Catatan Revisi Terakhir:</span>
+                        <p style="margin: 4px 0 0 0; font-size: 13.5px; color: var(--dash-text-dark); line-height: 1.5; white-space: pre-line;">{{ $spj->catatan_revisi }}</p>
+                    </div>
                     @endif
-                @else
-                    <div style="background-color: #fef2f2; color: #991b1b; padding: 24px; border-radius: 8px; border: 1px dashed #f87171; text-align: center;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700; font-size: 16px; margin-bottom: 8px;">
-                            <ion-icon name="warning-outline" style="font-size: 24px; color: #ef4444;"></ion-icon> Tidak Ada Lampiran Dokumen
-                        </div>
-                        <p style="margin: 0; color: #7f1d1d; font-size: 14px;">Staf teknis belum melampirkan checklist dokumen kelengkapan.</p>
+
+                    <div style="margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                        <button type="button" onclick="openWaModal()" class="btn-wa-header">
+                            <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                            <span>Hubungi Pengaju via WhatsApp</span>
+                        </button>
+                        <a href="{{ route('umum.spj.index') }}" class="btn-back-header">
+                            <span>Kembali ke Kotak Masuk</span>
+                        </a>
                     </div>
-                @endif
+                </div>
             </div>
         </div>
+        @endif
+
     </div>
 
-    @if($spj->status == 'diajukan')
-    <div class="show-panel">
-        <div class="show-panel-header">
-            <h2>Aksi Verifikasi (Keputusan)</h2>
-        </div>
-        <div style="padding: 24px;">
-            <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
-                @csrf
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                    
-                    <!-- OPSI SETUJUI -->
-                    <div class="action-box-approve" style="border: 1px solid #10b981; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f0fdf4; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <ion-icon name="checkmark-circle" style="color: #10b981; font-size: 24px;"></ion-icon>
-                            <h3 style="color: #065f46; margin: 0; font-size: 18px;">Setujui SPJ</h3>
-                        </div>
-                        <p style="color: #047857; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika dokumen telah lengkap dan benar. Pengajuan akan diteruskan ke PPK.</p>
-                        
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #065f46;">Catatan Internal (Dilihat oleh PPK - Opsional)</label>
-                        <textarea name="catatan_internal" class="action-textarea" rows="2" style="width: 100%; padding: 12px; border: 1px solid #6ee7b7; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Cth: Kuitansi asli sudah dicek dan sesuai..."></textarea>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="setujui" style="flex: 1; background-color: var(--dash-btn-primary-bg); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px var(--dash-btn-primary-shadow);" onmouseover="this.style.backgroundColor='var(--dash-btn-primary-hover)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='var(--dash-btn-primary-bg)'; this.style.transform='translateY(0)';">
-                                <ion-icon name="send-outline" style="font-size: 18px;"></ion-icon> Teruskan ke PPK
-                            </button>
-                            <button type="button" onclick="openWaModal('setuju_umum')" title="Kirim Notifikasi WhatsApp ke Teknis" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WA
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- OPSI TOLAK -->
-                    <div class="action-box-reject" style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
-                            <h3 style="color: #991b1b; margin: 0; font-size: 18px;">Kembalikan (Revisi)</h3>
-                        </div>
-                        <p style="color: #7f1d1d; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika ada kesalahan atau dokumen kurang. SPJ akan dikembalikan ke Teknis.</p>
-                        
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #991b1b;">Catatan Kesalahan (Wajib diisi jika dikembalikan)</label>
-                        <textarea name="catatan_revisi" class="action-textarea" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Cth: Dokumen invoice bulan lalu belum dilampirkan..."></textarea>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="tolak" style="flex: 1; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
-                                <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon> Kembalikan ke Teknis
-                            </button>
-                            <button type="button" onclick="openWaModalWithNote('revisi_umum')" title="Kirim Catatan Revisi via WhatsApp" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WA
-                            </button>
-                        </div>
-                    </div>
-                    
-                </div>
-                
-                @error('catatan_revisi')
-                <div style="color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 500; background: #fee2e2; padding: 8px; border-radius: 6px;">
-                    <ion-icon name="warning" style="vertical-align: middle;"></ion-icon> {{ $message }}
-                </div>
-                @enderror
-
-            </form>
-        </div>
-    </div>
-    @elseif($spj->status == 'disetujui_umum')
-    <div class="show-panel">
-        <div class="show-panel-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Aksi Verifikasi (Keputusan PPK)</h2>
-            <span style="font-size: 12px; background: #eff6ff; color: #1d4ed8; padding: 4px 10px; border-radius: 999px; font-weight: 600; border: 1px solid #bfdbfe;">
-                Tahap 2: Tanda Tangan PPK
-            </span>
-        </div>
-        <div style="padding: 24px;">
-            <p style="color: var(--dash-text-muted); margin-top: 0; margin-bottom: 20px; font-size: 14px;">
-                Dokumen fisik sedang berada di meja PPK untuk diperiksa dan ditandatangani. Perbarui status berdasarkan keputusan PPK di bawah ini.
-            </p>
-            <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
-                @csrf
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                    
-                    <!-- OPSI SETUJUI PPK -->
-                    <div class="action-box-approve" style="border: 1px solid #10b981; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f0fdf4; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <ion-icon name="checkmark-circle" style="color: #10b981; font-size: 24px;"></ion-icon>
-                            <h3 style="color: #065f46; margin: 0; font-size: 18px;">Persetujuan PPK</h3>
-                        </div>
-                        <p style="color: #047857; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika Pejabat Pembuat Komitmen (PPK) telah menyetujui dan menandatangani dokumen fisik SPJ. Status akan otomatis diteruskan ke PPSPM.</p>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="setujui_ppk" style="flex: 1; background-color: var(--dash-btn-primary-bg); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px var(--dash-btn-primary-shadow);" onmouseover="this.style.backgroundColor='var(--dash-btn-primary-hover)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='var(--dash-btn-primary-bg)'; this.style.transform='translateY(0)';">
-                                <ion-icon name="checkmark-done-outline" style="font-size: 18px;"></ion-icon> PPK Menyetujui (TTD)
-                            </button>
-                            <button type="button" onclick="openWaModal('setuju_ppk')" title="Kirim Notifikasi WhatsApp ke Teknis" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WA
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- OPSI TOLAK PPK -->
-                    <div class="action-box-reject" style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
-                            <h3 style="color: #991b1b; margin: 0; font-size: 18px;">Kembalikan / Revisi PPK</h3>
-                        </div>
-                        <p style="color: #7f1d1d; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">Pilih opsi ini jika PPK menolak atau meminta perbaikan berkas fisik. SPJ akan dikembalikan ke Teknis.</p>
-                        
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #991b1b;">Catatan Revisi dari PPK (Wajib jika dikembalikan)</label>
-                        <textarea name="catatan_revisi" class="action-textarea" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan catatan perbaikan dari PPK..."></textarea>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="tolak_ppk" style="flex: 1; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
-                                <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon> Kembalikan ke Teknis (Revisi PPK)
-                            </button>
-                            <button type="button" onclick="openWaModalWithNote('revisi_ppk')" title="Kirim Catatan Revisi via WhatsApp" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WA
-                            </button>
-                        </div>
-                    </div>
-                    
-                </div>
-                
-                @error('catatan_revisi')
-                <div style="color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 500; background: #fee2e2; padding: 8px; border-radius: 6px;">
-                    <ion-icon name="warning" style="vertical-align: middle;"></ion-icon> {{ $message }}
-                </div>
-                @enderror
-
-            </form>
-        </div>
-    </div>
-    @elseif($spj->status == 'disetujui_ppk')
-    <div class="show-panel">
-        <div class="show-panel-header" style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Konfirmasi dari PPSPM</h2>
-            <span style="font-size: 12px; background: #f5f3ff; color: #6d28d9; padding: 4px 10px; border-radius: 999px; font-weight: 600; border: 1px solid #ddd6fe;">
-                Tahap 3: Persetujuan PPSPM
-            </span>
-        </div>
-        <div style="padding: 24px;">
-            <p style="color: var(--dash-text-muted); margin-top: 0; margin-bottom: 20px; font-size: 14px;">
-                Berkas ini sedang berada di meja PPSPM. Silakan perbarui status di bawah ini berdasarkan hasil pemeriksaan PPSPM. Jika disetujui, berkas otomatis diteruskan ke Bendahara.
-            </p>
-            
-            <form action="{{ route('umum.spj.verify', $spj->id) }}" method="POST">
-                @csrf
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                    
-                    <!-- OPSI SETUJUI PPSPM -->
-                    <div class="action-box-ppspm" style="border: 1px solid #8b5cf6; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #f5f3ff; box-shadow: 0 4px 10px rgba(139,92,246,0.05);">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <ion-icon name="checkmark-circle" style="color: #8b5cf6; font-size: 24px;"></ion-icon>
-                            <h3 style="color: #5b21b6; margin: 0; font-size: 18px;">PPSPM Menyetujui</h3>
-                        </div>
-                        <p style="color: #6d28d9; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">PPSPM telah menandatangani dokumen. SPJ akan diteruskan ke Bendahara untuk proses pencairan dana.</p>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="setujui_ppspm" style="flex: 1; background-color: #8b5cf6; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(139,92,246,0.25);" onmouseover="this.style.backgroundColor='#7c3aed'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#8b5cf6'; this.style.transform='translateY(0)';">
-                                <ion-icon name="cash-outline" style="font-size: 18px;"></ion-icon> PPSPM Setuju (Teruskan ke Bendahara)
-                            </button>
-                            <button type="button" onclick="openWaModal('setuju_ppspm')" title="Kirim Notifikasi WhatsApp ke Teknis" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WA
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- OPSI TOLAK PPSPM -->
-                    <div class="action-box-reject" style="border: 1px solid #f87171; border-radius: 12px; padding: 24px; display: flex; flex-direction: column; background: #fef2f2; box-shadow: 0 4px 10px rgba(239,68,68,0.05);">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                            <ion-icon name="close-circle" style="color: #ef4444; font-size: 24px;"></ion-icon>
-                            <h3 style="color: #991b1b; margin: 0; font-size: 18px;">PPSPM Menolak / Revisi</h3>
-                        </div>
-                        <p style="color: #7f1d1d; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">PPSPM meminta perbaikan. Berkas dikembalikan ke Teknis.</p>
-                        
-                        <label style="display: block; font-weight: 600; margin-bottom: 8px; font-size: 13px; color: #991b1b;">Catatan Revisi dari PPSPM (Wajib jika dikembalikan)</label>
-                        <textarea name="catatan_revisi" class="action-textarea" rows="3" style="width: 100%; padding: 12px; border: 1px solid #fca5a5; border-radius: 8px; outline: none; margin-bottom: 20px; background-color: #ffffff; font-family: inherit; font-size: 13px;" placeholder="Tuliskan alasan PPSPM menolak..."></textarea>
-                        
-                        <div style="display: flex; gap: 10px; margin-top: auto;">
-                            <button type="submit" name="action" value="tolak_ppspm" style="flex: 1; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; padding: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; box-shadow: 0 4px 6px rgba(239,68,68,0.25);" onmouseover="this.style.backgroundColor='#dc2626'; this.style.transform='translateY(-2px)';" onmouseout="this.style.backgroundColor='#ef4444'; this.style.transform='translateY(0)';">
-                                <ion-icon name="arrow-undo-outline" style="font-size: 18px;"></ion-icon> Kembalikan ke Teknis (Revisi PPSPM)
-                            </button>
-                            <button type="button" onclick="openWaModalWithNote('revisi_ppspm')" title="Kirim Catatan Revisi via WhatsApp" style="background-color: #25d366; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; padding: 0 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); white-space: nowrap; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                                <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Kirim WA
-                            </button>
-                        </div>
-                    </div>
-                    
-                </div>
-                
-                @error('catatan_revisi')
-                <div style="color: #dc2626; font-size: 13px; margin-top: 16px; text-align: center; font-weight: 500; background: #fee2e2; padding: 8px; border-radius: 6px;">
-                    <ion-icon name="warning" style="vertical-align: middle;"></ion-icon> {{ $message }}
-                </div>
-                @enderror
-
-            </form>
-        </div>
-    </div>
-    @else
-    <div class="show-panel">
-        <div class="status-info-box" style="padding: 28px 24px; text-align: center; background-color: #f8fafc; border-radius: 12px;">
-            <div style="width: 56px; height: 56px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 12px;">
-                <ion-icon name="information-circle" style="font-size: 32px;"></ion-icon>
-            </div>
-            <h3 style="color: var(--dash-text-dark); margin: 0; font-size: 17px; font-weight: 700;">
-                Status SPJ: <span style="color: #2563eb;">{{ strtoupper(str_replace('_', ' ', $spj->status)) }}</span>
-            </h3>
-            <p style="color: var(--dash-text-muted); margin: 8px auto 0 auto; font-size: 14px; max-width: 500px; line-height: 1.5;">
-                @if($spj->status === 'disetujui_ppspm')
-                    Dokumen telah disetujui PPSPM dan kini berada di <strong>Bendahara Pengeluaran</strong> untuk proses pencairan dana.
-                @elseif(str_contains($spj->status, 'revisi'))
-                    SPJ ini telah dikembalikan ke staf <strong>Teknis</strong> untuk diperbaiki sesuai catatan verifikasi.
-                @elseif($spj->status === 'selesai')
-                    SPJ ini telah <strong>selesai dicairkan</strong> oleh Bendahara.
-                @else
-                    SPJ ini sudah tidak berada dalam antrean pemeriksaan Anda.
-                @endif
-            </p>
-            <div style="margin-top: 20px; display: flex; justify-content: center; gap: 12px;">
-                <button type="button" onclick="openWaModal()" style="background-color: #25d366; color: white; padding: 11px 22px; border-radius: 8px; border: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(37,211,102,0.25); cursor: pointer; transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Hubungi Pengaju via WhatsApp
-                </button>
-            </div>
-        </div>
-    </div>
-    @endif
 </div>
 
-<!-- MODAL WHATSAPP MANUAL -->
-<div id="waModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
-    <div class="wa-modal-card" style="background: #ffffff; border-radius: 16px; max-width: 600px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden; animation: popIn 0.2s ease-out;">
-        <div style="background: linear-gradient(135deg, #25d366, #128c7e); color: white; padding: 18px 24px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center;">
-                    <ion-icon name="logo-whatsapp" style="font-size: 26px;"></ion-icon>
+<!-- ====================================================================
+     8. MODAL WHATSAPP INTERAKTIF & LENGKAP DENGAN 7 TEMPLATE RESMI
+     ==================================================================== -->
+<div id="waModal" class="wa-modal-overlay">
+    <div class="wa-modal-box">
+        <!-- Header Modal -->
+        <div class="wa-modal-header">
+            <div class="wa-modal-header-left">
+                <div class="wa-modal-icon-badge">
+                    <ion-icon name="logo-whatsapp"></ion-icon>
                 </div>
                 <div>
-                    <h3 style="margin: 0; font-size: 17px; font-weight: 700; color: white;">Kirim Notifikasi WhatsApp (Manual)</h3>
-                    <small style="opacity: 0.9; font-size: 12px;">Template sudah terisi otomatis sesuai laporan SPJ ini</small>
+                    <h3>Kirim Notifikasi WhatsApp Resmi</h3>
+                    <small>Template pesan otomatis terisi sesuai data SPJ dan siap dikirim</small>
                 </div>
             </div>
-            <button type="button" onclick="closeWaModal()" style="background: rgba(255,255,255,0.15); border: none; color: white; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 8px; transition: 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.3)';" onmouseout="this.style.background='rgba(255,255,255,0.15)';">
+            <button type="button" onclick="closeWaModal()" class="wa-modal-btn-close" title="Tutup Modal">
                 <ion-icon name="close" style="font-size: 20px;"></ion-icon>
             </button>
         </div>
 
-        <div style="padding: 24px;">
+        <div class="wa-modal-body">
             <!-- NOMOR HP TUJUAN -->
             @php
                 $recipientWa = $spj->no_wa ?: ($spj->user->no_wa ?? '');
             @endphp
-            <div style="margin-bottom: 16px;">
-                <label class="wa-modal-label" style="display: block; font-size: 13px; font-weight: 600; color: var(--dash-text-dark); margin-bottom: 6px;">
-                    Nomor WhatsApp Pengaju ({{ $spj->user->name ?? 'Teknis' }}):
+            <div class="wa-modal-field-group">
+                <label class="wa-modal-label" for="waRecipient">
+                    Nomor WhatsApp Pengaju ({{ $spj->user->name ?? 'Staf Teknis' }}):
                 </label>
-                <div style="position: relative;">
-                    <input type="text" id="waRecipient" class="wa-modal-input" value="{{ $recipientWa }}" placeholder="Contoh: 081234567890 (atau biarkan kosong untuk pilih kontak di WA)" style="width: 100%; box-sizing: border-box; padding: 10px 14px; border: 1.5px solid var(--dash-input-border); border-radius: 8px; font-size: 14px; outline: none; font-family: inherit; background-color: var(--dash-input-bg); color: var(--dash-text-dark);">
-                </div>
+                <input type="text" id="waRecipient" class="wa-modal-input" value="{{ $recipientWa }}" placeholder="Contoh: 081234567890 (atau nomor PIC)">
                 @if(empty($recipientWa))
                 <small style="color: #d97706; font-size: 11px; display: flex; align-items: center; gap: 4px; margin-top: 5px;">
-                    <ion-icon name="information-circle-outline"></ion-icon> Pengaju belum mencantumkan nomor WhatsApp pada SPJ ini. Anda bisa ketik nomor HP manual di atas, atau langsung klik "Buka di WhatsApp" untuk memilih kontak.
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    Nomor belum terisi otomatis. Anda dapat mengetikkan nomor HP secara manual di atas.
                 </small>
                 @endif
             </div>
 
-            <!-- PILIHAN TEMPLATE CEPAT -->
-            <div style="margin-bottom: 16px;">
-                <label class="wa-modal-label" style="display: block; font-size: 13px; font-weight: 600; color: var(--dash-text-dark); margin-bottom: 8px;">Pilih Template Pesan:</label>
-                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button type="button" id="btnTplSetujuUmum" class="wa-tpl-btn" onclick="setWaTemplate('setuju_umum')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid #10b981; background: #ecfdf5; color: #047857; cursor: pointer; transition: 0.2s;">
+            <!-- PILIHAN TEMPLATE PESAN -->
+            <div class="wa-modal-field-group">
+                <label class="wa-modal-label">Pilih Template Pesan:</label>
+                <div class="wa-template-chips">
+                    <button type="button" id="btnTplSetujuUmum" class="wa-tpl-chip" onclick="setWaTemplate('setuju_umum')">
                         ✅ 1. Teruskan ke PPK
                     </button>
-                    <button type="button" id="btnTplSetujuPpk" class="wa-tpl-btn" onclick="setWaTemplate('setuju_ppk')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplSetujuPpk" class="wa-tpl-chip" onclick="setWaTemplate('setuju_ppk')">
                         ✍️ 2. Persetujuan PPK
                     </button>
-                    <button type="button" id="btnTplSetujuPpspm" class="wa-tpl-btn" onclick="setWaTemplate('setuju_ppspm')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplSetujuPpspm" class="wa-tpl-chip" onclick="setWaTemplate('setuju_ppspm')">
                         💵 3. Teruskan ke Bendahara
                     </button>
-                    <button type="button" id="btnTplRevisiUmum" class="wa-tpl-btn" onclick="setWaTemplate('revisi_umum')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplRevisiUmum" class="wa-tpl-chip" onclick="setWaTemplate('revisi_umum')">
                         ⚠️ Revisi Umum
                     </button>
-                    <button type="button" id="btnTplRevisiPpk" class="wa-tpl-btn" onclick="setWaTemplate('revisi_ppk')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplRevisiPpk" class="wa-tpl-chip" onclick="setWaTemplate('revisi_ppk')">
                         ⚠️ Revisi PPK
                     </button>
-                    <button type="button" id="btnTplRevisiPpspm" class="wa-tpl-btn" onclick="setWaTemplate('revisi_ppspm')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplRevisiPpspm" class="wa-tpl-chip" onclick="setWaTemplate('revisi_ppspm')">
                         ⚠️ Revisi PPSPM
                     </button>
-                    <button type="button" id="btnTplFisik" class="wa-tpl-btn" onclick="setWaTemplate('fisik')" style="padding: 6px 14px; font-size: 12px; font-weight: 600; border-radius: 999px; border: 1px solid var(--dash-border); background: var(--dash-input-bg); color: var(--dash-text-muted); cursor: pointer; transition: 0.2s;">
+                    <button type="button" id="btnTplFisik" class="wa-tpl-chip" onclick="setWaTemplate('fisik')">
                         📄 Berkas Fisik
                     </button>
                 </div>
             </div>
 
-            <!-- PREVIEW TEXTAREA -->
-            <div style="margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <label class="wa-modal-label" style="font-size: 13px; font-weight: 600; color: var(--dash-text-dark);">Isi Pesan (Bisa Diedit Sesuai Kebutuhan):</label>
-                    <button type="button" onclick="copyWaText()" id="btnCopyWa" style="background: none; border: none; color: #2563eb; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
-                        <ion-icon name="copy-outline"></ion-icon> <span>Salin Teks</span>
+            <!-- CHAT BUBBLE PREVIEW TEXTAREA -->
+            <div class="wa-modal-field-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px;">
+                    <label class="wa-modal-label" style="margin-bottom: 0;">Isi Pesan (Bisa Diedit):</label>
+                    <button type="button" onclick="copyWaText()" id="btnCopyWa" style="background: none; border: none; color: #0284c7; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                        <ion-icon name="copy-outline"></ion-icon>
+                        <span>Salin Teks</span>
                     </button>
                 </div>
-                <textarea id="waMessageText" class="action-textarea" rows="9" style="width: 100%; box-sizing: border-box; padding: 12px; border: 1.5px solid var(--dash-input-border); border-radius: 8px; font-size: 13px; line-height: 1.5; font-family: inherit; outline: none; background: var(--dash-input-bg); color: var(--dash-text-dark); resize: vertical;"></textarea>
+                <div class="wa-chat-preview-wrap">
+                    <div class="wa-chat-bubble">
+                        <textarea id="waMessageText" class="wa-chat-textarea" rows="8"></textarea>
+                    </div>
+                </div>
             </div>
 
-            <!-- BUTTONS ACTION -->
-            <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                <button type="button" class="btn-wa-close" onclick="closeWaModal()" style="padding: 10px 18px; border: 1px solid var(--dash-border); background: var(--dash-table-header-bg); color: var(--dash-text-muted); border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+            <!-- FOOTER ACTIONS -->
+            <div class="wa-modal-footer">
+                <button type="button" class="btn-wa-dismiss" onclick="closeWaModal()">
                     Tutup
                 </button>
-                <button type="button" onclick="sendWhatsAppNow()" style="padding: 10px 22px; border: none; background: #25d366; color: white; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 6px rgba(37, 211, 102, 0.25); transition: 0.2s;" onmouseover="this.style.backgroundColor='#20bd5a';" onmouseout="this.style.backgroundColor='#25d366';">
-                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon> Buka di WhatsApp
+                <button type="button" onclick="sendWhatsAppNow()" class="btn-wa-submit-launch">
+                    <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
+                    <span>Buka di WhatsApp Web / App</span>
                 </button>
             </div>
         </div>
@@ -692,15 +1097,33 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 @push('scripts')
 <script>
     const spjData = @json($spjJsData);
-
     let currentWaTpl = 'setuju_umum';
 
-    function openWaModal(defaultTpl = 'setuju_umum') {
-        const modal = document.getElementById('waModal');
-        modal.style.display = 'flex';
-        setWaTemplate(defaultTpl);
+    // Tambahkan teks dari chip ke textarea revisi
+    function addRevisionChip(text) {
+        const textarea = document.querySelector('textarea[name="catatan_revisi"]');
+        if (!textarea) return;
+        
+        let val = textarea.value.trim();
+        if (val) {
+            val += "\n• " + text;
+        } else {
+            val = "• " + text;
+        }
+        textarea.value = val;
+        textarea.focus();
     }
 
+    // Buka Modal WhatsApp
+    function openWaModal(defaultTpl = 'setuju_umum') {
+        const modal = document.getElementById('waModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setWaTemplate(defaultTpl);
+        }
+    }
+
+    // Buka Modal WhatsApp dengan isi catatan revisi yang sedang diketik
     function openWaModalWithNote(stageTpl = 'revisi_umum') {
         const activeTextarea = document.querySelector('textarea[name="catatan_revisi"]');
         if (activeTextarea && activeTextarea.value.trim()) {
@@ -711,11 +1134,13 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         openWaModal(stageTpl);
     }
 
+    // Tutup Modal WhatsApp
     function closeWaModal() {
-        document.getElementById('waModal').style.display = 'none';
+        const modal = document.getElementById('waModal');
+        if (modal) modal.style.display = 'none';
     }
 
-    // Tutup jika klik overlay luar
+    // Tutup jika klik overlay luar atau tekan ESC
     window.addEventListener('click', function(e) {
         const modal = document.getElementById('waModal');
         if (e.target === modal) {
@@ -723,6 +1148,13 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
         }
     });
 
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeWaModal();
+        }
+    });
+
+    // Pilih Template WhatsApp
     function setWaTemplate(tpl) {
         if (tpl === 'setuju') tpl = 'setuju_umum';
         if (tpl === 'revisi') tpl = 'revisi_umum';
@@ -769,7 +1201,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             }
         }
 
-        const noteText = spjData.activeInputNote || spjData.catatanRevisi || 'Mohon lengkapi dan sesuaikan berkas SPJ sesuai checklist persyaratan.';
+        const noteText = spjData.activeInputNote || spjData.catatanRevisi || 'Mohon lengkapi dan sesuaikan berkas fisik SPJ sesuai dengan checklist persyaratan SOP.';
 
         let message = '';
 
@@ -783,10 +1215,10 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `• *Status*   : DISETUJUI UMUM (Menunggu TTD PPK)\n\n`
                     + `📌 *Langkah Selanjutnya:*\n`
                     + `Harap segera membawa dokumen fisik SPJ ke meja *Pejabat Pembuat Komitmen (PPK)* untuk ditandatangani.\n\n`
-                    + `Pantau detail dokumen Anda di sini:\n`
+                    + `Pantau detail dokumen Anda di tautan berikut:\n`
                     + `${spjData.linkDetail}\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
 
         } else if (tpl === 'setuju_ppk') {
             message = `*PEMBERITAHUAN SPJ: PERSETUJUAN PPK*\n`
@@ -798,10 +1230,10 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `• *Status*   : DISETUJUI PPK (Menuju Persetujuan PPSPM)\n\n`
                     + `📌 *Langkah Selanjutnya:*\n`
                     + `Harap segera membawa berkas fisik SPJ ke meja *PPSPM* untuk diverifikasi dan diterbitkan SPM.\n\n`
-                    + `Pantau detail dokumen Anda di sini:\n`
+                    + `Pantau detail dokumen Anda di tautan berikut:\n`
                     + `${spjData.linkDetail}\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
 
         } else if (tpl === 'setuju_ppspm') {
             message = `*PEMBERITAHUAN SPJ: PERSETUJUAN PPSPM*\n`
@@ -813,10 +1245,10 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `• *Status*   : DISETUJUI PPSPM (Dalam Proses Pencairan Bendahara)\n\n`
                     + `📌 *Langkah Selanjutnya:*\n`
                     + `SPJ Anda kini berada di Bendahara Pengeluaran untuk proses pencairan dana. Harap pantau rekening atau status di sistem.\n\n`
-                    + `Pantau detail dokumen Anda di sini:\n`
+                    + `Pantau detail dokumen Anda di tautan berikut:\n`
                     + `${spjData.linkDetail}\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
 
         } else if (tpl === 'revisi_umum') {
             message = `*PEMBERITAHUAN PERBAIKAN (REVISI) SPJ*\n`
@@ -828,7 +1260,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `Mohon segera perbaiki berkas dan ajukan kembali melalui tautan berikut:\n`
                     + `${spjData.linkEdit}\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
 
         } else if (tpl === 'revisi_ppk') {
             message = `*PEMBERITAHUAN REVISI DARI PPK*\n`
@@ -840,7 +1272,7 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `Mohon segera lakukan penyesuaian berkas melalui tautan berikut:\n`
                     + `${spjData.linkEdit}\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
 
         } else if (tpl === 'revisi_ppspm') {
             message = `*PEMBERITAHUAN REVISI DARI PPSPM*\n`
@@ -852,25 +1284,28 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
                     + `Mohon segera perbaiki berkas melalui tautan berikut:\n`
                     + `${spjData.linkEdit}\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
 
         } else if (tpl === 'fisik') {
-            message = `*PENGINGAT DOKUMEN FISIK SPJ*\n`
+            message = `*PENGINGAT PENYERAHAN DOKUMEN FISIK SPJ*\n`
                     + `BPS Kabupaten Kolaka Utara\n\n`
                     + `Halo Sdr/i *${spjData.pengaju}*,\n\n`
                     + `Mengingatkan untuk pengajuan SPJ Anda berikut:\n\n`
                     + `• *Kegiatan* : ${spjData.kegiatan}\n`
                     + `• *Nilai*    : ${spjData.nilai}\n\n`
-                    + `Mohon segera menyerahkan berkas fisik SPJ ke meja verifikasi Umum untuk kelengkapan administrasi.\n\n`
+                    + `Mohon segera menyerahkan berkas fisik SPJ (kuitansi asli, nota/faktur toko, BAST, dll.) ke meja Subbagian Umum agar dapat segera diperiksa dan diproses.\n\n`
                     + `Terima kasih.\n`
-                    + `_Sistem Informasi SPJ BPS Kolaka Utara_`;
+                    + `_Sistem Informasi Penyelesaian Tagihan SPJ - BPS Kolaka Utara_`;
         }
 
-        textarea.value = message;
+        if (textarea) textarea.value = message;
     }
 
+    // Salin Teks WhatsApp
     function copyWaText() {
         const textarea = document.getElementById('waMessageText');
+        if (!textarea) return;
+
         textarea.select();
         navigator.clipboard.writeText(textarea.value).then(() => {
             const btnCopy = document.getElementById('btnCopyWa');
@@ -879,11 +1314,12 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
             btnCopy.style.color = '#10b981';
             setTimeout(() => {
                 span.textContent = 'Salin Teks';
-                btnCopy.style.color = '#2563eb';
+                btnCopy.style.color = '#0284c7';
             }, 2000);
         });
     }
 
+    // Buka WhatsApp Web / App
     function sendWhatsAppNow() {
         let phone = document.getElementById('waRecipient').value.trim();
         const msg = document.getElementById('waMessageText').value.trim();
@@ -921,4 +1357,3 @@ $subtitle = 'Review dokumen pengajuan SPJ.';
 @endif
 @endpush
 @endsection
-

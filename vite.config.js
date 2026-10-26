@@ -26,6 +26,7 @@ export default defineConfig({
                 'resources/css/umum/spj.css',
                 'resources/css/umum/riwayat.css',
                 'resources/css/umum/profil.css',
+                'resources/css/umum/laporan.css',
                 
                 // PPK CSS
                 'resources/css/ppk/layout.css',

@@ -24,6 +24,8 @@ class Spj extends Model
         'bukti_transfer',
         'catatan_ppspm',
         'diajukan_at',
+        'berkas_fisik_diterima_at',
+        'pemeriksaan_dimulai_at',
         'disetujui_umum_at',
         'disetujui_ppk_at',
         'disetujui_ppspm_at',
@@ -48,5 +50,12 @@ class Spj extends Model
     protected $casts = [
         'tanggal' => 'date',
         'nilai' => 'decimal:2',
+        'diajukan_at' => 'datetime',
+        'berkas_fisik_diterima_at' => 'datetime',
+        'pemeriksaan_dimulai_at' => 'datetime',
+        'disetujui_umum_at' => 'datetime',
+        'disetujui_ppk_at' => 'datetime',
+        'disetujui_ppspm_at' => 'datetime',
+        'diselesaikan_at' => 'datetime',
     ];
 }

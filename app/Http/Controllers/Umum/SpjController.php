@@ -57,10 +57,39 @@ class SpjController extends Controller
 
         if ($spj->status === 'diajukan') {
             $request->validate([
-                'action' => 'required|in:setujui,tolak',
+                'action' => 'required|in:terima_fisik,mulai_periksa,setujui,tolak,batal_fisik',
                 'catatan_revisi' => 'required_if:action,tolak|nullable|string',
                 'catatan_internal' => 'nullable|string',
             ]);
+
+            if ($request->action === 'terima_fisik') {
+                $spj->update([
+                    'berkas_fisik_diterima_at' => now(),
+                ]);
+
+                return redirect()->route('umum.spj.show', $spj->id)
+                    ->with('success', 'Berkas fisik SPJ berhasil dikonfirmasi diterima di meja Subbagian Umum.');
+            }
+
+            if ($request->action === 'batal_fisik') {
+                $spj->update([
+                    'berkas_fisik_diterima_at' => null,
+                    'pemeriksaan_dimulai_at' => null,
+                ]);
+
+                return redirect()->route('umum.spj.show', $spj->id)
+                    ->with('success', 'Status penerimaan fisik berhasil dibatalkan.');
+            }
+
+            if ($request->action === 'mulai_periksa') {
+                $spj->update([
+                    'berkas_fisik_diterima_at' => $spj->berkas_fisik_diterima_at ?: now(),
+                    'pemeriksaan_dimulai_at' => now(),
+                ]);
+
+                return redirect()->route('umum.spj.show', $spj->id)
+                    ->with('success', 'SPJ berhasil diterima ke dalam antrean pemeriksaan aktif.');
+            }
 
             if ($request->action === 'setujui') {
                 $spj->update([
@@ -76,6 +105,8 @@ class SpjController extends Controller
                 $spj->update([
                     'status' => 'revisi_umum',
                     'catatan_revisi' => $request->catatan_revisi,
+                    'berkas_fisik_diterima_at' => null,
+                    'pemeriksaan_dimulai_at' => null,
                 ]);
                 WhatsAppService::notifyRevised($spj, 'Umum', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis untuk direvisi.';
@@ -115,6 +146,7 @@ class SpjController extends Controller
                 $spj->update([
                     'status' => 'disetujui_ppspm',
                     'catatan_revisi' => null,
+                    'disetujui_ppspm_at' => now(),
                 ]);
                 WhatsAppService::notifyApproved($spj, 'PPSPM');
                 $msg = 'SPJ telah disetujui PPSPM dan diteruskan ke Bendahara.';

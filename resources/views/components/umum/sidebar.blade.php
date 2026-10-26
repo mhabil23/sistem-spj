@@ -28,7 +28,15 @@
             <span class="nav-label">Kotak Masuk SPJ</span>
         </a>
 
-        <div class="sidebar-section-label" style="margin-top: 14px;">ARSIP & AKUN</div>
+        <div class="sidebar-section-label" style="margin-top: 14px;">ARSIP & LAPORAN</div>
+
+        <!-- Laporan SPJ -->
+        <a href="{{ route('umum.laporan.index') }}" class="nav-item {{ request()->routeIs('umum.laporan.*') ? 'active' : '' }}">
+            <span class="nav-icon-wrap">
+                <ion-icon name="document-text-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Laporan SPJ</span>
+        </a>
 
         <!-- Riwayat Pemeriksaan -->
         <a href="{{ route('umum.riwayat.index') }}" class="nav-item {{ request()->routeIs('umum.riwayat.*') ? 'active' : '' }}">

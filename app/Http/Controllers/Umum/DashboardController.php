@@ -10,7 +10,8 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalAntrean = Spj::where('status', 'diajukan')->count();
+        $totalAntrean = Spj::where('status', 'diajukan')->whereNotNull('berkas_fisik_diterima_at')->count();
+        $totalMenungguFisik = Spj::where('status', 'diajukan')->whereNull('berkas_fisik_diterima_at')->count();
         $totalSelesai = Spj::whereIn('status', ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai'])->count();
         $totalRevisi = Spj::where('status', 'revisi_umum')->count();
         $totalSpj = Spj::count();
@@ -99,6 +100,7 @@ class DashboardController extends Controller
 
         return view('umum.dashboard', compact(
             'totalAntrean',
+            'totalMenungguFisik',
             'totalSelesai',
             'totalRevisi',
             'totalSpj',

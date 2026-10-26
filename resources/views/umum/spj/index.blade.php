@@ -93,10 +93,22 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                                 $btnTitle = 'Detail';
 
                                 if($spj->status == 'diajukan') {
-                                    $badgeClass = 'dash-badge-diajukan';
-                                    $statusText = 'Menunggu Pemeriksaan';
-                                    $btnBg = 'var(--dash-btn-primary-bg)';
-                                    $btnTitle = 'Periksa Dokumen';
+                                    if(!$spj->berkas_fisik_diterima_at) {
+                                        $badgeClass = 'dash-badge-revisi';
+                                        $statusText = 'Menunggu Berkas Fisik';
+                                        $btnBg = '#d97706';
+                                        $btnTitle = 'Konfirmasi Terima Fisik';
+                                    } elseif(!$spj->pemeriksaan_dimulai_at) {
+                                        $badgeClass = 'dash-badge-disetujui_ppk';
+                                        $statusText = 'Fisik Diterima (Siap Cek)';
+                                        $btnBg = '#0284c7';
+                                        $btnTitle = 'Terima SPJ & Mulai Periksa';
+                                    } else {
+                                        $badgeClass = 'dash-badge-diajukan';
+                                        $statusText = 'Sedang Diperiksa';
+                                        $btnBg = 'var(--dash-btn-primary-bg)';
+                                        $btnTitle = 'Lanjutkan Pemeriksaan';
+                                    }
                                 } elseif($spj->status == 'disetujui_umum') {
                                     $badgeClass = 'dash-badge-disetujui_umum';
                                     $statusText = 'Diteruskan ke PPK';

@@ -1,0 +1,755 @@
+/* ==========================================================================
+   STYLE HALAMAN LAPORAN REKAPITULASI SPJ - MODUL UMUM & PIMPINAN
+   ========================================================================== */
+
+.laporan-container {
+    padding-top: 4px;
+}
+
+/* ==========================================================================
+   1. BREADCRUMB & HEADER SECTION
+   ========================================================================== */
+.laporan-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--dash-text-muted);
+    margin-bottom: 12px;
+}
+
+.laporan-breadcrumb a {
+    color: var(--dash-text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.laporan-breadcrumb a:hover {
+    color: #0284c7;
+}
+
+.laporan-breadcrumb ion-icon {
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.laporan-header-wrap {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.laporan-title-group h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--dash-text-dark);
+    margin: 0 0 6px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+.laporan-title-group p {
+    color: var(--dash-text-muted);
+    font-size: 13.5px;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.laporan-badge-periode {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #0284c7;
+    background: rgba(2, 132, 199, 0.08);
+    padding: 5px 14px;
+    border-radius: 9999px;
+    border: 1px solid rgba(2, 132, 199, 0.2);
+}
+
+.laporan-badge-periode ion-icon {
+    font-size: 15px;
+}
+
+.laporan-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.btn-print-browser {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--dash-card-bg);
+    color: var(--dash-text-dark);
+    border: 1px solid var(--dash-border);
+    padding: 10px 18px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.btn-print-browser:hover {
+    background-color: var(--dash-input-bg);
+    border-color: var(--dash-input-border);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+.btn-download-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #1e4253 0%, #153443 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    box-shadow: 0 4px 14px var(--dash-btn-primary-shadow);
+}
+
+.btn-download-pdf:hover {
+    background: linear-gradient(135deg, #234d61 0%, #193a4b 100%);
+    box-shadow: 0 6px 18px var(--dash-btn-primary-shadow-hover);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   2. STATS KPI CARDS
+   ========================================================================== */
+.laporan-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 1024px) {
+    .laporan-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .laporan-stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.laporan-stat-card {
+    background: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.laporan-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stat-label-text {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--dash-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-icon-capsule {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.stat-blue .stat-icon-capsule {
+    background: rgba(2, 132, 199, 0.12);
+    color: #0284c7;
+}
+
+.stat-green .stat-icon-capsule {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+}
+
+.stat-orange .stat-icon-capsule {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+}
+
+.stat-purple .stat-icon-capsule {
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6;
+}
+
+.stat-value-text {
+    font-size: 23px;
+    font-weight: 800;
+    color: var(--dash-text-dark);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+.stat-footer-text {
+    font-size: 12px;
+    color: var(--dash-text-muted);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ==========================================================================
+   3. TWO-TIER FILTER CARD & SMOOTH ANIMATED PANELS
+   ========================================================================== */
+.filter-card {
+    background: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.filter-section-title {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dash-text-muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Segmented Control Pill Switcher */
+.segmented-control-track {
+    display: inline-flex;
+    background: var(--dash-input-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 11px;
+    padding: 4px;
+    gap: 4px;
+    margin-bottom: 18px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.segment-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dash-text-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.segment-pill-btn:hover {
+    color: var(--dash-text-dark);
+}
+
+.segment-pill-btn.active {
+    background: var(--dash-card-bg);
+    color: #0284c7;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+html.dark-theme .segment-pill-btn.active {
+    background: #1e3a4b;
+    color: #38bdf8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+/* Dynamic Animated Period Panels */
+.period-panels-wrapper {
+    position: relative;
+    min-height: 72px;
+}
+
+.period-panel {
+    display: none;
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.period-panel.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.period-panel-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(220px, 300px));
+    gap: 16px;
+    align-items: flex-end;
+}
+
+@media (max-width: 640px) {
+    .period-panel-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.period-hint-box {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--dash-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.period-hint-box ion-icon {
+    font-size: 14px;
+    color: #0284c7;
+}
+
+.period-all-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    background: rgba(2, 132, 199, 0.05);
+    border: 1px dashed rgba(2, 132, 199, 0.25);
+    border-radius: 10px;
+    color: var(--dash-text-dark);
+    font-size: 13px;
+    max-width: 650px;
+}
+
+.period-all-info ion-icon {
+    font-size: 22px;
+    color: #0284c7;
+    flex-shrink: 0;
+}
+
+/* Divider Antara Zona */
+.filter-divider {
+    height: 1px;
+    background: var(--dash-border);
+    margin: 20px 0 18px 0;
+}
+
+/* Kriteria Penyaringan Row (Fixed Stable Grid) */
+.filter-criteria-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.3fr auto;
+    gap: 16px;
+    align-items: flex-end;
+}
+
+@media (max-width: 1024px) {
+    .filter-criteria-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .filter-criteria-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.filter-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-input-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dash-text-muted);
+}
+
+.dash-input, .dash-select {
+    width: 100%;
+    padding: 9.5px 13px;
+    border-radius: 9px;
+    border: 1px solid var(--dash-border);
+    background: var(--dash-input-bg);
+    color: var(--dash-text-dark);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.dash-input:focus, .dash-select:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.filter-actions-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.btn-dash-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 18px;
+    border-radius: 9px;
+    background-color: var(--dash-teal-dark);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-dash-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.btn-dash-reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 9.5px 14px;
+    border-radius: 9px;
+    background-color: transparent;
+    color: var(--dash-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--dash-border);
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-dash-reset:hover {
+    color: #ef4444;
+    border-color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.05);
+}
+
+/* ==========================================================================
+   4. DATA TABLE PANEL & EXECUTIVE SUMMARY
+   ========================================================================== */
+.panel-card {
+    background: var(--dash-card-bg);
+    border: 1px solid var(--dash-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.panel-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--dash-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.panel-header-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--dash-text-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modern-table-wrapper {
+    overflow-x: auto;
+}
+
+.dash-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.dash-table thead th {
+    background: var(--dash-table-header-bg);
+    color: var(--dash-text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--dash-border);
+    text-align: left;
+    white-space: nowrap;
+}
+
+.dash-table tbody td {
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--dash-table-border);
+    color: var(--dash-text-dark);
+    vertical-align: middle;
+}
+
+.dash-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.dash-table tbody tr:hover {
+    background-color: var(--dash-table-row-hover);
+}
+
+.dash-table tfoot td {
+    background: var(--dash-table-header-bg);
+    padding: 15px 16px;
+    font-weight: 700;
+    color: var(--dash-text-dark);
+    border-top: 2px solid var(--dash-border);
+}
+
+/* Badges Status */
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-status.selesai {
+    background: rgba(16, 185, 129, 0.12);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-status.diajukan {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.badge-status.disetujui_umum {
+    background: rgba(14, 165, 233, 0.12);
+    color: #0284c7;
+    border: 1px solid rgba(14, 165, 233, 0.25);
+}
+
+.badge-status.disetujui_ppk {
+    background: rgba(139, 92, 246, 0.12);
+    color: #8b5cf6;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.badge-status.disetujui_ppspm {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badge-status.revisi {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Empty State */
+.empty-state {
+    padding: 56px 24px;
+    text-align: center;
+    color: var(--dash-text-muted);
+}
+
+.empty-state ion-icon {
+    font-size: 52px;
+    margin-bottom: 12px;
+    opacity: 0.4;
+    color: #0284c7;
+}
+
+/* ==========================================================================
+   5. PRINT MEDIA STYLESHEET (Cetak Browser window.print())
+   ========================================================================== */
+.print-only {
+    display: none;
+}
+
+@media print {
+    @page {
+        size: A4 landscape;
+        margin: 12mm 15mm;
+    }
+
+    body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-family: Arial, sans-serif !important;
+        font-size: 9.5pt !important;
+    }
+
+    .sidebar,
+    .navbar,
+    .laporan-breadcrumb,
+    .laporan-header-wrap,
+    .filter-card,
+    .laporan-stats-grid,
+    .btn-table-view,
+    .panel-header,
+    .btn-dash-primary,
+    .btn-print-browser,
+    .btn-download-pdf,
+    .no-print {
+        display: none !important;
+    }
+
+    .dashboard-app-wrapper,
+    .main-content,
+    .page-content-wrapper,
+    .laporan-container,
+    .panel-card,
+    .modern-table-wrapper {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    .print-kop-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        border-bottom: 2.5px solid #1e4253 !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .print-kop-table td {
+        vertical-align: middle !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    .print-doc-title {
+        text-align: center !important;
+        margin-bottom: 14px !important;
+    }
+
+    .print-doc-title h2 {
+        font-size: 13pt !important;
+        font-weight: bold !important;
+        text-transform: uppercase !important;
+        margin: 0 0 4px 0 !important;
+        color: #1e4253 !important;
+    }
+
+    .print-doc-title p {
+        font-size: 9pt !important;
+        color: #333333 !important;
+        margin: 0 !important;
+    }
+
+    .dash-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 10px !important;
+    }
+
+    .dash-table th,
+    .dash-table td {
+        border: 1px solid #333333 !important;
+        padding: 6px 8px !important;
+        font-size: 8.5pt !important;
+        color: #000000 !important;
+        background: transparent !important;
+    }
+
+    .dash-table thead th {
+        background-color: #f1f5f9 !important;
+        font-weight: bold !important;
+        text-align: center !important;
+    }
+
+    .dash-table tfoot td {
+        background-color: #f8fafc !important;
+        font-weight: bold !important;
+    }
+
+    .badge-status {
+        border: none !important;
+        padding: 0 !important;
+        background: transparent !important;
+        color: #000000 !important;
+        font-weight: 600 !important;
+    }
+
+    .print-ttd-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin-top: 24px !important;
+        page-break-inside: avoid !important;
+    }
+
+    .print-ttd-table td {
+        border: none !important;
+        padding: 0 !important;
+        font-size: 9pt !important;
+        text-align: center !important;
+        vertical-align: top !important;
+    }
+
+    .print-ttd-space {
+        height: 60px !important;
+    }
+}

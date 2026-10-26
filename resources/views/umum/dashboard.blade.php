@@ -33,7 +33,12 @@ $title = 'Dashboard';
                 </div>
                 <div class="ov-info">
                     <div class="ov-value">{{ $totalAntrean }}</div>
-                    <div class="ov-label">Menunggu Pemeriksaan</div>
+                    <div class="ov-label">Antrean Pemeriksaan</div>
+                    @if(isset($totalMenungguFisik) && $totalMenungguFisik > 0)
+                        <div style="font-size: 11px; color: #ea580c; font-weight: 700; margin-top: 3px;">
+                            +{{ $totalMenungguFisik }} Menunggu Fisik
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -240,7 +245,19 @@ $title = 'Dashboard';
                         <td>{{ \Illuminate\Support\Str::limit($spj->kegiatan, 40) }}</td>
                         <td style="font-weight: 600; color: #10b981;">Rp {{ number_format($spj->nilai ?? 0, 0, ',', '.') }}</td>
                         <td>
-                            <span class="badge-status-pending">Menunggu Pemeriksaan</span>
+                            @if(!$spj->berkas_fisik_diterima_at)
+                                <span class="badge-status-pending" style="background: rgba(245, 158, 11, 0.15); color: #d97706; border: 1px solid #fde68a;">
+                                    Menunggu Fisik Disetor
+                                </span>
+                            @elseif(!$spj->pemeriksaan_dimulai_at)
+                                <span class="badge-status-pending" style="background: rgba(2, 132, 199, 0.15); color: #0284c7; border: 1px solid #bae6fd;">
+                                    Fisik Diterima (Siap Cek)
+                                </span>
+                            @else
+                                <span class="badge-status-pending" style="background: rgba(16, 185, 129, 0.15); color: #059669; border: 1px solid #a7f3d0;">
+                                    Sedang Diperiksa
+                                </span>
+                            @endif
                         </td>
                         <td>
                             <a href="{{ route('umum.spj.show', $spj->id) }}" 

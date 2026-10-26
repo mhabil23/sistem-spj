@@ -91,6 +91,7 @@ Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->g
 */
 
 use App\Http\Controllers\Umum\DashboardController as UmumDashboardController;
+use App\Http\Controllers\Umum\LaporanController as UmumLaporanController;
 use App\Http\Controllers\Umum\ProfilController as UmumProfilController;
 use App\Http\Controllers\Umum\RiwayatController as UmumRiwayatController;
 use App\Http\Controllers\Umum\SpjController as UmumSpjController;
@@ -103,6 +104,9 @@ Route::middleware(['auth', 'role:umum'])->prefix('umum')->name('umum.')->group(f
     Route::delete('/spj/{id}', [UmumSpjController::class, 'destroy'])->name('spj.destroy');
     Route::get('/spj/{id}/print', [UmumSpjController::class, 'print'])->name('spj.print');
     Route::post('/spj/{id}/verify', [UmumSpjController::class, 'verify'])->name('spj.verify');
+
+    Route::get('/laporan', [UmumLaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/laporan/cetak', [UmumLaporanController::class, 'print'])->name('laporan.print');
 
     Route::get('/riwayat', [UmumRiwayatController::class, 'index'])->name('riwayat.index');
     Route::delete('/riwayat/{id}', [UmumRiwayatController::class, 'destroy'])->name('riwayat.destroy');
