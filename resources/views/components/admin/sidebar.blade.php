@@ -12,58 +12,51 @@
         <a
             href="{{ route('admin.dashboard') }}"
             class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-
-            <span class="nav-icon">⌂</span>
-
+            <span class="nav-icon"><i class="bi bi-grid-1x2-fill"></i></span>
             <span>Dashboard</span>
-
         </a>
-
 
         {{-- DATA SPJ --}}
         <a
             href="{{ route('admin.spj.index') }}"
             class="nav-item {{ request()->routeIs('admin.spj.*') ? 'active' : '' }}">
-
-            <span class="nav-icon">▣</span>
-
+            <span class="nav-icon"><i class="bi bi-folder2-open"></i></span>
             <span>Data SPJ</span>
-
         </a>
-
 
         {{-- PENGGUNA --}}
         <a
             href="{{ route('admin.pengguna.index') }}"
             class="nav-item {{ request()->routeIs('admin.pengguna.*') ? 'active' : '' }}">
-
-            <span class="nav-icon">♙</span>
-
+            <span class="nav-icon"><i class="bi bi-people-fill"></i></span>
             <span>Pengguna</span>
-
         </a>
-
 
         {{-- RIWAYAT --}}
         <a
             href="{{ route('admin.riwayat') }}"
             class="nav-item {{ request()->routeIs('admin.riwayat') ? 'active' : '' }}">
-
-            <span class="nav-icon">↻</span>
-
+            <span class="nav-icon"><i class="bi bi-clock-history"></i></span>
             <span>Riwayat Proses</span>
-
         </a>
 
         {{-- LAPORAN SPJ --}}
         <a
             href="{{ route('admin.laporan.spj') }}"
             class="nav-item {{ request()->routeIs('admin.laporan.spj') ? 'active' : '' }}">
-
-            <span class="nav-icon">▤</span>
-
+            <span class="nav-icon"><i class="bi bi-file-earmark-bar-graph-fill"></i></span>
             <span>Laporan SPJ</span>
+        </a>
+        <div class="nav-label" style="margin-top: 1.5rem;">
+            PENGATURAN
+        </div>
 
+        {{-- PROFIL AKUN --}}
+        <a
+            href="{{ route('admin.profil.index') }}"
+            class="nav-item {{ request()->routeIs('admin.profil.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-person-circle"></i></span>
+            <span>Profil Akun</span>
         </a>
 
     </nav>
@@ -82,7 +75,7 @@
 
         <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form-admin').submit();" class="logout-btn">
             <span style="display: flex; align-items: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <i class="bi bi-box-arrow-right" style="font-size: 16px;"></i>
             </span>
             <span>Keluar</span>
         </a>

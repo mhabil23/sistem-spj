@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Umum;
 
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
+use App\Models\SpjHistory;
 use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SpjController extends Controller
 {
@@ -98,6 +100,14 @@ class SpjController extends Controller
                     'catatan_internal' => $request->catatan_internal,
                     'disetujui_umum_at' => now(),
                 ]);
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id() ?? $spj->user_id,
+                    'aksi' => 'Verifikasi Berkas Bagian Umum',
+                    'status_lama' => 'diajukan',
+                    'status_baru' => 'disetujui_umum',
+                    'keterangan' => 'Kelengkapan berkas fisik diverifikasi Bagian Umum dan diteruskan ke PPK.',
+                ]);
                 WhatsAppService::notifyApproved($spj, 'Umum');
                 $msg = 'SPJ diverifikasi Umum. Harap bawa dokumen fisik ke PPK untuk ditandatangani.';
                 $triggerWa = 'setuju_umum';
@@ -107,6 +117,14 @@ class SpjController extends Controller
                     'catatan_revisi' => $request->catatan_revisi,
                     'berkas_fisik_diterima_at' => null,
                     'pemeriksaan_dimulai_at' => null,
+                ]);
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id() ?? $spj->user_id,
+                    'aksi' => 'Pengembalian Berkas (Revisi Bagian Umum)',
+                    'status_lama' => 'diajukan',
+                    'status_baru' => 'revisi_umum',
+                    'keterangan' => 'Catatan revisi: '.($request->catatan_revisi ?: 'Perlu perbaikan kelengkapan berkas fisik.'),
                 ]);
                 WhatsAppService::notifyRevised($spj, 'Umum', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis untuk direvisi.';
@@ -124,6 +142,14 @@ class SpjController extends Controller
                     'catatan_revisi' => null,
                     'disetujui_ppk_at' => now(),
                 ]);
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id() ?? $spj->user_id,
+                    'aksi' => 'Persetujuan PPK',
+                    'status_lama' => 'disetujui_umum',
+                    'status_baru' => 'disetujui_ppk',
+                    'keterangan' => 'Dokumen SPJ ditandatangani dan disetujui oleh Pejabat Pembuat Komitmen (PPK).',
+                ]);
                 WhatsAppService::notifyApproved($spj, 'PPK');
                 $msg = 'SPJ telah ditandatangani PPK. Harap bawa dokumen fisik ke PPSPM untuk persetujuan selanjutnya.';
                 $triggerWa = 'setuju_ppk';
@@ -131,6 +157,14 @@ class SpjController extends Controller
                 $spj->update([
                     'status' => 'revisi_ppk',
                     'catatan_revisi' => $request->catatan_revisi,
+                ]);
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id() ?? $spj->user_id,
+                    'aksi' => 'Pengembalian Berkas (Revisi PPK)',
+                    'status_lama' => 'disetujui_umum',
+                    'status_baru' => 'revisi_ppk',
+                    'keterangan' => 'Catatan revisi PPK: '.($request->catatan_revisi ?: 'Perlu perbaikan kelengkapan berkas fisik.'),
                 ]);
                 WhatsAppService::notifyRevised($spj, 'PPK', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPK.';
@@ -148,6 +182,14 @@ class SpjController extends Controller
                     'catatan_revisi' => null,
                     'disetujui_ppspm_at' => now(),
                 ]);
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id() ?? $spj->user_id,
+                    'aksi' => 'Penerbitan SPM oleh PPSPM',
+                    'status_lama' => 'disetujui_ppk',
+                    'status_baru' => 'disetujui_ppspm',
+                    'keterangan' => 'Surat Perintah Membayar (SPM) diterbitkan oleh PPSPM. Seluruh proses verifikasi selesai.',
+                ]);
                 WhatsAppService::notifyApproved($spj, 'PPSPM');
                 $msg = 'SPJ telah disetujui PPSPM dan diteruskan ke Bendahara.';
                 $triggerWa = 'setuju_ppspm';
@@ -155,6 +197,14 @@ class SpjController extends Controller
                 $spj->update([
                     'status' => 'revisi_ppspm',
                     'catatan_revisi' => $request->catatan_revisi,
+                ]);
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id() ?? $spj->user_id,
+                    'aksi' => 'Pengembalian Berkas (Revisi PPSPM)',
+                    'status_lama' => 'disetujui_ppk',
+                    'status_baru' => 'revisi_ppspm',
+                    'keterangan' => 'Catatan revisi PPSPM: '.($request->catatan_revisi ?: 'Perlu perbaikan kelengkapan berkas fisik.'),
                 ]);
                 WhatsAppService::notifyRevised($spj, 'PPSPM', $request->catatan_revisi);
                 $msg = 'SPJ dikembalikan ke Teknis karena revisi dari PPSPM.';

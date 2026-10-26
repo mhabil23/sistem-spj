@@ -82,8 +82,12 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                     </div>
 
                     <div>
-                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Alamat Email</label>
+                        <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark); display: flex; justify-content: space-between; align-items: center;">
+                            <span>Alamat Email</span>
+                            <span style="font-size: 11px; font-weight: 600; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px;">Kredensial Login</span>
+                        </label>
                         <input type="email" name="email" required class="dash-input" value="{{ old('email', $user->email) }}">
+                        <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 4px; display: block;">Wajib mengisi kata sandi saat ini jika Anda mengubah email login.</small>
                     </div>
                 </div>
 
@@ -106,13 +110,17 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                 <p style="color: var(--dash-text-muted); font-size: 13px; margin: 0 0 20px 0;">Kosongkan bidang berikut jika Anda tidak bermaksud mengganti kata sandi saat ini.</p>
 
                 <div style="max-width: 460px; margin-bottom: 20px;">
-                    <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Kata Sandi Saat Ini</label>
+                    <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark); display: flex; justify-content: space-between; align-items: center;">
+                        <span>Kata Sandi Saat Ini</span>
+                        <span style="font-size: 11px; font-weight: 600; color: #d97706; background: #fffbeb; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a;">Wajib jika ganti email / sandi</span>
+                    </label>
                     <div style="position: relative;">
                         <input type="password" name="current_password" class="dash-input" autocomplete="current-password" placeholder="Masukkan kata sandi lama..." style="padding-right: 42px;">
                         <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--dash-text-muted); cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
                             <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
                         </button>
                     </div>
+                    <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 4px; display: block;">Diperlukan untuk konfirmasi keamanan saat Anda mengganti email atau password baru.</small>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 24px;">

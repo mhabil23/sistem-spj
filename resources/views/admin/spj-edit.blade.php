@@ -70,7 +70,20 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="spj-form-group">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
+                <div>
+                    <label class="spj-label">Nomor SPJ</label>
+                    <input type="text" name="nomor_spj" id="nomor_spj_input" required class="spj-input" value="{{ old('nomor_spj', $spj->nomor_spj) }}" placeholder="Contoh: SPJ-2026-001">
+                    @error('nomor_spj') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label class="spj-label">Nilai Nominal (Rp)</label>
+                    <input type="number" name="nilai" id="nilai_input" required class="spj-input" min="0" value="{{ old('nilai', intval($spj->nilai)) }}">
+                    @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;" class="spj-form-group">
                 <div>
                     <label class="spj-label">Uraian Kegiatan</label>
                     <input type="text" name="kegiatan" required class="spj-input" value="{{ old('kegiatan', $spj->kegiatan) }}">
@@ -78,16 +91,11 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
+            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;" class="spj-form-group">
                 <div>
                     <label class="spj-label">Tanggal Kegiatan</label>
                     <input type="date" name="tanggal" required class="spj-input" value="{{ old('tanggal', $spj->tanggal->format('Y-m-d')) }}">
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
-                </div>
-                <div>
-                    <label class="spj-label">Nilai Nominal (Rp)</label>
-                    <input type="number" name="nilai" required class="spj-input" min="0" value="{{ old('nilai', intval($spj->nilai)) }}">
-                    @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
             </div>
 
@@ -208,6 +216,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             return;
         }
 
+        const nomorSpj = document.querySelector('[name="nomor_spj"]')?.value.trim() || '—';
         const kegiatan = document.querySelector('[name="kegiatan"]')?.value.trim() || '—';
         const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
         const nilai = document.querySelector('[name="nilai"]')?.value || '0';
@@ -343,7 +352,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             + '        <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
             + '    <\/div>\n'
             + '    <div class="meta-info">\n'
-            + '        <div>Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '        <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
             + '    <\/div>\n'
             + '    <div class="table-responsive">\n'
             + '        <table class="cetak-table">\n'

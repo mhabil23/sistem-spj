@@ -11,13 +11,27 @@ class RiwayatController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Spj::with('user')
-            ->whereIn('status', ['revisi_bendahara', 'disetujui_ppspm', 'revisi_bendahara', 'selesai']);
+        $baseQuery = Spj::with('user')
+            ->whereIn('status', ['revisi_bendahara', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
+
+        $totalRiwayat = (clone $baseQuery)->count();
+        $totalDanaCair = (clone $baseQuery)->where('status', 'selesai')->sum('nilai');
+        $totalSelesai = (clone $baseQuery)->where('status', 'selesai')->count();
+        $totalRevisi = (clone $baseQuery)->where('status', 'revisi_bendahara')->count();
+
+        $query = clone $baseQuery;
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('kegiatan', 'like', "%{$search}%")
+                    ->orWhere('nomor_spj', 'like', "%{$search}%")
+                    ->orWhere('nomor_spm', 'like', "%{$search}%")
+                    ->orWhere('bukti_transfer', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($qu) use ($search) {
                         $qu->where('name', 'like', "%{$search}%");
                     });
@@ -30,15 +44,21 @@ class RiwayatController extends Controller
 
         $riwayatSpjs = $query->orderBy('updated_at', 'desc')->get();
 
-        return view('bendahara.riwayat.index', compact('riwayatSpjs'));
+        return view('bendahara.riwayat.index', compact(
+            'riwayatSpjs',
+            'totalRiwayat',
+            'totalDanaCair',
+            'totalSelesai',
+            'totalRevisi'
+        ));
     }
 
     public function destroy($id)
     {
         $spj = Spj::findOrFail($id);
 
-        if ($spj->status === 'disetujui_ppspm') {
-            return back()->with('error', 'SPJ yang masih dalam antrean tidak dapat dihapus.');
+        if (in_array($spj->status, ['disetujui_ppspm', 'menunggu_otp_kpa'])) {
+            return back()->with('error', 'SPJ yang masih dalam proses tidak dapat dihapus.');
         }
 
         $spj->delete();

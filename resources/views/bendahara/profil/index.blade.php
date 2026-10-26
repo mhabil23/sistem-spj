@@ -1,238 +1,404 @@
 @extends('layouts.bendahara')
 
 @php
-$title = 'Profil Akun';
-$subtitle = 'Perbarui data profil dan kata sandi Anda.';
+$title = 'Pengaturan Profil Akun';
 @endphp
 
-@section('content')
 @push('styles')
     @vite(['resources/css/bendahara/profil.css'])
-    <style>
-        .profil-panel {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 24px;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .profil-panel-header {
-            padding: 24px;
-            border-bottom: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .profil-panel-header h2 {
-            font-size: 18px;
-            color: #0f172a;
-            margin: 0 0 4px 0;
-            font-weight: 700;
-        }
-
-        .profil-panel-header p {
-            color: #64748b;
-            font-size: 13px;
-            margin: 0;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #334155;
-            font-size: 13px;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background-color: #ffffff;
-            color: #0f172a;
-            font-size: 14px;
-            font-family: inherit;
-            transition: all 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .btn-save {
-            height: 46px;
-            padding: 0 24px;
-            font-size: 14px;
-            font-weight: 600;
-            background-color: #10b981;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: inherit;
-        }
-
-        .btn-save:hover {
-            background-color: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(16, 185, 129, 0.25);
-        }
-
-        .section-divider {
-            border: 0;
-            border-top: 1px solid #e2e8f0;
-            margin: 32px 0;
-        }
-    </style>
 @endpush
 
-<div style="padding: 32px 40px; box-sizing: border-box; max-width: 100%;">
-    <div class="page-heading" style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;">
-        <div>
-            <h2 style="font-size: 24px; font-weight: 700; color: #0f172a; margin-bottom: 4px;">Pengaturan Profil Bendahara</h2>
-            <p style="color: #64748b; font-size: 14px; margin: 0;">Pastikan data Anda selalu yang paling mutakhir.</p>
+@section('content')
+<div class="bnd-profil-wrapper">
+
+    <!-- BREADCRUMB & PAGE HEADER -->
+    <div class="bnd-header-wrapper">
+        <div class="bnd-breadcrumb">
+            <a href="{{ route('bendahara.dashboard') }}">
+                <ion-icon name="home-outline"></ion-icon> Dashboard
+            </a>
+            <ion-icon name="chevron-forward-outline"></ion-icon>
+            <span>Pengaturan Profil</span>
+        </div>
+
+        <div class="bnd-page-header">
+            <div class="bnd-header-title-box">
+                <h1>
+                    Pengaturan Profil &amp; Akun
+                </h1>
+                <p>
+                    Kelola data identitas, kontak WhatsApp penerima notifikasi, dan kredensial login akun Anda.
+                </p>
+            </div>
         </div>
     </div>
 
     @if ($errors->any())
-        <div style="background-color: #fef2f2; color: #991b1b; padding: 16px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 24px; width: 100%;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 600;">
-                <ion-icon name="warning" style="font-size: 20px; color: #ef4444;"></ion-icon> Terdapat beberapa kesalahan:
+        <div class="bnd-callout warning" style="margin-bottom: 24px; border-left: 4px solid #f59e0b;">
+            <ion-icon name="alert-circle" style="font-size: 24px; color: #d97706;"></ion-icon>
+            <div>
+                <strong style="color: #92400e; font-size: 14px; display: block; margin-bottom: 4px;">Mohon periksa kembali formulir Anda:</strong>
+                <ul style="margin: 0; padding-left: 20px; font-size: 13px; color: #b45309;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <ul style="margin: 0; padding-left: 32px; font-size: 13px;">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
         </div>
     @endif
 
-    <div class="profil-panel">
-        <div class="profil-panel-header">
-            <h2>Data Profil & Akun</h2>
-            <p>Perbarui informasi identitas dan keamanan akun Anda.</p>
+    <!-- MAIN 2-COLUMN GRID -->
+    <div class="bnd-profil-grid">
+
+        <!-- LEFT SIDEBAR: PROFILE SUMMARY CARD -->
+        <div class="bnd-summary-card">
+            <div class="bnd-summary-banner"></div>
+            <div class="bnd-summary-body">
+                <div class="bnd-avatar-wrapper">
+                    <div class="bnd-avatar-ring">
+                        <img id="avatarPreview" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="bnd-avatar-img">
+                    </div>
+                    <label for="avatarInput" class="bnd-avatar-camera-btn" title="Unggah Foto Baru">
+                        <ion-icon name="camera" style="font-size: 17px;"></ion-icon>
+                    </label>
+                </div>
+
+                <h3 class="bnd-summary-name">{{ $user->name }}</h3>
+                <div class="bnd-role-pill">
+                    <span class="bnd-pulse-dot"></span>
+                    <span>Bendahara Pengeluaran</span>
+                </div>
+
+                @if($user->avatar)
+                <div style="margin-bottom: 16px;">
+                    <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #e11d48; cursor: pointer; padding: 4px 10px; border-radius: 6px; border: 1px solid #fecdd3; background: #fff1f2; transition: all 0.15s;">
+                        <input type="checkbox" name="remove_avatar" form="formProfile" value="1" onchange="toggleRemoveAvatar(this)">
+                        <span>Hapus Foto Kustom</span>
+                    </label>
+                </div>
+                @endif
+
+                <div class="bnd-summary-meta-list">
+                    <div class="bnd-summary-meta-item">
+                        <div class="bnd-summary-meta-icon">
+                            <ion-icon name="mail-outline"></ion-icon>
+                        </div>
+                        <div class="bnd-summary-meta-content">
+                            <div class="bnd-summary-meta-label">Email Login</div>
+                            <div class="bnd-summary-meta-val" title="{{ $user->email }}">{{ $user->email }}</div>
+                        </div>
+                    </div>
+
+                    <div class="bnd-summary-meta-item">
+                        <div class="bnd-summary-meta-icon" style="color: #059669; background: #ecfdf5;">
+                            <ion-icon name="logo-whatsapp"></ion-icon>
+                        </div>
+                        <div class="bnd-summary-meta-content">
+                            <div class="bnd-summary-meta-label">Nomor WhatsApp</div>
+                            <div class="bnd-summary-meta-val">
+                                @if($user->no_wa)
+                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $user->no_wa) }}" target="_blank" style="color: #059669; text-decoration: none; display: flex; align-items: center; gap: 4px;">
+                                        {{ $user->no_wa }} <ion-icon name="open-outline" style="font-size: 12px;"></ion-icon>
+                                    </a>
+                                @else
+                                    <span style="color: #94a3b8; font-style: italic;">Belum diatur</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bnd-summary-meta-item">
+                        <div class="bnd-summary-meta-icon">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </div>
+                        <div class="bnd-summary-meta-content">
+                            <div class="bnd-summary-meta-label">Bergabung Sejak</div>
+                            <div class="bnd-summary-meta-val">{{ $user->created_at ? $user->created_at->format('d M Y') : 'Aktif' }}</div>
+                        </div>
+                    </div>
+
+                    <div class="bnd-summary-meta-item">
+                        <div class="bnd-summary-meta-icon" style="color: #059669; background: #ecfdf5;">
+                            <ion-icon name="shield-checkmark-outline"></ion-icon>
+                        </div>
+                        <div class="bnd-summary-meta-content">
+                            <div class="bnd-summary-meta-label">Status Akun</div>
+                            <div class="bnd-summary-meta-val" style="color: #059669;">
+                                Terverifikasi &amp; Aktif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bnd-summary-security-box">
+                    <ion-icon name="shield-checkmark"></ion-icon>
+                    <p>
+                        <strong>Keamanan Akun:</strong> Alamat email Anda merupakan username login resmi. Pastikan selalu menggunakan email yang valid dan aktif.
+                    </p>
+                </div>
+            </div>
         </div>
-        <div style="padding: 32px 24px;">
-            <form action="{{ route('bendahara.profil.update') }}" method="POST" enctype="multipart/form-data">
+
+        <!-- RIGHT COLUMN: EDIT FORM -->
+        <div>
+            <form id="formProfile" action="{{ route('bendahara.profil.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
-                <!-- Avatar / Foto Profil Section -->
-                <div class="avatar-upload-container" style="display: flex; align-items: center; gap: 24px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap;">
-                    <div style="position: relative;">
-                        <div class="profile-avatar-preview-ring" style="width: 88px; height: 88px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, #0284c7, #10b981); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
-                            <img id="avatarPreview" src="{{ $user->avatar_url }}" alt="{{ $user->name }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: #ffffff; display: block;">
+                <!-- Hidden file input for avatar -->
+                <input type="file" id="avatarInput" name="avatar" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" onchange="previewAvatar(event)">
+
+                <!-- CARD 1: INFORMASI IDENTITAS -->
+                <div class="bnd-form-card">
+                    <div class="bnd-form-card-header">
+                        <div class="bnd-card-header-icon blue">
+                            <ion-icon name="person-outline"></ion-icon>
                         </div>
-                        <label for="avatarInput" title="Unggah Foto Baru" style="position: absolute; bottom: 0; right: 0; width: 30px; height: 30px; border-radius: 50%; background: #10b981; color: #ffffff; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); transition: transform 0.15s ease;">
-                            <ion-icon name="camera" style="font-size: 16px;"></ion-icon>
-                        </label>
+                        <div>
+                            <h2>Informasi Identitas &amp; Kontak</h2>
+                            <p>Data diri bendahara dan kontak untuk integrasi notifikasi pencairan dana.</p>
+                        </div>
                     </div>
+                    <div class="bnd-form-card-body">
+                        <div class="bnd-form-row-2">
+                            <!-- NAMA LENGKAP -->
+                            <div class="bnd-field-group">
+                                <label class="bnd-field-label" for="input_name">
+                                    <span>Nama Lengkap <span style="color: #e11d48;">*</span></span>
+                                </label>
+                                <div class="bnd-input-wrapper">
+                                    <ion-icon name="person-outline" class="bnd-input-icon"></ion-icon>
+                                    <input 
+                                        type="text" 
+                                        id="input_name" 
+                                        name="name" 
+                                        class="bnd-input @error('name') has-error @enderror" 
+                                        value="{{ old('name', $user->name) }}" 
+                                        required 
+                                        placeholder="Masukkan nama lengkap Anda">
+                                </div>
+                                @error('name')
+                                    <div class="bnd-error-hint">
+                                        <ion-icon name="warning-outline"></ion-icon> {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
 
-                    <div style="flex: 1; min-width: 240px;">
-                        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: #0f172a;">Foto Profil</h4>
-                        <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b; line-height: 1.4;">
-                            Format gambar yang didukung: JPG, JPEG, PNG, atau WEBP. Maksimal ukuran file 2 MB.
-                        </p>
-                        
-                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                            <input type="file" id="avatarInput" name="avatar" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" onchange="previewAvatar(event)">
-                            <button type="button" onclick="document.getElementById('avatarInput').click()" style="height: 36px; padding: 0 16px; font-size: 13px; font-weight: 600; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                                <ion-icon name="cloud-upload-outline" style="font-size: 16px;"></ion-icon> Pilih Foto Baru
-                            </button>
+                            <!-- NOMOR WHATSAPP -->
+                            <div class="bnd-field-group">
+                                <label class="bnd-field-label" for="input_no_wa">
+                                    <span>Nomor WhatsApp (Aktif)</span>
+                                    <span class="bnd-field-badge">Notifikasi Otomatis</span>
+                                </label>
+                                <div class="bnd-input-wrapper">
+                                    <ion-icon name="logo-whatsapp" class="bnd-input-icon" style="color: #059669;"></ion-icon>
+                                    <input 
+                                        type="text" 
+                                        id="input_no_wa" 
+                                        name="no_wa" 
+                                        class="bnd-input @error('no_wa') has-error @enderror" 
+                                        value="{{ old('no_wa', $user->no_wa) }}" 
+                                        placeholder="Contoh: 081234567890">
+                                </div>
+                                <div class="bnd-helper-text">
+                                    Digunakan saat mengirim atau menerima pesan konfirmasi verifikasi SPJ.
+                                </div>
+                                @error('no_wa')
+                                    <div class="bnd-error-hint">
+                                        <ion-icon name="warning-outline"></ion-icon> {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+                        </div>
 
-                            @if($user->avatar)
-                            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #ef4444; cursor: pointer; padding: 6px 12px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; transition: 0.2s;">
-                                <input type="checkbox" name="remove_avatar" value="1" onchange="toggleRemoveAvatar(this)">
-                                <span>Hapus Foto Kustom</span>
+                        <!-- PERAN & HAK AKSES (READONLY) -->
+                        <div class="bnd-field-group" style="margin-bottom: 0;">
+                            <label class="bnd-field-label">
+                                <span>Peran &amp; Hak Akses</span>
+                                <span class="bnd-field-badge">Ditentukan Administrator</span>
                             </label>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="form-group">
-                        <label class="form-label">Nama Lengkap</label>
-                        <input type="text" name="name" required class="form-input" value="{{ old('name', $user->name) }}">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Alamat Email</label>
-                        <input type="email" name="email" required class="form-input" value="{{ old('email', $user->email) }}">
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 16px;">
-                    <div class="form-group">
-                        <label class="form-label">Nomor WhatsApp (Aktif)</label>
-                        <input type="text" name="no_wa" class="form-input" value="{{ old('no_wa', $user->no_wa) }}" placeholder="Contoh: 081234567890">
-                        <small style="color: #64748b; font-size: 11px; margin-top: 4px; display: block;">Nomor WhatsApp untuk menerima notifikasi sistem.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Peran & Hak Akses</label>
-                        <input type="text" class="form-input" value="Bendahara Pengeluaran" disabled style="background-color: #f8fafc; color: #64748b;">
-                    </div>
-                </div>
-
-                <hr class="section-divider">
-                
-                <h3 style="margin: 0 0 4px 0; color: #0f172a; font-size: 16px; font-weight: 700;">Keamanan & Kata Sandi</h3>
-                <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">Kosongkan bidang ini jika Anda tidak ingin mengubah kata sandi Anda saat ini.</p>
-
-                <div class="form-group" style="max-width: 50%;">
-                    <label class="form-label">Kata Sandi Saat Ini</label>
-                    <div style="position: relative;">
-                        <input type="password" name="current_password" class="form-input" autocomplete="current-password" placeholder="Masukkan kata sandi lama..." style="padding-right: 40px;">
-                        <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
-                            <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
-                        </button>
-                    </div>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 12px;">
-                    <div class="form-group">
-                        <label class="form-label">Kata Sandi Baru</label>
-                        <div style="position: relative;">
-                            <input type="password" name="password" class="form-input" autocomplete="new-password" placeholder="Minimal 8 karakter..." style="padding-right: 40px;">
-                            <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
-                                <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Konfirmasi Kata Sandi Baru</label>
-                        <div style="position: relative;">
-                            <input type="password" name="password_confirmation" class="form-input" autocomplete="new-password" placeholder="Ketik ulang kata sandi baru..." style="padding-right: 40px;">
-                            <button type="button" class="btn-toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #64748b; cursor: pointer; display: flex; padding: 4px;" title="Tampilkan kata sandi">
-                                <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
-                            </button>
+                            <div class="bnd-input-wrapper">
+                                <ion-icon name="shield-outline" class="bnd-input-icon"></ion-icon>
+                                <input 
+                                    type="text" 
+                                    class="bnd-input" 
+                                    value="Bendahara Pengeluaran (Maker BRI QLOLA &amp; Verifikator Pencairan)" 
+                                    disabled>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div style="margin-top: 32px; display: flex; justify-content: flex-end;">
-                    <button type="submit" class="btn-save">
-                        <ion-icon name="save-outline" style="font-size: 18px;"></ion-icon> Simpan Perubahan
+                <!-- CARD 2: KREDENSIAL LOGIN & ALAMAT EMAIL -->
+                <div class="bnd-form-card">
+                    <div class="bnd-form-card-header">
+                        <div class="bnd-card-header-icon emerald">
+                            <ion-icon name="mail-unread-outline"></ion-icon>
+                        </div>
+                        <div>
+                            <h2>Kredensial Login &amp; Alamat Email</h2>
+                            <p>Alamat email yang digunakan untuk masuk ke Sistem Informasi Penyelesaian Tagihan (SPJ).</p>
+                        </div>
+                    </div>
+                    <div class="bnd-form-card-body">
+                        
+                        <!-- SECURITY CALLOUT NOTICE -->
+                        <div class="bnd-callout info">
+                            <ion-icon name="information-circle"></ion-icon>
+                            <div>
+                                <strong>Ketentuan Penggantian Alamat Email:</strong>
+                                <p style="margin: 4px 0 0 0;">
+                                    Email adalah identitas login utama Anda. Jika Anda mengubah alamat email di bawah ini, <strong>wajib mengisi Kata Sandi Saat Ini</strong> pada bagian Keamanan Akun demi memvalidasi bahwa perubahan dilakukan oleh pemilik akun sah.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bnd-field-group" style="margin-bottom: 0;">
+                            <label class="bnd-field-label" for="input_email">
+                                <span>Alamat Email Login <span style="color: #e11d48;">*</span></span>
+                                <span class="bnd-field-badge highlight">Kredensial Masuk</span>
+                            </label>
+                            <div class="bnd-input-wrapper">
+                                <ion-icon name="mail-outline" class="bnd-input-icon"></ion-icon>
+                                <input 
+                                    type="email" 
+                                    id="input_email" 
+                                    name="email" 
+                                    class="bnd-input @error('email') has-error @enderror" 
+                                    value="{{ old('email', $user->email) }}" 
+                                    required 
+                                    placeholder="nama@email.com">
+                            </div>
+                            <div class="bnd-helper-text">
+                                Email saat ini: <strong style="color: #0f172a;">{{ $user->email }}</strong>. Gunakan email dinas atau pribadi yang selalu dapat diakses.
+                            </div>
+                            @error('email')
+                                <div class="bnd-error-hint">
+                                    <ion-icon name="warning-outline"></ion-icon> {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- CARD 3: KEAMANAN & KATA SANDI -->
+                <div class="bnd-form-card">
+                    <div class="bnd-form-card-header">
+                        <div class="bnd-card-header-icon amber">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                        </div>
+                        <div>
+                            <h2>Keamanan &amp; Kata Sandi Akun</h2>
+                            <p>Konfirmasi sandi saat ini dan ubah kata sandi akun secara berkala.</p>
+                        </div>
+                    </div>
+                    <div class="bnd-form-card-body">
+                        
+                        <!-- KATA SANDI SAAT INI (PENTING) -->
+                        <div class="bnd-field-group" style="max-width: 520px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px dashed #e2e8f0;">
+                            <label class="bnd-field-label" for="input_current_password">
+                                <span>Kata Sandi Saat Ini</span>
+                                <span class="bnd-field-badge" style="color: #d97706; background: #fffbeb; border: 1px solid #fde68a;">Wajib jika ganti email / sandi</span>
+                            </label>
+                            <div class="bnd-input-wrapper">
+                                <ion-icon name="key-outline" class="bnd-input-icon"></ion-icon>
+                                <input 
+                                    type="password" 
+                                    id="input_current_password" 
+                                    name="current_password" 
+                                    class="bnd-input @error('current_password') has-error @enderror" 
+                                    autocomplete="current-password" 
+                                    placeholder="Masukkan kata sandi lama Anda untuk konfirmasi..." 
+                                    style="padding-right: 44px;">
+                                <button type="button" class="bnd-password-toggle-btn" title="Lihat kata sandi">
+                                    <ion-icon name="eye-outline" style="font-size: 19px;"></ion-icon>
+                                </button>
+                            </div>
+                            <div class="bnd-helper-text">
+                                Diperlukan untuk verifikasi keamanan saat Anda mengganti alamat email login atau ingin membuat sandi baru.
+                            </div>
+                            @error('current_password')
+                                <div class="bnd-error-hint">
+                                    <ion-icon name="warning-outline"></ion-icon> {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                        <!-- KATA SANDI BARU & KONFIRMASI -->
+                        <div class="bnd-form-row-2" style="margin-bottom: 0;">
+                            <div class="bnd-field-group" style="margin-bottom: 0;">
+                                <label class="bnd-field-label" for="input_new_password">
+                                    <span>Kata Sandi Baru</span>
+                                    <span class="bnd-field-badge">Opsional</span>
+                                </label>
+                                <div class="bnd-input-wrapper">
+                                    <ion-icon name="lock-closed-outline" class="bnd-input-icon"></ion-icon>
+                                    <input 
+                                        type="password" 
+                                        id="input_new_password" 
+                                        name="password" 
+                                        class="bnd-input @error('password') has-error @enderror" 
+                                        autocomplete="new-password" 
+                                        placeholder="Minimal 8 karakter..." 
+                                        style="padding-right: 44px;">
+                                    <button type="button" class="bnd-password-toggle-btn" title="Lihat kata sandi">
+                                        <ion-icon name="eye-outline" style="font-size: 19px;"></ion-icon>
+                                    </button>
+                                </div>
+                                <div class="bnd-helper-text">
+                                    Kosongkan jika tidak ingin mengubah kata sandi Anda.
+                                </div>
+                                @error('password')
+                                    <div class="bnd-error-hint">
+                                        <ion-icon name="warning-outline"></ion-icon> {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="bnd-field-group" style="margin-bottom: 0;">
+                                <label class="bnd-field-label" for="input_password_confirmation">
+                                    <span>Konfirmasi Kata Sandi Baru</span>
+                                </label>
+                                <div class="bnd-input-wrapper">
+                                    <ion-icon name="checkmark-done-outline" class="bnd-input-icon"></ion-icon>
+                                    <input 
+                                        type="password" 
+                                        id="input_password_confirmation" 
+                                        name="password_confirmation" 
+                                        class="bnd-input" 
+                                        autocomplete="new-password" 
+                                        placeholder="Ketik ulang kata sandi baru..." 
+                                        style="padding-right: 44px;">
+                                    <button type="button" class="bnd-password-toggle-btn" title="Lihat kata sandi">
+                                        <ion-icon name="eye-outline" style="font-size: 19px;"></ion-icon>
+                                    </button>
+                                </div>
+                                <div class="bnd-helper-text">
+                                    Pastikan karakter sama persis dengan kata sandi baru di samping.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- ACTIONS BAR -->
+                <div class="bnd-actions-bar">
+                    <a href="{{ route('bendahara.dashboard') }}" class="bnd-btn bnd-btn-secondary">
+                        <ion-icon name="arrow-back-outline"></ion-icon>
+                        <span>Kembali ke Dashboard</span>
+                    </a>
+                    <button type="submit" class="bnd-btn bnd-btn-primary">
+                        <ion-icon name="save-outline" style="font-size: 18px;"></ion-icon>
+                        <span>Simpan Perubahan Profil</span>
                     </button>
                 </div>
             </form>
         </div>
+
     </div>
+
 </div>
 @endsection
 
@@ -260,7 +426,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const toggleButtons = document.querySelectorAll('.btn-toggle-password');
+        const toggleButtons = document.querySelectorAll('.bnd-password-toggle-btn');
         
         toggleButtons.forEach(button => {
             button.addEventListener('click', function() {

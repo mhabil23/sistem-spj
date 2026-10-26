@@ -54,6 +54,7 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                         <option value="disetujui_umum" {{ request('status') === 'disetujui_umum' ? 'selected' : '' }}>Disetujui Umum</option>
                         <option value="disetujui_ppk" {{ request('status') === 'disetujui_ppk' ? 'selected' : '' }}>Disetujui PPK</option>
                         <option value="disetujui_ppspm" {{ request('status') === 'disetujui_ppspm' ? 'selected' : '' }}>Disetujui PPSPM</option>
+                        <option value="menunggu_otp_kpa" {{ request('status') === 'menunggu_otp_kpa' ? 'selected' : '' }}>Menunggu OTP QLOLA KPA</option>
                         <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Selesai</option>
                         <option value="dikembalikan" {{ request('status') === 'dikembalikan' ? 'selected' : '' }}>Dikembalikan</option>
                     </select>
@@ -76,6 +77,7 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                 <thead>
                     <tr>
                         <th style="width: 55px; text-align: center;">No</th>
+                        <th>Nomor SPJ</th>
                         <th>Uraian Kegiatan</th>
                         <th>Tanggal Kegiatan</th>
                         <th>Nilai Anggaran</th>
@@ -88,6 +90,11 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                     <tr>
                         <td style="text-align: center; font-weight: 700; color: var(--dash-text-muted);">
                             {{ $loop->iteration }}
+                        </td>
+                        <td style="white-space: nowrap; font-weight: 700;">
+                            <span style="display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; background: var(--dash-input-bg); border: 1px solid var(--dash-border); color: var(--dash-text-dark);">
+                                {{ $spj->nomor_spj ?: '-' }}
+                            </span>
                         </td>
                         <td style="max-width: 300px; font-weight: 600;" title="{{ $spj->kegiatan }}">
                             <div style="font-size: 13.5px; color: var(--dash-text-dark); line-height: 1.4;">{{ $spj->kegiatan }}</div>
@@ -108,12 +115,12 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                             @php
                                 $badgeClass = 'dash-badge-draft';
                                 if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
-                                elseif(in_array($spj->status, ['diajukan'])) $badgeClass = 'dash-badge-cyan';
+                                elseif(in_array($spj->status, ['diajukan', 'menunggu_otp_kpa'])) $badgeClass = 'dash-badge-cyan';
                                 elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
                             @endphp
                             <span class="dash-badge {{ $badgeClass }}">
                                 <span class="badge-dot"></span>
-                                {{ str_replace('_', ' ', strtoupper($spj->status)) }}
+                                {{ $spj->status === 'menunggu_otp_kpa' ? 'MENUNGGU OTP QLOLA KPA' : str_replace('_', ' ', strtoupper($spj->status)) }}
                             </span>
                         </td>
                         <td style="text-align: right; padding-right: 24px; white-space: nowrap;">
@@ -142,7 +149,7 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" style="text-align: center; padding: 56px 24px; color: var(--dash-text-muted);">
+                        <td colspan="7" style="text-align: center; padding: 56px 24px; color: var(--dash-text-muted);">
                             <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                                 <ion-icon name="document-text-outline" style="font-size: 46px; opacity: 0.6;"></ion-icon>
                                 <span style="font-size: 14px; font-weight: 500;">Tidak ada dokumen pengajuan SPJ yang sesuai.</span>

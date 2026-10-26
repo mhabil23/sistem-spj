@@ -135,10 +135,15 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             </div>
             <!-- DYNAMIC DROPDOWNS END -->
 
-            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-bottom: 1.5rem;" class="spj-form-group">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;" class="spj-form-group">
+                <div>
+                    <label class="spj-label">Nomor SPJ</label>
+                    <input type="text" name="nomor_spj" id="nomor_spj_input" class="spj-input" value="{{ old('nomor_spj') }}" placeholder="Contoh: SPJ-2026-001" required>
+                    @error('nomor_spj') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
                 <div>
                     <label class="spj-label">Nilai (Rp)</label>
-                    <input type="number" name="nilai" class="spj-input" value="{{ old('nilai') }}" placeholder="Contoh: 1500000" min="0" step="0.01" required>
+                    <input type="number" name="nilai" id="nilai_input" class="spj-input" value="{{ old('nilai') }}" placeholder="Contoh: 1500000" min="0" step="0.01" required>
                     @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -627,6 +632,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             return;
         }
 
+        const nomorSpj = document.querySelector('[name="nomor_spj"]')?.value.trim() || '—';
         const kegiatan = document.querySelector('[name="kegiatan"]')?.value.trim() || '—';
         const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
         const nilai = document.querySelector('[name="nilai"]')?.value || '0';
@@ -760,7 +766,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             + '        <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
             + '    <\/div>\n'
             + '    <div class="meta-info">\n'
-            + '        <div>Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '        <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
             + '        <div>Belanja: <strong>' + namaBelanja + ' (' + jenisBelanja + ')<\/strong><\/div>\n'
             + '    <\/div>\n'
             + '    <div class="table-responsive">\n'

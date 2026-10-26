@@ -118,6 +118,8 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                                     PPSPM
                                 @elseif($spj->status == 'disetujui_ppspm')
                                     Bendahara
+                                @elseif($spj->status == 'menunggu_otp_kpa')
+                                    KPA (OTP QLOLA)
                                 @elseif($spj->status == 'selesai')
                                     Arsip
                                 @else
@@ -129,12 +131,12 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                                 @php
                                     $badgeClass = 'dash-badge-draft';
                                     if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
-                                    elseif(in_array($spj->status, ['diajukan'])) $badgeClass = 'dash-badge-cyan';
+                                    elseif(in_array($spj->status, ['diajukan', 'menunggu_otp_kpa'])) $badgeClass = 'dash-badge-cyan';
                                     elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
                                 @endphp
                                 <span class="dash-badge {{ $badgeClass }}">
                                     <span class="badge-dot"></span>
-                                    {{ str_replace('_', ' ', strtoupper($spj->status)) }}
+                                    {{ $spj->status === 'menunggu_otp_kpa' ? 'MENUNGGU OTP QLOLA KPA' : str_replace('_', ' ', strtoupper($spj->status)) }}
                                 </span>
                             </td>
                         </tr>
@@ -166,7 +168,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
         <div class="spj-panel-body" style="padding: 20px;">
             @php
                 $needAttention = $recentSpjs->filter(function($spj) {
-                    return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm']);
+                    return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa']);
                 });
             @endphp
 
@@ -180,6 +182,16 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                             <strong style="display: block; font-size: 13px; color: var(--dash-peach-text); margin-bottom: 4px;">{{ Str::limit($spj->kegiatan, 45) }} (Perlu Revisi)</strong>
                             <p style="font-size: 12px; color: var(--dash-text-muted); margin-bottom: 8px; line-height: 1.4;">{{ Str::limit($spj->catatan_revisi, 60, '...') }}</p>
                             <a href="{{ route('teknis.spj.edit', $spj->id) }}" style="font-size: 12px; font-weight: 700; color: var(--dash-peach-text); text-decoration: none;">Perbaiki sekarang &rarr;</a>
+                        </div>
+                    </div>
+                @elseif($spj->status === 'menunggu_otp_kpa')
+                    <div style="display: flex; gap: 14px; padding: 14px; background: #eff6ff; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #2563eb; border: 1px solid #bfdbfe;">
+                        <div style="color: #2563eb; font-size: 20px;">
+                            <ion-icon name="key-outline"></ion-icon>
+                        </div>
+                        <div style="flex: 1;">
+                            <strong style="display: block; font-size: 13px; color: #1e40af; margin-bottom: 4px;">{{ Str::limit($spj->kegiatan, 45) }}</strong>
+                            <p style="font-size: 12px; color: #1e3a8a; margin: 0; line-height: 1.4;">Tahap: MENUNGGU OTP QLOLA KPA (Otorisasi Pembayaran).</p>
                         </div>
                     </div>
                 @elseif(in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm']))
@@ -219,10 +231,10 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
         <div class="alur-stepper-track">
             
             @php
-                $isUmum = in_array($topSpj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai']);
-                $isPpk = in_array($topSpj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai']);
-                $isPpspm = in_array($topSpj->status, ['disetujui_ppk', 'disetujui_ppspm', 'selesai']);
-                $isBendahara = in_array($topSpj->status, ['disetujui_ppspm', 'selesai']);
+                $isUmum = in_array($topSpj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
+                $isPpk = in_array($topSpj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
+                $isPpspm = in_array($topSpj->status, ['disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
+                $isBendahara = in_array($topSpj->status, ['disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
                 $isDone = $topSpj->status == 'selesai';
             @endphp
             

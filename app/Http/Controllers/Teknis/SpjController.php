@@ -17,7 +17,10 @@ class SpjController extends Controller
         $query = Spj::where('user_id', $userId);
 
         if ($request->filled('search')) {
-            $query->where('kegiatan', 'like', '%'.$request->search.'%');
+            $query->where(function ($q) use ($request) {
+                $q->where('kegiatan', 'like', '%'.$request->search.'%')
+                    ->orWhere('nomor_spj', 'like', '%'.$request->search.'%');
+            });
         }
 
         if ($request->filled('status')) {
@@ -37,12 +40,16 @@ class SpjController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nomor_spj' => 'required|string|max:100|unique:spjs,nomor_spj',
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
+        ], [
+            'nomor_spj.required' => 'Nomor SPJ wajib diisi.',
+            'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
         ]);
 
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
@@ -64,6 +71,7 @@ class SpjController extends Controller
 
         $spj = Spj::create([
             'user_id' => Auth::id() ?? 1,
+            'nomor_spj' => $request->filled('nomor_spj') ? $request->nomor_spj : 'SPJ-'.date('YmdHis').'-'.rand(100, 999),
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,
@@ -119,12 +127,16 @@ class SpjController extends Controller
         }
 
         $request->validate([
+            'nomor_spj' => 'required|string|max:100|unique:spjs,nomor_spj,'.$spj->id,
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
+        ], [
+            'nomor_spj.required' => 'Nomor SPJ wajib diisi.',
+            'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
         ]);
 
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
@@ -147,6 +159,7 @@ class SpjController extends Controller
 
         $wasDraftOrRevisi = $spj->status !== 'diajukan';
         $spj->update([
+            'nomor_spj' => $request->nomor_spj ?? $spj->nomor_spj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'nilai' => $request->nilai,

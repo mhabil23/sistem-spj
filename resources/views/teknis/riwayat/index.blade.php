@@ -88,12 +88,12 @@ $subtitle = 'Lihat riwayat pengajuan SPJ Anda yang telah diajukan.';
                             @php
                                 $badgeClass = 'dash-badge-draft';
                                 if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
-                                elseif(in_array($spj->status, ['diajukan'])) $badgeClass = 'dash-badge-cyan';
+                                elseif(in_array($spj->status, ['diajukan', 'menunggu_otp_kpa'])) $badgeClass = 'dash-badge-cyan';
                                 elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
                             @endphp
                             <span class="dash-badge {{ $badgeClass }}">
                                 <span class="badge-dot"></span>
-                                {{ str_replace('_', ' ', strtoupper($spj->status)) }}
+                                {{ $spj->status === 'menunggu_otp_kpa' ? 'MENUNGGU OTP QLOLA KPA' : str_replace('_', ' ', strtoupper($spj->status)) }}
                             </span>
                         </td>
                         <td style="text-align: right; padding-right: 24px; white-space: nowrap;">

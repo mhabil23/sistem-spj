@@ -109,7 +109,10 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                         </div>
 
                         <div class="profile-form-group">
-                            <label class="profile-form-label" for="profile_email">Alamat Email</label>
+                            <label class="profile-form-label" for="profile_email">
+                                <span>Alamat Email</span>
+                                <span style="font-size: 11px; font-weight: 600; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px; margin-left: 6px;">Kredensial Login</span>
+                            </label>
                             <div class="profile-input-wrapper">
                                 <i class="bi bi-envelope profile-input-icon"></i>
                                 <input 
@@ -120,6 +123,9 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                                     value="{{ old('email', $user->email) }}" 
                                     required 
                                     placeholder="nama@email.com">
+                            </div>
+                            <div class="profile-form-hint" style="color: #64748b; font-size: 11.5px; margin-top: 4px;">
+                                <i class="bi bi-shield-check" style="color: #0284c7;"></i> Wajib isi kata sandi saat ini jika Anda mengubah email login.
                             </div>
                             @error('email')
                                 <div class="profile-invalid-feedback">
@@ -184,7 +190,10 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                     </p>
 
                     <div class="profile-form-group profile-half-width">
-                        <label class="profile-form-label" for="current_password">Kata Sandi Saat Ini</label>
+                        <label class="profile-form-label" for="current_password">
+                            <span>Kata Sandi Saat Ini</span>
+                            <span style="font-size: 11px; font-weight: 600; color: #d97706; background: #fffbeb; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a; margin-left: 8px;">Wajib jika ganti email / sandi</span>
+                        </label>
                         <div class="profile-input-wrapper">
                             <i class="bi bi-key profile-input-icon"></i>
                             <input 
@@ -197,6 +206,9 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                             <button type="button" class="profile-toggle-password" data-target="current_password" title="Lihat kata sandi">
                                 <i class="bi bi-eye"></i>
                             </button>
+                        </div>
+                        <div class="profile-form-hint" style="color: #64748b; font-size: 11.5px; margin-top: 4px;">
+                            <i class="bi bi-info-circle"></i> Diperlukan untuk validasi keamanan saat mengganti email login atau membuat kata sandi baru.
                         </div>
                         @error('current_password')
                             <div class="profile-invalid-feedback">

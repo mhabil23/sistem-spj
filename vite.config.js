@@ -10,8 +10,14 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/home.css',
                 'resources/css/login.css',
+                // Admin CSS
+                'resources/css/admin/dashboard.css',
                 'resources/css/admin/pengguna.css',
                 'resources/css/admin/spj.css',
+                'resources/css/admin/riwayat.css',
+                'resources/css/admin/laporan-spj.css',
+                'resources/css/admin/spj-create.css',
+                'resources/css/admin/profil.css',
                 
                 // Teknis CSS
                 'resources/css/teknis/layout.css',
@@ -33,7 +39,12 @@ export default defineConfig({
                 'resources/css/ppk/dashboard.css',
                 'resources/css/ppk/spj.css',
                 'resources/css/ppk/riwayat.css',
-                'resources/css/ppk/profil.css',
+                // Bendahara CSS
+                'resources/css/bendahara/layout.css',
+                'resources/css/bendahara/dashboard.css',
+                'resources/css/bendahara/spj.css',
+                'resources/css/bendahara/riwayat.css',
+                'resources/css/bendahara/profil.css',
 
                 'resources/js/app.js',
             ],

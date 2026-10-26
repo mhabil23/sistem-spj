@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\ProfilController as AdminProfilController;
 use App\Http\Controllers\Admin\RiwayatController;
 use App\Http\Controllers\Admin\SpjController;
 use App\Http\Controllers\Admin\UserController;
@@ -56,6 +57,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Riwayat
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
+
+    // Profil Akun
+    Route::get('/profil', [AdminProfilController::class, 'index'])->name('profil.index');
+    Route::put('/profil', [AdminProfilController::class, 'update'])->name('profil.update');
 });
 
 // Riwayat handled above

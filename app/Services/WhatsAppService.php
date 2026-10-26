@@ -128,9 +128,16 @@ class WhatsAppService
                 $judul = '✅ *SPJ TELAH DISETUJUI PPSPM*';
                 $tahapBerikutnya = 'Dokumen telah diteruskan ke Bendahara untuk proses pencairan dana.';
                 break;
+            case 'menunggu_otp_kpa':
+            case 'OTP_KPA':
+            case 'qlola':
+                $judul = '⏳ *MENUNGGU OTP QLOLA KPA*';
+                $tahapBerikutnya = 'Transaksi pembayaran telah diinput ke sistem BRI QLOLA oleh Bendahara dan saat ini sedang menunggu otorisasi kode OTP dari KPA.';
+                break;
             case 'Selesai':
-                $judul = '🎉 *DANA SPJ TELAH DICAIRKAN*';
-                $tahapBerikutnya = 'Bendahara telah menyelesaikan proses pencairan. Silakan periksa rekening Anda.';
+            case 'selesai':
+                $judul = '🎉 *PROSES PEMBAYARAN TELAH SELESAI*';
+                $tahapBerikutnya = 'Proses pembayaran telah selesai, silahkan cek rekening masing-masing.';
                 break;
             default:
                 $judul = '✅ *STATUS SPJ DIPERBARUI*';
