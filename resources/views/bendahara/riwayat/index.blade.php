@@ -307,6 +307,8 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                                         <ion-icon name="trash-outline"></ion-icon>
                                     </button>
                                 </form>
+                                @else
+                                <span class="bnd-btn-delete-placeholder" aria-hidden="true"></span>
                                 @endif
                             </div>
                         </td>

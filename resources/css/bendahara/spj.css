@@ -1149,15 +1149,19 @@
 .bnd-actions-cell {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 118px;
     gap: 6px;
+    margin: 0 auto;
 }
 
 .bnd-btn-detail {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 5px;
-    padding: 6px 13px;
+    width: 82px;
+    padding: 6px 10px;
     border-radius: 8px;
     font-size: 12px;
     font-weight: 700;
@@ -1168,6 +1172,8 @@
     transition: var(--bnd-transition);
     box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
     white-space: nowrap;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .bnd-btn-detail:hover {
@@ -1194,6 +1200,9 @@
     border: 1px solid #e2e8f0;
     cursor: pointer;
     transition: var(--bnd-transition);
+    flex-shrink: 0;
+    box-sizing: border-box;
+    padding: 0;
 }
 
 .bnd-btn-delete:hover {
@@ -1202,6 +1211,14 @@
     border-color: #fecdd3;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(225, 29, 72, 0.18);
+}
+
+.bnd-btn-delete-placeholder {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    visibility: hidden;
 }
 
 .bnd-checkbox {
