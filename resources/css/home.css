@@ -1073,84 +1073,6 @@ body {
     flex-shrink: 0;
 }
 
-/* =========================
-   DECISION AREA
-========================= */
-
-.decision-area {
-    position: relative;
-    z-index: 5;
-    margin-top: 48px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-}
-
-.decision-box {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 18px;
-    background: #ffffff;
-    border: 1.5px solid #facc15;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(234, 179, 8, 0.08);
-}
-
-.decision-check-circle {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #eab308;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.decision-label {
-    font-size: 13.5px;
-    font-weight: 700;
-    color: #0f172a;
-}
-
-.decision-text {
-    max-width: 370px;
-    color: #475569;
-    font-size: 13px;
-    line-height: 1.55;
-}
-
-.btn-download-sop {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 18px;
-    background: #ffffff;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #1e4253;
-    text-decoration: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: all 0.25s ease;
-}
-
-.btn-download-sop:hover {
-    border-color: #0284c7;
-    color: #0284c7;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(2, 132, 199, 0.15);
-}
-
-.btn-download-sop i {
-    color: #ef4444;
-    font-size: 16px;
-}
-
 
 /* =========================
    FEATURES SECTION
@@ -1371,10 +1293,6 @@ footer > span {
         grid-template-columns: 1fr;
     }
 
-    .decision-area {
-        flex-direction: column;
-        text-align: center;
-    }
 
     footer {
         flex-direction: column;

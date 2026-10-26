@@ -371,25 +371,6 @@
 
             </div>
 
-            <!-- DECISION & SOP DOWNLOAD AREA -->
-            <div class="decision-area">
-                <div class="decision-box">
-                    <span class="decision-check-circle">
-                        <i class="bi bi-check-lg" style="font-size: 14px;"></i>
-                    </span>
-                    <strong class="decision-label">Memenuhi Syarat?</strong>
-                </div>
-
-                <div class="decision-text">
-                    Jika tidak memenuhi syarat, SPJ dikembalikan kepada Teknis untuk diperbaiki.
-                </div>
-
-                <a href="{{ route('flowchart.preview') }}" target="_blank" class="btn-download-sop" title="Buka & Unduh Flowchart SOP SPJ Resmi BPS Kolaka Utara">
-                    <i class="bi bi-file-earmark-pdf-fill" style="color: #ef4444; font-size: 16px;"></i>
-                    <span>Lihat Dokumen SOP Lengkap</span>
-                </a>
-            </div>
-
         </section>
 
 
