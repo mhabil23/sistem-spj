@@ -181,7 +181,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                         <th style="text-align: right;">Nilai Tagihan (Rp)</th>
                         <th style="text-align: center;">Status &amp; SLA</th>
                         <th>Referensi Bukti / Catatan</th>
-                        <th style="text-align: center; width: 100px;">Aksi</th>
+                        <th style="text-align: center; min-width: 125px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -208,7 +208,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                                 @endif
                             </div>
                         </td>
-                        <td style="max-width: 280px;">
+                        <td style="max-width: 260px; white-space: normal;">
                             <a href="{{ route('bendahara.spj.show', $spj->id) }}" style="font-weight: 700; color: #0f172a; text-decoration: none; display: block; line-height: 1.4; margin-bottom: 2px; transition: color 0.15s;" onmouseover="this.style.color='#0284c7';" onmouseout="this.style.color='#0f172a';" title="{{ $spj->kegiatan }}">
                                 {{ \Illuminate\Support\Str::limit($spj->kegiatan, 45) }}
                             </a>
@@ -277,7 +277,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                                 @endif
                             </div>
                         </td>
-                        <td>
+                        <td style="white-space: normal;">
                             @if($spj->status === 'revisi_bendahara' && $spj->catatan_revisi)
                                 <div style="display: flex; align-items: center; gap: 6px; color: #e11d48; font-size: 12px; font-weight: 600;" title="{{ $spj->catatan_revisi }}">
                                     <ion-icon name="alert-circle-outline" style="font-size: 16px; flex-shrink: 0;"></ion-icon>
@@ -292,26 +292,19 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                                 <span style="color: #94a3b8; font-size: 13px;">-</span>
                             @endif
                         </td>
-                        <td style="text-align: center;">
-                            <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
-                                <a href="{{ route('bendahara.spj.show', $spj->id) }}" 
-                                   style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; border: 1px solid #bfdbfe; background: #eff6ff; color: #1d4ed8; text-decoration: none; transition: all 0.2s;"
-                                   onmouseover="this.style.background='#dbeafe'; this.style.transform='translateY(-1px)';"
-                                   onmouseout="this.style.background='#eff6ff'; this.style.transform='translateY(0)';"
-                                   title="Lihat Detail SPJ">
-                                    <ion-icon name="eye-outline" style="font-size: 17px;"></ion-icon>
+                        <td style="text-align: center; white-space: nowrap;">
+                            <div class="bnd-actions-cell">
+                                <a href="{{ route('bendahara.spj.show', $spj->id) }}" class="bnd-btn-detail" title="Lihat Rincian Lengkap SPJ">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                    <span>Detail</span>
                                 </a>
 
                                 @if(!in_array($spj->status, ['disetujui_ppspm', 'menunggu_otp_kpa']))
-                                <form action="{{ route('bendahara.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat SPJ ini?');" style="margin: 0;">
+                                <form action="{{ route('bendahara.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat SPJ ini?');" style="margin: 0; display: inline-flex;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" 
-                                            style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; border: 1px solid #fecdd3; background: #fff1f2; color: #e11d48; cursor: pointer; transition: all 0.2s;"
-                                            onmouseover="this.style.background='#ffe4e6'; this.style.transform='translateY(-1px)';"
-                                            onmouseout="this.style.background='#fff1f2'; this.style.transform='translateY(0)';"
-                                            title="Hapus Dari Riwayat">
-                                        <ion-icon name="trash-outline" style="font-size: 16px;"></ion-icon>
+                                    <button type="submit" class="bnd-btn-delete" title="Hapus Dari Riwayat">
+                                        <ion-icon name="trash-outline"></ion-icon>
                                     </button>
                                 </form>
                                 @endif

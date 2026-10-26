@@ -1118,7 +1118,7 @@
 }
 
 .bnd-table th {
-    padding: 14px 20px;
+    padding: 12px 14px;
     background: #f8fafc;
     color: var(--bnd-slate-500);
     font-size: 11px;
@@ -1130,7 +1130,7 @@
 }
 
 .bnd-table td {
-    padding: 16px 20px;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--bnd-slate-100);
     color: var(--bnd-slate-700);
     font-size: 13px;
@@ -1144,6 +1144,64 @@
 
 .bnd-table tbody tr:last-child td {
     border-bottom: none;
+}
+
+.bnd-actions-cell {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.bnd-btn-detail {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 13px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    border: none;
+    text-decoration: none;
+    transition: var(--bnd-transition);
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+    white-space: nowrap;
+}
+
+.bnd-btn-detail:hover {
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
+    color: #ffffff;
+}
+
+.bnd-btn-detail ion-icon {
+    font-size: 15px;
+}
+
+.bnd-btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #94a3b8;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: var(--bnd-transition);
+}
+
+.bnd-btn-delete:hover {
+    color: #e11d48;
+    background: #fff1f2;
+    border-color: #fecdd3;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(225, 29, 72, 0.18);
 }
 
 .bnd-checkbox {
