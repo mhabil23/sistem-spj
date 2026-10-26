@@ -41,7 +41,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
         </div>
 
         <div class="profile-card-body">
-            <form action="{{ route('teknis.profil.update') }}" method="POST" enctype="multipart/form-data">
+            <form id="formTeknisProfile" action="{{ route('teknis.profil.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -126,6 +126,16 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                             </div>
                             <div class="profile-form-hint" style="color: #64748b; font-size: 11.5px; margin-top: 4px;">
                                 <i class="bi bi-shield-check" style="color: #0284c7;"></i> Wajib isi kata sandi saat ini jika Anda mengubah email login.
+                            </div>
+                            <!-- Dynamic Notice saat email diubah -->
+                            <div id="emailNoticeBadge" style="display: none; margin-top: 8px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.45;">
+                                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                    <i class="bi bi-exclamation-triangle" style="font-size: 16px; color: #d97706; margin-top: 1px;"></i>
+                                    <div>
+                                        <strong>Konfirmasi Kata Sandi Diperlukan:</strong>
+                                        <div>Anda sedang mengubah alamat email. Wajib memasukkan <strong>Kata Sandi Saat Ini</strong> pada bagian Ubah Kata Sandi di bawah sebelum menyimpan.</div>
+                                    </div>
+                                </div>
                             </div>
                             @error('email')
                                 <div class="profile-invalid-feedback">
@@ -322,6 +332,58 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                 }
             });
         });
+
+        // Validasi interaktif perubahan email
+        const formProfile = document.getElementById('formTeknisProfile');
+        const inputEmail = document.getElementById('profile_email');
+        const inputCurrentPassword = document.getElementById('current_password');
+        const emailNoticeBadge = document.getElementById('emailNoticeBadge');
+        const originalEmail = "{{ strtolower(trim($user->email)) }}";
+
+        if (inputEmail && emailNoticeBadge) {
+            function checkEmailChanged() {
+                const currentVal = inputEmail.value.trim().toLowerCase();
+                if (currentVal !== '' && currentVal !== originalEmail) {
+                    emailNoticeBadge.style.display = 'block';
+                } else {
+                    emailNoticeBadge.style.display = 'none';
+                }
+            }
+
+            inputEmail.addEventListener('input', checkEmailChanged);
+            checkEmailChanged();
+        }
+
+        if (formProfile) {
+            formProfile.addEventListener('submit', function(e) {
+                const isEmailChanged = inputEmail && inputEmail.value.trim().toLowerCase() !== originalEmail;
+                const isCurrentPassEmpty = inputCurrentPassword && inputCurrentPassword.value.trim() === '';
+
+                if (isEmailChanged && isCurrentPassEmpty) {
+                    e.preventDefault();
+                    
+                    if (inputCurrentPassword) {
+                        inputCurrentPassword.classList.add('is-invalid');
+                        inputCurrentPassword.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        inputCurrentPassword.focus();
+                    }
+
+                    let errorHint = document.getElementById('clientPasswordError');
+                    if (!errorHint && inputCurrentPassword) {
+                        errorHint = document.createElement('div');
+                        errorHint.id = 'clientPasswordError';
+                        errorHint.className = 'profile-invalid-feedback';
+                        errorHint.style.marginTop = '6px';
+                        errorHint.innerHTML = '<i class="bi bi-exclamation-circle"></i> Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email login!';
+                        inputCurrentPassword.closest('.profile-form-group').appendChild(errorHint);
+                    } else if (errorHint) {
+                        errorHint.style.display = 'block';
+                    }
+
+                    alert('Perhatian: Anda sedang mengubah alamat email login. Harap masukkan "Kata Sandi Saat Ini" pada bagian Ubah Kata Sandi untuk mengonfirmasi perubahan ini.');
+                }
+            });
+        }
     });
 </script>
 @endpush

@@ -25,7 +25,7 @@ class RoleProfilTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password']);
+        $response->assertSessionHasErrors(['current_password', 'email']);
         $this->assertSame('teknis.lama@bps.go.id', $user->fresh()->email);
     }
 
@@ -64,7 +64,7 @@ class RoleProfilTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password']);
+        $response->assertSessionHasErrors(['current_password', 'email']);
         $this->assertSame('umum.lama@bps.go.id', $user->fresh()->email);
     }
 
@@ -118,7 +118,7 @@ class RoleProfilTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password']);
+        $response->assertSessionHasErrors(['current_password', 'email']);
         $this->assertSame('admin.lama@bps.go.id', $admin->fresh()->email);
     }
 

@@ -292,7 +292,7 @@ class BendaharaSpjTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password']);
+        $response->assertSessionHasErrors(['current_password', 'email']);
         $this->assertSame('lama@bps.go.id', $bendahara->fresh()->email);
     }
 
@@ -311,7 +311,7 @@ class BendaharaSpjTest extends TestCase
             'current_password' => 'wrongpassword',
         ]);
 
-        $response->assertSessionHasErrors(['current_password']);
+        $response->assertSessionHasErrors(['current_password', 'email']);
         $this->assertSame('lama@bps.go.id', $bendahara->fresh()->email);
     }
 

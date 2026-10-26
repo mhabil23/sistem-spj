@@ -272,6 +272,16 @@ $title = 'Pengaturan Profil Akun';
                             <div class="bnd-helper-text">
                                 Email saat ini: <strong style="color: #0f172a;">{{ $user->email }}</strong>. Gunakan email dinas atau pribadi yang selalu dapat diakses.
                             </div>
+                            <!-- Dynamic Notice saat email diubah -->
+                            <div id="emailNoticeBadge" style="display: none; margin-top: 8px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.45;">
+                                <div style="display: flex; align-items: flex-start; gap: 8px;">
+                                    <ion-icon name="alert-circle" style="font-size: 18px; color: #d97706; flex-shrink: 0; margin-top: 1px;"></ion-icon>
+                                    <div>
+                                        <strong>Konfirmasi Kata Sandi Diperlukan:</strong>
+                                        <div>Anda sedang mengubah alamat email. Wajib memasukkan <strong>Kata Sandi Saat Ini</strong> pada formulir Keamanan di bawah sebelum menyimpan perubahan ini.</div>
+                                    </div>
+                                </div>
+                            </div>
                             @error('email')
                                 <div class="bnd-error-hint">
                                     <ion-icon name="warning-outline"></ion-icon> {{ $message }}
@@ -444,6 +454,58 @@ $title = 'Pengaturan Profil Akun';
                 }
             });
         });
+
+        // Validasi interaktif perubahan email
+        const formProfile = document.getElementById('formProfile');
+        const inputEmail = document.getElementById('input_email');
+        const inputCurrentPassword = document.getElementById('input_current_password');
+        const emailNoticeBadge = document.getElementById('emailNoticeBadge');
+        const originalEmail = "{{ strtolower(trim($user->email)) }}";
+
+        if (inputEmail && emailNoticeBadge) {
+            function checkEmailChanged() {
+                const currentVal = inputEmail.value.trim().toLowerCase();
+                if (currentVal !== '' && currentVal !== originalEmail) {
+                    emailNoticeBadge.style.display = 'block';
+                } else {
+                    emailNoticeBadge.style.display = 'none';
+                }
+            }
+
+            inputEmail.addEventListener('input', checkEmailChanged);
+            checkEmailChanged();
+        }
+
+        if (formProfile) {
+            formProfile.addEventListener('submit', function(e) {
+                const isEmailChanged = inputEmail && inputEmail.value.trim().toLowerCase() !== originalEmail;
+                const isCurrentPassEmpty = inputCurrentPassword && inputCurrentPassword.value.trim() === '';
+
+                if (isEmailChanged && isCurrentPassEmpty) {
+                    e.preventDefault();
+                    
+                    if (inputCurrentPassword) {
+                        inputCurrentPassword.classList.add('has-error');
+                        inputCurrentPassword.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        inputCurrentPassword.focus();
+                    }
+
+                    let errorHint = document.getElementById('clientPasswordError');
+                    if (!errorHint && inputCurrentPassword) {
+                        errorHint = document.createElement('div');
+                        errorHint.id = 'clientPasswordError';
+                        errorHint.className = 'bnd-error-hint';
+                        errorHint.style.marginTop = '6px';
+                        errorHint.innerHTML = '<ion-icon name="warning-outline"></ion-icon> Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email login!';
+                        inputCurrentPassword.closest('.bnd-field-group').appendChild(errorHint);
+                    } else if (errorHint) {
+                        errorHint.style.display = 'flex';
+                    }
+
+                    alert('Perhatian: Anda sedang mengubah alamat email login. Harap masukkan "Kata Sandi Saat Ini" pada bagian Keamanan Akun untuk mengonfirmasi perubahan ini.');
+                }
+            });
+        }
     });
 </script>
 @endpush
