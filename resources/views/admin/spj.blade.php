@@ -468,6 +468,12 @@
         font-size: 14px;
     }
 
+    .btn-action-cell.view:hover {
+        background: var(--bps-blue-light);
+        color: var(--bps-blue);
+        border-color: #bae6fd;
+    }
+
     .btn-action-cell.edit:hover {
         background: var(--bps-blue);
         color: #ffffff;
@@ -756,7 +762,11 @@
                         {{-- AKSI --}}
                         <td style="text-align: center;">
                             <div class="action-group" style="justify-content: center;">
-                                <a href="{{ route('admin.spj.edit', $spj->id) }}" class="btn-action-cell edit" title="Edit / Detail SPJ">
+                                <a href="{{ route('admin.spj.show', $spj->id) }}" class="btn-action-cell view" title="Lihat Detail SPJ">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <a href="{{ route('admin.spj.edit', $spj->id) }}" class="btn-action-cell edit" title="Edit SPJ">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
 
@@ -834,7 +844,7 @@
                 } else if (statusVal === 'menunggu_otp_kpa') {
                     matchesStatus = rowStatus === 'menunggu_otp_kpa';
                 } else if (statusVal === 'diproses') {
-                    matchesStatus = ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'diproses'].includes(rowStatus);
+                    matchesStatus = ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'diproses'].includes(rowStatus);
                 } else {
                     matchesStatus = rowStatus === statusVal;
                 }

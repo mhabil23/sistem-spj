@@ -28,6 +28,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');
     Route::get('/spj/create', [SpjController::class, 'create'])->name('spj.create');
     Route::post('/spj', [SpjController::class, 'store'])->name('spj.store');
+    Route::get('/spj/{spj}', [SpjController::class, 'show'])->name('spj.show');
     Route::get('/spj/{spj}/edit', [SpjController::class, 'edit'])->name('spj.edit');
     Route::put('/spj/{spj}', [SpjController::class, 'update'])->name('spj.update');
     Route::delete('/spj/{spj}', [SpjController::class, 'destroy'])->name('spj.destroy');
@@ -42,18 +43,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Laporan SPJ
     Route::get('/laporan-spj', [SpjController::class, 'laporan'])->name('laporan.spj');
-
-    // Form edit pengguna
-    Route::get('/pengguna/{user}/edit', [UserController::class, 'edit'])
-        ->name('pengguna.edit');
-
-    // Update pengguna
-    Route::put('/pengguna/{user}', [UserController::class, 'update'])
-        ->name('pengguna.update');
-
-    // Hapus pengguna
-    Route::delete('/pengguna/{user}', [UserController::class, 'destroy'])
-        ->name('pengguna.destroy');
 
     // Riwayat
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');

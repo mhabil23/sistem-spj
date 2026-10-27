@@ -47,6 +47,11 @@ class Spj extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function histories()
+    {
+        return $this->hasMany(SpjHistory::class)->latest('id');
+    }
+
     protected $casts = [
         'tanggal' => 'date',
         'nilai' => 'decimal:2',
@@ -72,30 +77,34 @@ class Spj extends Model
     }
 
     /**
-     * Generate nomor SPJ otomatis dengan format BPS: SPJ/BPS7408/{TAHUN}/{URUT_4_DIGIT}
+     * Generate nomor SPJ otomatis dengan format: {URUT_3_DIGIT}{DD}{MM}{YYYY}
+     *
+     * Contoh: 00127102026 = SPJ ke-001, tanggal 27, bulan 10, tahun 2026
+     * Nomor urut direset setiap hari (per tanggal).
      */
     public static function generateNomorSpj(): string
     {
-        $year = date('Y');
-        $prefix = "SPJ/BPS7408/{$year}/";
+        $today = now();
+        $day = $today->format('d');
+        $month = $today->format('m');
+        $year = $today->format('Y');
+        $dateSuffix = $day.$month.$year;
 
-        $lastSpj = self::where('nomor_spj', 'like', "{$prefix}%")
+        // Cari SPJ terakhir yang dibuat hari ini dengan pola nomor yang sesuai
+        $lastSpj = self::where('nomor_spj', 'like', "___$dateSuffix")
             ->orderByDesc('id')
             ->first();
 
         $nextNumber = 1;
-        if ($lastSpj && preg_match('/\/(\d+)$/', (string) $lastSpj->nomor_spj, $matches)) {
+        if ($lastSpj && preg_match('/^(\d{3})/', (string) $lastSpj->nomor_spj, $matches)) {
             $nextNumber = ((int) $matches[1]) + 1;
-        } else {
-            $countThisYear = self::whereYear('created_at', $year)->count();
-            $nextNumber = max($countThisYear + 1, 1);
         }
 
-        $nomor = $prefix.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+        $nomor = str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT).$dateSuffix;
 
         while (self::where('nomor_spj', $nomor)->exists()) {
             $nextNumber++;
-            $nomor = $prefix.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+            $nomor = str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT).$dateSuffix;
         }
 
         return $nomor;

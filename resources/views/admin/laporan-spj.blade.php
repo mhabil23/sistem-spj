@@ -705,14 +705,16 @@
             <div class="print-only-logo" style="display: none; margin-bottom: 20px; text-align: center;">
                 <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="height: 50px;">
                 <h2 style="font-size: 16px; margin: 10px 0 5px;">LAPORAN REKAPITULASI SPJ</h2>
-                <p style="font-size: 12px; margin: 0;">
-                    @if(request('tanggal_mulai') || request('tanggal_selesai'))
-                        Periode: {{ request('tanggal_mulai') ? \Carbon\Carbon::parse(request('tanggal_mulai'))->format('d/m/Y') : 'Awal' }} s/d {{ request('tanggal_selesai') ? \Carbon\Carbon::parse(request('tanggal_selesai'))->format('d/m/Y') : 'Akhir' }}
-                        {{ request('status') ? ' | Status: ' . ucfirst(str_replace('_', ' ', request('status'))) : '' }}
-                    @else
-                        Seluruh Data SPJ
-                    @endif
-                </p>
+                @if(request('tanggal_mulai') || request('tanggal_selesai') || request('status'))
+                    <p style="font-size: 12px; margin: 0;">
+                        @if(request('tanggal_mulai') || request('tanggal_selesai'))
+                            Periode: {{ request('tanggal_mulai') ? \Carbon\Carbon::parse(request('tanggal_mulai'))->format('d/m/Y') : 'Awal' }} s/d {{ request('tanggal_selesai') ? \Carbon\Carbon::parse(request('tanggal_selesai'))->format('d/m/Y') : 'Akhir' }}
+                        @endif
+                        @if(request('status'))
+                            {{ (request('tanggal_mulai') || request('tanggal_selesai')) ? ' | ' : '' }}Status: {{ ucfirst(str_replace('_', ' ', request('status'))) }}
+                        @endif
+                    </p>
+                @endif
             </div>
 
             @php

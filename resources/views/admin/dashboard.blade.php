@@ -1075,7 +1075,7 @@
                                     {{ $loop->iteration }}
                                 </td>
                                 <td>
-                                    <a href="{{ route('admin.spj.edit', $spj->id) }}" class="spj-kegiatan-title" title="{{ $spj->kegiatan }}" style="text-decoration: none; color: inherit;">
+                                    <a href="{{ route('admin.spj.show', $spj->id) }}" class="spj-kegiatan-title" title="{{ $spj->kegiatan }}" style="text-decoration: none; color: inherit;">
                                         {{ $spj->kegiatan }}
                                     </a>
                                     <span class="spj-user-sub">
@@ -1132,8 +1132,8 @@
                                     @endif
                                 </td>
                                 <td style="text-align: center;">
-                                    <a href="{{ route('admin.spj.edit', $spj->id) }}" class="btn-table-action" title="Lihat / Edit SPJ">
-                                        <i class="bi bi-pencil-square"></i>
+                                    <a href="{{ route('admin.spj.show', $spj->id) }}" class="btn-table-action" title="Lihat Detail SPJ">
+                                        <i class="bi bi-eye"></i>
                                     </a>
                                 </td>
                             </tr>

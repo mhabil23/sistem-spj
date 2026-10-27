@@ -42,7 +42,7 @@ class AlurIntegrasiSpjTest extends TestCase
         $this->assertNotNull($spj);
         $this->assertSame('diajukan', $spj->status);
         $this->assertNotNull($spj->nomor_spj);
-        $this->assertStringStartsWith('SPJ/BPS7408/', $spj->nomor_spj);
+        $this->assertMatchesRegularExpression('/^\d{3}\d{2}\d{2}\d{4}$/', $spj->nomor_spj);
         $this->assertNotNull($spj->diajukan_at);
 
         // 2. TAHAP UMUM: Masuk ke antrean Umum, terima berkas fisik, mulai periksa, dan setujui

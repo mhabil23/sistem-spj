@@ -21,11 +21,13 @@ class DashboardController extends Controller
         $selesai = Spj::whereIn('status', ['disetujui_ppspm', 'selesai'])->count();
         $totalNilaiSelesai = Spj::whereIn('status', ['disetujui_ppspm', 'selesai'])->sum('nilai');
 
-        // Sedang Berjalan dalam Alur Verifikasi
+        // Sedang Berjalan dalam Alur Verifikasi (Termasuk disetujui_ppspm dan menunggu_otp_kpa)
         $menungguProses = Spj::whereIn('status', [
             'diajukan',
             'disetujui_umum',
             'disetujui_ppk',
+            'disetujui_ppspm',
+            'menunggu_otp_kpa',
             'diproses',
         ])->count();
 
@@ -79,8 +81,8 @@ class DashboardController extends Controller
         // 3. Persetujuan oleh PPK
         $persetujuanPpk = Spj::where('status', 'disetujui_ppk')->count();
 
-        // 4. Pengesahan Akhir oleh PPSPM (Selesai)
-        $pengujianPpspm = Spj::whereIn('status', ['disetujui_ppspm', 'selesai'])->count();
+        // 4. Pengesahan Akhir oleh PPSPM & Pencairan
+        $pengujianPpspm = Spj::whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa', 'selesai'])->count();
 
         // Backwards compatibility
         $pemeriksaan = $verifikasiUmum;

@@ -66,7 +66,7 @@ class TeknisSpjTest extends TestCase
 
         $spj = Spj::where('kegiatan', 'Kegiatan Survei Sosial Ekonomi')->first();
         $this->assertNotNull($spj->nomor_spj);
-        $this->assertStringStartsWith('SPJ/BPS7408/', $spj->nomor_spj);
+        $this->assertMatchesRegularExpression('/^\d{3}\d{2}\d{2}\d{4}$/', $spj->nomor_spj);
     }
 
     public function test_teknis_cannot_use_duplicate_nomor_spj(): void
@@ -142,5 +142,89 @@ class TeknisSpjTest extends TestCase
             'nomor_spj' => 'SPJ-NEW-001',
             'kegiatan' => 'Kegiatan Baru Diedit',
         ]);
+    }
+
+    public function test_teknis_laporan_only_shows_own_spj_and_does_not_leak_other_users_spj(): void
+    {
+        $teknisA = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+        $teknisB = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        Spj::create([
+            'user_id' => $teknisA->id,
+            'nomor_spj' => 'SPJ-USER-A-001',
+            'kegiatan' => 'SPJ Khusus Teknis A',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'diajukan',
+        ]);
+
+        Spj::create([
+            'user_id' => $teknisB->id,
+            'nomor_spj' => 'SPJ-USER-B-001',
+            'kegiatan' => 'SPJ Rahasia Teknis B',
+            'tanggal' => now(),
+            'nilai' => 3000000,
+            'status' => 'diajukan',
+        ]);
+
+        $response = $this->actingAs($teknisA)->get(route('teknis.laporan.spj'));
+
+        $response->assertStatus(200);
+        $response->assertSee('SPJ Khusus Teknis A');
+        $response->assertDontSee('SPJ Rahasia Teknis B');
+
+        $response->assertViewHas('totalSpj', 1);
+        $response->assertViewHas('totalNilai', 1500000);
+        $response->assertViewHas('totalDiajukan', 1);
+
+        // Akses sebagai Teknis B
+        $responseB = $this->actingAs($teknisB)->get(route('teknis.laporan.spj'));
+        $responseB->assertStatus(200);
+        $responseB->assertSee('SPJ Rahasia Teknis B');
+        $responseB->assertDontSee('SPJ Khusus Teknis A');
+        $responseB->assertViewHas('totalSpj', 1);
+        $responseB->assertViewHas('totalNilai', 3000000);
+    }
+
+    public function test_teknis_laporan_filters_status_for_own_spj_only(): void
+    {
+        $teknisA = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+        $teknisB = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        Spj::create([
+            'user_id' => $teknisA->id,
+            'nomor_spj' => 'SPJ-A-DRAFT',
+            'kegiatan' => 'Draft Kegiatan A',
+            'tanggal' => now(),
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        Spj::create([
+            'user_id' => $teknisA->id,
+            'nomor_spj' => 'SPJ-A-SELESAI',
+            'kegiatan' => 'Selesai Kegiatan A',
+            'tanggal' => now(),
+            'nilai' => 2000000,
+            'status' => 'selesai',
+        ]);
+
+        Spj::create([
+            'user_id' => $teknisB->id,
+            'nomor_spj' => 'SPJ-B-SELESAI',
+            'kegiatan' => 'Selesai Kegiatan B Milik Orang Lain',
+            'tanggal' => now(),
+            'nilai' => 5000000,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->actingAs($teknisA)->get(route('teknis.laporan.spj', ['status' => 'selesai']));
+
+        $response->assertStatus(200);
+        $response->assertSee('Selesai Kegiatan A');
+        $response->assertDontSee('Draft Kegiatan A');
+        $response->assertDontSee('Selesai Kegiatan B Milik Orang Lain');
+        $response->assertViewHas('totalSpj', 1);
+        $response->assertViewHas('totalNilai', 2000000);
     }
 }

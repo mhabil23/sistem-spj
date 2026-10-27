@@ -203,11 +203,22 @@ class SpjController extends Controller
 
     public function laporan(Request $request)
     {
-        $query = Spj::query();
+        $userId = Auth::id() ?? 1;
+        $query = Spj::where('user_id', $userId);
 
         // Filter status
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $status = $request->status;
+            if ($status === 'diproses') {
+                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa']);
+            } elseif ($status === 'dikembalikan') {
+                $query->where(function ($q) {
+                    $q->where('status', 'like', 'revisi_%')
+                        ->orWhere('status', 'dikembalikan');
+                });
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         // Filter tanggal mulai
@@ -232,11 +243,13 @@ class SpjController extends Controller
 
         $totalDiajukan = $spjs->where('status', 'diajukan')->count();
 
-        $totalDiproses = $spjs->whereIn('status', ['diproses', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])->count();
+        $totalDiproses = $spjs->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa'])->count();
 
         $totalSelesai = $spjs->where('status', 'selesai')->count();
 
-        $totalDikembalikan = $spjs->where('status', 'dikembalikan')->count();
+        $totalDikembalikan = $spjs->filter(function ($item) {
+            return str_starts_with((string) $item->status, 'revisi_') || $item->status === 'dikembalikan';
+        })->count();
 
         return view('teknis.laporan-spj', compact(
             'spjs',

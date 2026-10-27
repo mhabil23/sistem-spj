@@ -865,7 +865,7 @@
                         {{-- AKSI --}}
                         <td style="text-align: center;">
                             @if($spj)
-                                <a href="{{ route('admin.spj.edit', $spj->id) }}" class="btn-action-cell view" title="Lihat Detail SPJ">
+                                <a href="{{ route('admin.spj.show', $spj->id) }}" class="btn-action-cell view" title="Lihat Detail SPJ">
                                     <i class="bi bi-eye-fill"></i>
                                 </a>
                             @else

@@ -41,11 +41,21 @@ class RiwayatController extends Controller
         if ($request->filled('status')) {
             $status = $request->status;
             if ($status === 'diproses') {
-                $query->whereIn('status_baru', ['diajukan', 'disetujui_umum', 'disetujui_ppk']);
+                $query->whereIn('status_baru', [
+                    'diajukan',
+                    'disetujui_umum',
+                    'disetujui_ppk',
+                    'disetujui_ppspm',
+                    'menunggu_otp_kpa',
+                    'diproses',
+                ]);
             } elseif ($status === 'selesai') {
                 $query->whereIn('status_baru', ['disetujui_ppspm', 'selesai']);
             } elseif ($status === 'dikembalikan') {
-                $query->where('status_baru', 'like', 'revisi_%');
+                $query->where(function ($q) {
+                    $q->where('status_baru', 'like', 'revisi_%')
+                        ->orWhere('status_baru', 'dikembalikan');
+                });
             } else {
                 $query->where('status_baru', $status);
             }
@@ -61,14 +71,24 @@ class RiwayatController extends Controller
 
         $diajukan = SpjHistory::where('status_baru', 'diajukan')->count();
 
-        // Sedang diproses: diajukan, disetujui_umum, disetujui_ppk
-        $diproses = SpjHistory::whereIn('status_baru', ['diajukan', 'disetujui_umum', 'disetujui_ppk'])->count();
+        // Sedang diproses: diajukan, disetujui_umum, disetujui_ppk, disetujui_ppspm, menunggu_otp_kpa
+        $diproses = SpjHistory::whereIn('status_baru', [
+            'diajukan',
+            'disetujui_umum',
+            'disetujui_ppk',
+            'disetujui_ppspm',
+            'menunggu_otp_kpa',
+            'diproses',
+        ])->count();
 
         // Selesai: disetujui_ppspm atau selesai
         $selesai = SpjHistory::whereIn('status_baru', ['disetujui_ppspm', 'selesai'])->count();
 
         // Dikembalikan / Perlu Revisi: revisi_*
-        $dikembalikan = SpjHistory::where('status_baru', 'like', 'revisi_%')->count();
+        $dikembalikan = SpjHistory::where(function ($q) {
+            $q->where('status_baru', 'like', 'revisi_%')
+                ->orWhere('status_baru', 'dikembalikan');
+        })->count();
 
         return view('admin.riwayat', compact(
             'riwayat',

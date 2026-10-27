@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
+use App\Models\SpjHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,14 @@ class SpjController extends Controller
 
         $totalSpj = $spjs->count();
         $totalNilaiSpj = $spjs->sum('nilai');
-        $menungguProses = $spjs->filter(fn ($s) => in_array($s->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'diproses']))->count();
+        $menungguProses = $spjs->filter(fn ($s) => in_array($s->status, [
+            'diajukan',
+            'disetujui_umum',
+            'disetujui_ppk',
+            'disetujui_ppspm',
+            'menunggu_otp_kpa',
+            'diproses',
+        ]))->count();
         $selesai = $spjs->filter(fn ($s) => in_array($s->status, ['disetujui_ppspm', 'selesai']))->count();
         $dikembalikan = $spjs->filter(fn ($s) => str_contains($s->status, 'revisi') || $s->status === 'dikembalikan')->count();
 
@@ -50,6 +58,8 @@ class SpjController extends Controller
      */
     public function show(Spj $spj)
     {
+        $spj->load(['user', 'histories.user']);
+
         return view('admin.spj-show', compact('spj'));
     }
 
@@ -99,7 +109,7 @@ class SpjController extends Controller
 
         $nomorSpj = $request->filled('nomor_spj') ? $request->nomor_spj : Spj::generateNomorSpj();
 
-        Spj::create([
+        $spj = Spj::create([
             'user_id' => Auth::id() ?? 1,
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
@@ -110,6 +120,17 @@ class SpjController extends Controller
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' ? now() : null,
+        ]);
+
+        SpjHistory::create([
+            'spj_id' => $spj->id,
+            'user_id' => Auth::id() ?? 1,
+            'aksi' => $request->status === 'diajukan' ? 'Pengajuan SPJ oleh Admin' : 'Pembuatan Draft SPJ oleh Admin',
+            'status_lama' => null,
+            'status_baru' => $request->status,
+            'keterangan' => $request->status === 'diajukan'
+                ? 'SPJ dibuat dan langsung diajukan oleh Admin ke alur verifikasi.'
+                : 'SPJ dibuat dan disimpan sebagai draft oleh Admin.',
         ]);
 
         return redirect()
@@ -158,7 +179,19 @@ class SpjController extends Controller
             $validated['diajukan_at'] = now();
         }
 
+        $statusLama = $spj->status;
         $spj->update($validated);
+
+        SpjHistory::create([
+            'spj_id' => $spj->id,
+            'user_id' => Auth::id() ?? 1,
+            'aksi' => 'Pembaruan Data SPJ oleh Admin',
+            'status_lama' => $statusLama,
+            'status_baru' => $spj->status,
+            'keterangan' => $statusLama !== $spj->status
+                ? "Data dan status SPJ diperbarui oleh Admin dari '{$statusLama}' menjadi '{$spj->status}'."
+                : 'Data SPJ diperbarui oleh Admin.',
+        ]);
 
         return redirect()
             ->route('admin.spj.index')
@@ -194,11 +227,21 @@ class SpjController extends Controller
         if ($request->filled('status')) {
             $status = $request->status;
             if ($status === 'diproses') {
-                $query->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk']);
+                $query->whereIn('status', [
+                    'diajukan',
+                    'disetujui_umum',
+                    'disetujui_ppk',
+                    'disetujui_ppspm',
+                    'menunggu_otp_kpa',
+                    'diproses',
+                ]);
             } elseif ($status === 'selesai') {
                 $query->whereIn('status', ['disetujui_ppspm', 'selesai']);
             } elseif ($status === 'dikembalikan') {
-                $query->where('status', 'like', 'revisi_%');
+                $query->where(function ($q) {
+                    $q->where('status', 'like', 'revisi_%')
+                        ->orWhere('status', 'dikembalikan');
+                });
             } else {
                 $query->where('status', $status);
             }
@@ -226,7 +269,14 @@ class SpjController extends Controller
 
         $totalDiajukan = $spjs->where('status', 'diajukan')->count();
 
-        $totalDiproses = $spjs->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk'])->count();
+        $totalDiproses = $spjs->whereIn('status', [
+            'diajukan',
+            'disetujui_umum',
+            'disetujui_ppk',
+            'disetujui_ppspm',
+            'menunggu_otp_kpa',
+            'diproses',
+        ])->count();
 
         $totalSelesai = $spjs->whereIn('status', ['disetujui_ppspm', 'selesai'])->count();
 
