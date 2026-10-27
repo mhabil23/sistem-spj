@@ -58,4 +58,46 @@ class Spj extends Model
         'disetujui_ppspm_at' => 'datetime',
         'diselesaikan_at' => 'datetime',
     ];
+
+    /**
+     * Bootstrap model events.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Spj $spj): void {
+            if (empty($spj->nomor_spj)) {
+                $spj->nomor_spj = self::generateNomorSpj();
+            }
+        });
+    }
+
+    /**
+     * Generate nomor SPJ otomatis dengan format BPS: SPJ/BPS7408/{TAHUN}/{URUT_4_DIGIT}
+     */
+    public static function generateNomorSpj(): string
+    {
+        $year = date('Y');
+        $prefix = "SPJ/BPS7408/{$year}/";
+
+        $lastSpj = self::where('nomor_spj', 'like', "{$prefix}%")
+            ->orderByDesc('id')
+            ->first();
+
+        $nextNumber = 1;
+        if ($lastSpj && preg_match('/\/(\d+)$/', (string) $lastSpj->nomor_spj, $matches)) {
+            $nextNumber = ((int) $matches[1]) + 1;
+        } else {
+            $countThisYear = self::whereYear('created_at', $year)->count();
+            $nextNumber = max($countThisYear + 1, 1);
+        }
+
+        $nomor = $prefix.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+
+        while (self::where('nomor_spj', $nomor)->exists()) {
+            $nextNumber++;
+            $nomor = $prefix.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+        }
+
+        return $nomor;
+    }
 }

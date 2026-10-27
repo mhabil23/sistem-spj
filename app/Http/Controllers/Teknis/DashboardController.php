@@ -13,7 +13,7 @@ class DashboardController extends Controller
         $userId = Auth::id() ?? 1; // Fallback jika tidak ada auth saat ini
 
         $totalSpj = Spj::where('user_id', $userId)->count();
-        $diprosesSpj = Spj::where('user_id', $userId)->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm'])->count();
+        $diprosesSpj = Spj::where('user_id', $userId)->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa'])->count();
         $dikembalikanSpj = Spj::where('user_id', $userId)->whereIn('status', ['revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])->count();
         $selesaiSpj = Spj::where('user_id', $userId)->where('status', 'selesai')->count();
 

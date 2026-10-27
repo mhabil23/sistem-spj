@@ -45,7 +45,7 @@ class TeknisSpjTest extends TestCase
         ]);
     }
 
-    public function test_teknis_create_spj_requires_nomor_spj(): void
+    public function test_teknis_create_spj_auto_generates_nomor_spj_when_empty(): void
     {
         $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
 
@@ -57,7 +57,16 @@ class TeknisSpjTest extends TestCase
             'status' => 'draft',
         ]);
 
-        $response->assertSessionHasErrors('nomor_spj');
+        $response->assertRedirect(route('teknis.spj.index'));
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Kegiatan Survei Sosial Ekonomi',
+            'nilai' => 1500000,
+            'status' => 'draft',
+        ]);
+
+        $spj = Spj::where('kegiatan', 'Kegiatan Survei Sosial Ekonomi')->first();
+        $this->assertNotNull($spj->nomor_spj);
+        $this->assertStringStartsWith('SPJ/BPS7408/', $spj->nomor_spj);
     }
 
     public function test_teknis_cannot_use_duplicate_nomor_spj(): void

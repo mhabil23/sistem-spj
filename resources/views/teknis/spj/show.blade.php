@@ -16,7 +16,7 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
         <p class="dashboard-heading-subtitle">Diajukan pada: {{ $spj->created_at->format('d F Y, H:i') }} &bull; No: <strong>{{ $spj->nomor_spj ?: '-' }}</strong></p>
     </div>
     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-        @if(in_array($spj->status, ['draft', 'dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm']))
+        @if(in_array($spj->status, ['draft', 'dikembalikan', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara']))
         <a href="{{ route('teknis.spj.edit', $spj->id) }}" class="btn-dash-primary" style="background-color: var(--dash-peach-text) !important;">
             <ion-icon name="create-outline"></ion-icon>
             Edit SPJ
