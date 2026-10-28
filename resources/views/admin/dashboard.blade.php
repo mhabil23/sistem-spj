@@ -740,6 +740,7 @@
     .shortcut-btn:nth-child(2) .shortcut-icon { background: var(--bps-green-light); color: var(--bps-green); }
     .shortcut-btn:nth-child(3) .shortcut-icon { background: var(--bps-orange-light); color: var(--bps-orange); }
     .shortcut-btn:nth-child(4) .shortcut-icon { background: #eff6ff; color: var(--bps-navy); }
+    .shortcut-btn:nth-child(5) .shortcut-icon { background: #ffe4e6; color: #e11d48; }
 
     .shortcut-label {
         font-size: 12.5px;
@@ -1331,6 +1332,12 @@
                             <i class="bi bi-file-earmark-plus-fill"></i>
                         </div>
                         <span class="shortcut-label">Input SPJ Baru</span>
+                    </a>
+                    <a href="{{ route('admin.template-berkas.index') }}" class="shortcut-btn">
+                        <div class="shortcut-icon">
+                            <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                        </div>
+                        <span class="shortcut-label">Template Berkas</span>
                     </a>
                     <a href="{{ route('admin.laporan.spj') }}" class="shortcut-btn">
                         <div class="shortcut-icon">

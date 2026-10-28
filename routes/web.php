@@ -9,7 +9,9 @@ use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('home');
+    $templates = TemplateBerkasController::getPublicTemplates();
+
+    return view('home', compact('templates'));
 });
 
 use App\Http\Controllers\AuthController;
