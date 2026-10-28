@@ -9,6 +9,10 @@
             <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
             Kotak Masuk SPJ
         </a>
+        <a href="{{ route('bendahara.berkas.index') }}" class="nav-item {{ request()->routeIs('bendahara.berkas.*') ? 'active' : '' }}">
+            <svg class="nav-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Verifikasi Berkas
+        </a>
 
         <div class="nav-label" style="font-size: 0.65rem; color: #94a3b8; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 0.5rem; margin-top: 1.5rem; padding-left: 0.5rem;">ARSIP</div>
         <a href="{{ route('bendahara.riwayat.index') }}" class="nav-item {{ request()->routeIs('bendahara.riwayat.*') ? 'active' : '' }}">

@@ -89,7 +89,9 @@ class SpjController extends Controller
             WhatsAppService::notifySubmitted($spj);
         }
 
-        $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan ke Umum.' : 'SPJ berhasil dibuat dan disimpan sebagai Draft.';
+        $msg = $request->status === 'diajukan'
+            ? 'SPJ berhasil diajukan. Harap segera bawa dan serahkan berkas fisik SPJ ke Subbagian Umum untuk verifikasi.'
+            : 'SPJ berhasil dibuat dan disimpan sebagai Draft.';
 
         return redirect()->route('teknis.spj.index')->with('success', $msg);
     }
@@ -180,7 +182,9 @@ class SpjController extends Controller
             WhatsAppService::notifySubmitted($spj);
         }
 
-        $msg = $request->status === 'diajukan' ? 'SPJ berhasil diajukan.' : 'Draft SPJ berhasil diperbarui.';
+        $msg = $request->status === 'diajukan'
+            ? 'SPJ berhasil diajukan. Harap segera serahkan berkas fisik SPJ ke Subbagian Umum untuk verifikasi.'
+            : 'Draft SPJ berhasil diperbarui.';
 
         return redirect()->route('teknis.spj.index')->with('success', $msg);
     }

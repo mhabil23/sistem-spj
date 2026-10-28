@@ -87,7 +87,24 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
             </div>
         </div>
 
-        <!-- STAT 4: PEMBAYARAN SELESAI -->
+        <!-- STAT 4: PROSES LS BANK / KLIRING -->
+        <div class="bnd-stat-card">
+            <div class="bnd-stat-icon violet">
+                <ion-icon name="paper-plane-outline"></ion-icon>
+            </div>
+            <div class="bnd-stat-info">
+                <div class="bnd-stat-label">Pembayaran LS Bank</div>
+                <div class="bnd-stat-value" style="color: #7c3aed;">
+                    {{ $totalProsesLs }} Berkas
+                </div>
+                <div class="bnd-stat-sub">
+                    <ion-icon name="time-outline" style="color: #7c3aed;"></ion-icon>
+                    <span>Rp {{ number_format($nilaiProsesLs, 0, ',', '.') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- STAT 5: PEMBAYARAN SELESAI -->
         <div class="bnd-stat-card success">
             <div class="bnd-stat-icon emerald">
                 <ion-icon name="checkmark-done-circle-outline"></ion-icon>
@@ -199,6 +216,15 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                                 <span class="bnd-badge bnd-badge-cyan" style="font-size: 10.5px; padding: 4px 10px;">
                                     <span class="bnd-badge-dot"></span>
                                     Menunggu OTP KPA
+                                </span>
+                            @elseif($spj->status === 'proses_ls')
+                                <span class="bnd-badge" style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; font-size: 10.5px; padding: 4px 10px;">
+                                    <span class="bnd-badge-dot" style="background: #7c3aed;"></span>
+                                    @if($spj->isHonor())
+                                        Kliring LS (3 Hari)
+                                    @else
+                                        Transfer LS
+                                    @endif
                                 </span>
                             @elseif($spj->status === 'disetujui_ppspm')
                                 <span class="bnd-badge bnd-badge-amber" style="font-size: 10.5px; padding: 4px 10px;">

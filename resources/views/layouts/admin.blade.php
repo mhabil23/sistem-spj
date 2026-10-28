@@ -52,6 +52,7 @@
             @include('components.admin.navbar')
 
             <x-center-toast />
+            <x-session-timeout-monitor />
 
 
             {{-- CONTENT --}}

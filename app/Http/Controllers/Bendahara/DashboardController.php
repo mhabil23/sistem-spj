@@ -9,11 +9,14 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $totalAntrean = Spj::whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa'])->count();
-        $nilaiAntrean = Spj::whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa'])->sum('nilai');
+        $totalAntrean = Spj::whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls'])->count();
+        $nilaiAntrean = Spj::whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls'])->sum('nilai');
 
         $totalMenungguOtp = Spj::where('status', 'menunggu_otp_kpa')->count();
         $nilaiMenungguOtp = Spj::where('status', 'menunggu_otp_kpa')->sum('nilai');
+
+        $totalProsesLs = Spj::where('status', 'proses_ls')->count();
+        $nilaiProsesLs = Spj::where('status', 'proses_ls')->sum('nilai');
 
         $siapDicairkanCount = Spj::where('status', 'disetujui_ppspm')->count();
         $nilaiSiapDicairkan = Spj::where('status', 'disetujui_ppspm')->sum('nilai');
@@ -24,7 +27,7 @@ class DashboardController extends Controller
         $totalRevisi = Spj::where('status', 'revisi_bendahara')->count();
 
         $antreanSpjs = Spj::with('user')
-            ->whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa'])
+            ->whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls'])
             ->orderBy('created_at', 'desc')
             ->take(6)
             ->get();
@@ -34,6 +37,8 @@ class DashboardController extends Controller
             'nilaiAntrean',
             'totalMenungguOtp',
             'nilaiMenungguOtp',
+            'totalProsesLs',
+            'nilaiProsesLs',
             'siapDicairkanCount',
             'nilaiSiapDicairkan',
             'totalSelesai',
