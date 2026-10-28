@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+    <defs>
+        <clipPath id="circleClip">
+            <circle cx="120" cy="120" r="120" />
+        </clipPath>
+    </defs>
+    <g clip-path="url(#circleClip)">
+        <!-- WhatsApp Neutral Soft Grey-Blue Background -->
+        <rect width="240" height="240" fill="#dfe5e7" />
+        
+        <!-- WhatsApp Base Profile Silhouette -->
+        <!-- Head -->
+        <circle cx="120" cy="84" r="44" fill="#ffffff" />
+        
+        <!-- Shoulders / Torso -->
+        <path d="M20 240 C20 180, 68 142, 120 142 C172 142, 220 180, 220 240 Z" fill="#ffffff" />
+    </g>
+</svg>

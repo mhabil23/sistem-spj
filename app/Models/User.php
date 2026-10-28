@@ -45,6 +45,10 @@ class User extends Authenticatable
             return Storage::url($this->avatar);
         }
 
+        if (file_exists(public_path('images/default-avatar.svg'))) {
+            return asset('images/default-avatar.svg');
+        }
+
         if (file_exists(public_path('images/avatar-user.jpg'))) {
             return asset('images/avatar-user.jpg');
         }

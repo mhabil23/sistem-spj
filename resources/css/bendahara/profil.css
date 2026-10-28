@@ -3,11 +3,11 @@
    ========================================================================== */
 
 :root {
-    --bnd-primary: #0284c7;
-    --bnd-primary-dark: #0369a1;
-    --bnd-primary-light: #f0f9ff;
-    --bnd-primary-border: #bae6fd;
-    --bnd-primary-glow: rgba(2, 132, 199, 0.25);
+    --bnd-primary: #059669;
+    --bnd-primary-dark: #047857;
+    --bnd-primary-light: #ecfdf5;
+    --bnd-primary-border: #a7f3d0;
+    --bnd-primary-glow: rgba(5, 150, 105, 0.25);
 
     --bnd-emerald: #059669;
     --bnd-emerald-dark: #047857;

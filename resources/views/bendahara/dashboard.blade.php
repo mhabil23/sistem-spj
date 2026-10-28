@@ -13,22 +13,22 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
 <div style="padding: 28px 36px; box-sizing: border-box; width: 100%;">
 
     <!-- HERO WELCOME BANNER -->
-    <div style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #0f172a 100%); border-radius: 16px; padding: 24px 32px; color: #ffffff; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.3); flex-wrap: wrap;">
+    <div style="background: linear-gradient(135deg, #047857 0%, #065f46 50%, #064e3b 100%); border-radius: 16px; padding: 24px 32px; color: #ffffff; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.35); flex-wrap: wrap;">
         <div>
             <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.25); padding: 4px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.03em;">
-                <ion-icon name="shield-checkmark" style="color: #38bdf8;"></ion-icon>
+                <ion-icon name="shield-checkmark" style="color: #6ee7b7;"></ion-icon>
                 <span>PANEL BENDAHARA PENGELUARAN &bull; BPS KOLAKA UTARA</span>
             </div>
             <h1 style="font-size: 24px; font-weight: 800; margin: 0 0 6px 0; letter-spacing: -0.02em;">
                 Selamat Datang, {{ auth()->user()->name ?? 'Bendahara' }}!
             </h1>
-            <p style="margin: 0; font-size: 13.5px; opacity: 0.9; max-width: 620px; line-height: 1.5;">
+            <p style="margin: 0; font-size: 13.5px; opacity: 0.95; max-width: 620px; line-height: 1.5; color: #e6fdf2;">
                 Pantau antrean pencairan dana SPJ, catat input maker QLOLA, dan pantau status otorisasi kode OTP dari Kuasa Pengguna Anggaran (KPA).
             </p>
         </div>
         <div style="display: flex; gap: 10px; align-items: center;">
-            <a href="{{ route('bendahara.spj.index') }}" class="bnd-btn" style="background: #ffffff; color: #0369a1; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-                <ion-icon name="file-tray-full-outline" style="font-size: 18px; color: #0284c7;"></ion-icon>
+            <a href="{{ route('bendahara.spj.index') }}" class="bnd-btn" style="background: #ffffff; color: #065f46; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <ion-icon name="file-tray-full-outline" style="font-size: 18px; color: #059669;"></ion-icon>
                 <span>Buka Kotak Masuk ({{ $totalAntrean }})</span>
             </a>
         </div>

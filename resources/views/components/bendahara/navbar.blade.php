@@ -1,21 +1,34 @@
-<header class="topbar">
-    <div style="display: flex; align-items: center;">
-        <button type="button" class="mobile-menu" onclick="toggleSidebar()" style="margin-right: 1rem;">
-            ☰
+@props(['title' => ''])
+
+<header class="topbar-container">
+    <div class="topbar-left">
+        <button type="button" class="mobile-toggle-btn" onclick="toggleSidebar()">
+            <ion-icon name="menu-outline"></ion-icon>
         </button>
-        <img src="{{ asset('images/logo-bps.png') }}" alt="Logo BPS" style="height: 40px; margin-right: 1.5rem;" class="navbar-logo">
+        <h1 class="welcome-heading">
+            Welcome {{ Auth::user()->name ? explode(' ', Auth::user()->name)[0] : 'Bendahara' }} !
+        </h1>
     </div>
-    <div class="page-title"></div>
+
     <div class="topbar-right">
-        <div class="top-user">
-            <div class="top-avatar" style="overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 0;">
-                <img src="{{ Auth::user()->avatar_url }}" alt="{{ Auth::user()->name ?? 'Bendahara' }}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-            </div>
-            <div class="top-user-info">
-                <strong>{{ Auth::user()->name ?? 'Pengguna Umum' }}</strong>
-                <small>Bendahara</small>
-            </div>
+        <!-- Search Pill -->
+        <div class="search-pill-wrapper">
+            <input type="text" class="search-pill-input" placeholder="Search">
+            <button type="button" class="search-pill-btn" aria-label="Cari">
+                <ion-icon name="search-outline"></ion-icon>
+            </button>
+        </div>
+
+        <!-- Dark Mode Toggle Switch -->
+        <div class="theme-toggle-pill" id="themeToggleBtn" title="Ubah Mode Gelap / Terang" onclick="toggleThemeMode()" role="button" tabindex="0">
+            <span class="toggle-thumb"></span>
+            <ion-icon name="moon" class="toggle-moon-icon"></ion-icon>
+        </div>
+
+        <!-- Notification Bell -->
+        <div class="notif-bell-btn" title="Notifikasi">
+            <ion-icon name="notifications-outline"></ion-icon>
+            <span class="notif-dot"></span>
         </div>
     </div>
 </header>
-

@@ -3,11 +3,11 @@
    ========================================================================== */
 
 :root {
-    --bnd-primary: #0284c7;
-    --bnd-primary-dark: #0369a1;
-    --bnd-primary-light: #f0f9ff;
-    --bnd-primary-border: #bae6fd;
-    --bnd-primary-glow: rgba(2, 132, 199, 0.25);
+    --bnd-primary: #059669;
+    --bnd-primary-dark: #047857;
+    --bnd-primary-light: #ecfdf5;
+    --bnd-primary-border: #a7f3d0;
+    --bnd-primary-glow: rgba(5, 150, 105, 0.25);
 
     --bnd-emerald: #059669;
     --bnd-emerald-dark: #047857;
@@ -1535,3 +1535,67 @@
         flex: 1;
     }
 }
+
+/* ==========================================================================
+   DARK THEME OVERRIDES FOR BENDAHARA SPJ
+   ========================================================================== */
+html.dark-theme {
+    --bnd-card-bg: #0c2720;
+    --bnd-slate-900: #f0fdf4;
+    --bnd-slate-800: #ecfdf5;
+    --bnd-slate-700: #d1fae5;
+    --bnd-slate-600: #a7f3d0;
+    --bnd-slate-500: #6ee7b7;
+    --bnd-slate-400: #86efac;
+    --bnd-slate-200: #134e3f;
+    --bnd-slate-100: #0a2e26;
+    --bnd-slate-50: #071f1a;
+
+    --bnd-primary-light: rgba(5, 150, 105, 0.2);
+    --bnd-primary-border: #134e3f;
+    --bnd-emerald-light: rgba(5, 150, 105, 0.2);
+    --bnd-emerald-border: #134e3f;
+}
+
+html.dark-theme .bnd-stat-card,
+html.dark-theme .bnd-table-card,
+html.dark-theme .bnd-filter-card,
+html.dark-theme .bnd-card,
+html.dark-theme .bnd-modal-card {
+    background-color: var(--bnd-card-bg);
+    border-color: #134e3f;
+}
+
+html.dark-theme .bnd-table th {
+    background-color: #06221c !important;
+    border-color: #134e3f !important;
+    color: #86efac !important;
+}
+
+html.dark-theme .bnd-table td {
+    border-color: #134e3f !important;
+    color: #f0fdf4 !important;
+}
+
+html.dark-theme .bnd-table tr:hover td {
+    background-color: #0e332a !important;
+}
+
+html.dark-theme .bnd-form-control,
+html.dark-theme .bnd-choice-input {
+    background-color: #081f19;
+    border-color: #155e4b;
+    color: #f0fdf4;
+}
+
+html.dark-theme .bnd-filter-title,
+html.dark-theme .bnd-toolbar-title {
+    color: #f0fdf4;
+}
+
+html.dark-theme .bnd-btn-back {
+    background-color: #0d2c24;
+    border-color: #155e4b;
+    color: #a7f3d0;
+}
+
