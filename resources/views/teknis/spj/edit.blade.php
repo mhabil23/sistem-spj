@@ -128,8 +128,8 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                     <label class="spj-radio-card">
                         <input type="radio" name="status" value="diajukan" {{ old('status', $spj->status) !== 'draft' ? 'checked' : '' }}>
                         <div class="spj-radio-content">
-                            <strong>Ajukan Ulang</strong>
-                            <span>Kirim kembali ke Umum/PPSPM setelah perbaikan</span>
+                            <strong>Ajukan Ulang &amp; Bawa Berkas Fisik ke Umum</strong>
+                            <span>Kirim kembali dan serahkan berkas fisik perbaikan ke meja Subbagian Umum</span>
                         </div>
                     </label>
                 </div>

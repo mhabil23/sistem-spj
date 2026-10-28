@@ -95,6 +95,7 @@ class WhatsAppService
             ."• *Kegiatan*: {$spj->kegiatan}\n"
             ."• *Nilai*   : Rp {$nilaiRp}\n"
             ."• *Waktu*   : {$waktu}\n\n"
+            ."Pengaju diarahkan untuk membawa dan menyerahkan dokumen fisik SPJ ke meja Subbagian Umum.\n\n"
             ."Silakan masuk ke sistem untuk memeriksa kelengkapan berkas:\n"
             .url('/umum/spj/'.$spj->id)."\n\n"
             .'_Sistem Informasi Penyelesaian Tagihan (SPJ)_';
@@ -133,6 +134,14 @@ class WhatsAppService
             case 'qlola':
                 $judul = '⏳ *MENUNGGU OTP QLOLA KPA*';
                 $tahapBerikutnya = 'Transaksi pembayaran telah diinput ke sistem BRI QLOLA oleh Bendahara dan saat ini sedang menunggu otorisasi kode OTP dari KPA.';
+                break;
+            case 'bayar_ls':
+            case 'proses_ls':
+                $isHonor = $spj->isHonor();
+                $judul = '🏦 *PEMBAYARAN SPJ DIPROSES VIA LS BANK*';
+                $tahapBerikutnya = $isHonor
+                    ? 'Pembayaran honorarium telah diajukan ke perbankan melalui mekanisme LS. Menunggu proses kliring/transfer antar-bank (estimasi maksimal 3 hari kerja).'
+                    : 'Pembayaran telah diajukan via mekanisme LS. Menunggu penerbitan SP2D dan transfer langsung dari bank ke rekening tujuan.';
                 break;
             case 'Selesai':
             case 'selesai':

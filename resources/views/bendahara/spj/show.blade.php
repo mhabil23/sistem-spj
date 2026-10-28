@@ -32,12 +32,15 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                     if ($spj->status === 'menunggu_otp_kpa') {
                         $badgeClass = 'bnd-badge-cyan';
                         $badgeText = 'Menunggu OTP QLOLA KPA';
+                    } elseif ($spj->status === 'proses_ls') {
+                        $badgeClass = 'bnd-badge-amber';
+                        $badgeText = $spj->status_label;
                     } elseif ($spj->status === 'selesai') {
                         $badgeClass = 'bnd-badge-mint';
                         $badgeText = 'Pembayaran Selesai';
                     } elseif ($spj->status === 'disetujui_ppspm') {
-                        $badgeClass = 'bnd-badge-mint';
-                        $badgeText = 'Siap Dicairkan (PPSPM)';
+                        $badgeClass = 'bnd-badge-blue';
+                        $badgeText = 'Siap Diproses Bendahara (SPM Terbit)';
                     } elseif (str_contains($spj->status, 'revisi') || $spj->status === 'dikembalikan') {
                         $badgeClass = 'bnd-badge-rose';
                         $badgeText = 'Perlu Revisi';
@@ -57,16 +60,18 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                     <ion-icon name="person-outline"></ion-icon>
                     <span>Pengaju: <strong>{{ $spj->user->name ?? 'Staf Teknis' }}</strong></span>
                 </div>
-                @if($spj->nomor_spj)
                 <div class="bnd-header-meta-item">
                     <ion-icon name="document-text-outline"></ion-icon>
-                    <span>No. SPJ: <strong>{{ $spj->nomor_spj }}</strong></span>
+                    <span>No. SPJ: <strong style="color: #0284c7;">{{ $spj->nomor_spj }}</strong></span>
                 </div>
-                @endif
             </div>
         </div>
 
         <div class="bnd-header-actions">
+            <a href="{{ route('bendahara.berkas.show', $spj->id) }}" class="bnd-btn" style="background: #0284c7; color: #ffffff;">
+                <ion-icon name="checkbox-outline" style="font-size: 17px;"></ion-icon>
+                <span>Halaman Verifikasi Berkas</span>
+            </a>
             <button type="button" onclick="openWaModal()" class="bnd-btn bnd-btn-wa">
                 <ion-icon name="logo-whatsapp" style="font-size: 17px;"></ion-icon>
                 <span>Kirim WhatsApp</span>
@@ -115,6 +120,28 @@ $title = 'Detail Pencairan SPJ - Bendahara';
     <button type="button" onclick="openWaModal('otp_kpa')" class="bnd-btn" style="background: #2563eb; color: #ffffff; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
         <ion-icon name="notifications-outline" style="font-size: 16px;"></ion-icon>
         <span>Ingatkan KPA / Teknis</span>
+    </button>
+</div>
+@endif
+
+{{-- BANNER PROSES PEMBAYARAN LS BANK --}}
+@if($spj->status === 'proses_ls')
+<div class="bnd-alert-banner otp" style="background: #fff7ed; border-color: #fed7aa; color: #9a3412;">
+    <div class="bnd-alert-content">
+        <div class="bnd-alert-icon" style="background: #ea580c; color: #ffffff;">
+            <ion-icon name="business-outline"></ion-icon>
+        </div>
+        <div>
+            <h4 class="bnd-alert-title" style="color: #9a3412;">Status Saat Ini: {{ $spj->status_label }}</h4>
+            <p class="bnd-alert-text" style="color: #7c2d12;">
+                {{ $spj->keterangan_ls }}
+                Setelah transfer bank masuk ke rekening penerima, silakan klik tombol <strong>"Konfirmasi Selesai / Telah Dicairkan"</strong> di bawah.
+            </p>
+        </div>
+    </div>
+    <button type="button" onclick="openWaModal('bayar_ls')" class="bnd-btn" style="background: #ea580c; color: #ffffff; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.25);">
+        <ion-icon name="logo-whatsapp" style="font-size: 16px;"></ion-icon>
+        <span>Info Status LS via WA</span>
     </button>
 </div>
 @endif
@@ -246,35 +273,121 @@ $title = 'Detail Pencairan SPJ - Bendahara';
         </div>
         @endif
 
-        <!-- LAMPIRAN FILE DOKUMEN -->
-        <div>
-            <label style="display: block; font-size: 12px; font-weight: 700; color: var(--bnd-slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
-                Berkas Dokumen SPJ
-            </label>
-            @if($spj->dokumen_file)
-                <div class="bnd-doc-item">
+        <!-- KELENGKAPAN BERKAS & CHECKLIST VERIFIKASI (BENDAHARA) -->
+        <div style="margin-top: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <label style="display: block; font-size: 13px; font-weight: 800; color: var(--bnd-slate-900); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">
+                        Pemeriksaan Kelengkapan Berkas Fisik &amp; Syarat Perpajakan
+                    </label>
+                    <span style="font-size: 12.5px; color: var(--bnd-slate-500);">
+                        Berkas yang dicentang di awal oleh Teknis dan berkas khusus yang harus dicentang oleh Bendahara.
+                    </span>
+                </div>
+                <a href="{{ route('bendahara.berkas.show', $spj->id) }}" class="bnd-btn" style="background: #0284c7; color: #ffffff; padding: 6px 14px; font-size: 12px;">
+                    <ion-icon name="open-outline"></ion-icon>
+                    <span>Buka Halaman Verifikasi Berkas Penuh</span>
+                </a>
+            </div>
+
+            <!-- GRID 2 KOLOM: BERKAS AWAL TEKNIS & BERKAS BENDAHARA -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+                
+                <!-- KOLOM 1: BERKAS DICENTANG DI AWAL (TEKNIS) -->
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 18px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <ion-icon name="checkmark-circle" style="color: #16a34a; font-size: 20px;"></ion-icon>
+                            <h4 style="margin: 0; font-size: 13.5px; font-weight: 700; color: #14532d;">Dicentang di Awal (Staf Teknis)</h4>
+                        </div>
+                        <span style="font-size: 11px; font-weight: 700; background: #dcfce7; color: #15803d; padding: 2px 8px; border-radius: 999px;">
+                            {{ count(array_filter($berkasTeknis ?? [], fn($d) => !empty($d['disiapkan']))) }}/{{ count($berkasTeknis ?? []) }} Siap
+                        </span>
+                    </div>
+
+                    @if(!empty($berkasTeknis) && count($berkasTeknis) > 0)
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            @foreach($berkasTeknis as $d)
+                                <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #dcfce7; border-radius: 8px; padding: 8px 12px; font-size: 12.5px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; color: #14532d;">
+                                        <ion-icon name="checkmark-circle" style="color: #16a34a; font-size: 16px;"></ion-icon>
+                                        <span style="font-weight: 600;">{{ $d['nama'] }}</span>
+                                    </div>
+                                    <span style="font-size: 11px; color: #16a34a; font-weight: 700;">✔ Ada</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p style="font-size: 12.5px; color: #166534; font-style: italic; margin: 0;">Tidak ada checklist berkas teknis khusus.</p>
+                    @endif
+                </div>
+
+                <!-- KOLOM 2: BERKAS BAGIAN BENDAHARA (DAPAT DICENTANG) -->
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 18px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <ion-icon name="checkbox-outline" style="color: #2563eb; font-size: 20px;"></ion-icon>
+                            <h4 style="margin: 0; font-size: 13.5px; font-weight: 700; color: #1e3a8a;">Bagian Bendahara (Pajak &amp; Bayar)</h4>
+                        </div>
+                        <span style="font-size: 11px; font-weight: 700; background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 999px;">
+                            {{ count(array_filter($berkasBendahara ?? [], fn($d) => !empty($d['disiapkan']))) }}/{{ count($berkasBendahara ?? []) }} Dicentang
+                        </span>
+                    </div>
+
+                    <form action="{{ route('bendahara.spj.checklist', $spj->id) }}" method="POST">
+                        @csrf
+                        @if(!empty($berkasBendahara) && count($berkasBendahara) > 0)
+                            <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;">
+                                @foreach($berkasBendahara as $idx => $d)
+                                    @php
+                                        $isReady = !empty($d['disiapkan']);
+                                        $inputKey = $d['index'];
+                                        $isVirtual = !empty($d['is_virtual']);
+                                    @endphp
+                                    <label style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid {{ $isReady ? '#93c5fd' : '#cbd5e1' }}; border-radius: 8px; padding: 8px 12px; font-size: 12.5px; cursor: pointer;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <input type="checkbox" name="berkas_bendahara[{{ $inputKey }}]" value="1" style="width: 17px; height: 17px; accent-color: #0284c7; cursor: pointer;" {{ $isReady ? 'checked' : '' }}>
+                                            <span style="font-weight: 600; color: #0f172a;">{{ $d['nama'] }}</span>
+                                        </div>
+                                        @if($isVirtual)
+                                            <input type="hidden" name="berkas_virtual[{{ $loop->index }}]" value="{{ $d['nama'] }}">
+                                        @endif
+                                        <span style="font-size: 11px; color: {{ $isReady ? '#2563eb' : '#d97706' }}; font-weight: 700;">
+                                            {{ $isReady ? '✔ Dicentang' : 'Belum' }}
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
+
+                            <button type="submit" class="bnd-btn" style="width: 100%; justify-content: center; background: #0284c7; color: #ffffff; padding: 7px 12px; font-size: 12px; font-weight: 700;">
+                                <ion-icon name="save-outline"></ion-icon> Simpan Centang Berkas Bendahara
+                            </button>
+                        @else
+                            <p style="font-size: 12.5px; color: #1e40af; font-style: italic; margin: 0;">Tidak ada berkas khusus Bendahara.</p>
+                        @endif
+                    </form>
+                </div>
+
+            </div>
+
+            @if($spj->dokumen_file && !is_array(json_decode($spj->dokumen_file, true)))
+                <!-- LAMPIRAN FILE UPLOAD LAMA JIKA ADA -->
+                <div class="bnd-doc-item" style="margin-top: 14px;">
                     <div class="bnd-doc-left">
                         <div class="bnd-doc-icon">
                             <ion-icon name="document-attach-outline"></ion-icon>
                         </div>
                         <div>
-                            <h4 class="bnd-doc-title">Dokumen SPJ Lengkap (Fisik / Digital)</h4>
+                            <h4 class="bnd-doc-title">Lampiran File Digital</h4>
                             <div class="bnd-doc-meta">
-                                <span>Lampiran resmi dari staf pengaju</span>
-                                <span>&bull;</span>
-                                <span>Format PDF / Gambar</span>
+                                <span>File bukti digital terunggah</span>
                             </div>
                         </div>
                     </div>
-                    <a href="{{ asset('storage/' . $spj->dokumen_file) }}" target="_blank" class="bnd-btn" style="background: #2563eb; color: #ffffff; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+                    <a href="{{ asset('storage/' . $spj->dokumen_file) }}" target="_blank" class="bnd-btn" style="background: #2563eb; color: #ffffff;">
                         <ion-icon name="open-outline"></ion-icon>
                         <span>Lihat Dokumen Asli</span>
                     </a>
-                </div>
-            @else
-                <div style="background-color: #fff1f2; color: #9f1239; padding: 14px 18px; border-radius: 10px; border: 1px solid #fecdd3; display: flex; align-items: center; gap: 10px; font-size: 13px;">
-                    <ion-icon name="alert-circle-outline" style="font-size: 22px; color: #e11d48;"></ion-icon>
-                    <span>Tidak ada file lampiran digital yang diunggah pada SPJ ini. Pemeriksaan dilakukan langsung terhadap berkas fisik.</span>
                 </div>
             @endif
         </div>
@@ -282,7 +395,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
 </div>
 
 <!-- PANEL EKSEKUSI PENCAIRAN DANA (BENDAHARA) -->
-@if($spj->status == 'disetujui_ppspm' || $spj->status == 'menunggu_otp_kpa')
+@if(in_array($spj->status, ['disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']))
 <div class="bnd-card" style="border: 2px solid #cbd5e1; box-shadow: var(--bnd-shadow-lg);">
     <div class="bnd-card-header" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
         <div class="bnd-card-header-left">
@@ -290,74 +403,78 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                 <ion-icon name="cash-outline"></ion-icon>
             </div>
             <div>
-                <h3 class="bnd-card-header-title">Eksekusi Pencairan Dana &amp; Pembayaran (Bendahara)</h3>
-                <p class="bnd-card-header-desc">Pilih status tahapan pembayaran sesuai alur sistem perbankan BRI QLOLA &amp; otorisasi KPA.</p>
+                <h3 class="bnd-card-header-title">Eksekusi Pembayaran &amp; Pencairan Dana (Bendahara)</h3>
+                <p class="bnd-card-header-desc">
+                    Pilih metode pembayaran (CMS BRI QLOLA / Pembayaran LS Bank) sesuai ketentuan SPJ.
+                </p>
             </div>
         </div>
     </div>
     <div class="bnd-card-body">
+        
+        {{-- KONDISI 1: STATUS DISETUJUI PPSPM (PILIH METODE PEMBAYARAN) --}}
+        @if($spj->status === 'disetujui_ppspm')
         <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST">
             @csrf
 
-            <!-- 2 TOMBOL PILIHAN UTAMA -->
-            <div class="bnd-execution-grid">
+            <!-- 2 PILIHAN METODE UTAMA -->
+            <div class="bnd-execution-grid" style="grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
                 
                 <!-- PILIHAN 1: MENUNGGU OTP QLOLA KPA -->
-                <div class="bnd-choice-card card-otp">
-                    <div class="bnd-choice-ribbon">Tahap 1 QLOLA</div>
+                <div class="bnd-choice-card card-otp" style="border: 2px solid #93c5fd; background: #ffffff;">
+                    <div class="bnd-choice-ribbon" style="background: #2563eb; color: #ffffff;">Metode QLOLA BRI</div>
                     <div>
                         <div class="bnd-choice-head">
-                            <div class="bnd-choice-icon">
+                            <div class="bnd-choice-icon" style="background: #eff6ff; color: #2563eb;">
                                 <ion-icon name="key-outline"></ion-icon>
                             </div>
-                            <h3 class="bnd-choice-title">Menunggu OTP QLOLA KPA</h3>
+                            <h3 class="bnd-choice-title">Transaksi CMS BRI QLOLA</h3>
                         </div>
                         <p class="bnd-choice-desc">
-                            Pilih opsi ini jika transaksi pembayaran telah Anda input ke portal <strong>BRI QLOLA</strong> dan saat ini sedang menunggu otorisasi kode OTP dari <strong>Kuasa Pengguna Anggaran (KPA)</strong>.
+                            Pilih opsi ini jika transaksi telah diinput ke portal <strong>BRI QLOLA</strong> oleh Bendahara dan saat ini menunggu otorisasi OTP dari <strong>Kuasa Pengguna Anggaran (KPA)</strong>.
                         </p>
 
                         <label class="bnd-choice-input-label">Catatan / Referensi QLOLA Maker (Opsional):</label>
-                        <input type="text" name="keterangan_otp" class="bnd-choice-input" placeholder="Contoh: Batch Maker #2401 - Menunggu KPA approve">
+                        <input type="text" name="keterangan_otp" class="bnd-choice-input" placeholder="Contoh: Batch Maker #{{ date('Ymd') }}-01 Menunggu KPA">
                     </div>
 
-                    <div class="bnd-choice-actions">
-                        <button type="submit" name="action" value="otp_kpa" class="bnd-btn-submit-otp">
+                    <div class="bnd-choice-actions" style="margin-top: 18px;">
+                        <button type="submit" name="action" value="otp_kpa" class="bnd-btn-submit-otp" style="width: 100%; justify-content: center;">
                             <ion-icon name="key-outline" style="font-size: 18px;"></ion-icon>
-                            <span>Menunggu OTP QLOLA KPA</span>
-                        </button>
-                        <button type="button" onclick="openWaModal('otp_kpa')" class="bnd-btn-choice-wa" title="Kirim Info Menunggu OTP via WhatsApp">
-                            <ion-icon name="logo-whatsapp"></ion-icon>
-                            <span>WA</span>
+                            <span>Set Status: Menunggu OTP QLOLA KPA</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- PILIHAN 2: PROSES PEMBAYARAN TELAH SELESAI -->
-                <div class="bnd-choice-card card-cair">
-                    <div class="bnd-choice-ribbon">Tahap 2 Selesai</div>
+                <!-- PILIHAN 2: PEMBAYARAN LANGSUNG (LS BANK) -->
+                <div class="bnd-choice-card" style="border: 2px solid #fed7aa; background: #ffffff;">
+                    <div class="bnd-choice-ribbon" style="background: #ea580c; color: #ffffff;">Metode LS KPPN / Bank</div>
                     <div>
                         <div class="bnd-choice-head">
-                            <div class="bnd-choice-icon">
-                                <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+                            <div class="bnd-choice-icon" style="background: #fff7ed; color: #ea580c;">
+                                <ion-icon name="business-outline"></ion-icon>
                             </div>
-                            <h3 class="bnd-choice-title">Proses Pembayaran Selesai</h3>
+                            <h3 class="bnd-choice-title">Pembayaran Langsung (LS)</h3>
                         </div>
-                        <p class="bnd-choice-desc">
-                            Kode OTP KPA telah dimasukkan &amp; dana berhasil ditransfer via QLOLA. Pilih tombol ini untuk mengonfirmasi bahwa <strong>proses pembayaran telah selesai, silahkan cek rekening</strong>.
-                        </p>
+                        
+                        @if($spj->isHonor())
+                            <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 12.5px; color: #92400e; line-height: 1.5;">
+                                <strong>Kategori Honorarium:</strong> Status akan diset <em>"Menunggu Kliring Bank LS (Maks. 3 Hari Kerja)"</em> karena menunggu kliring transfer antar-bank.
+                            </div>
+                        @else
+                            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 12.5px; color: #1e40af; line-height: 1.5;">
+                                <strong>Kategori Non-Honor:</strong> Status akan diset <em>"Menunggu Transfer Bank Langsung (LS)"</em> menunggu SP2D dan transfer bank ke rekening rekanan.
+                            </div>
+                        @endif
 
-                        <label class="bnd-choice-input-label">Bukti Transfer / No. Referensi Transaksi (Opsional):</label>
-                        <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: REF-QLOLA-9283719 atau No. Resi Bank" value="{{ $spj->bukti_transfer ?? '' }}">
+                        <label class="bnd-choice-input-label">Nomor SP2D / Catatan LS Bank (Opsional):</label>
+                        <input type="text" name="nomor_sp2d_ls" class="bnd-choice-input" placeholder="Contoh: SP2D-LS-{{ date('Ymd') }}-BPS">
                     </div>
 
-                    <div class="bnd-choice-actions">
-                        <button type="submit" name="action" value="setujui" class="bnd-btn-submit-cair">
-                            <ion-icon name="wallet-outline" style="font-size: 18px;"></ion-icon>
-                            <span>Proses Pembayaran Telah Selesai, Silahkan Cek Rekening</span>
-                        </button>
-                        <button type="button" onclick="openWaModalWithBukti('cair')" class="bnd-btn-choice-wa" title="Kirim Konfirmasi Pencairan via WhatsApp">
-                            <ion-icon name="logo-whatsapp"></ion-icon>
-                            <span>WA</span>
+                    <div class="bnd-choice-actions" style="margin-top: 18px;">
+                        <button type="submit" name="action" value="bayar_ls" class="bnd-btn" style="width: 100%; justify-content: center; background: #ea580c; color: #ffffff; padding: 12px; font-weight: 700; border-radius: 10px;">
+                            <ion-icon name="paper-plane-outline" style="font-size: 18px;"></ion-icon>
+                            <span>Set Status: Pembayaran LS Diajukan ke Bank</span>
                         </button>
                     </div>
                 </div>
@@ -400,6 +517,73 @@ $title = 'Detail Pencairan SPJ - Bendahara';
             </div>
 
         </form>
+
+        {{-- KONDISI 2: STATUS MENUNGGU OTP QLOLA KPA (MUNCUL TOMBOL SELESAI AKHIR SETELAH OTP KPA) --}}
+        @elseif($spj->status === 'menunggu_otp_kpa')
+        <div style="background: #eff6ff; border: 1.5px solid #93c5fd; border-radius: 12px; padding: 22px;">
+            <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px;">
+                <div style="background: #2563eb; color: #ffffff; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                    <ion-icon name="key-outline"></ion-icon>
+                </div>
+                <div>
+                    <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #1e3a8a;">
+                        Tahap Terakhir QLOLA: Otorisasi OTP KPA Telah Selesai
+                    </h3>
+                    <p style="margin: 0; font-size: 13.5px; color: #1e40af; line-height: 1.5;">
+                        Kode OTP dari KPA telah dimasukkan &amp; dana berhasil ditransfer via BRI QLOLA. Masukkan nomor bukti/resi transfer dan konfirmasi bahwa <strong>proses pembayaran telah selesai, silakan cek rekening</strong>.
+                    </p>
+                </div>
+            </div>
+
+            <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST" onsubmit="return bukaModalKonfirmasiCair(event, this, 'Transaksi CMS BRI QLOLA (OTP KPA)');">
+                @csrf
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: flex-end;">
+                    <div>
+                        <label class="bnd-choice-input-label">Bukti Transfer / No. Referensi Transaksi QLOLA (Opsional):</label>
+                        <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: REF-QLOLA-{{ date('Ymd') }}-9283719" value="{{ $spj->bukti_transfer ?: '' }}">
+                    </div>
+                    <button type="submit" name="action" value="setujui" class="bnd-btn-submit-cair" style="height: 44px; padding: 0 24px;">
+                        <ion-icon name="checkmark-done-circle" style="font-size: 20px;"></ion-icon>
+                        <span>Konfirmasi Selesai / Telah Dicairkan</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        {{-- KONDISI 3: STATUS PROSES LS (MUNCUL TOMBOL SELESAI AKHIR SETELAH BANK TRANSFER) --}}
+        @elseif($spj->status === 'proses_ls')
+        <div style="background: #fff7ed; border: 1.5px solid #fed7aa; border-radius: 12px; padding: 22px;">
+            <div style="display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px;">
+                <div style="background: #ea580c; color: #ffffff; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                    <ion-icon name="business-outline"></ion-icon>
+                </div>
+                <div>
+                    <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 800; color: #9a3412;">
+                        Tahap Terakhir LS: Konfirmasi Transfer Bank Telah Masuk Rekening
+                    </h3>
+                    <p style="margin: 0; font-size: 13.5px; color: #7c2d12; line-height: 1.5;">
+                        {{ $spj->keterangan_ls }}
+                        Setelah dana terdistribusi ke rekening penerima/rekanan, konfirmasi penyelesaian pembayaran di bawah.
+                    </p>
+                </div>
+            </div>
+
+            <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST" onsubmit="return bukaModalKonfirmasiCair(event, this, 'Pembayaran Langsung (LS Bank)');">
+                @csrf
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: flex-end;">
+                    <div>
+                        <label class="bnd-choice-input-label">Nomor SP2D / Bukti Transfer Bank LS:</label>
+                        <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: SP2D-LS-{{ date('Ymd') }}-BPS" value="{{ $spj->bukti_transfer ?: '' }}">
+                    </div>
+                    <button type="submit" name="action" value="setujui" class="bnd-btn" style="background: #059669; color: #ffffff; padding: 0 24px; height: 44px; font-weight: 700; font-size: 14px; border-radius: 10px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
+                        <ion-icon name="checkmark-done-circle" style="font-size: 20px;"></ion-icon>
+                        <span>Konfirmasi Selesai / Dana Telah Masuk Rekening</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        @endif
+
     </div>
 </div>
 @endif
@@ -475,6 +659,8 @@ $title = 'Detail Pencairan SPJ - Bendahara';
         </div>
     </div>
 </div>
+
+<x-bendahara.modal-konfirmasi-cair :spj="$spj" />
 
 @php
     $spjJsData = [

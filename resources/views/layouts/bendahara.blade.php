@@ -17,6 +17,7 @@
         <x-bendahara.navbar />
 
         <x-center-toast />
+        <x-session-timeout-monitor />
 
         @yield('content')
     </div>

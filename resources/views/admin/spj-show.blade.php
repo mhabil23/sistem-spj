@@ -252,6 +252,7 @@
     .badge-status-pill.disetujui_ppk { background: #e0e7ff; color: #3730a3; }
     .badge-status-pill.disetujui_ppspm { background: #dcfce7; color: #15803d; }
     .badge-status-pill.menunggu_otp_kpa { background: #dbeafe; color: #1d4ed8; }
+    .badge-status-pill.proses_ls { background: #ede9fe; color: #7c3aed; }
     .badge-status-pill.selesai { background: #dcfce7; color: #166534; }
     .badge-status-pill.revisi { background: #fee2e2; color: #b91c1c; }
     .badge-status-pill.draft { background: #f1f5f9; color: #475569; }
@@ -442,6 +443,16 @@
                 </p>
             </div>
         </div>
+    @elseif($spj->status === 'proses_ls')
+        <div class="alert-banner" style="background: #f5f3ff; border: 1px solid #ddd6fe; color: #5b21b6; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 12px; margin-bottom: 24px; display: flex; gap: 14px; align-items: flex-start;">
+            <i class="bi bi-send-fill" style="font-size: 20px; color: #7c3aed;"></i>
+            <div class="alert-content">
+                <h4 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #5b21b6;">{{ $spj->status_label }}</h4>
+                <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #4c1d95;">
+                    {{ $spj->keterangan_ls }}
+                </p>
+            </div>
+        </div>
     @elseif($spj->status === 'selesai')
         <div class="alert-banner success">
             <i class="bi bi-check-circle-fill"></i>
@@ -477,12 +488,13 @@
                         elseif ($spj->status === 'disetujui_ppk') $badgeClass = 'disetujui_ppk';
                         elseif ($spj->status === 'disetujui_ppspm') $badgeClass = 'disetujui_ppspm';
                         elseif ($spj->status === 'menunggu_otp_kpa') $badgeClass = 'menunggu_otp_kpa';
+                        elseif ($spj->status === 'proses_ls') $badgeClass = 'proses_ls';
                         elseif ($spj->status === 'selesai') $badgeClass = 'selesai';
                         elseif (str_contains((string) $spj->status, 'revisi')) $badgeClass = 'revisi';
                     @endphp
                     <span class="badge-status-pill {{ $badgeClass }}">
                         <i class="bi bi-circle-fill" style="font-size: 7px;"></i>
-                        {{ strtoupper(str_replace('_', ' ', $spj->status)) }}
+                        {{ $spj->status_label }}
                     </span>
                 </div>
 

@@ -54,4 +54,31 @@ class AuthController extends Controller
 
         return redirect('/');
     }
+
+    public function logoutIdle(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login')
+            ->with('warning', 'Sesi Anda telah berakhir');
+    }
+
+    public function pingSession(Request $request)
+    {
+        if (Auth::check()) {
+            $request->session()->put('last_active_at', time());
+
+            return response()->json([
+                'status' => 'active',
+                'time' => time(),
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'unauthenticated',
+        ], 401);
+    }
 }

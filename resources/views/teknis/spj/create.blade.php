@@ -195,8 +195,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     <label class="spj-radio-card">
                         <input type="radio" name="status" value="diajukan" {{ old('status') === 'diajukan' ? 'checked' : '' }}>
                         <div class="spj-radio-content">
-                            <strong>Ajukan Sekarang</strong>
-                            <span>Langsung dikirim ke Umum/PPSPM untuk proses verifikasi</span>
+                            <strong>Ajukan &amp; Bawa Berkas Fisik ke Umum</strong>
+                            <span>Simpan pengajuan dan segera serahkan berkas fisik ke meja Subbagian Umum</span>
                         </div>
                     </label>
                 </div>

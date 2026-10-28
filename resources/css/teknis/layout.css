@@ -884,8 +884,13 @@ input:focus, select:focus, textarea:focus {
     color: var(--dash-text-muted) !important;
 }
 
-.dash-badge-draft .badge-dot {
-    background-color: var(--dash-text-muted) !important;
+.dash-badge-purple {
+    background-color: #ede9fe !important;
+    color: #7c3aed !important;
+}
+
+.dash-badge-purple .badge-dot {
+    background-color: #7c3aed !important;
 }
 
 /* Mobile Responsive */

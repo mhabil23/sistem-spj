@@ -246,6 +246,17 @@
                         <p>Silakan masukkan email dan kata sandi yang terdaftar untuk mengakses panel sistem.</p>
                     </div>
 
+                    <!-- Notifikasi Sesi Habis / Warning -->
+                    @if (session('warning'))
+                        <div class="alert-box-warning">
+                            <i class="bi bi-clock-history alert-icon"></i>
+                            <div class="alert-content">
+                                <strong>Pemberitahuan Sesi:</strong>
+                                <span>{{ session('warning') }}</span>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Notifikasi Error Validasi -->
                     @if (isset($errors) && $errors->any())
                         <div class="alert-box-danger">

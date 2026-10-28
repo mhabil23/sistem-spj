@@ -44,18 +44,33 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
                 $badgeClass = 'dash-badge-draft';
                 if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
                 elseif(in_array($spj->status, ['diajukan', 'menunggu_otp_kpa'])) $badgeClass = 'dash-badge-cyan';
+                elseif($spj->status === 'proses_ls') $badgeClass = 'dash-badge-purple';
                 elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
             @endphp
             <span class="dash-badge {{ $badgeClass }}" style="font-size: 13px; padding: 6px 16px;">
                 <span class="badge-dot"></span>
-                Status: {{ $spj->status === 'menunggu_otp_kpa' ? 'MENUNGGU OTP QLOLA KPA' : str_replace('_', ' ', strtoupper($spj->status)) }}
+                Status: {{ $spj->status_label }}
             </span>
         </div>
     </div>
     
     <div class="spj-panel-body">
         
-        @if($spj->status === 'menunggu_otp_kpa')
+        @if($spj->status === 'diajukan')
+            <div class="spj-alert" style="background: #eff6ff; border: 1.5px solid #93c5fd; color: #1e40af; align-items: flex-start; margin-bottom: 24px; padding: 16px 20px; border-radius: 12px; display: flex; gap: 14px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);">
+                <div style="flex-shrink: 0; font-size: 26px; color: #2563eb; margin-top: 2px;">
+                    <ion-icon name="document-attach-outline"></ion-icon>
+                </div>
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 800; margin: 0 0 4px 0; color: #1e40af;">
+                        Langkah Selanjutnya: Bawa Berkas Fisik ke Subbagian Umum
+                    </h3>
+                    <p style="font-weight: 400; margin: 0; line-height: 1.55; color: #1e3a8a; font-size: 13.5px;">
+                        Pengajuan SPJ Anda telah tercatat di sistem. Agar proses verifikasi berkas administrasi dapat segera diproses oleh Tim Verifikator, <strong>harap membawa dan menyerahkan dokumen fisik SPJ beserta seluruh lampirannya ke meja Subbagian Umum</strong>.
+                    </p>
+                </div>
+            </div>
+        @elseif($spj->status === 'menunggu_otp_kpa')
             <div class="spj-alert" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; align-items: flex-start; margin-bottom: 24px; padding: 14px 18px; border-radius: 10px; display: flex; gap: 12px;">
                 <div style="flex-shrink: 0; font-size: 22px; color: #2563eb;">
                     <ion-icon name="key-outline"></ion-icon>
@@ -64,6 +79,18 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
                     <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #1e40af;">Status: Menunggu OTP QLOLA KPA</h3>
                     <p style="font-weight: 400; margin: 0; line-height: 1.5; color: #1e3a8a; font-size: 13px;">
                         Transaksi telah diinput oleh Bendahara Pengeluaran ke BRI QLOLA dan saat ini sedang menunggu otorisasi OTP dari Kuasa Pengguna Anggaran (KPA). Pencairan dana ke rekening Anda akan segera terlaksana setelah otorisasi selesai.
+                    </p>
+                </div>
+            </div>
+        @elseif($spj->status === 'proses_ls')
+            <div class="spj-alert" style="background: #f5f3ff; border: 1px solid #ddd6fe; color: #5b21b6; align-items: flex-start; margin-bottom: 24px; padding: 14px 18px; border-radius: 10px; display: flex; gap: 12px;">
+                <div style="flex-shrink: 0; font-size: 22px; color: #7c3aed;">
+                    <ion-icon name="paper-plane-outline"></ion-icon>
+                </div>
+                <div>
+                    <h3 style="font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #5b21b6;">Status: {{ $spj->status_label }}</h3>
+                    <p style="font-weight: 400; margin: 0; line-height: 1.5; color: #4c1d95; font-size: 13px;">
+                        {{ $spj->keterangan_ls }}
                     </p>
                 </div>
             </div>

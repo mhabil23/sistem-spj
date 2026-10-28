@@ -227,4 +227,43 @@ class TeknisSpjTest extends TestCase
         $response->assertViewHas('totalSpj', 1);
         $response->assertViewHas('totalNilai', 2000000);
     }
+
+    public function test_teknis_submitting_spj_is_directed_to_bring_physical_files_to_umum(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $response = $this->actingAs($teknis)->post(route('teknis.spj.store'), [
+            'kegiatan' => 'Pencairan Survei Biaya Hidup',
+            'tanggal' => '2026-10-28',
+            'nilai' => 2800000,
+            'status' => 'diajukan',
+            'is_printed' => 1,
+        ]);
+
+        $response->assertRedirect(route('teknis.spj.index'));
+        $response->assertSessionHas('success', 'SPJ berhasil diajukan. Harap segera bawa dan serahkan berkas fisik SPJ ke Subbagian Umum untuk verifikasi.');
+    }
+
+    public function test_teknis_show_page_renders_bawa_berkas_fisik_banner_when_status_diajukan(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-FISIK-001',
+            'kegiatan' => 'Belanja Pemeliharaan Gedung',
+            'tanggal' => now(),
+            'nilai' => 1200000,
+            'status' => 'diajukan',
+        ]);
+
+        $this->assertSame('Diajukan (Bawa Berkas Fisik ke Umum)', $spj->status_label);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.show', $spj->id));
+
+        $response->assertStatus(200);
+        $response->assertSee('Langkah Selanjutnya: Bawa Berkas Fisik ke Subbagian Umum');
+        $response->assertSee('harap membawa dan menyerahkan dokumen fisik SPJ beserta seluruh lampirannya ke meja Subbagian Umum', false);
+        $response->assertSee('Diajukan (Bawa Berkas Fisik ke Umum)');
+    }
 }

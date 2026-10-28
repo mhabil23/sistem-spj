@@ -20,6 +20,8 @@ Route::get('/flowchart-sop/download', [FlowchartPdfController::class, 'download'
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout-idle', [AuthController::class, 'logoutIdle'])->name('logout.idle');
+Route::get('/ping-session', [AuthController::class, 'pingSession'])->name('session.ping');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -110,6 +112,7 @@ Route::middleware(['auth', 'role:umum'])->prefix('umum')->name('umum.')->group(f
 });
 
 // Controllers untuk Bendahara
+use App\Http\Controllers\Bendahara\BerkasController as BendaharaBerkasController;
 use App\Http\Controllers\Bendahara\DashboardController as BendaharaDashboardController;
 use App\Http\Controllers\Bendahara\ProfilController as BendaharaProfilController;
 use App\Http\Controllers\Bendahara\RiwayatController as BendaharaRiwayatController;
@@ -124,7 +127,13 @@ Route::middleware(['auth', 'role:bendahara'])->prefix('bendahara')->name('bendah
     Route::get('/spj', [BendaharaSpjController::class, 'index'])->name('spj.index');
     Route::get('/spj/{id}', [BendaharaSpjController::class, 'show'])->name('spj.show');
     Route::post('/spj/{id}/verify', [BendaharaSpjController::class, 'verify'])->name('spj.verify');
+    Route::post('/spj/{id}/checklist', [BendaharaSpjController::class, 'updateChecklist'])->name('spj.checklist');
     Route::post('/spj/bulk-verify', [BendaharaSpjController::class, 'bulkVerify'])->name('spj.bulk-verify');
+
+    // Verifikasi & Kelengkapan Berkas SPJ
+    Route::get('/berkas', [BendaharaBerkasController::class, 'index'])->name('berkas.index');
+    Route::get('/berkas/{id}', [BendaharaBerkasController::class, 'show'])->name('berkas.show');
+    Route::post('/berkas/{id}', [BendaharaBerkasController::class, 'update'])->name('berkas.update');
 
     Route::get('/riwayat', [BendaharaRiwayatController::class, 'index'])->name('riwayat.index');
     Route::get('/riwayat/export/csv', [BendaharaRiwayatController::class, 'exportCsv'])->name('riwayat.export.csv');

@@ -106,6 +106,22 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                 </div>
             </div>
         </div>
+
+        <!-- STAT 5: PROSES LS BANK / KLIRING -->
+        <div class="bnd-stat-card">
+            <div class="bnd-stat-icon violet">
+                <ion-icon name="paper-plane-outline"></ion-icon>
+            </div>
+            <div class="bnd-stat-info">
+                <div class="bnd-stat-label">Pembayaran LS Bank</div>
+                <div class="bnd-stat-value" style="color: #7c3aed;">
+                    {{ $prosesLsCount }} Berkas
+                </div>
+                <div class="bnd-stat-sub">
+                    <span>Kliring Bank / Transfer</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- FILTER CARD MODERN -->
@@ -125,6 +141,7 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                     <option value="">Semua Status Antrean</option>
                     <option value="disetujui_ppspm" {{ request('status') === 'disetujui_ppspm' ? 'selected' : '' }}>Siap Dicairkan (PPSPM)</option>
                     <option value="menunggu_otp_kpa" {{ request('status') === 'menunggu_otp_kpa' ? 'selected' : '' }}>Menunggu OTP QLOLA KPA</option>
+                    <option value="proses_ls" {{ request('status') === 'proses_ls' ? 'selected' : '' }}>Pembayaran LS Bank / Kliring</option>
                 </select>
             </div>
 
@@ -164,15 +181,19 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                     <span class="bnd-toolbar-counter">{{ $spjs->count() }} Berkas</span>
                 </div>
 
-                <!-- DUA TOMBOL AKSI MASSAL -->
+                <!-- TIGA TOMBOL AKSI MASSAL -->
                 <div class="bnd-bulk-actions">
                     <button type="button" onclick="submitBulkAction('otp_kpa')" class="bnd-btn-bulk-otp" title="Tandai berkas terpilih sebagai Menunggu OTP QLOLA KPA">
                         <ion-icon name="key-outline"></ion-icon>
-                        <span>Massal: Menunggu OTP KPA</span>
+                        <span>Massal: OTP KPA</span>
+                    </button>
+                    <button type="button" onclick="submitBulkAction('bayar_ls')" style="background: #ede9fe; color: #7c3aed; border: 1px solid #c4b5fd; padding: 7px 12px; border-radius: 8px; font-weight: 700; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s;" title="Tandai berkas terpilih diproses Pembayaran LS Bank / Kliring">
+                        <ion-icon name="paper-plane-outline"></ion-icon>
+                        <span>Massal: LS Bank</span>
                     </button>
                     <button type="button" onclick="submitBulkAction('setujui')" class="bnd-btn-bulk-cair" title="Selesaikan pencairan dana untuk berkas terpilih">
                         <ion-icon name="wallet-outline"></ion-icon>
-                        <span>Massal: Selesaikan Pembayaran</span>
+                        <span>Massal: Selesai</span>
                     </button>
                 </div>
             </div>
@@ -257,6 +278,15 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                                         <span class="bnd-badge-dot"></span>
                                         Menunggu OTP QLOLA KPA
                                     </span>
+                                @elseif($spj->status === 'proses_ls')
+                                    <span class="bnd-badge" style="background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe;">
+                                        <span class="bnd-badge-dot" style="background: #7c3aed;"></span>
+                                        @if($spj->isHonor())
+                                            Kliring LS (Maks. 3 Hari)
+                                        @else
+                                            Transfer LS Bank
+                                        @endif
+                                    </span>
                                 @elseif($spj->status === 'disetujui_ppspm')
                                     <span class="bnd-badge bnd-badge-amber">
                                         <span class="bnd-badge-dot"></span>
@@ -330,9 +360,14 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
             return;
         }
 
-        const actionText = actionType === 'otp_kpa' 
-            ? 'diubah statusnya menjadi "Menunggu OTP QLOLA KPA"' 
-            : 'diselesaikan pembayarannya ("Proses Pembayaran Selesai")';
+        let actionText = '';
+        if (actionType === 'otp_kpa') {
+            actionText = 'diubah statusnya menjadi "Menunggu OTP QLOLA KPA"';
+        } else if (actionType === 'bayar_ls') {
+            actionText = 'diproses melalui Pembayaran Langsung (LS Bank / Kliring)';
+        } else {
+            actionText = 'diselesaikan pembayarannya ("Proses Pembayaran Selesai")';
+        }
 
         if (confirm('Anda yakin ingin memproses ' + checkboxes.length + ' dokumen SPJ terpilih untuk ' + actionText + '?')) {
             document.getElementById('bulkActionInput').value = actionType;

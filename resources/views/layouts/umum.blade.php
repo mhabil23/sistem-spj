@@ -37,6 +37,7 @@
             <x-umum.navbar :title="$title ?? ''" />
 
             <x-center-toast />
+            <x-session-timeout-monitor />
 
             <div class="page-content-wrapper">
                 @yield('content')

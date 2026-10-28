@@ -56,6 +56,33 @@ class BendaharaSpjTest extends TestCase
         $response->assertSee('Menunggu OTP QLOLA KPA');
     }
 
+    public function test_bendahara_views_auto_generated_nomor_spj_when_spj_created_without_nomor_spj(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'kegiatan' => 'Rapat Koordinasi BPS',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'disetujui_ppspm',
+        ]);
+
+        $this->assertNotEmpty($spj->nomor_spj);
+        $this->assertMatchesRegularExpression('/^\d{3}\d{8}$/', $spj->nomor_spj);
+
+        // Akses halaman detail SPJ di Bendahara
+        $responseShow = $this->actingAs($bendahara)->get(route('bendahara.spj.show', $spj->id));
+        $responseShow->assertStatus(200);
+        $responseShow->assertSee($spj->nomor_spj);
+
+        // Akses halaman verifikasi berkas di Bendahara
+        $responseBerkas = $this->actingAs($bendahara)->get(route('bendahara.berkas.show', $spj->id));
+        $responseBerkas->assertStatus(200);
+        $responseBerkas->assertSee($spj->nomor_spj);
+    }
+
     public function test_bendahara_can_choose_menunggu_otp_qlola_kpa(): void
     {
         $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
@@ -112,7 +139,7 @@ class BendaharaSpjTest extends TestCase
         ]);
 
         $response->assertRedirect(route('bendahara.spj.show', $spj->id));
-        $response->assertSessionHas('success', 'Proses pembayaran telah selesai, silahkan cek rekening.');
+        $response->assertSessionHas('success', 'Proses pembayaran telah selesai, silahkan cek rekening masing-masing.');
 
         $spj->refresh();
         $this->assertSame('selesai', $spj->status);
@@ -125,6 +152,180 @@ class BendaharaSpjTest extends TestCase
             'aksi' => 'Proses Pembayaran Selesai',
             'status_baru' => 'selesai',
         ]);
+    }
+
+    public function test_bendahara_can_access_berkas_index_and_show(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BND-DOK-01',
+            'kegiatan' => 'Honor Petugas Pemetaan Wilayah',
+            'tanggal' => now(),
+            'nilai' => 3000000,
+            'status' => 'disetujui_ppspm',
+            'dokumen_file' => json_encode([
+                ['nama' => 'Daftar Hadir', 'disiapkan' => true],
+                ['nama' => 'Surat Tugas', 'disiapkan' => true],
+                ['nama' => 'SSP PPh Pasal 21', 'disiapkan' => false],
+            ]),
+        ]);
+
+        $responseIndex = $this->actingAs($bendahara)->get(route('bendahara.berkas.index'));
+        $responseIndex->assertStatus(200);
+        $responseIndex->assertSee('Verifikasi Kelengkapan Berkas SPJ');
+        $responseIndex->assertSee('SPJ-BND-DOK-01');
+
+        $responseShow = $this->actingAs($bendahara)->get(route('bendahara.berkas.show', $spj->id));
+        $responseShow->assertStatus(200);
+        $responseShow->assertSee('Daftar Hadir');
+        $responseShow->assertSee('SSP PPh Pasal 21');
+        $responseShow->assertSee('Berkas yang Sudah Dicentang di Awal');
+        $responseShow->assertSee('Berkas &amp; Syarat Khusus Bagian Bendahara', false);
+    }
+
+    public function test_bendahara_can_update_berkas_checklist(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BND-CHK-01',
+            'kegiatan' => 'Pengadaan ATK Rutin Kantor',
+            'tanggal' => now(),
+            'nilai' => 2500000,
+            'status' => 'disetujui_ppspm',
+            'dokumen_file' => json_encode([
+                ['nama' => 'Nota Pembelian / Kwitansi', 'disiapkan' => true],
+                ['nama' => 'Faktur Pajak', 'disiapkan' => false],
+                ['nama' => 'PPh 22 (jika diatas 2 juta)', 'disiapkan' => false],
+            ]),
+        ]);
+
+        $response = $this->actingAs($bendahara)->post(route('bendahara.berkas.update', $spj->id), [
+            'berkas_bendahara' => [
+                1 => '1',
+                2 => '1',
+            ],
+            'catatan_internal' => 'Faktur pajak dan bukti setor PPh 22 telah diverifikasi lengkap.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success', 'Kelengkapan berkas Bendahara berhasil diperbarui & disimpan.');
+
+        $spj->refresh();
+        $dokumenList = $spj->dokumen_list;
+
+        $fakturPajak = collect($dokumenList)->firstWhere('nama', 'Faktur Pajak');
+        $this->assertTrue($fakturPajak['disiapkan']);
+
+        $pph22 = collect($dokumenList)->firstWhere('nama', 'PPh 22 (jika diatas 2 juta)');
+        $this->assertTrue($pph22['disiapkan']);
+
+        $this->assertDatabaseHas('spj_histories', [
+            'spj_id' => $spj->id,
+            'user_id' => $bendahara->id,
+            'aksi' => 'Verifikasi Berkas Bendahara',
+        ]);
+    }
+
+    public function test_bendahara_can_choose_bayar_ls_for_honor_with_3_days_clearing_status(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-HONOR-001',
+            'kegiatan' => 'Honor Petugas Mitra Lapangan BPS',
+            'tanggal' => now(),
+            'nilai' => 6000000,
+            'status' => 'disetujui_ppspm',
+            'no_wa' => '081234567890',
+        ]);
+
+        $response = $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
+            'action' => 'bayar_ls',
+            'catatan_internal' => 'SPM LS telah dikirim ke KPPN / Bank mitra.',
+        ]);
+
+        $response->assertRedirect(route('bendahara.spj.show', $spj->id));
+        $response->assertSessionHas('success');
+
+        $spj->refresh();
+        $this->assertSame('proses_ls', $spj->status);
+        $this->assertTrue($spj->isHonor());
+        $this->assertStringContainsString('3 Hari Kerja', $spj->status_label);
+        $this->assertStringContainsString('3 hari kerja', $spj->keterangan_ls);
+
+        $this->assertDatabaseHas('spj_histories', [
+            'spj_id' => $spj->id,
+            'user_id' => $bendahara->id,
+            'aksi' => 'Menunggu Kliring Bank LS (Maks. 3 Hari Kerja)',
+            'status_baru' => 'proses_ls',
+        ]);
+    }
+
+    public function test_bendahara_can_choose_bayar_ls_for_non_honor(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-NONHONOR-001',
+            'kegiatan' => 'Belanja Pemeliharaan Gedung Kantor',
+            'tanggal' => now(),
+            'nilai' => 8500000,
+            'status' => 'disetujui_ppspm',
+            'no_wa' => '081234567890',
+        ]);
+
+        $response = $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
+            'action' => 'bayar_ls',
+            'catatan_internal' => 'Pembayaran LS pihak ketiga.',
+        ]);
+
+        $response->assertRedirect(route('bendahara.spj.show', $spj->id));
+        $response->assertSessionHas('success');
+
+        $spj->refresh();
+        $this->assertSame('proses_ls', $spj->status);
+        $this->assertFalse($spj->isHonor());
+        $this->assertStringContainsString('Transfer Bank Langsung (LS)', $spj->status_label);
+    }
+
+    public function test_bendahara_can_complete_payment_from_proses_ls(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-LS-SELESAI-01',
+            'kegiatan' => 'Honor Tim Evaluasi',
+            'tanggal' => now(),
+            'nilai' => 3200000,
+            'status' => 'proses_ls',
+            'no_wa' => '081234567890',
+        ]);
+
+        $response = $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
+            'action' => 'setujui',
+            'bukti_transfer' => 'SP2D-2026-9998',
+            'catatan_internal' => 'Dana telah masuk ke rekening seluruh penerima.',
+        ]);
+
+        $response->assertRedirect(route('bendahara.spj.show', $spj->id));
+        $response->assertSessionHas('success', 'Proses pembayaran telah selesai, silahkan cek rekening masing-masing.');
+
+        $spj->refresh();
+        $this->assertSame('selesai', $spj->status);
+        $this->assertSame('SP2D-2026-9998', $spj->bukti_transfer);
+        $this->assertNotNull($spj->diselesaikan_at);
     }
 
     public function test_bendahara_can_return_spj_for_revision(): void
@@ -354,5 +555,54 @@ class BendaharaSpjTest extends TestCase
         $response->assertSessionHas('success');
 
         $this->assertSame('baru@bps.go.id', $bendahara->fresh()->email);
+    }
+
+    public function test_bendahara_show_renders_reconfirmation_modal_for_disbursement_completion(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BND-CONFIRM-1',
+            'kegiatan' => 'Pencairan Survei Pertanian',
+            'tanggal' => now(),
+            'nilai' => 3500000,
+            'status' => 'menunggu_otp_kpa',
+        ]);
+
+        $response = $this->actingAs($bendahara)->get(route('bendahara.spj.show', $spj->id));
+
+        $response->assertStatus(200);
+        $response->assertSee('modalKonfirmasiCair');
+        $response->assertSee('Konfirmasi Ulang Pembayaran');
+        $response->assertSee('Ya, Selesaikan &amp; Cairkan Sekarang', false);
+        $response->assertSee('Periksa Kembali');
+        $response->assertSee('bukaModalKonfirmasiCair', false);
+    }
+
+    public function test_bendahara_berkas_show_renders_reconfirmation_modal_for_disbursement_completion(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BND-CONFIRM-2',
+            'kegiatan' => 'Pencairan Honor Pengolahan Data',
+            'tanggal' => now(),
+            'nilai' => 4500000,
+            'status' => 'proses_ls',
+            'keterangan_ls' => 'Menunggu kliring 3 hari kerja bank.',
+        ]);
+
+        $response = $this->actingAs($bendahara)->get(route('bendahara.berkas.show', $spj->id));
+
+        $response->assertStatus(200);
+        $response->assertSee('modalKonfirmasiCair');
+        $response->assertSee('Konfirmasi Ulang Pembayaran');
+        $response->assertSee('Ya, Selesaikan &amp; Cairkan Sekarang', false);
+        $response->assertSee('Periksa Kembali');
+        $response->assertSee('bukaModalKonfirmasiCair', false);
     }
 }
