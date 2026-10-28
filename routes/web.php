@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfilController as AdminProfilController;
 use App\Http\Controllers\Admin\RiwayatController;
 use App\Http\Controllers\Admin\SpjController;
+use App\Http\Controllers\Admin\TemplateBerkasController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +44,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Laporan SPJ
     Route::get('/laporan-spj', [SpjController::class, 'laporan'])->name('laporan.spj');
+
+    // Template Berkas SPJ
+    Route::get('/template-berkas', [TemplateBerkasController::class, 'index'])->name('template-berkas.index');
+    Route::post('/template-berkas', [TemplateBerkasController::class, 'upload'])->name('template-berkas.upload');
+    Route::delete('/template-berkas/{id}', [TemplateBerkasController::class, 'destroy'])->name('template-berkas.destroy');
 
     // Riwayat
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');

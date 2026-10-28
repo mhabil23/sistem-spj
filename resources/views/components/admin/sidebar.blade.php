@@ -47,6 +47,14 @@
             <span class="nav-icon"><i class="bi bi-file-earmark-bar-graph-fill"></i></span>
             <span>Laporan SPJ</span>
         </a>
+
+        {{-- TEMPLATE BERKAS SPJ --}}
+        <a
+            href="{{ route('admin.template-berkas.index') }}"
+            class="nav-item {{ request()->routeIs('admin.template-berkas.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-file-earmark-arrow-down-fill"></i></span>
+            <span>Template Berkas SPJ</span>
+        </a>
         <div class="nav-label" style="margin-top: 1.5rem;">
             PENGATURAN
         </div>
