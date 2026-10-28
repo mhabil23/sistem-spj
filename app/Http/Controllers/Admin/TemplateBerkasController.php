@@ -292,4 +292,110 @@ class TemplateBerkasController extends Controller
 
         return $this->formatBytes($totalBytes);
     }
+
+    /**
+     * Ambil daftar template berkas untuk konsumsi publik / dashboard umum.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public static function getPublicTemplates(): array
+    {
+        $manifestPath = public_path('files/templates/manifest.json');
+
+        if (File::exists($manifestPath)) {
+            $json = File::get($manifestPath);
+            $data = json_decode($json, true);
+            if (is_array($data) && count($data) > 0) {
+                return $data;
+            }
+        }
+
+        return [
+            [
+                'id' => 'sample-kuitansi',
+                'nama' => 'Format Kuitansi Pembayaran SPJ APBN',
+                'kode_dokumen' => 'KWT-01',
+                'kategori' => 'Administrasi Utama',
+                'kategori_slug' => 'administrasi',
+                'kode_akun' => '521211, 521811',
+                'pic' => 'Seksi Teknis / Umum',
+                'keterangan' => 'Format baku kuitansi resmi pencairan anggaran kegiatan BPS sesuai standar APBN.',
+                'file_name' => 'format-kuitansi-spj-bps.xlsx',
+                'original_name' => 'Format-Kuitansi-SPJ-BPS-2026.xlsx',
+                'file_extension' => 'xlsx',
+                'file_size' => '24.5 KB',
+                'uploaded_at' => 'Format Standar BPS',
+                'download_url' => asset('files/templates/sample/format-kuitansi-spj-bps.xlsx'),
+                'is_sample' => true,
+            ],
+            [
+                'id' => 'sample-pengeluaran-riil',
+                'nama' => 'Daftar Pengeluaran Riil (Form Lampiran SPJ)',
+                'kode_dokumen' => 'DPR-02',
+                'kategori' => 'Administrasi Utama',
+                'kategori_slug' => 'administrasi',
+                'kode_akun' => '524111, 524113',
+                'pic' => 'Staf Teknis',
+                'keterangan' => 'Pernyataan pengeluaran riil untuk komponen biaya yang tidak memiliki kuitansi penyedia.',
+                'file_name' => 'format-rincian-pengeluaran-riil.docx',
+                'original_name' => 'Form-Daftar-Pengeluaran-Riil.docx',
+                'file_extension' => 'docx',
+                'file_size' => '18.2 KB',
+                'uploaded_at' => 'Format Standar BPS',
+                'download_url' => asset('files/templates/sample/format-rincian-pengeluaran-riil.docx'),
+                'is_sample' => true,
+            ],
+            [
+                'id' => 'sample-nominatif-mitra',
+                'nama' => 'Daftar Nominatif Pembayaran Honor Mitra Statistik',
+                'kode_dokumen' => 'HNR-01',
+                'kategori' => 'Honor & Mitra',
+                'kategori_slug' => 'honor-mitra',
+                'kode_akun' => '521213',
+                'pic' => 'Seksi Teknis & Pengolahan',
+                'keterangan' => 'Daftar nominatif nama, NIK, beban kerja, potongan PPh 21, dan nomor rekening mitra.',
+                'file_name' => 'format-nominatif-honor-mitra.xlsx',
+                'original_name' => 'Format-Nominatif-Honor-Mitra-BPS.xlsx',
+                'file_extension' => 'xlsx',
+                'file_size' => '32.1 KB',
+                'uploaded_at' => 'Format Standar BPS',
+                'download_url' => asset('files/templates/sample/format-nominatif-honor-mitra.xlsx'),
+                'is_sample' => true,
+            ],
+            [
+                'id' => 'sample-surat-tugas',
+                'nama' => 'Surat Tugas Lapangan & Surat Perintah Tugas (SPT)',
+                'kode_dokumen' => 'SPT-01',
+                'kategori' => 'Perjalanan Dinas',
+                'kategori_slug' => 'perjalanan-dinas',
+                'kode_akun' => '524111',
+                'pic' => 'Subbagian Umum / Tim Teknis',
+                'keterangan' => 'Surat tugas dinas luar kota/dalam kota dan lembar konfirmasi pelaksanaan tugas lapangan.',
+                'file_name' => 'format-surat-tugas-lapangan.docx',
+                'original_name' => 'Format-Surat-Tugas-Lapangan.docx',
+                'file_extension' => 'docx',
+                'file_size' => '21.0 KB',
+                'uploaded_at' => 'Format Standar BPS',
+                'download_url' => asset('files/templates/sample/format-surat-tugas-lapangan.docx'),
+                'is_sample' => true,
+            ],
+            [
+                'id' => 'sample-checklist',
+                'nama' => 'Checklist Standar Verifikasi Kelengkapan SPJ',
+                'kode_dokumen' => 'CHK-01',
+                'kategori' => 'Administrasi Utama',
+                'kategori_slug' => 'administrasi',
+                'kode_akun' => 'Semua Akun',
+                'pic' => 'Subbagian Umum & Verifikator',
+                'keterangan' => 'Panduan checklist kelengkapan berkas fisik sebelum diajukan ke Verifikator Umum & PPK.',
+                'file_name' => 'format-checklist-kelengkapan-spj.pdf',
+                'original_name' => 'Checklist-Kelengkapan-SPJ-SOP.pdf',
+                'file_extension' => 'pdf',
+                'file_size' => '45.0 KB',
+                'uploaded_at' => 'Format Standar BPS',
+                'download_url' => asset('files/templates/sample/format-checklist-kelengkapan-spj.pdf'),
+                'is_sample' => true,
+            ],
+        ];
+    }
 }

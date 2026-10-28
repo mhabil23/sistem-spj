@@ -40,6 +40,7 @@
                 <a href="#beranda" class="nav-link active">Beranda</a>
                 <a href="#alur" class="nav-link">Alur</a>
                 <a href="#panduan" class="nav-link">Panduan</a>
+                <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">Template SPJ</a>
             </nav>
 
             <div class="nav-actions">
@@ -432,6 +433,24 @@
                     </p>
                 </div>
 
+                <div class="feature feature-link feature-tpl-trigger" onclick="openTemplateModal()" id="cardTemplateSpj" role="button" tabindex="0" title="Buka & Unduh Katalog Template Berkas SPJ">
+                    <div class="feature-icon feat-rose">
+                        <i class="bi bi-file-earmark-arrow-down"></i>
+                    </div>
+                    <div class="feature-title-row">
+                        <h3>Template SPJ</h3>
+                        <span class="feature-ext-badge"><i class="bi bi-download"></i></span>
+                    </div>
+                    <p>
+                        Format dan template berkas
+                        kelengkapan SPJ siap diunduh.
+                    </p>
+                    <div class="feature-action-hint">
+                        <span>Unduh Format ({{ count($templates) }})</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </div>
+                </div>
+
             </div>
 
         </section>
@@ -738,8 +757,242 @@
             // Initialize on start immediately without flash
             renderStep(currentStep, true);
             startAutoStep();
+
+            // Auto-open modal if hash is #templates or #template-spj
+            if (window.location.hash === '#templates' || window.location.hash === '#template-spj') {
+                setTimeout(() => openTemplateModal(), 300);
+            }
         });
+
+        /* =========================================================
+           JAVASCRIPT MODAL TEMPLATE BERKAS SPJ (PUBLIK)
+        ========================================================= */
+        function openTemplateModal(event) {
+            if (event) event.preventDefault();
+            const backdrop = document.getElementById('tplModalBackdrop');
+            if (!backdrop) return;
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            const searchBox = document.getElementById('tplSearchBox');
+            if (searchBox) setTimeout(() => searchBox.focus(), 150);
+        }
+
+        function closeTemplateModal() {
+            const backdrop = document.getElementById('tplModalBackdrop');
+            if (!backdrop) return;
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeTemplateModalOnBackdrop(event) {
+            if (event.target === document.getElementById('tplModalBackdrop')) {
+                closeTemplateModal();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeTemplateModal();
+        });
+
+        let currentCatFilter = 'all';
+
+        function selectTemplateCategory(cat) {
+            currentCatFilter = cat;
+            document.querySelectorAll('.tpl-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.getAttribute('data-cat') === cat);
+            });
+            filterTemplateCards();
+        }
+
+        function filterTemplateCards() {
+            const query = (document.getElementById('tplSearchBox')?.value || '').toLowerCase().trim();
+            const clearBtn = document.getElementById('tplClearSearch');
+            if (clearBtn) clearBtn.style.display = query ? 'inline-flex' : 'none';
+
+            const cards = document.querySelectorAll('.tpl-item-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cat = card.getAttribute('data-cat') || '';
+                const nama = card.getAttribute('data-nama') || '';
+                const code = card.getAttribute('data-code') || '';
+                const desc = card.getAttribute('data-desc') || '';
+                const ext = card.getAttribute('data-ext') || '';
+
+                const matchCat = (currentCatFilter === 'all' || cat === currentCatFilter || cat.startsWith(currentCatFilter) || currentCatFilter.startsWith(cat));
+                const matchQuery = !query || nama.includes(query) || code.includes(query) || desc.includes(query) || ext.includes(query);
+
+                if (matchCat && matchQuery) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const noResults = document.getElementById('tplNoResults');
+            if (noResults) noResults.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
+        }
+
+        function clearTemplateSearch() {
+            const searchBox = document.getElementById('tplSearchBox');
+            if (searchBox) {
+                searchBox.value = '';
+                searchBox.focus();
+            }
+            filterTemplateCards();
+        }
+
+        function resetTemplateFilters() {
+            const searchBox = document.getElementById('tplSearchBox');
+            if (searchBox) searchBox.value = '';
+            selectTemplateCategory('all');
+        }
     </script>
+
+    <!-- =========================================================
+         MODAL KATALOG FORMAT & TEMPLATE BERKAS SPJ (PUBLIK)
+         Dapat diunduh langsung oleh staf teknis atau siapa saja
+    ========================================================= -->
+    <div class="tpl-modal-backdrop" id="tplModalBackdrop" onclick="closeTemplateModalOnBackdrop(event)" aria-hidden="true">
+        <div class="tpl-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="tplModalTitle">
+
+            <!-- Modal Header -->
+            <div class="tpl-modal-header">
+                <div class="tpl-modal-header-info">
+                    <div class="tpl-modal-badge">
+                        <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                        <span>Pusat Unduhan Resmi</span>
+                    </div>
+                    <h2 id="tplModalTitle">Format &amp; Template Berkas SPJ</h2>
+                    <p>
+                        Unduh format dokumen kelengkapan SPJ resmi BPS tanpa perlu login. Berkas siap diisi untuk kelancaran administrasi dan pengajuan tagihan.
+                    </p>
+                </div>
+
+                <div class="tpl-modal-header-actions">
+                    @if(auth()->check() && auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.template-berkas.index') }}" class="btn-modal-admin" title="Buka panel admin untuk unggah format baru">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Kelola / Unggah Berkas</span>
+                        </a>
+                    @endif
+                    <button type="button" class="tpl-modal-close" onclick="closeTemplateModal()" aria-label="Tutup Modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Controls: Search & Category Pills -->
+            <div class="tpl-modal-controls">
+                <div class="tpl-search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="tplSearchBox" placeholder="Cari nama berkas, kode dokumen (contoh: KWT, SPT), atau format..." oninput="filterTemplateCards()" autocomplete="off">
+                    <button type="button" id="tplClearSearch" onclick="clearTemplateSearch()" style="display: none;" aria-label="Hapus pencarian">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </button>
+                </div>
+
+                <div class="tpl-cat-chips" id="tplCatChips">
+                    <button type="button" class="tpl-chip active" data-cat="all" onclick="selectTemplateCategory('all')">
+                        Semua Format <span class="chip-count">({{ count($templates) }})</span>
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="administrasi" onclick="selectTemplateCategory('administrasi')">
+                        <i class="bi bi-folder-check"></i> Administrasi
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="perjalanan-dinas" onclick="selectTemplateCategory('perjalanan-dinas')">
+                        <i class="bi bi-briefcase-fill"></i> Perjalanan Dinas
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="honor-mitra" onclick="selectTemplateCategory('honor-mitra')">
+                        <i class="bi bi-people-fill"></i> Honor &amp; Mitra
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="pengadaan-bahan" onclick="selectTemplateCategory('pengadaan-bahan')">
+                        <i class="bi bi-box-seam-fill"></i> Pengadaan &amp; Bahan
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="pajak-keuangan" onclick="selectTemplateCategory('pajak-keuangan')">
+                        <i class="bi bi-receipt-cutoff"></i> Pajak &amp; Keuangan
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="lainnya" onclick="selectTemplateCategory('lainnya')">
+                        Format Lainnya
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body: Templates Grid -->
+            <div class="tpl-modal-body">
+                <div class="tpl-items-grid" id="tplItemsGrid">
+                    @forelse($templates as $tpl)
+                    @php
+                        $ext = strtolower($tpl['file_extension'] ?? 'file');
+                        $catSlug = $tpl['kategori_slug'] ?? 'lainnya';
+                    @endphp
+                    <div class="tpl-item-card" data-cat="{{ $catSlug }}" data-nama="{{ strtolower($tpl['nama'] ?? '') }}" data-code="{{ strtolower($tpl['kode_dokumen'] ?? '') }}" data-desc="{{ strtolower($tpl['keterangan'] ?? '') }}" data-ext="{{ $ext }}">
+                        <div class="tpl-card-top">
+                            <span class="tpl-code-pill">{{ $tpl['kode_dokumen'] ?? 'DOK' }}</span>
+                            <span class="tpl-format-badge format-{{ $ext }}">
+                                @if(in_array($ext, ['xls', 'xlsx']))
+                                    <i class="bi bi-file-earmark-excel-fill"></i> EXCEL
+                                @elseif(in_array($ext, ['doc', 'docx']))
+                                    <i class="bi bi-file-earmark-word-fill"></i> WORD
+                                @elseif($ext === 'pdf')
+                                    <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                                @else
+                                    <i class="bi bi-file-earmark-fill"></i> {{ strtoupper($ext) }}
+                                @endif
+                            </span>
+                        </div>
+
+                        <h4 class="tpl-item-title">{{ $tpl['nama'] }}</h4>
+
+                        <div class="tpl-item-meta">
+                            <span class="tpl-cat-badge">
+                                <i class="bi bi-tag-fill"></i> {{ $tpl['kategori'] ?? 'Administrasi' }}
+                            </span>
+                            <span class="tpl-size-badge">
+                                <i class="bi bi-hdd-fill"></i> {{ $tpl['file_size'] ?? '—' }}
+                            </span>
+                        </div>
+
+                        @if(!empty($tpl['keterangan']))
+                            <p class="tpl-item-desc">{{ $tpl['keterangan'] }}</p>
+                        @endif
+
+                        <div class="tpl-card-footer">
+                            <a href="{{ !empty($tpl['file_name']) ? asset('files/templates/'.$tpl['file_name']) : ($tpl['download_url'] ?? '#') }}" download="{{ $tpl['original_name'] ?? $tpl['file_name'] }}" class="btn-download-tpl">
+                                <i class="bi bi-download"></i>
+                                <span>Unduh Format</span>
+                            </a>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="tpl-empty-box" id="tplEmptyState">
+                        <i class="bi bi-inbox-fill"></i>
+                        <h4>Belum ada format template yang diunggah</h4>
+                        <p>Administrator belum menambahkan template format SPJ ke sistem.</p>
+                    </div>
+                    @endforelse
+                </div>
+
+                <!-- Empty Search Filter State -->
+                <div class="tpl-empty-box" id="tplNoResults" style="display: none;">
+                    <i class="bi bi-search"></i>
+                    <h4>Tidak ditemukan template yang cocok</h4>
+                    <p>Coba kata kunci lain atau pilih tab kategori 'Semua Format'.</p>
+                    <button type="button" class="btn-reset-filter" onclick="resetTemplateFilters()">Tampilkan Semua Format</button>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="tpl-modal-footer">
+                <div class="tpl-footer-note">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Template resmi Badan Pusat Statistik Kabupaten Kolaka Utara &bull; Siap digunakan untuk pelaporan SPJ APBN.</span>
+                </div>
+                <button type="button" class="btn-close-modal" onclick="closeTemplateModal()">Tutup</button>
+            </div>
+
+        </div>
+    </div>
 </body>
 
 </html>
