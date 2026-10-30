@@ -1025,12 +1025,34 @@ body {
 }
 
 @media (max-width: 480px) {
+    .login-section {
+        padding: 20px 14px;
+    }
+
     .login-card {
-        padding: 30px 22px;
-        border-radius: 16px;
+        padding: 24px 18px;
+        border-radius: 18px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
     }
 
     .card-header h2 {
-        font-size: 22px;
+        font-size: 20px;
+    }
+
+    .card-header p {
+        font-size: 12px;
+    }
+
+    .input-field-wrap {
+        height: 44px;
+    }
+
+    .btn-submit-login {
+        height: 44px;
+        font-size: 13.5px;
+    }
+
+    .security-card-note {
+        padding: 9px 12px;
     }
 }

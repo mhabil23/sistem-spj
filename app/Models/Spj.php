@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Spj extends Model
 {
@@ -17,6 +18,7 @@ class Spj extends Model
         'status',
         'user_id',
         'dokumen_file',
+        'file_lampiran',
         'catatan_revisi',
         'catatan_internal',
         'catatan_ppk',
@@ -72,13 +74,23 @@ class Spj extends Model
      */
     public function getDokumenListAttribute(): array
     {
-        if (empty($this->dokumen_file)) {
+        if (empty($this->dokumen_file) || ! str_starts_with(trim($this->dokumen_file), '[')) {
             return [];
         }
 
         $decoded = json_decode($this->dokumen_file, true);
 
         return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * Dapatkan URL publik untuk file lampiran bukti digital.
+     */
+    public function getFileLampiranUrlAttribute(): ?string
+    {
+        $file = $this->file_lampiran ?: (! str_starts_with((string) $this->dokumen_file, '[') ? $this->dokumen_file : null);
+
+        return $file ? Storage::url($file) : null;
     }
 
     /**
@@ -208,7 +220,26 @@ class Spj extends Model
     public function getStatusLabelAttribute(): string
     {
         if ($this->status === 'diajukan') {
-            return 'Diajukan (Bawa Berkas Fisik ke Umum)';
+            if (! $this->berkas_fisik_diterima_at) {
+                return 'Diajukan (Bawa Berkas Fisik ke Umum)';
+            }
+            if (! $this->pemeriksaan_dimulai_at) {
+                return 'Fisik Diterima (Siap Cek)';
+            }
+
+            return 'Sedang Diperiksa';
+        }
+
+        if ($this->status === 'disetujui_umum') {
+            return 'Diteruskan ke PPK';
+        }
+
+        if ($this->status === 'disetujui_ppk') {
+            return 'Diteruskan ke PPSPM';
+        }
+
+        if ($this->status === 'disetujui_ppspm') {
+            return 'Siap Diproses Bendahara (SPM Terbit)';
         }
 
         if ($this->status === 'menunggu_otp_kpa') {
@@ -225,8 +256,16 @@ class Spj extends Model
             return 'Pembayaran Selesai (Telah Dicairkan)';
         }
 
-        if ($this->status === 'disetujui_ppspm') {
-            return 'Siap Diproses Bendahara (SPM Terbit)';
+        if ($this->status === 'revisi_umum') {
+            return 'Perlu Revisi (Bagian Umum)';
+        }
+
+        if ($this->status === 'revisi_ppk') {
+            return 'Perlu Revisi (PPK)';
+        }
+
+        if ($this->status === 'revisi_ppspm') {
+            return 'Perlu Revisi (PPSPM)';
         }
 
         if ($this->status === 'revisi_bendahara') {

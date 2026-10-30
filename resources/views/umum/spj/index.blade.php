@@ -121,7 +121,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                                     $btnTitle = 'Input Keputusan PPSPM';
                                 } elseif($spj->status == 'disetujui_ppspm') {
                                     $badgeClass = 'dash-badge-disetujui_ppspm';
-                                    $statusText = 'Di Bendahara';
+                                    $statusText = 'Siap Diproses Bendahara (SPM Terbit)';
                                     $btnBg = 'var(--dash-btn-primary-bg)';
                                     $btnTitle = 'Lihat Status';
                                 } elseif(str_contains($spj->status, 'revisi')) {

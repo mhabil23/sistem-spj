@@ -115,7 +115,10 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                             @php
                                 $badgeClass = 'dash-badge-draft';
                                 if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
-                                elseif(in_array($spj->status, ['diajukan', 'menunggu_otp_kpa'])) $badgeClass = 'dash-badge-cyan';
+                                elseif($spj->status === 'diajukan') {
+                                    $badgeClass = $spj->pemeriksaan_dimulai_at ? 'dash-badge-amber' : 'dash-badge-cyan';
+                                }
+                                elseif($spj->status === 'menunggu_otp_kpa') $badgeClass = 'dash-badge-cyan';
                                 elseif($spj->status === 'proses_ls') $badgeClass = 'dash-badge-purple';
                                 elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
                             @endphp

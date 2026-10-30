@@ -315,19 +315,19 @@
                 </td>
                 <td>
                     <div class="flow-step-box">
-                        <span class="step-num">A</span> Input kegiatan, tanggal, nominal, dan nomor WA.
+                        <span class="step-num">A</span> Input detail kegiatan, tanggal, nominal anggaran, nomor WhatsApp, serta <strong>unggah berkas lampiran digital</strong> (scan/foto/PDF).
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box">
-                        <span class="step-num">B</span> Pilih <em>Nama Belanja</em> & <em>Jenis Belanja</em>, centang berkas fisik yang telah disiapkan.
+                        <span class="step-num">B</span> Pilih <em>Nama & Jenis Belanja</em>, centang daftar berkas fisik awal yang telah disiapkan.
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box decision">
-                        <strong>Wajib Print:</strong> Teknis <u>wajib menekan tombol Print</u> lembar checklist fisik sebelum tombol <em>Ajukan</em> aktif.
+                        <strong>Validasi Pop-up Cetak:</strong> Sistem mewajibkan klik <u>Cetak Lembar Checklist Fisik</u> terlebih dahulu sebelum berkas dapat resmi diajukan.
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box action-green">
-                        <span class="step-num">C</span> Submit pengajuan, serahkan berkas fisik ke Meja Bagian Umum.
+                        <span class="step-num">C</span> Submit pengajuan, serahkan berkas fisik + lembar checklist ke Meja Bagian Umum.
                     </div>
                 </td>
                 <td>
@@ -336,7 +336,7 @@
                     <span class="status-pill" style="background: #e0f2fe; color: #0284c7;">DIAJUKAN</span>
                 </td>
                 <td>
-                    <small>Pengaju kirim pesan konfirmasi penyerahan berkas ke Umum.</small>
+                    <small>Pengaju dapat langsung kirim notifikasi konfirmasi WhatsApp ke staf Bagian Umum.</small>
                 </td>
             </tr>
 
@@ -349,13 +349,13 @@
                 </td>
                 <td>
                     <div class="flow-step-box">
-                        <span class="step-num">A</span> Periksa fisik vs checklist (KAK, FP, Bukti Bayar, Undangan, Notula, dll.).
+                        <span class="step-num">A</span> Periksa kesesuaian fisik vs checklist (KAK, Form Permintaan, Bukti Beli, Undangan, Daftar Hadir, Notula, BAST, dll.).
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box decision">
                         <strong>Uji Kelengkapan Berkas:</strong><br>
-                        &bull; <em>Kurang:</em> Beri catatan revisi & status <span style="color: #dc2626; font-weight: bold;">Revisi Umum</span>.<br>
-                        &bull; <em>Lengkap:</em> Klik <strong>Setujui</strong>, teruskan fisik ke meja PPK.
+                        &bull; <em>Kurang:</em> Beri catatan kendala & status <span style="color: #dc2626; font-weight: bold;">Revisi Umum</span>.<br>
+                        &bull; <em>Lengkap:</em> Klik <strong>Setujui</strong>, teruskan dokumen fisik ke meja PPK.
                     </div>
                 </td>
                 <td>
@@ -364,7 +364,7 @@
                     <span class="status-pill" style="background: #dcfce7; color: #166534;">DISETUJUI_UMUM</span>
                 </td>
                 <td>
-                    <small>Otomatis kirim WA ke Pengaju (Pemberitahuan Revisi / Lanjut PPK).</small>
+                    <small>Otomatis kirim WhatsApp ke Pengaju (Informasi berkas disetujui / poin revisi).</small>
                 </td>
             </tr>
 
@@ -377,13 +377,13 @@
                 </td>
                 <td>
                     <div class="flow-step-box">
-                        <span class="step-num">A</span> Pemeriksaan substansi output kegiatan & rincian biaya.
+                        <span class="step-num">A</span> Pemeriksaan substansi output kegiatan, kewajaran biaya, dan kepatuhan anggaran.
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box decision">
                         <strong>Persetujuan PPK:</strong><br>
-                        &bull; <em>Ada Koreksi:</em> Kembalikan (<span style="color: #dc2626; font-weight: bold;">Revisi PPK</span>).<br>
-                        &bull; <em>Disetujui:</em> Tanda tangani fisik & klik setujui di sistem. Teruskan berkas ke PPSPM.
+                        &bull; <em>Ada Koreksi:</em> Kembalikan berkas (<span style="color: #dc2626; font-weight: bold;">Revisi PPK</span>).<br>
+                        &bull; <em>Disetujui:</em> Tanda tangani fisik kuitansi & klik setujui di sistem. Teruskan berkas ke meja PPSPM.
                     </div>
                 </td>
                 <td>
@@ -392,7 +392,7 @@
                     <span class="status-pill" style="background: #dcfce7; color: #166534;">DISETUJUI_PPK</span>
                 </td>
                 <td>
-                    <small>Otomatis kirim WA: Status persetujuan PPK & arahan ke PPSPM.</small>
+                    <small>Kirim pesan WA: Status persetujuan PPK & berkas diteruskan ke PPSPM.</small>
                 </td>
             </tr>
 
@@ -405,13 +405,13 @@
                 </td>
                 <td>
                     <div class="flow-step-box">
-                        <span class="step-num">A</span> Pengujian ketersediaan dana DIPA & penerbitan SPM fisik.
+                        <span class="step-num">A</span> Pengujian ketersediaan dana DIPA, kelayakan dokumen tagihan, & penerbitan SPM fisik.
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box decision">
                         <strong>Persetujuan PPSPM:</strong><br>
-                        &bull; <em>Ada Koreksi:</em> Status <span style="color: #dc2626; font-weight: bold;">Revisi PPSPM</span>.<br>
-                        &bull; <em>Disetujui:</em> Status <span style="color: #166534; font-weight: bold;">Disetujui PPSPM</span>, serahkan berkas ke Bendahara Pengeluaran.
+                        &bull; <em>Ada Koreksi:</em> Beri catatan kendala & status <span style="color: #dc2626; font-weight: bold;">Revisi PPSPM</span>.<br>
+                        &bull; <em>Disetujui:</em> Terbitkan SPM & status <span style="color: #166534; font-weight: bold;">Disetujui PPSPM</span>, serahkan dokumen ke Bendahara Pengeluaran.
                     </div>
                 </td>
                 <td>
@@ -420,7 +420,7 @@
                     <span class="status-pill" style="background: #dcfce7; color: #166534;">DISETUJUI_PPSPM</span>
                 </td>
                 <td>
-                    <small>Otomatis kirim WA: SPM disetujui, berkas masuk meja Bendahara.</small>
+                    <small>Kirim pesan WA: SPM telah terbit, berkas siap diproses Bendahara.</small>
                 </td>
             </tr>
 
@@ -433,22 +433,29 @@
                 </td>
                 <td>
                     <div class="flow-step-box">
-                        <span class="step-num">A</span> Verifikasi pemotongan pajak (PPh 21/22/23, PPN) & kuitansi riil.
+                        <span class="step-num">A</span> Periksa & centang berkas perpajakan (PPh 21/22/23, PPN, Faktur, SSP/BPN/NTPN) serta kuitansi riil.
                     </div>
                     <div class="flow-arrow">|</div>
                     <div class="flow-step-box decision">
-                        <strong>Verifikasi Bendahara:</strong><br>
-                        &bull; <em>Pajak/Bukti Belum Sesuai:</em> <span style="color: #dc2626; font-weight: bold;">Revisi Bendahara</span>.<br>
-                        &bull; <em>Valid:</em> Eksekusi transfer via CMS, upload bukti transfer / selesaikan massal.
+                        <strong>Eksekusi Pembayaran:</strong><br>
+                        &bull; <em>Jalur 1: CMS BRI QLOLA</em> &rarr; Input Maker, status <span style="color: #0284c7; font-weight: bold;">Menunggu OTP QLOLA KPA</span>. Setelah KPA input OTP, konfirmasi selesai.<br>
+                        &bull; <em>Jalur 2: Pembayaran LS (Bank)</em> &rarr; Input SP2D, status <span style="color: #ea580c; font-weight: bold;">Proses LS Bank</span> (kliring/transfer rekening).<br>
+                        &bull; <em>Kendala Berkas/Rekening:</em> Kembalikan ke teknis (<span style="color: #dc2626; font-weight: bold;">Revisi Bendahara</span>).
+                    </div>
+                    <div class="flow-arrow">|</div>
+                    <div class="flow-step-box action-green">
+                        <span class="step-num">B</span> Input nomor resi / referensi bukti transfer bank & konfirmasi penyelesaian pencairan dana.
                     </div>
                 </td>
                 <td>
+                    <span class="status-pill" style="background: #e0f2fe; color: #0284c7;">MENUNGGU_OTP_KPA</span><br>
+                    <span class="status-pill" style="background: #ffedd5; color: #ea580c;">PROSES_LS</span><br>
                     <span class="status-pill" style="background: #fee2e2; color: #dc2626;">REVISI_BENDAHARA</span><br>
-                    <span style="font-size: 6pt; color: #64748b;">atau</span><br>
+                    <div class="flow-arrow" style="font-size: 6pt;">|</div>
                     <span class="status-pill" style="background: #dcfce7; color: #166534; font-weight: 800;">SELESAI</span>
                 </td>
                 <td>
-                    <small>Otomatis kirim WA: SPJ telah cair & dana telah ditransfer.</small>
+                    <small>Kirim pesan WA konfirmasi pencairan dana tuntas ke pengaju/rekanan.</small>
                 </td>
             </tr>
         </tbody>

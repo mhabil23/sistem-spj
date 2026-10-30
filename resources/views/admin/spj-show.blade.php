@@ -2,7 +2,10 @@
 
 @php
     $title = 'Detail SPJ';
-    $dokumen = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
+    $dokumen = $spj->dokumen_list;
+    if (empty($dokumen) && !empty($spj->dokumen_file) && str_starts_with(trim($spj->dokumen_file), '[')) {
+        $dokumen = json_decode($spj->dokumen_file, true) ?: [];
+    }
 @endphp
 
 @section('content')
@@ -553,6 +556,35 @@
                     </div>
                 </div>
             </div>
+
+            @if($spj->file_lampiran_url)
+            {{-- LAMPIRAN BERKAS DIGITAL --}}
+            <div class="detail-card">
+                <div class="detail-card-header">
+                    <h3><i class="bi bi-paperclip" style="color: #024b86;"></i> Lampiran Berkas Digital (Scan / Foto)</h3>
+                    <span class="badge-status-pill selesai">
+                        <i class="bi bi-check-circle-fill" style="font-size: 8px;"></i> Terunggah
+                    </span>
+                </div>
+                <div class="detail-card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <i class="bi bi-file-earmark-check-fill" style="font-size: 32px; color: #024b86;"></i>
+                        <div>
+                            <div style="font-weight: 700; font-size: 14px; color: #0f172a;">{{ basename($spj->file_lampiran ?: $spj->dokumen_file) }}</div>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">Berkas digital pendukung yang diunggah staf pengaju</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="{{ $spj->file_lampiran_url }}" target="_blank" class="btn btn-sm" style="background: #024b86; color: #ffffff; padding: 6px 14px; font-size: 13px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="bi bi-eye"></i> Buka File
+                        </a>
+                        <a href="{{ $spj->file_lampiran_url }}" download class="btn btn-sm" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 6px 14px; font-size: 13px; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="bi bi-download"></i> Unduh
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endif
 
             {{-- KELENGKAPAN BERKAS ADMINISTRASI --}}
             <div class="detail-card">

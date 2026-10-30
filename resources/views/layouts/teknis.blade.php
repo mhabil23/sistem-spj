@@ -35,6 +35,7 @@
 <body class="dashboard-body">
     <div class="dashboard-app-wrapper">
         <x-teknis.sidebar />
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
         
         <div class="main-content">
             <x-teknis.navbar :title="$title ?? ''" />
@@ -51,8 +52,12 @@
     <script>
         function toggleSidebar() {
             const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
             if (sidebar) {
                 sidebar.classList.toggle('active');
+                if (overlay) {
+                    overlay.classList.toggle('active', sidebar.classList.contains('active'));
+                }
             }
         }
 

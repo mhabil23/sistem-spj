@@ -11,6 +11,121 @@ $title = 'Dashboard';
 @section('content')
 <div class="dashboard-main-container">
 
+    <!-- HERO COMMAND CENTER BANNER (GENERAL DASHBOARD) -->
+    <div class="hero-welcome-banner">
+        <div class="hero-bg-glow hero-bg-glow-1"></div>
+        <div class="hero-bg-glow hero-bg-glow-2"></div>
+        <div class="hero-bg-pattern"></div>
+
+        <!-- Left Content -->
+        <div class="hero-main-content">
+            <div class="hero-meta-badge">
+                <span class="hero-pulse-dot"></span>
+                <span>BPS Kab. Kolaka Utara • Verifikasi & Tata Usaha</span>
+            </div>
+
+            <div class="hero-title-group">
+                <h2>Pusat Kendali <span class="hero-gradient-text">Verifikasi SPJ</span></h2>
+                <p class="hero-desc">
+                    Kelola validasi kuitansi, pantau berkas fisik & kelengkapan lampiran digital, serta pastikan berkas siap diproses ke Pejabat Pembuat Komitmen (PPK).
+                </p>
+            </div>
+
+            <!-- Quick Metrics Strip -->
+            <div class="hero-metrics-strip">
+                <div class="hero-metric-item" title="SPJ Menunggu Pemeriksaan Berkas">
+                    <div class="hero-metric-icon icon-amber">
+                        <ion-icon name="time-outline"></ion-icon>
+                    </div>
+                    <div class="hero-metric-data">
+                        <div class="hero-metric-val">{{ $totalAntrean }} Berkas</div>
+                        <div class="hero-metric-lbl">Antrean Pemeriksaan</div>
+                    </div>
+                </div>
+
+                @if(isset($totalMenungguFisik) && $totalMenungguFisik > 0)
+                <div class="hero-metric-item" title="SPJ Disetujui Sistem yang Menunggu Penyerahan Fisik Kuitansi">
+                    <div class="hero-metric-icon icon-cyan">
+                        <ion-icon name="file-tray-full-outline"></ion-icon>
+                    </div>
+                    <div class="hero-metric-data">
+                        <div class="hero-metric-val">{{ $totalMenungguFisik }} Berkas</div>
+                        <div class="hero-metric-lbl">Menunggu Fisik</div>
+                    </div>
+                </div>
+                @endif
+
+                <div class="hero-metric-item" title="Tingkat Kelulusan Verifikasi Bagian Umum">
+                    <div class="hero-metric-icon icon-emerald">
+                        <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+                    </div>
+                    <div class="hero-metric-data">
+                        <div class="hero-metric-val">{{ $pctSelesai }}%</div>
+                        <div class="hero-metric-lbl">Tingkat Disetujui</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons Wrap -->
+            <div class="hero-actions-wrap">
+                <a href="{{ route('umum.spj.index', ['status' => 'diajukan']) }}" class="hero-btn-primary">
+                    <ion-icon name="clipboard-outline"></ion-icon>
+                    <span>Periksa Antrean SPJ</span>
+                    <ion-icon name="arrow-forward-outline"></ion-icon>
+                </a>
+                <a href="{{ route('flowchart.preview') }}" target="_blank" class="hero-btn-glass" title="Buka Flowchart & Alur SOP Lengkap (PDF)">
+                    <ion-icon name="git-network-outline"></ion-icon>
+                    <span>Buka Alur SOP (PDF)</span>
+                </a>
+                <a href="{{ route('umum.laporan.index') }}" class="hero-btn-glass" title="Rekapitulasi Laporan SPJ">
+                    <ion-icon name="bar-chart-outline"></ion-icon>
+                    <span>Rekap Laporan</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Right Floating 5-Pintu Card -->
+        <div class="hero-floating-card">
+            <div class="hero-card-header">
+                <div class="hero-card-title">
+                    <ion-icon name="layers-outline" style="color: #38bdf8; font-size: 16px;"></ion-icon>
+                    Alur 5 Pintu SPJ
+                </div>
+                <span class="hero-card-tag">Pintu ke-2</span>
+            </div>
+
+            <div class="hero-pintu-stepper">
+                <div class="hero-pintu-step step-pass">
+                    <span class="pintu-badge-num">1</span>
+                    <span>Staf Teknis • Pengajuan & Digital</span>
+                </div>
+                <div class="hero-pintu-step step-active">
+                    <span class="pintu-badge-num">2</span>
+                    <span>Bagian Umum • Validasi Dokumen & Fisik</span>
+                </div>
+                <div class="hero-pintu-step step-wait">
+                    <span class="pintu-badge-num">3</span>
+                    <span>PPK • Komitmen & Persetujuan</span>
+                </div>
+                <div class="hero-pintu-step step-wait">
+                    <span class="pintu-badge-num">4</span>
+                    <span>PPSPM • Pengujian & Terbit SPM</span>
+                </div>
+                <div class="hero-pintu-step step-wait">
+                    <span class="pintu-badge-num">5</span>
+                    <span>Bendahara • BRI QLOLA / LS Bank</span>
+                </div>
+            </div>
+
+            <div class="hero-card-footer">
+                <span>Standar Mutu BPS 7408</span>
+                <a href="{{ route('flowchart.preview') }}" target="_blank" class="hero-card-link">
+                    Detail SOP <ion-icon name="open-outline"></ion-icon>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- 1. OVER VIEW CONTAINER (4 KARTU SPJ) -->
     <div class="overview-container">
         <div class="overview-title">Ringkasan SPJ (Over View)</div>

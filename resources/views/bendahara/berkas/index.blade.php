@@ -215,7 +215,7 @@ $title = 'Verifikasi & Kelengkapan Berkas SPJ - Bendahara';
                 <input type="hidden" name="kelengkapan" value="{{ request('kelengkapan') }}">
             @endif
             <div style="position: relative;">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kegiatan, No. SPJ, pengaju..." class="bnd-choice-input" style="width: 260px; padding-left: 36px; padding-top: 8px; padding-bottom: 8px; font-size: 13px;">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kegiatan, No. SPJ, pengaju..." class="bnd-choice-input" style="width: 260px; max-width: 100%; min-width: 180px; padding-left: 36px; padding-top: 8px; padding-bottom: 8px; font-size: 13px;">
                 <ion-icon name="search-outline" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--bnd-slate-400); font-size: 16px;"></ion-icon>
             </div>
             <button type="submit" class="bnd-btn" style="background: #0284c7; color: #ffffff; padding: 8px 14px; font-size: 13px;">
@@ -246,7 +246,7 @@ $title = 'Verifikasi & Kelengkapan Berkas SPJ - Bendahara';
 
     <div class="bnd-card-body" style="padding: 0;">
         @if($spjs->count() > 0)
-        <div style="overflow-x: auto;">
+        <div style="overflow-x: auto; width: 100%; max-width: 100%;">
             <table class="bnd-table" style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: var(--bnd-slate-50); border-bottom: 1px solid var(--bnd-slate-200); text-align: left;">

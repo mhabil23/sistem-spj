@@ -28,13 +28,13 @@ class DokumenController extends Controller
         ]);
 
         if ($request->hasFile('dokumen_file')) {
-            // Hapus dokumen lama jika ada
-            if ($spj->dokumen_file) {
-                Storage::disk('public')->delete($spj->dokumen_file);
+            // Hapus file lampiran lama jika ada
+            if ($spj->file_lampiran) {
+                Storage::disk('public')->delete($spj->file_lampiran);
             }
 
             $path = $request->file('dokumen_file')->store('dokumen_spjs', 'public');
-            $spj->update(['dokumen_file' => $path]);
+            $spj->update(['file_lampiran' => $path]);
         }
 
         return back()->with('success', 'Dokumen berhasil diunggah.');

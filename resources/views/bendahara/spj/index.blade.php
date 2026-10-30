@@ -9,7 +9,7 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
 @endpush
 
 @section('content')
-<div style="padding: 28px 36px; box-sizing: border-box; width: 100%;">
+<div style="width: 100%;">
 
     <!-- BREADCRUMB & PAGE HEADER -->
     <div class="bnd-header-wrapper" style="margin-bottom: 24px;">
@@ -23,10 +23,10 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
 
         <div class="bnd-page-header">
             <div class="bnd-header-title-box">
-                <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">
+                <h1 style="font-size: 24px; font-weight: 800; color: var(--bnd-slate-900); margin: 0 0 6px 0;">
                     Kotak Masuk &amp; Antrean Pencairan SPJ
                 </h1>
-                <p style="color: #64748b; font-size: 13.5px; margin: 0;">
+                <p style="color: var(--bnd-slate-500); font-size: 13.5px; margin: 0;">
                     Kelola dan eksekusi pembayaran SPJ yang telah diverifikasi PPSPM atau sedang dalam proses otorisasi BRI QLOLA.
                 </p>
             </div>
@@ -222,10 +222,10 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                             </td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <ion-icon name="calendar-outline" style="color: #94a3b8; font-size: 15px;"></ion-icon>
+                                    <ion-icon name="calendar-outline" style="color: var(--bnd-slate-400); font-size: 15px;"></ion-icon>
                                     <div>
-                                        <div style="font-weight: 700; color: #1e293b;">{{ $spj->updated_at->format('d M Y') }}</div>
-                                        <div style="font-size: 11px; color: #94a3b8;">{{ $spj->created_at->diffForHumans() }}</div>
+                                        <div style="font-weight: 700; color: var(--bnd-slate-900);">{{ $spj->updated_at->format('d M Y') }}</div>
+                                        <div style="font-size: 11px; color: var(--bnd-slate-400);">{{ $spj->created_at->diffForHumans() }}</div>
                                     </div>
                                 </div>
                             </td>
@@ -235,18 +235,18 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                                         {{ $spj->nomor_spj ?: '-' }}
                                     </span>
                                     @if($spj->nomor_spm)
-                                    <div style="font-size: 11px; color: #64748b; margin-top: 3px;">
+                                    <div style="font-size: 11px; color: var(--bnd-slate-500); margin-top: 3px;">
                                         SPM: <strong>{{ $spj->nomor_spm }}</strong>
                                     </div>
                                     @endif
                                 </div>
                             </td>
                             <td style="max-width: 320px;">
-                                <div style="font-weight: 700; color: #0f172a; line-height: 1.4; margin-bottom: 2px;" title="{{ $spj->kegiatan }}">
+                                <div style="font-weight: 700; color: var(--bnd-slate-900); line-height: 1.4; margin-bottom: 2px;" title="{{ $spj->kegiatan }}">
                                     {{ \Illuminate\Support\Str::limit($spj->kegiatan, 50) }}
                                 </div>
                                 @if($spj->keterangan)
-                                <div style="font-size: 11.5px; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <div style="font-size: 11.5px; color: var(--bnd-slate-500); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                     {{ \Illuminate\Support\Str::limit($spj->keterangan, 40) }}
                                 </div>
                                 @endif
@@ -257,7 +257,7 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                                         {{ strtoupper(substr($spj->user->name ?? 'T', 0, 1)) }}
                                     </div>
                                     <div>
-                                        <div style="font-weight: 700; color: #1e293b; font-size: 13px;">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
+                                        <div style="font-weight: 700; color: var(--bnd-slate-900); font-size: 13px;">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
                                         @if($spj->no_wa)
                                         <div style="font-size: 11px; color: #059669; display: flex; align-items: center; gap: 3px;">
                                             <ion-icon name="logo-whatsapp"></ion-icon>

@@ -291,10 +291,10 @@ $title = 'Detail Pencairan SPJ - Bendahara';
             </div>
 
             <!-- GRID 2 KOLOM: BERKAS AWAL TEKNIS & BERKAS BENDAHARA -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px;">
+            <div class="bnd-checklist-split-grid" style="margin-bottom: 20px;">
                 
                 <!-- KOLOM 1: BERKAS DICENTANG DI AWAL (TEKNIS) -->
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 18px;">
+                <div class="bnd-checklist-box teknis">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <ion-icon name="checkmark-circle" style="color: #16a34a; font-size: 20px;"></ion-icon>
@@ -308,8 +308,8 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                     @if(!empty($berkasTeknis) && count($berkasTeknis) > 0)
                         <div style="display: flex; flex-direction: column; gap: 8px;">
                             @foreach($berkasTeknis as $d)
-                                <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #dcfce7; border-radius: 8px; padding: 8px 12px; font-size: 12.5px;">
-                                    <div style="display: flex; align-items: center; gap: 8px; color: #14532d;">
+                                <div class="bnd-checklist-item teknis-item">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
                                         <ion-icon name="checkmark-circle" style="color: #16a34a; font-size: 16px;"></ion-icon>
                                         <span style="font-weight: 600;">{{ $d['nama'] }}</span>
                                     </div>
@@ -323,7 +323,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                 </div>
 
                 <!-- KOLOM 2: BERKAS BAGIAN BENDAHARA (DAPAT DICENTANG) -->
-                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 18px;">
+                <div class="bnd-checklist-box bendahara">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <ion-icon name="checkbox-outline" style="color: #2563eb; font-size: 20px;"></ion-icon>
@@ -344,10 +344,10 @@ $title = 'Detail Pencairan SPJ - Bendahara';
                                         $inputKey = $d['index'];
                                         $isVirtual = !empty($d['is_virtual']);
                                     @endphp
-                                    <label style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid {{ $isReady ? '#93c5fd' : '#cbd5e1' }}; border-radius: 8px; padding: 8px 12px; font-size: 12.5px; cursor: pointer;">
+                                    <label class="bnd-checklist-item bendahara-item {{ $isReady ? 'is-checked' : '' }}">
                                         <div style="display: flex; align-items: center; gap: 10px;">
                                             <input type="checkbox" name="berkas_bendahara[{{ $inputKey }}]" value="1" style="width: 17px; height: 17px; accent-color: #0284c7; cursor: pointer;" {{ $isReady ? 'checked' : '' }}>
-                                            <span style="font-weight: 600; color: #0f172a;">{{ $d['nama'] }}</span>
+                                            <span style="font-weight: 600;">{{ $d['nama'] }}</span>
                                         </div>
                                         @if($isVirtual)
                                             <input type="hidden" name="berkas_virtual[{{ $loop->index }}]" value="{{ $d['nama'] }}">
@@ -370,21 +370,21 @@ $title = 'Detail Pencairan SPJ - Bendahara';
 
             </div>
 
-            @if($spj->dokumen_file && !is_array(json_decode($spj->dokumen_file, true)))
-                <!-- LAMPIRAN FILE UPLOAD LAMA JIKA ADA -->
+            @if($spj->file_lampiran_url)
+                <!-- LAMPIRAN FILE DIGITAL -->
                 <div class="bnd-doc-item" style="margin-top: 14px;">
                     <div class="bnd-doc-left">
                         <div class="bnd-doc-icon">
                             <ion-icon name="document-attach-outline"></ion-icon>
                         </div>
                         <div>
-                            <h4 class="bnd-doc-title">Lampiran File Digital</h4>
+                            <h4 class="bnd-doc-title">Lampiran File Digital (Scan / Foto)</h4>
                             <div class="bnd-doc-meta">
-                                <span>File bukti digital terunggah</span>
+                                <span>{{ basename($spj->file_lampiran ?: $spj->dokumen_file) }} &bull; File bukti digital terunggah</span>
                             </div>
                         </div>
                     </div>
-                    <a href="{{ asset('storage/' . $spj->dokumen_file) }}" target="_blank" class="bnd-btn" style="background: #2563eb; color: #ffffff;">
+                    <a href="{{ $spj->file_lampiran_url }}" target="_blank" class="bnd-btn" style="background: #2563eb; color: #ffffff;">
                         <ion-icon name="open-outline"></ion-icon>
                         <span>Lihat Dokumen Asli</span>
                     </a>
@@ -418,7 +418,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
             @csrf
 
             <!-- 2 PILIHAN METODE UTAMA -->
-            <div class="bnd-execution-grid" style="grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+            <div class="bnd-execution-grid" style="gap: 20px; margin-bottom: 24px;">
                 
                 <!-- PILIHAN 1: MENUNGGU OTP QLOLA KPA -->
                 <div class="bnd-choice-card card-otp" style="border: 2px solid #93c5fd; background: #ffffff;">
@@ -537,7 +537,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
 
             <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST" onsubmit="return bukaModalKonfirmasiCair(event, this, 'Transaksi CMS BRI QLOLA (OTP KPA)');">
                 @csrf
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: flex-end;">
+                <div class="bnd-action-submit-row">
                     <div>
                         <label class="bnd-choice-input-label">Bukti Transfer / No. Referensi Transaksi QLOLA (Opsional):</label>
                         <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: REF-QLOLA-{{ date('Ymd') }}-9283719" value="{{ $spj->bukti_transfer ?: '' }}">
@@ -570,7 +570,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
 
             <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST" onsubmit="return bukaModalKonfirmasiCair(event, this, 'Pembayaran Langsung (LS Bank)');">
                 @csrf
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: flex-end;">
+                <div class="bnd-action-submit-row">
                     <div>
                         <label class="bnd-choice-input-label">Nomor SP2D / Bukti Transfer Bank LS:</label>
                         <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: SP2D-LS-{{ date('Ymd') }}-BPS" value="{{ $spj->bukti_transfer ?: '' }}">

@@ -9,7 +9,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
 @endpush
 
 @section('content')
-<div style="padding: 28px 36px; box-sizing: border-box; width: 100%;">
+<div style="width: 100%;">
 
     <!-- BREADCRUMB & PAGE HEADER -->
     <div class="bnd-header-wrapper" style="margin-bottom: 24px;">
@@ -23,10 +23,10 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
 
         <div class="bnd-page-header">
             <div class="bnd-header-title-box">
-                <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">
+                <h1 style="font-size: 24px; font-weight: 800; color: var(--bnd-slate-900); margin: 0 0 6px 0;">
                     Riwayat &amp; Arsip Keputusan SPJ
                 </h1>
-                <p style="color: #64748b; font-size: 13.5px; margin: 0;">
+                <p style="color: var(--bnd-slate-500); font-size: 13.5px; margin: 0;">
                     Seluruh dokumen yang telah melewati meja verifikasi bendahara, otorisasi BRI QLOLA, atau dalam masa revisi.
                 </p>
             </div>
@@ -165,7 +165,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                 <h3 class="bnd-toolbar-title">Daftar Arsip &amp; Riwayat Verifikasi</h3>
                 <span class="bnd-toolbar-counter">{{ $riwayatSpjs->count() }} Berkas</span>
             </div>
-            <div style="font-size: 12.5px; color: #64748b;">
+            <div style="font-size: 12.5px; color: var(--bnd-slate-500);">
                 Tersusun berdasarkan riwayat pembaruan terakhir
             </div>
         </div>
@@ -191,8 +191,8 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <ion-icon name="calendar-outline" style="color: #94a3b8; font-size: 15px;"></ion-icon>
                                 <div>
-                                    <div style="font-weight: 700; color: #1e293b; font-size: 13px;">{{ $spj->updated_at->format('d M Y') }}</div>
-                                    <div style="font-size: 11px; color: #94a3b8;">{{ $spj->updated_at->format('H:i') }} WITA</div>
+                                    <div style="font-weight: 700; color: var(--bnd-slate-800); font-size: 13px;">{{ $spj->updated_at->format('d M Y') }}</div>
+                                    <div style="font-size: 11px; color: var(--bnd-slate-400);">{{ $spj->updated_at->format('H:i') }} WITA</div>
                                 </div>
                             </div>
                         </td>
@@ -209,7 +209,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                             </div>
                         </td>
                         <td style="max-width: 260px; white-space: normal;">
-                            <a href="{{ route('bendahara.spj.show', $spj->id) }}" style="font-weight: 700; color: #0f172a; text-decoration: none; display: block; line-height: 1.4; margin-bottom: 2px; transition: color 0.15s;" onmouseover="this.style.color='#0284c7';" onmouseout="this.style.color='#0f172a';" title="{{ $spj->kegiatan }}">
+                            <a href="{{ route('bendahara.spj.show', $spj->id) }}" style="font-weight: 700; color: var(--bnd-slate-900); text-decoration: none; display: block; line-height: 1.4; margin-bottom: 2px; transition: color 0.15s;" onmouseover="this.style.color='#0284c7';" onmouseout="this.style.color='var(--bnd-slate-900)';" title="{{ $spj->kegiatan }}">
                                 {{ \Illuminate\Support\Str::limit($spj->kegiatan, 45) }}
                             </a>
                             @if($spj->keterangan)
@@ -224,7 +224,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                                     {{ strtoupper(substr($spj->user->name ?? 'T', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <div style="font-weight: 700; color: #1e293b; font-size: 13px;">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
+                                    <div style="font-weight: 700; color: var(--bnd-slate-800); font-size: 13px;">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
                                     @if($spj->no_wa)
                                     <div style="font-size: 11px; color: #059669; display: flex; align-items: center; gap: 3px;">
                                         <ion-icon name="logo-whatsapp"></ion-icon>
@@ -338,7 +338,7 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
             <div>
                 Menampilkan <strong>{{ $riwayatSpjs->count() }}</strong> dari <strong>{{ $totalRiwayat }}</strong> total berkas riwayat
             </div>
-            <div style="font-weight: 700; color: #0f172a;">
+            <div style="font-weight: 700; color: var(--bnd-slate-900);">
                 Subtotal Nilai di Halaman: <span style="color: #059669; font-size: 14px;">Rp {{ number_format($riwayatSpjs->sum('nilai'), 0, ',', '.') }}</span>
             </div>
         </div>

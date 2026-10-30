@@ -47,7 +47,10 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             @method('PUT')
             
             @php
-                $dokumen = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
+                $dokumen = $spj->dokumen_list;
+                if (empty($dokumen) && !empty($spj->dokumen_file) && str_starts_with(trim($spj->dokumen_file), '[')) {
+                    $dokumen = json_decode($spj->dokumen_file, true) ?: [];
+                }
             @endphp
             
             <div style="padding: 1.5rem; background: var(--dash-input-bg); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
@@ -165,6 +168,8 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
         </form>
     </div>
 </div>
+
+<x-print-validation-modal />
 
 @endsection
 
@@ -617,7 +622,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                         printBtn.classList.add('print-btn-shake');
                     }
 
-                    alert("SPJ tidak dapat diajukan jika belum menekan tombol Print sampai tercetak!\nSilakan cetak lembar checklist berkas fisik SPJ terlebih dahulu.");
+                    openPrintValidationModal();
                     return false;
                 }
             });

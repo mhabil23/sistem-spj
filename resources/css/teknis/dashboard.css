@@ -206,3 +206,59 @@
     color: var(--dash-text-muted);
     font-weight: 500;
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVE (TEKNIS DASHBOARD)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .dashboard-heading-title {
+        font-size: 20px;
+    }
+
+    .dashboard-heading .btn-dash-primary,
+    .dashboard-heading .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        padding: 16px 18px;
+        min-height: auto;
+        border-radius: 16px;
+    }
+
+    .stat-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
+
+    .stat-content strong {
+        font-size: 22px;
+    }
+
+    .alur-stepper-container {
+        padding: 24px 16px 20px 16px;
+    }
+}

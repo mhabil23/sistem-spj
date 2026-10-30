@@ -304,12 +304,9 @@
     <div class="section-heading">I. DAFTAR PEMERIKSAAN KELENGKAPAN BERKAS (SOP)</div>
 
     @php
-        $decodedDocs = [];
-        if ($spj->dokumen_file) {
-            $parsed = json_decode($spj->dokumen_file, true);
-            if (is_array($parsed)) {
-                $decodedDocs = $parsed;
-            }
+        $decodedDocs = $spj->dokumen_list;
+        if (empty($decodedDocs) && !empty($spj->dokumen_file) && str_starts_with(trim($spj->dokumen_file), '[')) {
+            $decodedDocs = json_decode($spj->dokumen_file, true) ?: [];
         }
 
         // Default standard 10 SOP list jika belum ada di json

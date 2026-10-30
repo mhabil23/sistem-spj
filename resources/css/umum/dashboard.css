@@ -2,6 +2,393 @@
    DASHBOARD UMUM - WIDGETS & CHARTS (SPJ - LIGHT & DARK READY)
    ========================================================================== */
 
+/* ==========================================================================
+   HERO COMMAND CENTER BANNER (GENERAL DASHBOARD)
+   ========================================================================== */
+.hero-welcome-banner {
+    position: relative;
+    border-radius: 24px;
+    padding: 30px 34px;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, #0f2735 0%, #163c4e 45%, #114b43 100%);
+    box-shadow: 0 16px 36px -10px rgba(15, 39, 53, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    color: #ffffff;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 28px;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hero-welcome-banner:hover {
+    box-shadow: 0 20px 42px -10px rgba(15, 39, 53, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.14);
+}
+
+/* Background Ambient Lighting & Glow */
+.hero-bg-glow {
+    position: absolute;
+    width: 380px;
+    height: 380px;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-bg-glow-1 {
+    top: -120px;
+    right: 15%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, transparent 70%);
+}
+
+.hero-bg-glow-2 {
+    bottom: -100px;
+    left: -80px;
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.2) 0%, transparent 70%);
+}
+
+.hero-bg-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: radial-gradient(#ffffff 1px, transparent 1px);
+    background-size: 24px 24px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-main-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hero-meta-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #e0f2fe;
+    width: fit-content;
+}
+
+.hero-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #34d399;
+    box-shadow: 0 0 10px #34d399;
+    animation: livePulse 2s infinite;
+}
+
+.hero-title-group h2 {
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+}
+
+.hero-gradient-text {
+    background: linear-gradient(135deg, #38bdf8 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #cbd5e1;
+    max-width: 540px;
+    margin: 0;
+}
+
+/* Quick Metrics Row Inside Hero */
+.hero-metrics-strip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.hero-metric-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hero-metric-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.13);
+}
+
+.hero-metric-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+}
+
+.hero-metric-icon.icon-amber {
+    background: rgba(245, 158, 11, 0.25);
+    color: #fbbf24;
+}
+
+.hero-metric-icon.icon-cyan {
+    background: rgba(14, 165, 233, 0.25);
+    color: #38bdf8;
+}
+
+.hero-metric-icon.icon-emerald {
+    background: rgba(16, 185, 129, 0.25);
+    color: #34d399;
+}
+
+.hero-metric-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-metric-val {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.2;
+}
+
+.hero-metric-lbl {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+/* Action Buttons inside Hero */
+.hero-actions-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.hero-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.hero-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+    filter: brightness(1.08);
+}
+
+.hero-btn-glass {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all 0.2s ease;
+}
+
+.hero-btn-glass:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Floating Status / 5-Pintu Card */
+.hero-floating-card {
+    position: relative;
+    z-index: 2;
+    background: rgba(15, 34, 46, 0.65);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 18px;
+    padding: 20px 22px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.hero-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.hero-card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: rgba(14, 165, 233, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    text-transform: uppercase;
+}
+
+.hero-pintu-stepper {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.hero-pintu-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.pintu-badge-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.step-active .pintu-badge-num {
+    background: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.8);
+}
+
+.step-active {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.step-pass .pintu-badge-num {
+    background: rgba(16, 185, 129, 0.25);
+    color: #34d399;
+}
+
+.step-wait .pintu-badge-num {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+}
+
+.hero-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-card-link {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.15s ease;
+}
+
+.hero-card-link:hover {
+    color: #7dd3fc;
+    text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+    .hero-welcome-banner {
+        grid-template-columns: 1fr;
+        padding: 26px 28px;
+        gap: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-welcome-banner {
+        padding: 22px 18px;
+        border-radius: 18px;
+    }
+
+    .hero-title-group h2 {
+        font-size: 21px;
+    }
+
+    .hero-actions-wrap {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-btn-primary, .hero-btn-glass {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .hero-metrics-strip {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
 /* Over View Card */
 .overview-container {
     background-color: var(--dash-card-bg);
@@ -529,6 +916,74 @@ html.dark-theme .ov-info-circle {
     .card-users, .card-donut, .card-expense-profit, .card-stores-tall {
         grid-column: 1;
         grid-row: auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-welcome-banner {
+        padding: 20px 16px;
+        border-radius: 18px;
+        gap: 20px;
+    }
+
+    .hero-title-group h2 {
+        font-size: 20px;
+    }
+
+    .hero-desc {
+        font-size: 12.5px;
+    }
+
+    .hero-metrics-strip {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .hero-metric-item {
+        width: 100%;
+    }
+
+    .hero-actions-wrap {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .hero-btn-primary,
+    .hero-btn-glass {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero-floating-card {
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+
+    .overview-container {
+        padding: 16px 14px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+    }
+
+    .overview-cards-grid {
+        gap: 10px;
+    }
+
+    .overview-card {
+        padding: 12px 14px;
+    }
+
+    .grid-card {
+        padding: 18px 14px;
+        border-radius: 16px;
+    }
+
+    .donut-chart-layout {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
     }
 }
 

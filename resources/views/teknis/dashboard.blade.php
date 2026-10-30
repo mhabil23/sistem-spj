@@ -131,12 +131,16 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                                 @php
                                     $badgeClass = 'dash-badge-draft';
                                     if(in_array($spj->status, ['selesai', 'disetujui_ppk', 'disetujui_umum', 'disetujui_ppspm'])) $badgeClass = 'dash-badge-mint';
-                                    elseif(in_array($spj->status, ['diajukan', 'menunggu_otp_kpa'])) $badgeClass = 'dash-badge-cyan';
+                                    elseif($spj->status === 'diajukan') {
+                                        $badgeClass = $spj->pemeriksaan_dimulai_at ? 'dash-badge-amber' : 'dash-badge-cyan';
+                                    }
+                                    elseif($spj->status === 'menunggu_otp_kpa') $badgeClass = 'dash-badge-cyan';
+                                    elseif($spj->status === 'proses_ls') $badgeClass = 'dash-badge-purple';
                                     elseif(in_array($spj->status, ['dikembalikan', 'revisi_bendahara', 'revisi_ppk', 'revisi_ppspm', 'revisi_umum'])) $badgeClass = 'dash-badge-peach';
                                 @endphp
                                 <span class="dash-badge {{ $badgeClass }}">
                                     <span class="badge-dot"></span>
-                                    {{ $spj->status === 'menunggu_otp_kpa' ? 'MENUNGGU OTP QLOLA KPA' : str_replace('_', ' ', strtoupper($spj->status)) }}
+                                    {{ $spj->status_label }}
                                 </span>
                             </td>
                         </tr>
@@ -216,82 +220,31 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
 </section>
 
 <!-- ALUR TIMELINE -->
-<section class="spj-panel">
+<section class="spj-panel" style="padding: 0; background: transparent; border: none; box-shadow: none;">
     @if($recentSpjs->isNotEmpty())
     @php $topSpj = $recentSpjs->first(); @endphp
-    <div class="spj-panel-header">
-        <div>
-            <h2 title="{{ $topSpj->kegiatan }}">Alur Kegiatan: {{ Str::limit($topSpj->kegiatan, 40) }}</h2>
-            <p>Posisi pengajuan terakhir yang Anda daftarkan</p>
+    <div style="background: var(--dash-card-bg); border: 1px solid var(--dash-border); border-radius: 16px; padding: 22px 24px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; padding-bottom: 14px; border-bottom: 1px dashed var(--dash-border);">
+            <div>
+                <h2 style="font-size: 16px; font-weight: 800; color: var(--dash-text-dark); margin: 0 0 4px 0;" title="{{ $topSpj->kegiatan }}">
+                    Alur Kegiatan: {{ Str::limit($topSpj->kegiatan, 40) }}
+                </h2>
+                <p style="font-size: 12.5px; color: var(--dash-text-muted); margin: 0;">Posisi tahapan dan riwayat pengajuan SPJ terakhir Anda</p>
+            </div>
+            <a href="{{ route('teknis.spj.show', $topSpj->id) }}" style="color: #0284c7; font-size: 13px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                <span>Lihat Detail SPJ</span> &rarr;
+            </a>
         </div>
-        <a href="{{ route('teknis.spj.show', $topSpj->id) }}" style="color: var(--dash-cyan-text); font-size: 13px; font-weight: 600; text-decoration: none;">Lihat detail &rarr;</a>
-    </div>
 
-    <div class="alur-stepper-container">
-        <div class="alur-stepper-track">
-            
-            @php
-                $isUmum = in_array($topSpj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
-                $isPpk = in_array($topSpj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
-                $isPpspm = in_array($topSpj->status, ['disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
-                $isBendahara = in_array($topSpj->status, ['disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
-                $isDone = $topSpj->status == 'selesai';
-            @endphp
-            
-            <!-- LINE BACKGROUND -->
-            <div class="alur-line-bg"></div>
-            
-            <!-- STEP 1: TEKNIS -->
-            <div class="alur-step-node">
-                <div class="alur-circle done">
-                    <ion-icon name="checkmark"></ion-icon>
-                </div>
-                <strong class="alur-step-label">Teknis</strong>
-            </div>
-
-            <!-- STEP 2: UMUM -->
-            <div class="alur-step-node">
-                <div class="alur-circle {{ $isPpk ? 'done' : ($isUmum ? 'current' : 'waiting') }}">
-                    @if($isPpk) <ion-icon name="checkmark"></ion-icon>
-                    @else 2 @endif
-                </div>
-                <strong class="alur-step-label {{ $isUmum ? '' : 'muted' }}">Umum</strong>
-            </div>
-
-            <!-- STEP 3: PPK -->
-            <div class="alur-step-node">
-                <div class="alur-circle {{ $isPpspm ? 'done' : ($isPpk ? 'current' : 'waiting') }}">
-                    @if($isPpspm) <ion-icon name="checkmark"></ion-icon>
-                    @else 3 @endif
-                </div>
-                <strong class="alur-step-label {{ $isPpk ? '' : 'muted' }}">PPK</strong>
-            </div>
-
-            <!-- STEP 4: BENDAHARA -->
-            <div class="alur-step-node">
-                <div class="alur-circle {{ $isDone ? 'done' : ($isBendahara ? 'current' : 'waiting') }}">
-                    @if($isDone) <ion-icon name="checkmark"></ion-icon>
-                    @else 4 @endif
-                </div>
-                <strong class="alur-step-label {{ $isBendahara ? '' : 'muted' }}">Bendahara</strong>
-            </div>
-            
-            <!-- STEP 5: ARSIP -->
-            <div class="alur-step-node">
-                <div class="alur-circle {{ $isDone ? 'done' : 'waiting' }}">
-                    @if($isDone) <ion-icon name="checkmark"></ion-icon>
-                    @else 5 @endif
-                </div>
-                <strong class="alur-step-label {{ $isDone ? '' : 'muted' }}">Arsip</strong>
-            </div>
-
-        </div>
+        <x-teknis.spj-stepper :spj="$topSpj" :showHeader="false" />
     </div>
     @else
-    <div class="spj-panel-header">
-        <div>
-            <h2>Alur SPJ</h2>
-            <p>Belum ada SPJ aktif untuk ditampilkan alur prosesnya.</p>
+    <div class="spj-panel" style="margin-bottom: 0;">
+        <div class="spj-panel-header">
+            <div>
+                <h2>Alur SPJ</h2>
+                <p>Belum ada SPJ aktif untuk ditampilkan alur prosesnya.</p>
+            </div>
         </div>
     </div>
     @endif

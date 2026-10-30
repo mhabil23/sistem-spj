@@ -232,6 +232,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
     </div>
 </div>
 
+<x-print-validation-modal />
+
 @endsection
 
 @push('scripts')
@@ -1026,7 +1028,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                         printBtn.classList.add('print-btn-shake');
                     }
 
-                    alert("SPJ tidak dapat diajukan jika belum menekan tombol Print sampai tercetak!\nSilakan cetak lembar checklist berkas fisik SPJ terlebih dahulu.");
+                    openPrintValidationModal();
                     return false;
                 }
             });

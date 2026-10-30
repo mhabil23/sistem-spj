@@ -270,7 +270,7 @@ $title = 'Pengaturan Profil Akun';
                                     placeholder="nama@email.com">
                             </div>
                             <div class="bnd-helper-text">
-                                Email saat ini: <strong style="color: #0f172a;">{{ $user->email }}</strong>. Gunakan email dinas atau pribadi yang selalu dapat diakses.
+                                Email saat ini: <strong style="color: var(--bnd-slate-900);">{{ $user->email }}</strong>. Gunakan email dinas atau pribadi yang selalu dapat diakses.
                             </div>
                             <!-- Dynamic Notice saat email diubah -->
                             <div id="emailNoticeBadge" style="display: none; margin-top: 8px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.45;">

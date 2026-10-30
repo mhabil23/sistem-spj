@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Spj;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class TeknisSpjTest extends TestCase
@@ -265,5 +267,162 @@ class TeknisSpjTest extends TestCase
         $response->assertSee('Langkah Selanjutnya: Bawa Berkas Fisik ke Subbagian Umum');
         $response->assertSee('harap membawa dan menyerahkan dokumen fisik SPJ beserta seluruh lampirannya ke meja Subbagian Umum', false);
         $response->assertSee('Diajukan (Bawa Berkas Fisik ke Umum)');
+    }
+
+    public function test_teknis_status_and_show_page_synchronized_when_berkas_fisik_diterima(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-FISIK-002',
+            'kegiatan' => 'Belanja Pemeliharaan Jaringan',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'diajukan',
+            'berkas_fisik_diterima_at' => now(),
+        ]);
+
+        $this->assertSame('Fisik Diterima (Siap Cek)', $spj->status_label);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.show', $spj->id));
+        $response->assertStatus(200);
+        $response->assertSee('Berkas Fisik Telah Diterima Subbagian Umum');
+        $response->assertSee('Status: Fisik Diterima (Siap Cek)');
+
+        $indexResponse = $this->actingAs($teknis)->get(route('teknis.spj.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertSee('Fisik Diterima (Siap Cek)');
+    }
+
+    public function test_teknis_status_and_show_page_synchronized_when_pemeriksaan_dimulai(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-FISIK-003',
+            'kegiatan' => 'Belanja ATK Kantor',
+            'tanggal' => now(),
+            'nilai' => 2500000,
+            'status' => 'diajukan',
+            'berkas_fisik_diterima_at' => now(),
+            'pemeriksaan_dimulai_at' => now(),
+        ]);
+
+        $this->assertSame('Sedang Diperiksa', $spj->status_label);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.show', $spj->id));
+        $response->assertStatus(200);
+        $response->assertSee('Sedang Diperiksa oleh Subbagian Umum');
+        $response->assertSee('Status: Sedang Diperiksa');
+
+        $indexResponse = $this->actingAs($teknis)->get(route('teknis.spj.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertSee('Sedang Diperiksa');
+        $indexResponse->assertSee('dash-badge-amber', false);
+    }
+
+    public function test_teknis_create_page_contains_print_validation_modal(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.create'));
+
+        $response->assertStatus(200);
+        $response->assertSee('id="printValidationModal"', false);
+        $response->assertSee('Lembar Checklist Belum Dicetak!');
+        $response->assertSee('Cetak Lembar Checklist Sekarang');
+        $response->assertSee('openPrintValidationModal()', false);
+    }
+
+    public function test_teknis_dashboard_and_show_page_render_detailed_sop_5_pintu_stepper(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-STEPPER-001',
+            'kegiatan' => 'Belanja ATK Survei BPS',
+            'tanggal' => now(),
+            'nilai' => 2500000,
+            'status' => 'diajukan',
+            'berkas_fisik_diterima_at' => now(),
+            'pemeriksaan_dimulai_at' => now(),
+        ]);
+
+        // Dashboard
+        $dashResponse = $this->actingAs($teknis)->get(route('teknis.dashboard'));
+        $dashResponse->assertStatus(200);
+        $dashResponse->assertSee('teknis-stepper-card', false);
+        $dashResponse->assertSee('1. Pengajuan Teknis');
+        $dashResponse->assertSee('2. Verifikasi Umum');
+        $dashResponse->assertSee('3. Tanda Tangan PPK');
+        $dashResponse->assertSee('4. Persetujuan PPSPM');
+        $dashResponse->assertSee('5. Pencairan Dana');
+        $dashResponse->assertSee('Sedang Diperiksa');
+
+        // Show page
+        $showResponse = $this->actingAs($teknis)->get(route('teknis.spj.show', $spj->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('SOP 5 Pintu BPS');
+        $showResponse->assertSee('1. Pengajuan Teknis');
+        $showResponse->assertSee('2. Verifikasi Umum');
+        $showResponse->assertSee('3. Tanda Tangan PPK');
+        $showResponse->assertSee('4. Persetujuan PPSPM');
+        $showResponse->assertSee('5. Pencairan Dana');
+    }
+
+    public function test_uploading_document_file_preserves_checklist_and_both_are_displayed_in_show(): void
+    {
+        Storage::fake('public');
+
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $checklist = [
+            ['nama' => 'KAK', 'disiapkan' => true],
+            ['nama' => 'Faktur Pajak', 'disiapkan' => true],
+            ['nama' => 'PPh 22', 'disiapkan' => false],
+        ];
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-DOC-001',
+            'kegiatan' => 'Belanja ATK Kantor',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'diajukan',
+            'dokumen_file' => json_encode($checklist),
+        ]);
+
+        $file = UploadedFile::fake()->image('bukti_scan.jpg');
+
+        $uploadResponse = $this->actingAs($teknis)->post(route('teknis.dokumen.upload', $spj->id), [
+            'dokumen_file' => $file,
+        ]);
+
+        $uploadResponse->assertSessionHas('success');
+
+        $spj->refresh();
+
+        // Checklist in dokumen_file must NOT be overwritten
+        $this->assertNotNull($spj->dokumen_file);
+        $this->assertEquals($checklist, json_decode($spj->dokumen_file, true));
+
+        // Uploaded file must be in file_lampiran
+        $this->assertNotNull($spj->file_lampiran);
+        $this->assertStringStartsWith('dokumen_spjs/', $spj->file_lampiran);
+        $this->assertStringEndsWith('.jpg', $spj->file_lampiran);
+
+        // Show page must display both
+        $showResponse = $this->actingAs($teknis)->get(route('teknis.spj.show', $spj->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee('Lampiran Berkas Digital');
+        $showResponse->assertSee('File Terunggah');
+        $showResponse->assertSee('Checklist Kelengkapan Dokumen Fisik');
+        $showResponse->assertSee('KAK');
+        $showResponse->assertSee('Faktur Pajak');
+        $showResponse->assertSee('PPh 22');
+        $showResponse->assertDontSee('Data dokumen tidak valid atau kosong.');
     }
 }

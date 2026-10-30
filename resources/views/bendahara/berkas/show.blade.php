@@ -234,6 +234,31 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
 </div>
 
 <!-- ====================================================================
+     BERKAS DIGITAL TERLAMPIR JIKA DIUNGGAH
+     ==================================================================== -->
+@if($spj->file_lampiran_url)
+<div class="bnd-card" style="margin-bottom: 24px; border: 1px solid #bfdbfe; background: #f8fafc;">
+    <div style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="width: 44px; height: 44px; border-radius: 10px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                <ion-icon name="document-attach-outline"></ion-icon>
+            </div>
+            <div>
+                <h4 style="margin: 0 0 2px 0; font-size: 14.5px; font-weight: 700; color: var(--bnd-slate-900);">Lampiran Berkas Bukti Digital (Scan / Foto)</h4>
+                <span style="font-size: 12.5px; color: var(--bnd-slate-500);">{{ basename($spj->file_lampiran ?: $spj->dokumen_file) }} &bull; File digital pendukung yang diunggah staf pengaju</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <a href="{{ $spj->file_lampiran_url }}" target="_blank" class="bnd-btn" style="background: #0284c7; color: #ffffff;">
+                <ion-icon name="eye-outline"></ion-icon>
+                <span>Buka Berkas Digital</span>
+            </a>
+        </div>
+    </div>
+</div>
+@endif
+
+<!-- ====================================================================
      BAGIAN 1: BERKAS YANG SUDAH DICENTANG DI AWAL (STAF TEKNIS)
      ==================================================================== -->
 <div class="bnd-card" style="margin-bottom: 24px;">
@@ -272,10 +297,10 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
                                 @endif
                             </div>
                             <div>
-                                <h4 style="margin: 0 0 2px 0; font-size: 13.5px; font-weight: 700; color: #0f172a;">
+                                <h4 style="margin: 0 0 2px 0; font-size: 13.5px; font-weight: 700; color: var(--bnd-slate-900);">
                                     {{ $doc['nama'] }}
                                 </h4>
-                                <span style="font-size: 11.5px; color: #64748b;">
+                                <span style="font-size: 11.5px; color: var(--bnd-slate-500);">
                                     {{ $isReady ? 'Dicentang oleh Staf Teknis di awal' : 'Belum disiapkan' }}
                                 </span>
                             </div>
@@ -350,14 +375,14 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
 
                             <div style="flex: 1;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <h4 style="margin: 0; font-size: 13.5px; font-weight: 700; color: #0f172a;">
+                                    <h4 style="margin: 0; font-size: 13.5px; font-weight: 700; color: var(--bnd-slate-900);">
                                         {{ $doc['nama'] }}
                                     </h4>
                                     <span style="font-size: 10px; background: #e0f2fe; color: #0369a1; padding: 2px 6px; border-radius: 4px; font-weight: 700;">
                                         Bendahara
                                     </span>
                                 </div>
-                                <span style="font-size: 11.5px; color: #64748b; display: block; margin-top: 3px;" id="desc_bendahara_{{ $loop->index }}">
+                                <span style="font-size: 11.5px; color: var(--bnd-slate-500); display: block; margin-top: 3px;" id="desc_bendahara_{{ $loop->index }}">
                                     @if($isReady)
                                         <span style="color: #2563eb; font-weight: 600;">✔ Telah dicentang oleh Bendahara</span>
                                         @if(!empty($doc['checked_at']))
@@ -425,7 +450,7 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
                 <input type="hidden" name="berkas_bendahara[{{ $doc['index'] }}]" value="{{ !empty($doc['disiapkan']) ? '1' : '0' }}" class="hidden-cb-mirror-{{ $loop->index }}">
             @endforeach
 
-            <div class="bnd-execution-grid" style="grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+            <div class="bnd-execution-grid" style="gap: 20px; margin-bottom: 24px;">
                 
                 <!-- PILIHAN A: MENUNGGU OTP QLOLA KPA -->
                 <div class="bnd-choice-card card-otp" style="border: 2px solid #93c5fd; background: #ffffff;">
@@ -518,7 +543,7 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
 
             <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST" onsubmit="return bukaModalKonfirmasiCair(event, this, 'Transaksi CMS BRI QLOLA (OTP KPA)');" style="margin-top: 16px;">
                 @csrf
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: flex-end;">
+                <div class="bnd-action-submit-row">
                     <div>
                         <label class="bnd-choice-input-label">Nomor Resi / Referensi Transaksi QLOLA (Opsional):</label>
                         <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: REF-QLOLA-{{ date('Ymd') }}-9827" value="{{ $spj->bukti_transfer ?: '' }}">
@@ -548,7 +573,7 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
 
             <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST" onsubmit="return bukaModalKonfirmasiCair(event, this, 'Pembayaran Langsung (LS Bank)');" style="margin-top: 16px;">
                 @csrf
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: flex-end;">
+                <div class="bnd-action-submit-row">
                     <div>
                         <label class="bnd-choice-input-label">Nomor SP2D / Bukti Transfer Bank LS:</label>
                         <input type="text" name="bukti_transfer" class="bnd-choice-input" placeholder="Contoh: SP2D-LS-{{ date('Ymd') }} atau No. Referensi Bank" value="{{ $spj->bukti_transfer ?: '' }}">

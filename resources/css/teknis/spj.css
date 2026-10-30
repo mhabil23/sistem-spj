@@ -379,3 +379,107 @@
     font-weight: 700;
     color: var(--dash-text-dark);
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVE RULES (TEKNIS SPJ)
+   ========================================================================== */
+
+.spj-table {
+    min-width: 650px;
+}
+
+@media (max-width: 768px) {
+    .spj-panel-header {
+        padding: 16px 18px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .spj-panel-body {
+        padding: 18px 16px;
+    }
+
+    .spj-radio-group {
+        grid-template-columns: 1fr;
+    }
+
+    .spj-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .upload-action {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .file-input {
+        width: 100%;
+    }
+
+    .file-input::file-selector-button {
+        padding: 0.4rem 0.8rem;
+        margin-right: 0.5rem;
+    }
+
+    .spj-panel-body div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+
+    .spj-panel-body div[style*="grid-column: span 2"] {
+        grid-column: span 1 !important;
+    }
+
+    .spj-alert {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 14px 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .spj-btn {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .dashboard-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .dashboard-heading div[style*="display: flex"] {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .dashboard-heading div[style*="display: flex"] .spj-btn,
+    .dashboard-heading div[style*="display: flex"] a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .spj-panel-body form div[style*="justify-content: flex-end"] {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .spj-panel-body form div[style*="justify-content: flex-end"] .spj-btn,
+    .spj-panel-body form div[style*="justify-content: flex-end"] button,
+    .spj-panel-body form div[style*="justify-content: flex-end"] a {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+}

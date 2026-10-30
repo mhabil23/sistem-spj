@@ -88,7 +88,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                                     $statusText = 'Selesai (Arsip)';
                                 } elseif($spj->status == 'disetujui_ppspm') {
                                     $badgeClass = 'dash-badge-disetujui_ppspm';
-                                    $statusText = 'Di Bendahara';
+                                    $statusText = 'Siap Diproses Bendahara (SPM Terbit)';
                                 } elseif($spj->status == 'disetujui_ppk') {
                                     $badgeClass = 'dash-badge-disetujui_ppk';
                                     $statusText = 'Diteruskan PPSPM';

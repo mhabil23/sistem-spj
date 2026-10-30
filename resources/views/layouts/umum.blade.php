@@ -32,6 +32,7 @@
 <body class="dashboard-body">
     <div class="dashboard-app-wrapper">
         <x-umum.sidebar />
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
         
         <div class="main-content">
             <x-umum.navbar :title="$title ?? ''" />
@@ -47,7 +48,14 @@
 
     <script>
         function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            if (sidebar) {
+                sidebar.classList.toggle('active');
+                if (overlay) {
+                    overlay.classList.toggle('active', sidebar.classList.contains('active'));
+                }
+            }
         }
 
         function toggleThemeMode() {

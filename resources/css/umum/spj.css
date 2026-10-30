@@ -1391,3 +1391,149 @@ html.dark-theme .wa-chat-textarea {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
 }
+
+/* ==========================================================================
+   MOBILE RESPONSIVE RULES (SUBBAGIAN UMUM SPJ)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .verify-header-card {
+        padding: 16px 18px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .verify-header-left {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .verify-header-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .verify-header-actions a,
+    .verify-header-actions button,
+    .btn-wa-header,
+    .btn-print-header,
+    .btn-back-header {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .verify-page-title {
+        font-size: 19px;
+    }
+
+    .verify-sla-banner,
+    .wa-trigger-banner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 14px 16px;
+    }
+
+    .sla-info-group,
+    .wa-trigger-content {
+        width: 100%;
+    }
+
+    .sla-timer-box {
+        text-align: left;
+    }
+
+    .wa-trigger-banner .btn-wa-header {
+        width: 100%;
+    }
+
+    .verify-card-header {
+        padding: 14px 18px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .verify-card-body {
+        padding: 16px;
+    }
+
+    .doc-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .verify-stage-flow-card {
+        padding: 16px;
+    }
+
+    .stage-flow-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .stage-flow-actions {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .stage-flow-actions button,
+    .stage-flow-actions a {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .decision-box {
+        padding: 18px 16px;
+    }
+}
+
+@media (max-width: 576px) {
+    .decision-actions-row {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .decision-actions-row button,
+    .decision-actions-row a,
+    .btn-decision-wa-quick,
+    .btn-decision-submit {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 12px 16px;
+    }
+
+    .wa-modal-box {
+        margin: 10px;
+        max-height: 94vh;
+        overflow-y: auto;
+        border-radius: 14px;
+    }
+
+    .wa-modal-header {
+        padding: 14px 16px;
+    }
+
+    .wa-modal-body {
+        padding: 16px;
+    }
+
+    .wa-modal-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-wa-dismiss,
+    .btn-wa-submit-launch {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+}

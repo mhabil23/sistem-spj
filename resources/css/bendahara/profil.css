@@ -46,7 +46,7 @@
 }
 
 .bnd-profil-wrapper {
-    padding: 28px 36px;
+    padding: 0;
     box-sizing: border-box;
     width: 100%;
 }
@@ -575,4 +575,84 @@
 
 .bnd-btn-secondary:hover {
     background: #e2e8f0;
+}
+
+/* ==========================================================================
+   RESPONSIVE & MEDIA QUERIES FOR PROFIL
+   ========================================================================== */
+@media (max-width: 991px) {
+    .bnd-profil-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .bnd-page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    .bnd-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .bnd-actions-bar {
+        flex-direction: column-reverse;
+        width: 100%;
+    }
+
+    .bnd-actions-bar .bnd-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   DARK THEME OVERRIDES FOR BENDAHARA PROFIL
+   ========================================================================== */
+html.dark-theme .bnd-summary-card,
+html.dark-theme .bnd-settings-card {
+    background-color: var(--bnd-card-bg) !important;
+    border-color: #134e3f !important;
+}
+
+html.dark-theme .bnd-summary-name,
+html.dark-theme .bnd-settings-header h3,
+html.dark-theme .bnd-header-title-box h1 {
+    color: #f0fdf4 !important;
+}
+
+html.dark-theme .bnd-summary-meta-val,
+html.dark-theme .bnd-form-input,
+html.dark-theme .bnd-form-select {
+    color: #f0fdf4 !important;
+    background-color: #081f19 !important;
+    border-color: #155e4b !important;
+}
+
+html.dark-theme .bnd-form-input::placeholder {
+    color: #4b7a6e !important;
+}
+
+html.dark-theme .bnd-form-label {
+    color: #a7f3d0 !important;
+}
+
+html.dark-theme .bnd-summary-meta-label,
+html.dark-theme .bnd-settings-header p,
+html.dark-theme .bnd-header-title-box p {
+    color: #86efac !important;
+}
+
+html.dark-theme .bnd-summary-meta-item,
+html.dark-theme .bnd-form-section {
+    border-color: #134e3f !important;
+}
+
+html.dark-theme .bnd-btn-secondary {
+    background: #0d2c24 !important;
+    border-color: #155e4b !important;
+    color: #a7f3d0 !important;
 }

@@ -14,20 +14,13 @@ if($diff) {
     $timeString .= $diff->i . ' Menit';
 }
 
-// Decode dokumen_file (bisa berupa JSON array checklist atau path file upload)
-$dokumens = [];
-$isAttachmentFile = false;
-$attachmentFilePath = null;
-
-if ($spj->dokumen_file) {
-    $decoded = json_decode($spj->dokumen_file, true);
-    if (is_array($decoded)) {
-        $dokumens = $decoded;
-    } else {
-        $isAttachmentFile = true;
-        $attachmentFilePath = $spj->dokumen_file;
-    }
+// Decode checklist dokumen & file lampiran digital
+$dokumens = $spj->dokumen_list;
+if (empty($dokumens) && !empty($spj->dokumen_file) && str_starts_with(trim($spj->dokumen_file), '[')) {
+    $dokumens = json_decode($spj->dokumen_file, true) ?: [];
 }
+$attachmentFilePath = $spj->file_lampiran ?: (!str_starts_with((string)$spj->dokumen_file, '[') ? $spj->dokumen_file : null);
+$isAttachmentFile = !empty($attachmentFilePath);
 
 // Hitung persentase dokumen yang telah disiapkan staf teknis
 $totalDocs = count($dokumens);
@@ -108,7 +101,7 @@ if ($isRevision) {
                         $statusText = 'Diteruskan ke PPSPM';
                     } elseif ($spj->status == 'disetujui_ppspm') {
                         $statusBadgeClass = 'dash-badge-disetujui_ppspm';
-                        $statusText = 'Di Bendahara (Pencairan)';
+                        $statusText = 'Siap Diproses Bendahara (SPM Terbit)';
                     } elseif ($isRevision) {
                         $statusBadgeClass = 'dash-badge-revisi';
                         $statusText = 'Perlu Revisi (' . strtoupper(str_replace('revisi_', '', $spj->status)) . ')';
@@ -475,6 +468,24 @@ if ($isRevision) {
             </div>
             <div class="verify-card-body">
 
+                @if($isAttachmentFile)
+                    <!-- Berkas Digital Terlampir -->
+                    <div style="background: var(--dash-table-header-bg); border: 1px solid var(--dash-border); border-radius: 12px; padding: 18px 24px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 44px; height: 44px; border-radius: 10px; background: rgba(2, 132, 199, 0.12); color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                                <ion-icon name="document-attach-outline"></ion-icon>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0 0 2px 0; font-size: 14.5px; font-weight: 700; color: var(--dash-text-dark);">Berkas Digital Terlampir (Scan / Foto)</h4>
+                                <span style="font-size: 12.5px; color: var(--dash-text-muted);">{{ basename($attachmentFilePath) }} &bull; Bukti berkas digital yang diunggah staf pengaju</span>
+                            </div>
+                        </div>
+                        <a href="{{ Storage::url($attachmentFilePath) }}" target="_blank" class="btn-dash-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 8px 18px; font-size: 13px;">
+                            <ion-icon name="eye-outline" style="font-size: 17px;"></ion-icon> Buka &amp; Periksa File Terlampir
+                        </a>
+                    </div>
+                @endif
+
                 @if($totalDocs > 0)
                     <!-- Tracker Progress Bar -->
                     <div class="doc-tracker-bar">
@@ -519,16 +530,6 @@ if ($isRevision) {
                                 </div>
                             </div>
                         @endforeach
-                    </div>
-                @elseif($isAttachmentFile)
-                    <!-- Single File Upload Mode -->
-                    <div style="background: var(--dash-table-header-bg); border: 1px solid var(--dash-border); border-radius: 12px; padding: 24px; text-align: center;">
-                        <ion-icon name="document-attach-outline" style="font-size: 40px; color: #0284c7; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
-                        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 700; color: var(--dash-text-dark);">Berkas Digital Terlampir</h4>
-                        <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--dash-text-muted);">Staf teknis telah melampirkan berkas bukti dokumen digital untuk pengajuan ini.</p>
-                        <a href="{{ Storage::url($attachmentFilePath) }}" target="_blank" class="btn-dash-primary" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 10px 20px; font-size: 13px;">
-                            <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon> Buka & Periksa File Terlampir
-                        </a>
                     </div>
                 @else
                     <!-- Default Checklist Panduan jika belum ada checklist spesifik -->

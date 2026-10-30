@@ -10,10 +10,10 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
 @endpush
 
 @section('content')
-<div style="padding: 28px 36px; box-sizing: border-box; width: 100%;">
+<div style="width: 100%;">
 
     <!-- HERO WELCOME BANNER -->
-    <div style="background: linear-gradient(135deg, #047857 0%, #065f46 50%, #064e3b 100%); border-radius: 16px; padding: 24px 32px; color: #ffffff; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.35); flex-wrap: wrap;">
+    <div class="bnd-hero-banner">
         <div>
             <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.25); padding: 4px 12px; border-radius: 999px; font-size: 11.5px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.03em;">
                 <ion-icon name="shield-checkmark" style="color: #6ee7b7;"></ion-icon>
@@ -26,7 +26,7 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                 Pantau antrean pencairan dana SPJ, catat input maker QLOLA, dan pantau status otorisasi kode OTP dari Kuasa Pengguna Anggaran (KPA).
             </p>
         </div>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div class="bnd-hero-actions" style="display: flex; gap: 10px; align-items: center;">
             <a href="{{ route('bendahara.spj.index') }}" class="bnd-btn" style="background: #ffffff; color: #065f46; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 <ion-icon name="file-tray-full-outline" style="font-size: 18px; color: #059669;"></ion-icon>
                 <span>Buka Kotak Masuk ({{ $totalAntrean }})</span>
@@ -163,8 +163,8 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                                     <ion-icon name="calendar-outline"></ion-icon>
                                 </div>
                                 <div>
-                                    <div style="font-weight: 700; color: #0f172a; font-size: 12.5px;">{{ $spj->updated_at->format('d M Y') }}</div>
-                                    <div style="font-size: 11px; color: #94a3b8;">{{ $spj->created_at->diffForHumans() }}</div>
+                                    <div style="font-weight: 700; color: var(--bnd-slate-900); font-size: 12.5px;">{{ $spj->updated_at->format('d M Y') }}</div>
+                                    <div style="font-size: 11px; color: var(--bnd-slate-400);">{{ $spj->created_at->diffForHumans() }}</div>
                                 </div>
                             </div>
                         </td>
@@ -174,20 +174,20 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                                     {{ $spj->nomor_spj ?: '-' }}
                                 </span>
                                 @if($spj->nomor_spm)
-                                <div style="font-size: 11px; color: #64748b; margin-top: 3px; display: flex; align-items: center; gap: 4px;">
-                                    <span style="color: #94a3b8;">SPM:</span>
-                                    <strong style="color: #334155;">{{ $spj->nomor_spm }}</strong>
+                                <div style="font-size: 11px; color: var(--bnd-slate-500); margin-top: 3px; display: flex; align-items: center; gap: 4px;">
+                                    <span style="color: var(--bnd-slate-400);">SPM:</span>
+                                    <strong style="color: var(--bnd-slate-700);">{{ $spj->nomor_spm }}</strong>
                                 </div>
                                 @endif
                             </div>
                         </td>
                         <td>
                             <div class="bnd-cell-kegiatan" title="{{ $spj->kegiatan }}">
-                                <div style="font-weight: 700; color: #0f172a; font-size: 13px; line-height: 1.4;">
+                                <div style="font-weight: 700; color: var(--bnd-slate-900); font-size: 13px; line-height: 1.4;">
                                     {{ \Illuminate\Support\Str::limit($spj->kegiatan, 65) }}
                                 </div>
                                 @if($spj->keterangan)
-                                <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                                <div style="font-size: 11px; color: var(--bnd-slate-500); margin-top: 2px;">
                                     {{ \Illuminate\Support\Str::limit($spj->keterangan, 55) }}
                                 </div>
                                 @endif
@@ -199,10 +199,10 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                                     {{ strtoupper(substr($spj->user->name ?? 'T', 0, 1)) }}
                                 </div>
                                 <div>
-                                    <div style="font-size: 12.5px; font-weight: 700; color: #1e293b; line-height: 1.2;">
+                                    <div style="font-size: 12.5px; font-weight: 700; color: var(--bnd-slate-900); line-height: 1.2;">
                                         {{ $spj->user->name ?? 'Teknis' }}
                                     </div>
-                                    <div style="font-size: 10.5px; color: #94a3b8;">Staf Teknis</div>
+                                    <div style="font-size: 10.5px; color: var(--bnd-slate-400);">Staf Teknis</div>
                                 </div>
                             </div>
                         </td>
@@ -249,8 +249,8 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                         <td colspan="7">
                             <div style="text-align: center; padding: 48px 20px; color: #64748b;">
                                 <ion-icon name="checkmark-done-circle-outline" style="font-size: 48px; color: #10b981; margin-bottom: 8px; display: block; margin-left: auto; margin-right: auto;"></ion-icon>
-                                <strong style="display: block; font-size: 15px; color: #0f172a; margin-bottom: 4px;">Semua Antrean Telah Selesai Diproses</strong>
-                                <p style="font-size: 12.5px; color: #94a3b8; margin: 0; max-width: 420px; margin-left: auto; margin-right: auto;">
+                                <strong style="display: block; font-size: 15px; color: var(--bnd-slate-900); margin-bottom: 4px;">Semua Antrean Telah Selesai Diproses</strong>
+                                <p style="font-size: 12.5px; color: var(--bnd-slate-400); margin: 0; max-width: 420px; margin-left: auto; margin-right: auto;">
                                     Tidak ada dokumen SPJ yang mengantre saat ini. Berkas baru yang telah disetujui PPSPM akan otomatis muncul di sini.
                                 </p>
                             </div>
@@ -263,7 +263,7 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
 
         <div class="bnd-table-footer">
             <div style="display: flex; align-items: center; gap: 8px;">
-                <ion-icon name="information-circle-outline" style="font-size: 16px; color: #94a3b8;"></ion-icon>
+                <ion-icon name="information-circle-outline" style="font-size: 16px; color: var(--bnd-slate-400);"></ion-icon>
                 <span>Menampilkan <strong>{{ $antreanSpjs->count() }}</strong> berkas antrean terbaru</span>
             </div>
             <a href="{{ route('bendahara.spj.index') }}" style="color: #0284c7; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
@@ -278,14 +278,14 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
         
         <!-- KOLOM 1: PANDUAN MEKANISME QLOLA -->
         <div class="bnd-card" style="margin-bottom: 0;">
-            <div class="bnd-card-header" style="background: #f8fafc; padding: 18px 24px;">
+            <div class="bnd-card-header" style="padding: 18px 24px;">
                 <div class="bnd-card-header-left">
                     <div class="bnd-card-header-icon blue">
                         <ion-icon name="git-network-outline"></ion-icon>
                     </div>
                     <div>
-                        <h4 style="font-size: 14.5px; font-weight: 800; color: #0f172a; margin: 0;">Mekanisme Pembayaran Bank (BRI QLOLA)</h4>
-                        <p style="font-size: 11.5px; color: #64748b; margin: 2px 0 0 0;">Standar Operasional Prosedur Pembagian Peran Maker &amp; Approver</p>
+                        <h4 style="font-size: 14.5px; font-weight: 800; color: var(--bnd-slate-900); margin: 0;">Mekanisme Pembayaran Bank (BRI QLOLA)</h4>
+                        <p style="font-size: 11.5px; color: var(--bnd-slate-500); margin: 2px 0 0 0;">Standar Operasional Prosedur Pembagian Peran Maker &amp; Approver</p>
                     </div>
                 </div>
                 <span style="font-size: 11px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 4px 10px; border-radius: 999px; border: 1px solid #bae6fd;">
@@ -346,17 +346,17 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
         <div style="display: flex; flex-direction: column; gap: 20px;">
             
             <!-- KARTU STATUS KENDALA / REVISI -->
-            <div class="bnd-card" style="margin-bottom: 0; border: 1px solid {{ $totalRevisi > 0 ? '#fecdd3' : '#e2e8f0' }}; background: {{ $totalRevisi > 0 ? '#fff1f2' : '#ffffff' }};">
+            <div class="bnd-card" style="margin-bottom: 0;">
                 <div style="padding: 20px 22px; display: flex; align-items: center; justify-content: space-between; gap: 14px;">
                     <div style="display: flex; align-items: center; gap: 14px;">
                         <div style="width: 42px; height: 42px; border-radius: 12px; background: {{ $totalRevisi > 0 ? '#ffe4e6' : '#ecfdf5' }}; color: {{ $totalRevisi > 0 ? '#e11d48' : '#059669' }}; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
                             <ion-icon name="{{ $totalRevisi > 0 ? 'alert-circle' : 'checkmark-circle' }}"></ion-icon>
                         </div>
                         <div>
-                            <h4 style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 0;">
+                            <h4 style="font-size: 14px; font-weight: 800; color: var(--bnd-slate-900); margin: 0;">
                                 {{ $totalRevisi > 0 ? 'Berkas Dikembalikan (Revisi)' : 'Status Pengajuan Lancar' }}
                             </h4>
-                            <p style="font-size: 12px; color: {{ $totalRevisi > 0 ? '#be123c' : '#64748b' }}; margin: 3px 0 0 0;">
+                            <p style="font-size: 12px; color: {{ $totalRevisi > 0 ? '#be123c' : 'var(--bnd-slate-500)' }}; margin: 3px 0 0 0;">
                                 {{ $totalRevisi > 0 ? $totalRevisi . ' berkas membutuhkan perbaikan staf teknis' : 'Tidak ada berkas yang dikembalikan saat ini' }}
                             </p>
                         </div>
@@ -376,14 +376,14 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
 
             <!-- KARTU PINTASAN OPERASIONAL -->
             <div class="bnd-card" style="margin-bottom: 0; flex: 1;">
-                <div class="bnd-card-header" style="background: #f8fafc; padding: 16px 22px;">
+                <div class="bnd-card-header" style="padding: 16px 22px;">
                     <div class="bnd-card-header-left">
                         <div class="bnd-card-header-icon blue" style="width: 32px; height: 32px; font-size: 16px;">
                             <ion-icon name="flash-outline"></ion-icon>
                         </div>
                         <div>
-                            <h4 style="font-size: 14px; font-weight: 800; color: #0f172a; margin: 0;">Akses Cepat &amp; Dokumen SOP</h4>
-                            <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;">Pintasan modul pencairan dan regulasi SPJ</p>
+                            <h4 style="font-size: 14px; font-weight: 800; color: var(--bnd-slate-900); margin: 0;">Akses Cepat &amp; Dokumen SOP</h4>
+                            <p style="font-size: 11px; color: var(--bnd-slate-500); margin: 2px 0 0 0;">Pintasan modul pencairan dan regulasi SPJ</p>
                         </div>
                     </div>
                 </div>
