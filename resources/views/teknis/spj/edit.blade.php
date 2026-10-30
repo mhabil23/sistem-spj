@@ -358,89 +358,111 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             + '            margin-top: 35px;\n'
             + '            page-break-inside: avoid;\n'
             + '        }\n'
+            + '        @media print {\n'
+            + '            .no-print { display: none !important; }\n'
+            + '            .print-wrapper { padding: 0 !important; }\n'
+            + '        }\n'
+            + '        .no-print {\n'
+            + '            position: sticky;\n'
+            + '            top: 0;\n'
+            + '            left: 0;\n'
+            + '            right: 0;\n'
+            + '            background: #0f172a;\n'
+            + '            color: #ffffff;\n'
+            + '            padding: 12px 20px;\n'
+            + '            display: flex;\n'
+            + '            justify-content: space-between;\n'
+            + '            align-items: center;\n'
+            + '            box-shadow: 0 4px 12px rgba(0,0,0,0.15);\n'
+            + '            z-index: 99999;\n'
+            + '            margin-bottom: 20px;\n'
+            + '            font-family: Arial, sans-serif;\n'
+            + '        }\n'
             + '    <\/style>\n'
             + '<\/head>\n'
             + '<body>\n'
-            + '    <div class="print-only-logo">\n'
-            + '        <img src="' + logoUrl + '" alt="Logo BPS" onerror="this.style.display=\'none\'">\n'
-            + '        <h2>LAPORAN REKAPITULASI SPJ<\/h2>\n'
-            + '        <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
-            + '    <\/div>\n'
-            + '    <div class="meta-info">\n'
-            + '        <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
-            + '    <\/div>\n'
-            + '    <div class="table-responsive">\n'
-            + '        <table class="cetak-table">\n'
-            + '            <thead>\n'
-            + '                <tr>\n'
-            + '                    <th rowspan="2" style="width: 30px;">No<\/th>\n'
-            + '                    <th rowspan="2" style="min-width: 170px;">Nama Kegiatan<\/th>\n'
-            + '                    <th rowspan="2" style="min-width: 95px;">Jumlah Anggaran<\/th>\n'
-            + '                    <th rowspan="2" style="min-width: 80px;">Tanggal Penginputan SPJ<\/th>\n'
-            + '                    <th colspan="' + totalKelengkapanColspan + '">Kelengkapan Administrasi<\/th>\n'
-            + '                    <th rowspan="2" style="min-width: 80px;">Keterangan<\/th>\n'
-            + '                <\/tr>\n'
-            + '                <tr>\n'
+            + '    <div class="no-print">\n'
+            + '        <div style="display: flex; align-items: center; gap: 8px;">\n'
+            + '            <strong style="font-size: 13px;">📄 Pratinjau Lembar Checklist Berkas Fisik SPJ</strong>\n'
+            + '            <span style="background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 11px;">Tab Baru</span>\n'
+            + '        </div>\n'
+            + '        <div style="display: flex; gap: 10px;">\n'
+            + '            <button type="button" onclick="window.print()" style="background: #0284c7; color: #ffffff; border: none; padding: 7px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">🖨️ Cetak Lembar Checklist</button>\n'
+            + '            <button type="button" onclick="window.close()" style="background: #475569; color: #ffffff; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; cursor: pointer;">✕ Tutup Tab</button>\n'
+            + '        </div>\n'
+            + '    </div>\n'
+            + '    <div class="print-wrapper" style="padding: 10px 20px;">\n'
+            + '        <div class="print-only-logo">\n'
+            + '            <img src="' + logoUrl + '" alt="Logo BPS" onerror="this.style.display=\'none\'">\n'
+            + '            <h2>LAPORAN REKAPITULASI SPJ<\/h2>\n'
+            + '            <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
+            + '        <\/div>\n'
+            + '        <div class="meta-info">\n'
+            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '        <\/div>\n'
+            + '        <div class="table-responsive">\n'
+            + '            <table class="cetak-table">\n'
+            + '                <thead>\n'
+            + '                    <tr>\n'
+            + '                        <th rowspan="2" style="width: 30px;">No<\/th>\n'
+            + '                        <th rowspan="2" style="min-width: 170px;">Nama Kegiatan<\/th>\n'
+            + '                        <th rowspan="2" style="min-width: 95px;">Jumlah Anggaran<\/th>\n'
+            + '                        <th rowspan="2" style="min-width: 80px;">Tanggal Penginputan SPJ<\/th>\n'
+            + '                        <th colspan="' + totalKelengkapanColspan + '">Kelengkapan Administrasi<\/th>\n'
+            + '                        <th rowspan="2" style="min-width: 80px;">Keterangan<\/th>\n'
+            + '                    <\/tr>\n'
+            + '                    <tr>\n'
             + docHeadersHtml
-            + '                    <th style="min-width: 65px;">Tgl Masuk SPJ<\/th>\n'
-            + '                    <th style="min-width: 65px;">Tgl Periksa PPK<\/th>\n'
-            + '                    <th style="min-width: 45px;">Paraf PPSPM<\/th>\n'
-            + '                    <th style="min-width: 45px;">Paraf Bendahara<\/th>\n'
-            + '                <\/tr>\n'
-            + '            <\/thead>\n'
-            + '            <tbody>\n'
-            + '                <tr>\n'
-            + '                    <td>1<\/td>\n'
-            + '                    <td style="text-align: left; padding: 5px 6px;">' + kegiatan + '<\/td>\n'
-            + '                    <td style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '<\/td>\n'
-            + '                    <td>' + (tanggalInputSpj || tanggalFormatted) + '<\/td>\n'
+            + '                        <th style="min-width: 65px;">Tgl Masuk SPJ<\/th>\n'
+            + '                        <th style="min-width: 65px;">Tgl Periksa PPK<\/th>\n'
+            + '                        <th style="min-width: 45px;">Paraf PPSPM<\/th>\n'
+            + '                        <th style="min-width: 45px;">Paraf Bendahara<\/th>\n'
+            + '                    <\/tr>\n'
+            + '                <\/thead>\n'
+            + '                <tbody>\n'
+            + '                    <tr>\n'
+            + '                        <td>1<\/td>\n'
+            + '                        <td style="text-align: left; padding: 5px 6px;">' + kegiatan + '<\/td>\n'
+            + '                        <td style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '<\/td>\n'
+            + '                        <td>' + (tanggalInputSpj || tanggalFormatted) + '<\/td>\n'
             + docValuesHtml
-            + '                    <td>' + tglMasukUmum + '<\/td>\n'
-            + '                    <td>-<\/td>\n'
-            + '                    <td><\/td>\n'
-            + '                    <td><\/td>\n'
-            + '                    <td style="text-align: left; padding: 5px 6px;">' + (keterangan !== '—' ? keterangan : '') + '<\/td>\n'
-            + '                <\/tr>\n'
-            + '            <\/tbody>\n'
-            + '            <tfoot>\n'
-            + '                <tr>\n'
-            + '                    <th colspan="2" style="text-align: right; padding-right: 15px;">TOTAL<\/th>\n'
-            + '                    <th style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '<\/th>\n'
-            + '                    <th colspan="' + (totalKelengkapanColspan + 2) + '"><\/th>\n'
-            + '                <\/tr>\n'
-            + '            <\/tfoot>\n'
-            + '        <\/table>\n'
-            + '    <\/div>\n'
-            + '    <div class="ttd-container">\n'
-            + '        <div>\n'
-            + '            <p style="margin: 0;">setor ke PPSPM :<\/p>\n'
-            + '            <p style="margin: 0;">Lasusua, ' + tanggalCetak + '<\/p>\n'
-            + '            <p style="margin: 0;">Pejabat Pembuat Komitmen<\/p>\n'
-            + '            <br><br><br><br>\n'
-            + '            <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah<\/p>\n'
-            + '            <p style="margin: 0;">NIP.198510292011011009<\/p>\n'
+            + '                        <td>' + tglMasukUmum + '<\/td>\n'
+            + '                        <td>-<\/td>\n'
+            + '                        <td><\/td>\n'
+            + '                        <td><\/td>\n'
+            + '                        <td style="text-align: left; padding: 5px 6px;">' + (keterangan !== '—' ? keterangan : '') + '<\/td>\n'
+            + '                    <\/tr>\n'
+            + '                <\/tbody>\n'
+            + '                <tfoot>\n'
+            + '                    <tr>\n'
+            + '                        <th colspan="2" style="text-align: right; padding-right: 15px;">TOTAL<\/th>\n'
+            + '                        <th style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '<\/th>\n'
+            + '                        <th colspan="' + (totalKelengkapanColspan + 2) + '"><\/th>\n'
+            + '                    <\/tr>\n'
+            + '                <\/tfoot>\n'
+            + '            <\/table>\n'
+            + '        <\/div>\n'
+            + '        <div class="ttd-container">\n'
+            + '            <div>\n'
+            + '                <p style="margin: 0;">setor ke PPSPM :<\/p>\n'
+            + '                <p style="margin: 0;">Lasusua, ' + tanggalCetak + '<\/p>\n'
+            + '                <p style="margin: 0;">Pejabat Pembuat Komitmen<\/p>\n'
+            + '                <br><br><br><br>\n'
+            + '                <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah<\/p>\n'
+            + '                <p style="margin: 0;">NIP.198510292011011009<\/p>\n'
+            + '            <\/div>\n'
             + '        <\/div>\n'
             + '    <\/div>\n'
+            + '    <script>\n'
+            + '        window.addEventListener("load", function() {\n'
+            + '            setTimeout(function() {\n'
+            + '                window.focus();\n'
+            + '                window.print();\n'
+            + '            }, 350);\n'
+            + '        });\n'
+            + '    <\/script>\n'
             + '<\/body>\n'
             + '<\/html>';
-
-        let printFrame = document.getElementById('spj_print_iframe');
-        if (!printFrame) {
-            printFrame = document.createElement('iframe');
-            printFrame.id = 'spj_print_iframe';
-            printFrame.style.position = 'fixed';
-            printFrame.style.right = '0';
-            printFrame.style.bottom = '0';
-            printFrame.style.width = '0';
-            printFrame.style.height = '0';
-            printFrame.style.border = '0';
-            document.body.appendChild(printFrame);
-        }
-
-        const frameDoc = printFrame.contentWindow.document;
-        frameDoc.open();
-        frameDoc.write(printHtml);
-        frameDoc.close();
 
         let printCompleted = false;
         const markAsPrinted = function() {
@@ -473,7 +495,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 banner.style.border = '1px solid #34d399';
                 banner.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak. Anda sekarang dapat melanjutkan pengajuan ulang SPJ.</span>
+                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Anda sekarang dapat melanjutkan pengajuan ulang SPJ.</span>
                 `;
             }
 
@@ -483,53 +505,23 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             }
         };
 
-        const doPrint = function() {
-            try {
-                try {
-                    printFrame.contentWindow.addEventListener('afterprint', markAsPrinted, { once: true });
-                } catch(e) {}
-                window.addEventListener('afterprint', markAsPrinted, { once: true });
-
-                const onFocusBack = function() {
-                    window.removeEventListener('focus', onFocusBack);
-                    setTimeout(markAsPrinted, 300);
-                };
-                window.addEventListener('focus', onFocusBack, { once: true });
-
-                printFrame.contentWindow.focus();
-                printFrame.contentWindow.print();
-            } catch (err) {
-                const printWin = window.open('', '_blank');
-                if (printWin) {
-                    try {
-                        printWin.addEventListener('afterprint', markAsPrinted, { once: true });
-                    } catch(e) {}
-                    window.addEventListener('afterprint', markAsPrinted, { once: true });
-
-                    const onFocusBack = function() {
-                        window.removeEventListener('focus', onFocusBack);
-                        setTimeout(markAsPrinted, 300);
-                    };
-                    window.addEventListener('focus', onFocusBack, { once: true });
-
-                    printWin.document.write(printHtml);
-                    printWin.document.close();
-                    printWin.focus();
-                    printWin.print();
-                } else {
-                    alert("Gagal membuka jendela cetak. Pastikan pop-up diizinkan.");
-                }
-            }
-        };
-
-        const logoImg = frameDoc.querySelector('img');
-        if (logoImg && !logoImg.complete) {
-            logoImg.onload = doPrint;
-            logoImg.onerror = doPrint;
-            setTimeout(doPrint, 500);
-        } else {
-            setTimeout(doPrint, 200);
+        // Buka proses cetak di TAB BARU (bukan di tab yang sama)
+        const printWin = window.open('', '_blank');
+        if (!printWin) {
+            alert("Gagal membuka tab baru untuk mencetak. Pastikan peramban (browser) Anda mengizinkan pop-up.");
+            return;
         }
+
+        printWin.document.open();
+        printWin.document.write(printHtml);
+        printWin.document.close();
+
+        // Tandai langsung di tab form bahwa checklist sudah dicetak
+        markAsPrinted();
+
+        try {
+            printWin.addEventListener('afterprint', markAsPrinted, { once: true });
+        } catch(e) {}
     }
 
     let isPrinted = {{ old('is_printed', '0') == '1' ? 'true' : 'false' }};

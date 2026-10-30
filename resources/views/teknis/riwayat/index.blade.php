@@ -102,6 +102,10 @@ $subtitle = 'Lihat riwayat pengajuan SPJ Anda yang telah diajukan.';
                         </td>
                         <td style="text-align: right; padding-right: 24px; white-space: nowrap;">
                             <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
+                                <a href="{{ route('teknis.spj.print', $spj->id) }}" target="_blank" class="action-btn" style="background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; text-decoration: none;" title="Cetak Lembar Checklist SPJ (Buka di Tab Baru)">
+                                    <ion-icon name="print-outline"></ion-icon>
+                                    <span>Cetak</span>
+                                </a>
                                 <a href="{{ route('teknis.spj.show', $spj->id) }}" class="action-btn action-btn-view" title="Lihat Detail SPJ">
                                     <ion-icon name="eye-outline"></ion-icon>
                                     <span>Detail</span>

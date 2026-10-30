@@ -22,6 +22,10 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
             Edit SPJ
         </a>
         @endif
+        <a href="{{ route('teknis.spj.print', $spj->id) }}" target="_blank" class="spj-btn" style="background: #0284c7; color: white; border: none; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Cetak Lembar Checklist SPJ (Buka di Tab Baru)">
+            <ion-icon name="print-outline" style="font-size: 18px;"></ion-icon>
+            <span>Cetak Lembar Checklist</span>
+        </a>
         <button type="button" onclick="openWaModal()" class="spj-btn" style="background: #25d366; color: white; border: none; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
             <ion-icon name="logo-whatsapp" style="font-size: 18px;"></ion-icon>
             Hubungi Bagian Umum (WA)

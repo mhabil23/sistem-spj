@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Teknis;
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
 use App\Services\WhatsAppService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -263,6 +264,70 @@ class SpjController extends Controller
             'totalDiproses',
             'totalSelesai',
             'totalDikembalikan'
+        ));
+    }
+
+    /**
+     * Cetak Lembar Kendali & Checklist SPJ dalam format PDF resmi BPS (Tab Baru).
+     */
+    public function print($id)
+    {
+        $userId = Auth::id() ?? 1;
+        $spj = Spj::with('user')
+            ->where('user_id', $userId)
+            ->findOrFail($id);
+
+        $pdf = Pdf::loadView('umum.spj.pdf-checklist', compact('spj'));
+
+        return $pdf->stream('Checklist-Verifikasi-SPJ-'.$spj->id.'.pdf');
+    }
+
+    /**
+     * Pratinjau & Cetak Laporan SPJ di Tab Baru dengan format landscape rapi.
+     */
+    public function printLaporan(Request $request)
+    {
+        $userId = Auth::id() ?? 1;
+        $query = Spj::where('user_id', $userId);
+
+        // Filter status
+        if ($request->filled('status')) {
+            $status = $request->status;
+            if ($status === 'diproses') {
+                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa']);
+            } elseif ($status === 'dikembalikan') {
+                $query->where(function ($q) {
+                    $q->where('status', 'like', 'revisi_%')
+                        ->orWhere('status', 'dikembalikan');
+                });
+            } else {
+                $query->where('status', $status);
+            }
+        }
+
+        // Filter tanggal mulai
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal', '>=', $request->tanggal_mulai);
+        }
+
+        // Filter tanggal selesai
+        if ($request->filled('tanggal_selesai')) {
+            $query->whereDate('tanggal', '<=', $request->tanggal_selesai);
+        }
+
+        $spjs = $query
+            ->orderBy('tanggal', 'desc')
+            ->get();
+
+        $totalSpj = $spjs->count();
+        $totalNilai = $spjs->sum('nilai');
+        $user = Auth::user();
+
+        return view('teknis.laporan-print', compact(
+            'spjs',
+            'totalSpj',
+            'totalNilai',
+            'user'
         ));
     }
 }

@@ -332,7 +332,7 @@ class TeknisSpjTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('id="printValidationModal"', false);
         $response->assertSee('Lembar Checklist Belum Dicetak!');
-        $response->assertSee('Cetak Lembar Checklist Sekarang');
+        $response->assertSee('Cetak Lembar Checklist (Tab Baru)');
         $response->assertSee('openPrintValidationModal()', false);
     }
 
@@ -424,5 +424,106 @@ class TeknisSpjTest extends TestCase
         $showResponse->assertSee('Faktur Pajak');
         $showResponse->assertSee('PPh 22');
         $showResponse->assertDontSee('Data dokumen tidak valid atau kosong.');
+    }
+
+    public function test_teknis_can_print_spj_checklist_in_pdf_format(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-PRINT-001',
+            'kegiatan' => 'Cetak Lembar Kendali SPJ',
+            'tanggal' => now(),
+            'nilai' => 850000,
+            'status' => 'diajukan',
+        ]);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.print', $spj->id));
+
+        $response->assertStatus(200);
+        $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
+    }
+
+    public function test_teknis_cannot_print_other_users_spj_checklist(): void
+    {
+        $teknisA = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+        $teknisB = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknisA->id,
+            'nomor_spj' => 'SPJ-PRINT-002',
+            'kegiatan' => 'SPJ Milik Teknis A',
+            'tanggal' => now(),
+            'nilai' => 850000,
+            'status' => 'diajukan',
+        ]);
+
+        $response = $this->actingAs($teknisB)->get(route('teknis.spj.print', $spj->id));
+
+        $response->assertStatus(404);
+    }
+
+    public function test_teknis_can_view_laporan_print_page_in_new_tab(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif', 'name' => 'Budi Staf Teknis']);
+
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-LAPORAN-001',
+            'kegiatan' => 'Pelatihan Petugas Sensus',
+            'tanggal' => now(),
+            'nilai' => 1250000,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.laporan.print'));
+
+        $response->assertStatus(200);
+        $response->assertSee('LAPORAN REKAPITULASI SPJ');
+        $response->assertSee('Badan Pusat Statistik Kabupaten Kolaka Utara');
+        $response->assertSee('Pelatihan Petugas Sensus');
+        $response->assertSee('Budi Staf Teknis');
+        $response->assertSee('window.print()', false);
+        $response->assertSee('Tab Cetak Terpisah');
+    }
+
+    public function test_teknis_views_contain_print_links_with_target_blank(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-LINKS-001',
+            'kegiatan' => 'Belanja Pemeliharaan Server',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'diajukan',
+        ]);
+
+        // Show page has target="_blank" print button
+        $showResponse = $this->actingAs($teknis)->get(route('teknis.spj.show', $spj->id));
+        $showResponse->assertStatus(200);
+        $showResponse->assertSee(route('teknis.spj.print', $spj->id), false);
+        $showResponse->assertSee('target="_blank"', false);
+        $showResponse->assertSee('Cetak Lembar Checklist');
+
+        // Index page has target="_blank" print button
+        $indexResponse = $this->actingAs($teknis)->get(route('teknis.spj.index'));
+        $indexResponse->assertStatus(200);
+        $indexResponse->assertSee(route('teknis.spj.print', $spj->id), false);
+        $indexResponse->assertSee('target="_blank"', false);
+
+        // Riwayat page has target="_blank" print button
+        $riwayatResponse = $this->actingAs($teknis)->get(route('teknis.riwayat.index'));
+        $riwayatResponse->assertStatus(200);
+        $riwayatResponse->assertSee(route('teknis.spj.print', $spj->id), false);
+        $riwayatResponse->assertSee('target="_blank"', false);
+
+        // Laporan page has target="_blank" print button to laporan.print
+        $laporanResponse = $this->actingAs($teknis)->get(route('teknis.laporan.spj'));
+        $laporanResponse->assertStatus(200);
+        $laporanResponse->assertSee(route('teknis.laporan.print'), false);
+        $laporanResponse->assertSee('target="_blank"', false);
     }
 }

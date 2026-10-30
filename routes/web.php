@@ -79,8 +79,10 @@ use App\Http\Controllers\Teknis\SpjController as TeknisSpjController;
 Route::redirect('/teknis', '/teknis/dashboard');
 Route::middleware(['auth', 'role:teknis'])->prefix('teknis')->name('teknis.')->group(function () {
     Route::get('/dashboard', [TeknisDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/spj/{id}/print', [TeknisSpjController::class, 'print'])->name('spj.print');
     Route::resource('spj', TeknisSpjController::class);
     Route::get('/riwayat', [TeknisRiwayatController::class, 'index'])->name('riwayat.index');
+    Route::get('/laporan-spj/print', [TeknisSpjController::class, 'printLaporan'])->name('laporan.print');
     Route::get('/laporan-spj', [TeknisSpjController::class, 'laporan'])->name('laporan.spj');
     Route::get('/dokumen', [TeknisDokumenController::class, 'index'])->name('dokumen.index');
     Route::post('/dokumen/{spj}/upload', [TeknisDokumenController::class, 'upload'])->name('dokumen.upload');

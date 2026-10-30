@@ -33,13 +33,15 @@ $subtitle = 'Rekap dan riwayat laporan data SPJ Anda.';
             </p>
         </div>
 
-        <button
-            type="button"
+        <a
+            href="{{ route('teknis.laporan.print', request()->query()) }}"
+            target="_blank"
             class="btn-dash-primary"
-            onclick="window.print()">
+            style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;"
+            title="Cetak Laporan SPJ (Buka di Tab Baru)">
             <ion-icon name="print-outline" style="font-size: 18px;"></ion-icon>
             Cetak Laporan
-        </button>
+        </a>
 
     </div>
 
