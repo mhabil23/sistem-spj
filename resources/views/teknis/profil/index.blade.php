@@ -125,17 +125,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                                     placeholder="nama@email.com">
                             </div>
                             <div class="profile-form-hint" style="color: #64748b; font-size: 11.5px; margin-top: 4px;">
-                                <i class="bi bi-shield-check" style="color: #0284c7;"></i> Wajib isi kata sandi saat ini jika Anda mengubah email login.
-                            </div>
-                            <!-- Dynamic Notice saat email diubah -->
-                            <div id="emailNoticeBadge" style="display: none; margin-top: 8px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.45;">
-                                <div style="display: flex; align-items: flex-start; gap: 8px;">
-                                    <i class="bi bi-exclamation-triangle" style="font-size: 16px; color: #d97706; margin-top: 1px;"></i>
-                                    <div>
-                                        <strong>Konfirmasi Kata Sandi Diperlukan:</strong>
-                                        <div>Anda sedang mengubah alamat email. Wajib memasukkan <strong>Kata Sandi Saat Ini</strong> pada bagian Ubah Kata Sandi di bawah sebelum menyimpan.</div>
-                                    </div>
-                                </div>
+                                <i class="bi bi-info-circle" style="color: #0284c7;"></i> Pastikan email aktif untuk kredensial login dan pemulihan kata sandi.
                             </div>
                             @error('email')
                                 <div class="profile-invalid-feedback">
@@ -202,7 +192,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                     <div class="profile-form-group profile-half-width">
                         <label class="profile-form-label" for="current_password">
                             <span>Kata Sandi Saat Ini</span>
-                            <span style="font-size: 11px; font-weight: 600; color: #d97706; background: #fffbeb; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a; margin-left: 8px;">Wajib jika ganti email / sandi</span>
+                            <span style="font-size: 11px; font-weight: 600; color: #d97706; background: #fffbeb; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a; margin-left: 8px;">Wajib jika ganti sandi</span>
                         </label>
                         <div class="profile-input-wrapper">
                             <i class="bi bi-key profile-input-icon"></i>
@@ -218,7 +208,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                             </button>
                         </div>
                         <div class="profile-form-hint" style="color: #64748b; font-size: 11.5px; margin-top: 4px;">
-                            <i class="bi bi-info-circle"></i> Diperlukan untuk validasi keamanan saat mengganti email login atau membuat kata sandi baru.
+                            <i class="bi bi-info-circle"></i> Diperlukan untuk validasi keamanan saat ingin membuat kata sandi baru.
                         </div>
                         @error('current_password')
                             <div class="profile-invalid-feedback">
@@ -333,33 +323,17 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
             });
         });
 
-        // Validasi interaktif perubahan email
+        // Validasi saat mengubah kata sandi baru
         const formProfile = document.getElementById('formTeknisProfile');
-        const inputEmail = document.getElementById('profile_email');
+        const inputNewPassword = document.getElementById('new_password');
         const inputCurrentPassword = document.getElementById('current_password');
-        const emailNoticeBadge = document.getElementById('emailNoticeBadge');
-        const originalEmail = "{{ strtolower(trim($user->email)) }}";
-
-        if (inputEmail && emailNoticeBadge) {
-            function checkEmailChanged() {
-                const currentVal = inputEmail.value.trim().toLowerCase();
-                if (currentVal !== '' && currentVal !== originalEmail) {
-                    emailNoticeBadge.style.display = 'block';
-                } else {
-                    emailNoticeBadge.style.display = 'none';
-                }
-            }
-
-            inputEmail.addEventListener('input', checkEmailChanged);
-            checkEmailChanged();
-        }
 
         if (formProfile) {
             formProfile.addEventListener('submit', function(e) {
-                const isEmailChanged = inputEmail && inputEmail.value.trim().toLowerCase() !== originalEmail;
+                const isNewPassFilled = inputNewPassword && inputNewPassword.value.trim() !== '';
                 const isCurrentPassEmpty = inputCurrentPassword && inputCurrentPassword.value.trim() === '';
 
-                if (isEmailChanged && isCurrentPassEmpty) {
+                if (isNewPassFilled && isCurrentPassEmpty) {
                     e.preventDefault();
                     
                     if (inputCurrentPassword) {
@@ -368,19 +342,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                         inputCurrentPassword.focus();
                     }
 
-                    let errorHint = document.getElementById('clientPasswordError');
-                    if (!errorHint && inputCurrentPassword) {
-                        errorHint = document.createElement('div');
-                        errorHint.id = 'clientPasswordError';
-                        errorHint.className = 'profile-invalid-feedback';
-                        errorHint.style.marginTop = '6px';
-                        errorHint.innerHTML = '<i class="bi bi-exclamation-circle"></i> Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email login!';
-                        inputCurrentPassword.closest('.profile-form-group').appendChild(errorHint);
-                    } else if (errorHint) {
-                        errorHint.style.display = 'block';
-                    }
-
-                    alert('Perhatian: Anda sedang mengubah alamat email login. Harap masukkan "Kata Sandi Saat Ini" pada bagian Ubah Kata Sandi untuk mengonfirmasi perubahan ini.');
+                    alert('Harap masukkan "Kata Sandi Saat Ini" untuk mengonfirmasi perubahan kata sandi baru.');
                 }
             });
         }

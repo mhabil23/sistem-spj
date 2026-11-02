@@ -87,17 +87,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                             <span style="font-size: 11px; font-weight: 600; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px;">Kredensial Login</span>
                         </label>
                         <input type="email" id="input_email" name="email" required class="dash-input @error('email') has-error @enderror" value="{{ old('email', $user->email) }}">
-                        <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 4px; display: block;">Wajib mengisi kata sandi saat ini jika Anda mengubah email login.</small>
-                        <!-- Dynamic Notice saat email diubah -->
-                        <div id="emailNoticeBadge" style="display: none; margin-top: 8px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.45;">
-                            <div style="display: flex; align-items: flex-start; gap: 8px;">
-                                <ion-icon name="alert-circle" style="font-size: 18px; color: #d97706; flex-shrink: 0; margin-top: 1px;"></ion-icon>
-                                <div>
-                                    <strong>Konfirmasi Kata Sandi Diperlukan:</strong>
-                                    <div>Anda sedang mengubah alamat email. Wajib memasukkan <strong>Kata Sandi Saat Ini</strong> pada kolom Keamanan di bawah sebelum menyimpan.</div>
-                                </div>
-                            </div>
-                        </div>
+                        <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 4px; display: block;">Pastikan email aktif untuk kredensial login dan pemulihan kata sandi.</small>
                         @error('email')
                             <div style="color: #e11d48; font-size: 11.5px; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
                                 <ion-icon name="warning-outline"></ion-icon> {{ $message }}
@@ -127,7 +117,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                 <div style="max-width: 460px; margin-bottom: 20px;">
                     <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark); display: flex; justify-content: space-between; align-items: center;">
                         <span>Kata Sandi Saat Ini</span>
-                        <span style="font-size: 11px; font-weight: 600; color: #d97706; background: #fffbeb; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a;">Wajib jika ganti email / sandi</span>
+                        <span style="font-size: 11px; font-weight: 600; color: #d97706; background: #fffbeb; padding: 2px 8px; border-radius: 4px; border: 1px solid #fde68a;">Wajib jika ganti sandi</span>
                     </label>
                     <div style="position: relative;">
                         <input type="password" id="input_current_password" name="current_password" class="dash-input @error('current_password') has-error @enderror" autocomplete="current-password" placeholder="Masukkan kata sandi lama..." style="padding-right: 42px;">
@@ -135,7 +125,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                             <ion-icon name="eye-outline" style="font-size: 18px;"></ion-icon>
                         </button>
                     </div>
-                    <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 4px; display: block;">Diperlukan untuk konfirmasi keamanan saat Anda mengganti email atau password baru.</small>
+                    <small style="color: var(--dash-text-muted); font-size: 11px; margin-top: 4px; display: block;">Diperlukan untuk verifikasi keamanan saat Anda ingin membuat sandi baru.</small>
                     @error('current_password')
                         <div style="color: #e11d48; font-size: 11.5px; margin-top: 4px; display: flex; align-items: center; gap: 4px;">
                             <ion-icon name="warning-outline"></ion-icon> {{ $message }}
@@ -218,33 +208,17 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
             });
         });
 
-        // Validasi interaktif perubahan email
+        // Validasi saat mengubah kata sandi baru
         const formProfile = document.getElementById('formUmumProfile');
-        const inputEmail = document.getElementById('input_email');
+        const inputNewPassword = document.querySelector('input[name="password"]');
         const inputCurrentPassword = document.getElementById('input_current_password');
-        const emailNoticeBadge = document.getElementById('emailNoticeBadge');
-        const originalEmail = "{{ strtolower(trim($user->email)) }}";
-
-        if (inputEmail && emailNoticeBadge) {
-            function checkEmailChanged() {
-                const currentVal = inputEmail.value.trim().toLowerCase();
-                if (currentVal !== '' && currentVal !== originalEmail) {
-                    emailNoticeBadge.style.display = 'block';
-                } else {
-                    emailNoticeBadge.style.display = 'none';
-                }
-            }
-
-            inputEmail.addEventListener('input', checkEmailChanged);
-            checkEmailChanged();
-        }
 
         if (formProfile) {
             formProfile.addEventListener('submit', function(e) {
-                const isEmailChanged = inputEmail && inputEmail.value.trim().toLowerCase() !== originalEmail;
+                const isNewPassFilled = inputNewPassword && inputNewPassword.value.trim() !== '';
                 const isCurrentPassEmpty = inputCurrentPassword && inputCurrentPassword.value.trim() === '';
 
-                if (isEmailChanged && isCurrentPassEmpty) {
+                if (isNewPassFilled && isCurrentPassEmpty) {
                     e.preventDefault();
                     
                     if (inputCurrentPassword) {
@@ -253,23 +227,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                         inputCurrentPassword.focus();
                     }
 
-                    let errorHint = document.getElementById('clientPasswordError');
-                    if (!errorHint && inputCurrentPassword) {
-                        errorHint = document.createElement('div');
-                        errorHint.id = 'clientPasswordError';
-                        errorHint.style.color = '#e11d48';
-                        errorHint.style.fontSize = '11.5px';
-                        errorHint.style.marginTop = '6px';
-                        errorHint.style.display = 'flex';
-                        errorHint.style.alignItems = 'center';
-                        errorHint.style.gap = '4px';
-                        errorHint.innerHTML = '<ion-icon name="warning-outline"></ion-icon> Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email login!';
-                        inputCurrentPassword.closest('div').parentElement.appendChild(errorHint);
-                    } else if (errorHint) {
-                        errorHint.style.display = 'flex';
-                    }
-
-                    alert('Perhatian: Anda sedang mengubah alamat email login. Harap masukkan "Kata Sandi Saat Ini" pada bagian Keamanan & Kata Sandi untuk mengonfirmasi perubahan ini.');
+                    alert('Harap masukkan "Kata Sandi Saat Ini" untuk mengonfirmasi perubahan kata sandi baru.');
                 }
             });
         }

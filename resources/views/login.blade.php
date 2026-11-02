@@ -246,6 +246,17 @@
                         <p>Silakan masukkan email dan kata sandi yang terdaftar untuk mengakses panel sistem.</p>
                     </div>
 
+                    <!-- Notifikasi Sukses / Berhasil -->
+                    @if (session('success') || session('status'))
+                        <div class="alert-box-success">
+                            <i class="bi bi-check-circle-fill alert-icon-success"></i>
+                            <div class="alert-content">
+                                <strong>Berhasil:</strong>
+                                <span>{{ session('success') ?? session('status') }}</span>
+                            </div>
+                        </div>
+                    @endif
+
                     <!-- Notifikasi Sesi Habis / Warning -->
                     @if (session('warning'))
                         <div class="alert-box-warning">
@@ -299,6 +310,9 @@
                         <div class="form-group">
                             <div class="label-wrapper">
                                 <label for="password">Kata Sandi</label>
+                                <a href="{{ route('password.request') }}" class="link-forgot-password" title="Lupa kata sandi? Reset melalui email">
+                                    Lupa kata sandi?
+                                </a>
                             </div>
                             <div class="input-container">
                                 <span class="input-icon">

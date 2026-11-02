@@ -213,7 +213,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
         <div class="bnd-stat-info">
             <div class="bnd-stat-label">Tanggal Pelaksanaan</div>
             <div class="bnd-stat-value" style="font-size: 15px;">
-                {{ $spj->tanggal->format('d F Y') }}
+                {{ $spj->periode_kegiatan }}
             </div>
             <div class="bnd-stat-sub">
                 <ion-icon name="time-outline"></ion-icon>

@@ -520,7 +520,7 @@
 
                         <div class="info-item">
                             <span class="info-label">Tanggal Kegiatan</span>
-                            <span class="info-value">{{ $spj->tanggal ? \Carbon\Carbon::parse($spj->tanggal)->locale('id')->translatedFormat('d F Y') : '-' }}</span>
+                            <span class="info-value">{{ $spj->periode_kegiatan }}</span>
                         </div>
 
                         <div class="info-item">

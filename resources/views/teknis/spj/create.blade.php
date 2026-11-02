@@ -125,9 +125,20 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 </div>
 
                 <div id="dokumen_container" style="display: none;">
-                    <div style="margin-bottom: 0.75rem;">
-                        <label class="spj-label" style="margin-bottom: 0;">Dokumen Wajib</label>
-                        <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                    <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <label class="spj-label" style="margin-bottom: 0;">Dokumen Wajib</label>
+                            <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" onclick="centangSemuaBerkas(true)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Centang Semua
+                            </button>
+                            <button type="button" onclick="centangSemuaBerkas(false)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto; opacity: 0.8;">
+                                Batal Semua
+                            </button>
+                        </div>
                     </div>
                     <div id="dokumen_list">
                         <!-- File inputs will be generated here -->
@@ -161,12 +172,25 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 </div>
                 
                 <div>
-                    <label class="spj-label">Tanggal Kegiatan</label>
-                    <input type="date" name="tanggal" required class="spj-input" value="{{ old('tanggal') }}">
+                    <label class="spj-label">
+                        Tanggal Mulai Kegiatan <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="date" name="tanggal" id="tanggal_mulai_input" required class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal') }}">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Tanggal dimulainya pelaksanaan kegiatan.</span>
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
+                    <label class="spj-label" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Tanggal Selesai Kegiatan</span>
+                        <span style="font-size: 0.72rem; font-weight: normal; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 4px;">Opsional</span>
+                    </label>
+                    <input type="date" name="tanggal_selesai" id="tanggal_selesai_input" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai') }}">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Kosongkan jika kegiatan hanya berlangsung 1 hari.</span>
+                    @error('tanggal_selesai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+
+                <div style="grid-column: span 2;">
                     <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
                     <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa') }}" placeholder="Contoh: 081234567890">
                     <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp Anda agar Bagian Umum & Bendahara dapat menghubungi Anda langsung.</span>
@@ -215,18 +239,20 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             </div>
 
             <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); flex-wrap: wrap;">
-                <a href="{{ route('teknis.spj.index') }}" class="spj-btn spj-btn-secondary">Batal</a>
+                <a href="{{ route('teknis.spj.index') }}" class="spj-btn spj-btn-secondary" onclick="clearFormState()">Batal</a>
                 <button type="button" id="btn_cetak_langsung" onclick="cetakLangsung()" class="spj-btn spj-btn-print" title="Cetak langsung lembar checklist berkas fisik SPJ">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 6 2 18 2 18 9"></polyline>
                         <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                         <rect x="6" y="14" width="12" height="8"></rect>
                     </svg>
-                    Print
+                    <span id="btn_cetak_text">Print</span>
                 </button>
-                <button type="submit" class="spj-btn spj-btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                    Simpan Pengajuan
+                <button type="submit" id="btn_submit_spj" class="spj-btn spj-btn-primary" style="transition: all 0.25s ease;">
+                    <span id="btn_submit_icon" style="display: inline-flex; align-items: center; margin-right: 6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    </span>
+                    <span id="btn_submit_text">Simpan Pengajuan</span>
                 </button>
             </div>
         </form>
@@ -479,15 +505,136 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         }
     };
 
+    const oldNamaBelanja = {!! json_encode(old('nama_belanja', '')) !!};
+    const oldJenisBelanja = {!! json_encode(old('jenis_belanja', '')) !!};
+    const oldBerkas = {!! json_encode(old('berkas', [])) !!};
+
+    function clearFormState() {
+        sessionStorage.removeItem('spj_form_nama_belanja');
+        sessionStorage.removeItem('spj_form_jenis_belanja');
+        sessionStorage.removeItem('spj_form_berkas');
+    }
+
+    function saveBerkasState() {
+        const checkboxes = document.querySelectorAll('input[name^="berkas["]');
+        const state = {};
+        checkboxes.forEach(cb => {
+            const match = cb.name.match(/\[(\d+)\]/);
+            if (match) {
+                state[match[1]] = cb.checked ? 1 : 0;
+            }
+        });
+        sessionStorage.setItem('spj_form_berkas', JSON.stringify(state));
+    }
+
+    function centangSemuaBerkas(val = true) {
+        const checkboxes = document.querySelectorAll('input[name^="berkas["]');
+        checkboxes.forEach(cb => {
+            cb.checked = val;
+        });
+        saveBerkasState();
+    }
+
+    function renderDokumenList(nama, jenis, savedCheckboxes = null) {
+        const docContainer = document.getElementById("dokumen_container");
+        const docList = document.getElementById("dokumen_list");
+        if (!docContainer || !docList) return;
+
+        docList.innerHTML = "";
+
+        if (nama && jenis && spjData[nama] && spjData[nama][jenis]) {
+            docContainer.style.display = "block";
+            const docs = spjData[nama][jenis];
+            
+            docs.forEach((doc, idx) => {
+                let badgeHtml = '';
+                let uploadHtml = '';
+                
+                let isChecked = false;
+                if (savedCheckboxes) {
+                    isChecked = savedCheckboxes[idx] == 1 || savedCheckboxes[idx] === true || savedCheckboxes[idx] === '1';
+                }
+
+                // If it is supposed to be uploaded by SM/Panitia (Teknis)
+                if(doc.assignee.includes('SM') || doc.assignee.includes('Panitia')) {
+                    badgeHtml = `<span class="badge-assignee">Wajib Disiapkan Teknis</span>`;
+                    uploadHtml = `
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
+                        <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
+                    </label>
+                    `;
+                } else if(doc.assignee.includes('Bendahara')) {
+                    badgeHtml = `<span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>`;
+                    uploadHtml = `<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>`;
+                } else if(doc.assignee.includes('PPK')) {
+                    badgeHtml = `<span class="badge-assignee badge-ppk">Dilengkapi PPK</span>`;
+                    uploadHtml = `<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>`;
+                }
+
+                const item = document.createElement("div");
+                item.className = "upload-item";
+                item.innerHTML = `
+                    <div class="upload-info">
+                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                            <span class="upload-label" style="margin: 0;">${doc.name}</span>
+                            ${badgeHtml}
+                        </div>
+                        <input type="hidden" name="nama_dokumen[${idx}]" value="${doc.name}">
+                        <input type="hidden" name="assignee_dokumen[${idx}]" value="${doc.assignee}">
+                    </div>
+                    <div class="upload-action">
+                        ${uploadHtml}
+                    </div>
+                `;
+                docList.appendChild(item);
+            });
+        } else {
+            docContainer.style.display = "none";
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
         
         // Populate first dropdown
-        for (const nama in spjData) {
-            const opt = document.createElement("option");
-            opt.value = nama;
-            opt.textContent = nama;
-            selNamaBelanja.appendChild(opt);
+        if (selNamaBelanja) {
+            for (const nama in spjData) {
+                const opt = document.createElement("option");
+                opt.value = nama;
+                opt.textContent = nama;
+                selNamaBelanja.appendChild(opt);
+            }
+        }
+
+        // Pulihkan pilihan form yang sudah dipilih agar tidak reset
+        const activeNama = oldNamaBelanja || sessionStorage.getItem('spj_form_nama_belanja') || '';
+        const activeJenis = oldJenisBelanja || sessionStorage.getItem('spj_form_jenis_belanja') || '';
+        let activeBerkas = (oldBerkas && Object.keys(oldBerkas).length > 0)
+            ? oldBerkas
+            : JSON.parse(sessionStorage.getItem('spj_form_berkas') || '{}');
+
+        if (activeNama && spjData[activeNama] && selNamaBelanja) {
+            selNamaBelanja.value = activeNama;
+
+            if (selJenisBelanja) {
+                selJenisBelanja.innerHTML = '<option value="" disabled>Pilih Jenis Belanja...</option>';
+                selJenisBelanja.disabled = false;
+                for (const jenis in spjData[activeNama]) {
+                    const opt = document.createElement("option");
+                    opt.value = jenis;
+                    opt.textContent = jenis;
+                    if (jenis === activeJenis) {
+                        opt.selected = true;
+                    }
+                    selJenisBelanja.appendChild(opt);
+                }
+            }
+
+            if (activeJenis && spjData[activeNama][activeJenis]) {
+                renderDokumenList(activeNama, activeJenis, activeBerkas);
+            }
         }
     });
 
@@ -497,6 +644,10 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         const selJenisBelanja = document.getElementById("jenis_belanja");
         const docContainer = document.getElementById("dokumen_container");
         
+        sessionStorage.setItem('spj_form_nama_belanja', nama);
+        sessionStorage.removeItem('spj_form_jenis_belanja');
+        sessionStorage.removeItem('spj_form_berkas');
+
         // Reset and enable 2nd dropdown
         selJenisBelanja.innerHTML = '<option value="" disabled selected>Pilih Jenis Belanja...</option>';
         docContainer.style.display = "none";
@@ -518,58 +669,9 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         resetPrintStatus();
         const nama = document.getElementById("nama_belanja").value;
         const jenis = document.getElementById("jenis_belanja").value;
-        const docContainer = document.getElementById("dokumen_container");
-        const docList = document.getElementById("dokumen_list");
-        const kegInput = document.getElementById("kegiatan_input");
 
-
-
-        docList.innerHTML = "";
-
-        if (nama && jenis && spjData[nama][jenis]) {
-            docContainer.style.display = "block";
-            const docs = spjData[nama][jenis];
-            
-            docs.forEach((doc, idx) => {
-                let badgeHtml = '';
-                let uploadHtml = '';
-                
-                // If it is supposed to be uploaded by SM/Panitia (Teknis)
-                if(doc.assignee.includes('SM') || doc.assignee.includes('Panitia')) {
-                    badgeHtml = `<span class="badge-assignee">Wajib Disiapkan Teknis</span>`;
-                    uploadHtml = `
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" name="berkas[${idx}]" value="1" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
-                        <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
-                    </label>
-                    `;
-                } else if(doc.assignee.includes('Bendahara')) {
-                    badgeHtml = `<span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>`;
-                    uploadHtml = `<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>`;
-                } else if(doc.assignee.includes('PPK')) {
-                    badgeHtml = `<span class="badge-assignee badge-ppk">Dilengkapi PPK</span>`;
-                    uploadHtml = `<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>`;
-                }
-
-                const item = document.createElement("div");
-                item.className = "upload-item";
-                item.innerHTML = `
-                    <div class="upload-info">
-                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                            <span class="upload-label" style="margin: 0;">${doc.name}</span>
-                            ${badgeHtml}
-                        </div>
-                        <input type="hidden" name="nama_dokumen[${idx}]" value="${doc.name}">
-                    </div>
-                    <div class="upload-action">
-                        ${uploadHtml}
-                    </div>
-                `;
-                docList.appendChild(item);
-            });
-        } else {
-            docContainer.style.display = "none";
-        }
+        sessionStorage.setItem('spj_form_jenis_belanja', jenis);
+        renderDokumenList(nama, jenis);
     }
 
     function formatRupiah(number) {
@@ -642,6 +744,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         const nomorSpj = document.querySelector('[name="nomor_spj"]')?.value.trim() || '—';
         const kegiatan = document.querySelector('[name="kegiatan"]')?.value.trim() || '—';
         const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
+        const tanggalSelesai = document.querySelector('[name="tanggal_selesai"]')?.value || '';
         const nilai = document.querySelector('[name="nilai"]')?.value || '0';
         const noWa = document.querySelector('[name="no_wa"]')?.value.trim() || '—';
         const keterangan = document.querySelector('[name="keterangan"]')?.value.trim() || '—';
@@ -649,6 +752,9 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         const logoUrl = "{{ asset('images/logo-bps.png') }}";
         const tanggalCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         const tanggalFormatted = formatDateIndo(tanggal) || tanggalCetak;
+        const periodeKegiatanFormatted = (tanggal && tanggalSelesai && tanggalSelesai !== tanggal)
+            ? (formatDateIndo(tanggal) + ' s.d. ' + formatDateIndo(tanggalSelesai))
+            : tanggalFormatted;
 
         const seenLabels = {};
         const docCols = [];
@@ -804,7 +910,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             + '            <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
             + '        <\/div>\n'
             + '        <div class="meta-info">\n'
-            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Periode Kegiatan: <strong>' + periodeKegiatanFormatted + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
             + '            <div>Belanja: <strong>' + namaBelanja + ' (' + jenisBelanja + ')<\/strong><\/div>\n'
             + '        <\/div>\n'
             + '        <div class="table-responsive">\n'
@@ -902,7 +1008,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 banner.style.border = '1px solid #34d399';
                 banner.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Anda sekarang dapat melanjutkan pengajuan SPJ.</span>
+                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Tombol pengajuan sekarang aktif berwarna hijau!</span>
                 `;
             }
 
@@ -910,6 +1016,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             if (hint) {
                 hint.style.display = 'none';
             }
+
+            updateSubmitButtonState();
         };
 
         // Buka proses cetak di TAB BARU (bukan di tab yang sama)
@@ -947,7 +1055,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                     <rect x="6" y="14" width="12" height="8"></rect>
                 </svg>
-                Print
+                <span id="btn_cetak_text">Print</span>
             `;
         }
 
@@ -957,6 +1065,96 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         }
 
         updatePrintNotice();
+        updateSubmitButtonState();
+    }
+
+    function updateSubmitButtonState() {
+        const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+        const submitBtn = document.getElementById('btn_submit_spj');
+        const submitIcon = document.getElementById('btn_submit_icon');
+        const submitText = document.getElementById('btn_submit_text');
+        const hint = document.getElementById('print_requirement_hint');
+
+        if (!submitBtn) return;
+
+        if (selectedStatus === 'diajukan') {
+            if (isPrinted) {
+                // STATUS DIAJUKAN & SUDAH PRINT -> AKTIF & WARNA HIJAU
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#059669'; // Emerald Green
+                submitBtn.style.borderColor = '#047857';
+                submitBtn.style.color = '#ffffff';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.boxShadow = '0 4px 14px rgba(5, 150, 105, 0.4)';
+                submitBtn.title = 'Lembar checklist telah dicetak. Klik untuk mengajukan SPJ ke Umum.';
+                
+                if (submitIcon) {
+                    submitIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+                }
+                if (submitText) {
+                    submitText.textContent = 'Ajukan & Bawa Berkas Fisik ke Umum';
+                }
+                if (hint) {
+                    hint.style.display = 'none';
+                }
+            } else {
+                // STATUS DIAJUKAN & BELUM PRINT -> TIDAK AKTIF DULU (ABU-ABU)
+                submitBtn.disabled = false; // Tetap bisa diklik agar memicu popup modal penjelasan
+                submitBtn.style.backgroundColor = '#94a3b8'; // Slate 400
+                submitBtn.style.borderColor = '#94a3b8';
+                submitBtn.style.color = '#ffffff';
+                submitBtn.style.opacity = '0.75';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.style.boxShadow = 'none';
+                submitBtn.title = 'Wajib menekan tombol Print terlebih dahulu sebelum pengajuan dapat disimpan.';
+
+                if (submitIcon) {
+                    submitIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    `;
+                }
+                if (submitText) {
+                    submitText.textContent = 'Ajukan SPJ (Wajib Print Dulu)';
+                }
+                if (hint) {
+                    hint.style.display = 'block';
+                }
+            }
+        } else {
+            // STATUS DRAFT -> BIRU STANDAR
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = 'var(--primary)';
+            submitBtn.style.borderColor = 'var(--primary)';
+            submitBtn.style.color = '#ffffff';
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+            submitBtn.style.boxShadow = 'none';
+            submitBtn.title = 'Simpan draft SPJ untuk diedit kembali nanti.';
+
+            if (submitIcon) {
+                submitIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                `;
+            }
+            if (submitText) {
+                submitText.textContent = 'Simpan sebagai Draft';
+            }
+            if (hint) {
+                hint.style.display = 'none';
+            }
+        }
     }
 
     function updatePrintNotice() {
@@ -969,12 +1167,16 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 hint.style.display = 'none';
             }
         }
+        updateSubmitButtonState();
     }
 
     document.addEventListener("DOMContentLoaded", function() {
         const statusRadios = document.querySelectorAll('input[name="status"]');
         statusRadios.forEach(radio => {
-            radio.addEventListener('change', updatePrintNotice);
+            radio.addEventListener('change', function() {
+                updatePrintNotice();
+                updateSubmitButtonState();
+            });
         });
 
         if (isPrinted) {
@@ -991,6 +1193,47 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         }
 
         updatePrintNotice();
+        updateSubmitButtonState();
+
+        // Sinkronisasi rentang tanggal (mulai & selesai)
+        const inputTglMulai = document.getElementById('tanggal_mulai_input');
+        const inputTglSelesai = document.getElementById('tanggal_selesai_input');
+        if (inputTglMulai && inputTglSelesai) {
+            function syncTanggalMin() {
+                if (inputTglMulai.value) {
+                    inputTglSelesai.min = inputTglMulai.value;
+                    if (inputTglSelesai.value && inputTglSelesai.value < inputTglMulai.value) {
+                        inputTglSelesai.value = inputTglMulai.value;
+                    }
+                }
+            }
+            inputTglMulai.addEventListener('change', syncTanggalMin);
+            syncTanggalMin();
+        }
+
+        // Intercept klik pada tombol submit jika status diajukan dan belum print -> langsung POP-UP MODAL!
+        const submitBtn = document.getElementById('btn_submit_spj');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function(e) {
+                const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+                if (selectedStatus === 'diajukan' && !isPrinted) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const printBtn = document.getElementById('btn_cetak_langsung');
+                    if (printBtn) {
+                        printBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        printBtn.classList.remove('print-btn-shake');
+                        void printBtn.offsetWidth;
+                        printBtn.classList.add('print-btn-shake');
+                    }
+
+                    // TAMPILKAN MODAL POP-UP PERINGATAN PRINT
+                    openPrintValidationModal();
+                    return false;
+                }
+            });
+        }
 
         const form = document.querySelector('form[action="{{ route('teknis.spj.store') }}"]') || document.querySelector('form');
         if (form) {
@@ -998,20 +1241,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
                 if (selectedStatus === 'diajukan' && !isPrinted) {
                     e.preventDefault();
-
-                    const banner = document.getElementById('print_status_banner');
-                    if (banner) {
-                        banner.style.display = 'flex';
-                        banner.style.alignItems = 'center';
-                        banner.style.gap = '0.5rem';
-                        banner.style.backgroundColor = '#fee2e2';
-                        banner.style.color = '#991b1b';
-                        banner.style.border = '1px solid #f87171';
-                        banner.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                            <span><strong>Belum Dicetak:</strong> Teknis tidak dapat mengajukan SPJ jika belum menekan <strong>Print</strong> sampai tercetak. Silakan klik tombol Print terlebih dahulu.</span>
-                        `;
-                    }
+                    e.stopPropagation();
 
                     const printBtn = document.getElementById('btn_cetak_langsung');
                     if (printBtn) {
@@ -1024,8 +1254,17 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     openPrintValidationModal();
                     return false;
                 }
+
+                // Sukses diajukan / disimpan: bersihkan storage
+                clearFormState();
             });
         }
+
+        @if($errors->has('status') && str_contains($errors->first('status'), 'Print'))
+            setTimeout(function() {
+                openPrintValidationModal();
+            }, 250);
+        @endif
     });
 </script>
 @endpush

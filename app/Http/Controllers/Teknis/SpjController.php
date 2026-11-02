@@ -46,12 +46,14 @@ class SpjController extends Controller
             'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj',
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
         ], [
             'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
         ]);
 
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
@@ -63,11 +65,25 @@ class SpjController extends Controller
         $dokumenKelengkapan = [];
         if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
             foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
-                $isChecked = $request->has("berkas.{$index}");
-                $dokumenKelengkapan[] = [
-                    'nama' => $namaDokumen,
-                    'disiapkan' => $isChecked,
-                ];
+                $assignee = $request->input("assignee_dokumen.{$index}");
+                $isBendahara = Spj::isBendaharaDoc(['nama' => $namaDokumen, 'assignee' => $assignee]);
+                $isPpk = Spj::isPpkDoc(['nama' => $namaDokumen, 'assignee' => $assignee]);
+
+                if ($isBendahara || $isPpk) {
+                    $dokumenKelengkapan[] = [
+                        'nama' => $namaDokumen,
+                        'disiapkan' => false,
+                        'assignee' => $assignee ?: ($isBendahara ? 'Bendahara' : 'PPK'),
+                    ];
+                } else {
+                    $isChecked = $request->has("berkas.{$index}");
+                    $dokumenKelengkapan[] = [
+                        'nama' => $namaDokumen,
+                        'disiapkan' => $isChecked,
+                        'assignee' => $assignee ?: 'SM',
+                        'checked_by' => $isChecked ? 'teknis' : null,
+                    ];
+                }
             }
         }
 
@@ -78,6 +94,7 @@ class SpjController extends Controller
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
+            'tanggal_selesai' => $request->tanggal_selesai ?: null,
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa,
@@ -138,12 +155,14 @@ class SpjController extends Controller
             'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj,'.$spj->id,
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
         ], [
             'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
         ]);
 
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
@@ -154,13 +173,40 @@ class SpjController extends Controller
 
         $dokumenKelengkapan = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
         if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
+            $existingMap = [];
+            if ($spj->dokumen_file && is_array(json_decode($spj->dokumen_file, true))) {
+                foreach (json_decode($spj->dokumen_file, true) as $ex) {
+                    if (isset($ex['nama'])) {
+                        $existingMap[$ex['nama']] = $ex;
+                    }
+                }
+            }
+
             $dokumenKelengkapan = [];
             foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
-                $isChecked = $request->has("berkas.{$index}");
-                $dokumenKelengkapan[] = [
-                    'nama' => $namaDokumen,
-                    'disiapkan' => $isChecked,
-                ];
+                $assignee = $request->input("assignee_dokumen.{$index}");
+                $isBendahara = Spj::isBendaharaDoc(['nama' => $namaDokumen, 'assignee' => $assignee]);
+                $isPpk = Spj::isPpkDoc(['nama' => $namaDokumen, 'assignee' => $assignee]);
+
+                if ($isBendahara || $isPpk) {
+                    // Dokumen Bendahara atau PPK tidak boleh diubah centangnya oleh Teknis
+                    $existingItem = $existingMap[$namaDokumen] ?? null;
+                    $dokumenKelengkapan[] = [
+                        'nama' => $namaDokumen,
+                        'disiapkan' => ! empty($existingItem['disiapkan']),
+                        'assignee' => $assignee ?: ($existingItem['assignee'] ?? ($isBendahara ? 'Bendahara' : 'PPK')),
+                        'checked_by' => $existingItem['checked_by'] ?? null,
+                        'checked_at' => $existingItem['checked_at'] ?? null,
+                    ];
+                } else {
+                    $isChecked = $request->has("berkas.{$index}");
+                    $dokumenKelengkapan[] = [
+                        'nama' => $namaDokumen,
+                        'disiapkan' => $isChecked,
+                        'assignee' => $assignee ?: 'SM',
+                        'checked_by' => $isChecked ? 'teknis' : null,
+                    ];
+                }
             }
         }
 
@@ -171,6 +217,7 @@ class SpjController extends Controller
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
+            'tanggal_selesai' => $request->tanggal_selesai ?: null,
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa,

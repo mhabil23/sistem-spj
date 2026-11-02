@@ -8,6 +8,53 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
 @section('content')
 @push('styles')
     @vite(['resources/css/teknis/spj.css'])
+    <style>
+        .upload-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--dash-card-bg);
+            border: 1px solid var(--dash-border);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+            transition: var(--transition);
+        }
+        .upload-item:hover {
+            border-color: #0284c7;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.15);
+        }
+        .upload-info {
+            flex: 1;
+        }
+        .upload-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dash-text-dark);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .upload-action {
+            margin-left: 1rem;
+        }
+        .badge-assignee {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background: var(--dash-cyan-badge);
+            color: var(--dash-cyan-text);
+            margin-left: 0.5rem;
+            display: inline-block;
+        }
+        .badge-bendahara {
+            background: var(--dash-peach-badge);
+            color: var(--dash-peach-text);
+        }
+        .badge-ppk {
+            background: #fce7f3;
+            color: #db2777;
+        }
+    </style>
 @endpush
 
 <div class="dashboard-heading">
@@ -54,17 +101,58 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             @endphp
             
             <div style="padding: 1.5rem; background: var(--dash-input-bg); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
-                <div style="margin-bottom: 0.75rem;">
-                    <label class="spj-label" style="margin-bottom: 0;">Kelengkapan Berkas (Telah Dipilih)</label>
-                    <span style="font-size: 0.75rem; color: var(--dash-text-muted); display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <label class="spj-label" style="margin-bottom: 0;">Kelengkapan Berkas (Telah Dipilih)</label>
+                        <span style="font-size: 0.75rem; color: var(--dash-text-muted); display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                    </div>
+                    @if(count($dokumen) > 0)
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" onclick="centangSemuaBerkas(true)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Centang Semua
+                            </button>
+                            <button type="button" onclick="centangSemuaBerkas(false)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto; opacity: 0.8;">
+                                Batal Semua
+                            </button>
+                        </div>
+                    @endif
                 </div>
-                <div id="dokumen_list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div id="dokumen_list">
                     @if(count($dokumen) > 0)
                         @foreach($dokumen as $index => $doc)
-                            <div class="checkbox-wrapper" style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: var(--dash-card-bg); border: 1px solid var(--border); border-radius: var(--radius-md);">
-                                <input type="hidden" name="nama_dokumen[{{ $index }}]" value="{{ $doc['nama'] }}">
-                                <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ $doc['disiapkan'] ? 'checked' : '' }} style="width: 1rem; height: 1rem; cursor: pointer;">
-                                <label for="doc_{{ $index }}" style="margin: 0; font-size: 0.85rem; font-weight: 500; color: var(--dash-text-dark); cursor: pointer; user-select: none;">{{ $doc['nama'] }}</label>
+                            @php
+                                $isBendahara = \App\Models\Spj::isBendaharaDoc($doc);
+                                $isPpk = \App\Models\Spj::isPpkDoc($doc);
+                                $isTeknis = !$isBendahara && !$isPpk;
+                            @endphp
+                            <div class="upload-item">
+                                <div class="upload-info">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.25rem;">
+                                        <span class="upload-label" style="margin: 0;">{{ $doc['nama'] }}</span>
+                                        @if($isBendahara)
+                                            <span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>
+                                        @elseif($isPpk)
+                                            <span class="badge-assignee badge-ppk">Dilengkapi PPK</span>
+                                        @else
+                                            <span class="badge-assignee">Wajib Disiapkan Teknis</span>
+                                        @endif
+                                    </div>
+                                    <input type="hidden" name="nama_dokumen[{{ $index }}]" value="{{ $doc['nama'] }}">
+                                    <input type="hidden" name="assignee_dokumen[{{ $index }}]" value="{{ $doc['assignee'] ?? ($isBendahara ? 'Bendahara' : ($isPpk ? 'PPK' : 'SM')) }}">
+                                </div>
+                                <div class="upload-action">
+                                    @if($isTeknis)
+                                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin: 0;">
+                                            <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ !empty($doc['disiapkan']) ? 'checked' : '' }} class="berkas-teknis-cb" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
+                                            <span style="font-size: 0.85rem; font-weight: 500; color: var(--dash-text-dark);">Ada (Fisik)</span>
+                                        </label>
+                                    @elseif($isBendahara)
+                                        <span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>
+                                    @elseif($isPpk)
+                                        <span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>
+                                    @endif
+                                </div>
                             </div>
                         @endforeach
                     @else
@@ -97,11 +185,24 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem; margin-top: 1.5rem;" class="spj-form-group">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;" class="spj-form-group">
                 <div>
-                    <label class="spj-label">Tanggal Kegiatan</label>
-                    <input type="date" name="tanggal" required class="spj-input" value="{{ old('tanggal', $spj->tanggal->format('Y-m-d')) }}">
+                    <label class="spj-label">
+                        Tanggal Mulai Kegiatan <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="date" name="tanggal" id="tanggal_mulai_input" required class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal', $spj->tanggal ? $spj->tanggal->format('Y-m-d') : '') }}">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Tanggal dimulainya pelaksanaan kegiatan.</span>
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="spj-label" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Tanggal Selesai Kegiatan</span>
+                        <span style="font-size: 0.72rem; font-weight: normal; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 4px;">Opsional</span>
+                    </label>
+                    <input type="date" name="tanggal_selesai" id="tanggal_selesai_input" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai', $spj->tanggal_selesai ? $spj->tanggal_selesai->format('Y-m-d') : '') }}">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Kosongkan jika kegiatan hanya berlangsung 1 hari.</span>
+                    @error('tanggal_selesai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
             </div>
 
@@ -158,11 +259,13 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                         <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                         <rect x="6" y="14" width="12" height="8"></rect>
                     </svg>
-                    Print
+                    <span id="btn_cetak_text">Print</span>
                 </button>
-                <button type="submit" class="spj-btn spj-btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-                    Perbarui SPJ
+                <button type="submit" id="btn_submit_spj" class="spj-btn spj-btn-primary" style="transition: all 0.25s ease;">
+                    <span id="btn_submit_icon" style="display: inline-flex; align-items: center; margin-right: 6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    </span>
+                    <span id="btn_submit_text">Perbarui SPJ</span>
                 </button>
             </div>
         </form>
@@ -175,6 +278,13 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
 
 @push('scripts')
 <script>
+    function centangSemuaBerkas(val = true) {
+        const checkboxes = document.querySelectorAll('input.berkas-teknis-cb');
+        checkboxes.forEach(cb => {
+            cb.checked = val;
+        });
+    }
+
     function formatRupiah(number) {
         if (!number || isNaN(number)) return 'Rp 0';
         return 'Rp ' + Number(number).toLocaleString('id-ID');
@@ -234,6 +344,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
         const nomorSpj = document.querySelector('[name="nomor_spj"]')?.value.trim() || '—';
         const kegiatan = document.querySelector('[name="kegiatan"]')?.value.trim() || '—';
         const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
+        const tanggalSelesai = document.querySelector('[name="tanggal_selesai"]')?.value || '';
         const nilai = document.querySelector('[name="nilai"]')?.value || '0';
         const noWa = document.querySelector('[name="no_wa"]')?.value.trim() || '—';
         const keterangan = document.querySelector('[name="keterangan"]')?.value.trim() || '—';
@@ -241,6 +352,9 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
         const logoUrl = "{{ asset('images/logo-bps.png') }}";
         const tanggalCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         const tanggalFormatted = formatDateIndo(tanggal) || tanggalCetak;
+        const periodeKegiatanFormatted = (tanggal && tanggalSelesai && tanggalSelesai !== tanggal)
+            ? (formatDateIndo(tanggal) + ' s.d. ' + formatDateIndo(tanggalSelesai))
+            : tanggalFormatted;
         const tanggalInputSpj = "{{ $spj->created_at ? $spj->created_at->locale('id')->translatedFormat('d F Y') : '' }}";
         const tglMasukUmum = "{{ $spj->disetujui_umum_at ? \Carbon\Carbon::parse($spj->disetujui_umum_at)->locale('id')->translatedFormat('d F Y') : '-' }}";
 
@@ -398,7 +512,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             + '            <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
             + '        <\/div>\n'
             + '        <div class="meta-info">\n'
-            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Periode Kegiatan: <strong>' + periodeKegiatanFormatted + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
             + '        <\/div>\n'
             + '        <div class="table-responsive">\n'
             + '            <table class="cetak-table">\n'
@@ -495,7 +609,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 banner.style.border = '1px solid #34d399';
                 banner.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Anda sekarang dapat melanjutkan pengajuan ulang SPJ.</span>
+                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Tombol pengajuan sekarang aktif berwarna hijau!</span>
                 `;
             }
 
@@ -503,6 +617,8 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             if (hint) {
                 hint.style.display = 'none';
             }
+
+            updateSubmitButtonState();
         };
 
         // Buka proses cetak di TAB BARU (bukan di tab yang sama)
@@ -540,7 +656,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                     <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
                     <rect x="6" y="14" width="12" height="8"></rect>
                 </svg>
-                Print
+                <span id="btn_cetak_text">Print</span>
             `;
         }
 
@@ -550,6 +666,96 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
         }
 
         updatePrintNotice();
+        updateSubmitButtonState();
+    }
+
+    function updateSubmitButtonState() {
+        const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+        const submitBtn = document.getElementById('btn_submit_spj');
+        const submitIcon = document.getElementById('btn_submit_icon');
+        const submitText = document.getElementById('btn_submit_text');
+        const hint = document.getElementById('print_requirement_hint');
+
+        if (!submitBtn) return;
+
+        if (selectedStatus === 'diajukan') {
+            if (isPrinted) {
+                // STATUS DIAJUKAN & SUDAH PRINT -> AKTIF & WARNA HIJAU
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#059669'; // Emerald Green
+                submitBtn.style.borderColor = '#047857';
+                submitBtn.style.color = '#ffffff';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.boxShadow = '0 4px 14px rgba(5, 150, 105, 0.4)';
+                submitBtn.title = 'Lembar checklist telah dicetak. Klik untuk mengajukan ulang SPJ.';
+                
+                if (submitIcon) {
+                    submitIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+                }
+                if (submitText) {
+                    submitText.textContent = 'Ajukan Ulang SPJ ke Umum';
+                }
+                if (hint) {
+                    hint.style.display = 'none';
+                }
+            } else {
+                // STATUS DIAJUKAN & BELUM PRINT -> TIDAK AKTIF DULU (ABU-ABU)
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#94a3b8'; // Slate 400
+                submitBtn.style.borderColor = '#94a3b8';
+                submitBtn.style.color = '#ffffff';
+                submitBtn.style.opacity = '0.75';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.style.boxShadow = 'none';
+                submitBtn.title = 'Wajib menekan tombol Print terlebih dahulu sebelum pengajuan dapat disimpan.';
+
+                if (submitIcon) {
+                    submitIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    `;
+                }
+                if (submitText) {
+                    submitText.textContent = 'Ajukan Ulang (Wajib Print Dulu)';
+                }
+                if (hint) {
+                    hint.style.display = 'block';
+                }
+            }
+        } else {
+            // STATUS DRAFT -> BIRU STANDAR
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = 'var(--primary)';
+            submitBtn.style.borderColor = 'var(--primary)';
+            submitBtn.style.color = '#ffffff';
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+            submitBtn.style.boxShadow = 'none';
+            submitBtn.title = 'Simpan draft SPJ untuk diedit kembali nanti.';
+
+            if (submitIcon) {
+                submitIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                `;
+            }
+            if (submitText) {
+                submitText.textContent = 'Simpan sebagai Draft';
+            }
+            if (hint) {
+                hint.style.display = 'none';
+            }
+        }
     }
 
     function updatePrintNotice() {
@@ -562,12 +768,16 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 hint.style.display = 'none';
             }
         }
+        updateSubmitButtonState();
     }
 
     document.addEventListener("DOMContentLoaded", function() {
         const statusRadios = document.querySelectorAll('input[name="status"]');
         statusRadios.forEach(radio => {
-            radio.addEventListener('change', updatePrintNotice);
+            radio.addEventListener('change', function() {
+                updatePrintNotice();
+                updateSubmitButtonState();
+            });
         });
 
         if (isPrinted) {
@@ -584,27 +794,32 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
         }
 
         updatePrintNotice();
+        updateSubmitButtonState();
 
-        const form = document.querySelector('form[action="{{ route('teknis.spj.update', $spj) }}"]') || document.querySelector('form');
-        if (form) {
-            form.addEventListener('submit', function(e) {
+        // Sinkronisasi rentang tanggal (mulai & selesai)
+        const inputTglMulai = document.getElementById('tanggal_mulai_input');
+        const inputTglSelesai = document.getElementById('tanggal_selesai_input');
+        if (inputTglMulai && inputTglSelesai) {
+            function syncTanggalMin() {
+                if (inputTglMulai.value) {
+                    inputTglSelesai.min = inputTglMulai.value;
+                    if (inputTglSelesai.value && inputTglSelesai.value < inputTglMulai.value) {
+                        inputTglSelesai.value = inputTglMulai.value;
+                    }
+                }
+            }
+            inputTglMulai.addEventListener('change', syncTanggalMin);
+            syncTanggalMin();
+        }
+
+        // Intercept klik pada tombol submit jika status diajukan dan belum print -> langsung POP-UP MODAL!
+        const submitBtn = document.getElementById('btn_submit_spj');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function(e) {
                 const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
                 if (selectedStatus === 'diajukan' && !isPrinted) {
                     e.preventDefault();
-
-                    const banner = document.getElementById('print_status_banner');
-                    if (banner) {
-                        banner.style.display = 'flex';
-                        banner.style.alignItems = 'center';
-                        banner.style.gap = '0.5rem';
-                        banner.style.backgroundColor = '#fee2e2';
-                        banner.style.color = '#991b1b';
-                        banner.style.border = '1px solid #f87171';
-                        banner.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                            <span><strong>Belum Dicetak:</strong> Teknis tidak dapat mengajukan SPJ jika belum menekan <strong>Print</strong> sampai tercetak. Silakan klik tombol Print terlebih dahulu.</span>
-                        `;
-                    }
+                    e.stopPropagation();
 
                     const printBtn = document.getElementById('btn_cetak_langsung');
                     if (printBtn) {
@@ -619,6 +834,34 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 }
             });
         }
+
+        const form = document.querySelector('form[action="{{ route('teknis.spj.update', $spj) }}"]') || document.querySelector('form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+                if (selectedStatus === 'diajukan' && !isPrinted) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const printBtn = document.getElementById('btn_cetak_langsung');
+                    if (printBtn) {
+                        printBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        printBtn.classList.remove('print-btn-shake');
+                        void printBtn.offsetWidth;
+                        printBtn.classList.add('print-btn-shake');
+                    }
+
+                    openPrintValidationModal();
+                    return false;
+                }
+            });
+        }
+
+        @if($errors->has('status') && str_contains($errors->first('status'), 'Print'))
+            setTimeout(function() {
+                openPrintValidationModal();
+            }, 250);
+        @endif
     });
 </script>
 @endpush

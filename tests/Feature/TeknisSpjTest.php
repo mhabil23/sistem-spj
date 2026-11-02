@@ -95,6 +95,50 @@ class TeknisSpjTest extends TestCase
         $response->assertSessionHasErrors('nomor_spj');
     }
 
+    public function test_teknis_can_create_spj_with_date_range(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $response = $this->actingAs($teknis)->post(route('teknis.spj.store'), [
+            'nomor_spj' => 'SPJ-2026-RANGE-001',
+            'kegiatan' => 'Pelatihan Petugas Sensus',
+            'tanggal' => '2026-10-20',
+            'tanggal_selesai' => '2026-10-25',
+            'nilai' => 3500000,
+            'status' => 'draft',
+            'no_wa' => '081234567890',
+        ]);
+
+        $response->assertRedirect(route('teknis.spj.index'));
+        $this->assertDatabaseHas('spjs', [
+            'nomor_spj' => 'SPJ-2026-RANGE-001',
+            'kegiatan' => 'Pelatihan Petugas Sensus',
+        ]);
+
+        $spj = Spj::where('nomor_spj', 'SPJ-2026-RANGE-001')->first();
+        $this->assertNotNull($spj);
+        $this->assertSame('2026-10-20', $spj->tanggal->format('Y-m-d'));
+        $this->assertSame('2026-10-25', $spj->tanggal_selesai->format('Y-m-d'));
+        $this->assertSame('20 s.d. 25 Oktober 2026', $spj->periode_kegiatan);
+        $this->assertSame('20 - 25 Okt 2026', $spj->periode_kegiatan_ringkas);
+    }
+
+    public function test_teknis_cannot_create_spj_with_tanggal_selesai_before_tanggal_mulai(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $response = $this->actingAs($teknis)->post(route('teknis.spj.store'), [
+            'nomor_spj' => 'SPJ-2026-INVALID-DATE',
+            'kegiatan' => 'Kegiatan Salah Tanggal',
+            'tanggal' => '2026-10-25',
+            'tanggal_selesai' => '2026-10-20',
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $response->assertSessionHasErrors('tanggal_selesai');
+    }
+
     public function test_teknis_can_view_nomor_spj_in_index_and_show(): void
     {
         $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
@@ -525,5 +569,85 @@ class TeknisSpjTest extends TestCase
         $laporanResponse->assertStatus(200);
         $laporanResponse->assertSee(route('teknis.laporan.print'), false);
         $laporanResponse->assertSee('target="_blank"', false);
+    }
+
+    public function test_teknis_edit_page_does_not_render_checkbox_for_bendahara_or_ppk_documents(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-EDIT-BENDAHARA-001',
+            'kegiatan' => 'Belanja Konsumsi Rapat Evaluasi',
+            'tanggal' => now(),
+            'nilai' => 4000000,
+            'status' => 'draft',
+            'dokumen_file' => json_encode([
+                ['nama' => 'KAK', 'disiapkan' => true],
+                ['nama' => 'FP (dari BOS)', 'disiapkan' => true],
+                ['nama' => 'BAST', 'disiapkan' => true],
+                ['nama' => 'PPh 22 (jika diatas 2 juta)', 'disiapkan' => false],
+            ]),
+        ]);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.edit', $spj->id));
+        $response->assertStatus(200);
+
+        // Dokumen Teknis memiliki checkbox
+        $response->assertSee('name="berkas[0]"', false);
+        $response->assertSee('name="berkas[1]"', false);
+        $response->assertSee('name="berkas[2]"', false);
+        $response->assertSee('Wajib Disiapkan Teknis');
+
+        // Dokumen Bendahara (PPh 22) TIDAK memiliki checkbox untuk Teknis
+        $response->assertDontSee('name="berkas[3]"', false);
+        $response->assertSee('Dilengkapi Bendahara');
+        $response->assertSee('Tidak perlu (Diurus Bendahara)');
+    }
+
+    public function test_teknis_update_preserves_bendahara_document_and_cannot_check_it(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-EDIT-BENDAHARA-002',
+            'kegiatan' => 'Belanja Konsumsi Rapat Koordinasi',
+            'tanggal' => now(),
+            'nilai' => 4000000,
+            'status' => 'draft',
+            'dokumen_file' => json_encode([
+                ['nama' => 'KAK', 'disiapkan' => true, 'assignee' => 'SM'],
+                ['nama' => 'PPh 22 (jika diatas 2 juta)', 'disiapkan' => false, 'assignee' => 'Bendahara'],
+            ]),
+        ]);
+
+        // Teknis mencoba mengirimkan berkas[1] = 1 (mencentang PPh 22)
+        $response = $this->actingAs($teknis)->put(route('teknis.spj.update', $spj->id), [
+            'kegiatan' => 'Belanja Konsumsi Rapat Koordinasi Update',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => 4000000,
+            'status' => 'draft',
+            'nama_dokumen' => ['KAK', 'PPh 22 (jika diatas 2 juta)'],
+            'assignee_dokumen' => ['SM', 'Bendahara'],
+            'berkas' => [
+                '0' => '1',
+                '1' => '1', // Dicoba dicentang oleh user teknis
+            ],
+        ]);
+
+        $response->assertRedirect(route('teknis.spj.index'));
+
+        $spj->refresh();
+        $dokumenList = $spj->dokumen_list;
+
+        // KAK dicentang oleh teknis
+        $this->assertEquals('KAK', $dokumenList[0]['nama']);
+        $this->assertTrue($dokumenList[0]['disiapkan']);
+
+        // PPh 22 TETAP false (tidak boleh dicentang oleh teknis!)
+        $this->assertEquals('PPh 22 (jika diatas 2 juta)', $dokumenList[1]['nama']);
+        $this->assertFalse($dokumenList[1]['disiapkan']);
+        $this->assertEquals('Bendahara', $dokumenList[1]['assignee']);
     }
 }

@@ -206,7 +206,7 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
 
             <div class="spj-detail-item">
                 <div class="spj-detail-label">Tanggal Kegiatan</div>
-                <div class="spj-detail-value">{{ $spj->tanggal->format('d F Y') }}</div>
+                <div class="spj-detail-value">{{ $spj->periode_kegiatan }}</div>
             </div>
 
             <div class="spj-detail-item">

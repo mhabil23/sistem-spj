@@ -49,34 +49,22 @@ class ProfilController extends Controller
         $isEmailChanged = $newEmail !== strtolower(trim($user->email));
         $isPasswordChanged = $request->filled('password');
 
-        // Verifikasi kata sandi saat ini jika mengubah email atau mengubah password
-        if ($isEmailChanged || $isPasswordChanged) {
+        // Verifikasi kata sandi saat ini hanya jika mengubah password
+        if ($isPasswordChanged) {
             if (! $request->filled('current_password')) {
-                $passwordMessage = $isEmailChanged && $isPasswordChanged
-                    ? 'Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email dan kata sandi baru.'
-                    : ($isEmailChanged
-                        ? 'Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email login.'
-                        : 'Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan kata sandi baru.');
-
-                $errors = ['current_password' => $passwordMessage];
-                if ($isEmailChanged) {
-                    $errors['email'] = 'Perubahan alamat email memerlukan konfirmasi Kata Sandi Saat Ini pada kolom di bawah.';
-                }
-
                 return back()
                     ->withInput()
-                    ->withErrors($errors);
+                    ->withErrors([
+                        'current_password' => 'Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan kata sandi baru.',
+                    ]);
             }
 
             if (! Hash::check($request->current_password, $user->password)) {
-                $errors = ['current_password' => 'Kata sandi saat ini yang Anda masukkan tidak sesuai.'];
-                if ($isEmailChanged) {
-                    $errors['email'] = 'Gagal menyimpan perubahan email karena kata sandi saat ini tidak sesuai.';
-                }
-
                 return back()
                     ->withInput()
-                    ->withErrors($errors);
+                    ->withErrors([
+                        'current_password' => 'Kata sandi saat ini yang Anda masukkan tidak sesuai.',
+                    ]);
             }
         }
 

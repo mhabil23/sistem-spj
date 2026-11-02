@@ -246,9 +246,9 @@ $title = 'Pengaturan Profil Akun';
                         <div class="bnd-callout info">
                             <ion-icon name="information-circle"></ion-icon>
                             <div>
-                                <strong>Ketentuan Penggantian Alamat Email:</strong>
+                                <strong>Ketentuan Alamat Email:</strong>
                                 <p style="margin: 4px 0 0 0;">
-                                    Email adalah identitas login utama Anda. Jika Anda mengubah alamat email di bawah ini, <strong>wajib mengisi Kata Sandi Saat Ini</strong> pada bagian Keamanan Akun demi memvalidasi bahwa perubahan dilakukan oleh pemilik akun sah.
+                                    Email adalah identitas login utama akun Anda. Pastikan alamat email aktif agar Anda dapat menerima notifikasi penting dan tautan pemulihan kata sandi apabila sewaktu-waktu lupa sandi.
                                 </p>
                             </div>
                         </div>
@@ -271,16 +271,6 @@ $title = 'Pengaturan Profil Akun';
                             </div>
                             <div class="bnd-helper-text">
                                 Email saat ini: <strong style="color: var(--bnd-slate-900);">{{ $user->email }}</strong>. Gunakan email dinas atau pribadi yang selalu dapat diakses.
-                            </div>
-                            <!-- Dynamic Notice saat email diubah -->
-                            <div id="emailNoticeBadge" style="display: none; margin-top: 8px; padding: 10px 14px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.45;">
-                                <div style="display: flex; align-items: flex-start; gap: 8px;">
-                                    <ion-icon name="alert-circle" style="font-size: 18px; color: #d97706; flex-shrink: 0; margin-top: 1px;"></ion-icon>
-                                    <div>
-                                        <strong>Konfirmasi Kata Sandi Diperlukan:</strong>
-                                        <div>Anda sedang mengubah alamat email. Wajib memasukkan <strong>Kata Sandi Saat Ini</strong> pada formulir Keamanan di bawah sebelum menyimpan perubahan ini.</div>
-                                    </div>
-                                </div>
                             </div>
                             @error('email')
                                 <div class="bnd-error-hint">
@@ -309,7 +299,7 @@ $title = 'Pengaturan Profil Akun';
                         <div class="bnd-field-group" style="max-width: 520px; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px dashed #e2e8f0;">
                             <label class="bnd-field-label" for="input_current_password">
                                 <span>Kata Sandi Saat Ini</span>
-                                <span class="bnd-field-badge" style="color: #d97706; background: #fffbeb; border: 1px solid #fde68a;">Wajib jika ganti email / sandi</span>
+                                <span class="bnd-field-badge" style="color: #d97706; background: #fffbeb; border: 1px solid #fde68a;">Wajib jika ganti sandi</span>
                             </label>
                             <div class="bnd-input-wrapper">
                                 <ion-icon name="key-outline" class="bnd-input-icon"></ion-icon>
@@ -326,7 +316,7 @@ $title = 'Pengaturan Profil Akun';
                                 </button>
                             </div>
                             <div class="bnd-helper-text">
-                                Diperlukan untuk verifikasi keamanan saat Anda mengganti alamat email login atau ingin membuat sandi baru.
+                                Diperlukan untuk verifikasi keamanan saat Anda ingin membuat sandi baru.
                             </div>
                             @error('current_password')
                                 <div class="bnd-error-hint">
@@ -455,33 +445,17 @@ $title = 'Pengaturan Profil Akun';
             });
         });
 
-        // Validasi interaktif perubahan email
+        // Validasi saat mengubah kata sandi baru
         const formProfile = document.getElementById('formProfile');
-        const inputEmail = document.getElementById('input_email');
+        const inputNewPassword = document.getElementById('input_new_password');
         const inputCurrentPassword = document.getElementById('input_current_password');
-        const emailNoticeBadge = document.getElementById('emailNoticeBadge');
-        const originalEmail = "{{ strtolower(trim($user->email)) }}";
-
-        if (inputEmail && emailNoticeBadge) {
-            function checkEmailChanged() {
-                const currentVal = inputEmail.value.trim().toLowerCase();
-                if (currentVal !== '' && currentVal !== originalEmail) {
-                    emailNoticeBadge.style.display = 'block';
-                } else {
-                    emailNoticeBadge.style.display = 'none';
-                }
-            }
-
-            inputEmail.addEventListener('input', checkEmailChanged);
-            checkEmailChanged();
-        }
 
         if (formProfile) {
             formProfile.addEventListener('submit', function(e) {
-                const isEmailChanged = inputEmail && inputEmail.value.trim().toLowerCase() !== originalEmail;
+                const isNewPassFilled = inputNewPassword && inputNewPassword.value.trim() !== '';
                 const isCurrentPassEmpty = inputCurrentPassword && inputCurrentPassword.value.trim() === '';
 
-                if (isEmailChanged && isCurrentPassEmpty) {
+                if (isNewPassFilled && isCurrentPassEmpty) {
                     e.preventDefault();
                     
                     if (inputCurrentPassword) {
@@ -490,19 +464,7 @@ $title = 'Pengaturan Profil Akun';
                         inputCurrentPassword.focus();
                     }
 
-                    let errorHint = document.getElementById('clientPasswordError');
-                    if (!errorHint && inputCurrentPassword) {
-                        errorHint = document.createElement('div');
-                        errorHint.id = 'clientPasswordError';
-                        errorHint.className = 'bnd-error-hint';
-                        errorHint.style.marginTop = '6px';
-                        errorHint.innerHTML = '<ion-icon name="warning-outline"></ion-icon> Konfirmasi kata sandi saat ini wajib diisi untuk mengesahkan perubahan alamat email login!';
-                        inputCurrentPassword.closest('.bnd-field-group').appendChild(errorHint);
-                    } else if (errorHint) {
-                        errorHint.style.display = 'flex';
-                    }
-
-                    alert('Perhatian: Anda sedang mengubah alamat email login. Harap masukkan "Kata Sandi Saat Ini" pada bagian Keamanan Akun untuk mengonfirmasi perubahan ini.');
+                    alert('Harap masukkan "Kata Sandi Saat Ini" untuk mengonfirmasi perubahan kata sandi baru.');
                 }
             });
         }

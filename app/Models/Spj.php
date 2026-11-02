@@ -12,6 +12,7 @@ class Spj extends Model
         'nomor_spj',
         'kegiatan',
         'tanggal',
+        'tanggal_selesai',
         'nilai',
         'keterangan',
         'no_wa',
@@ -57,6 +58,7 @@ class Spj extends Model
 
     protected $casts = [
         'tanggal' => 'date',
+        'tanggal_selesai' => 'date',
         'nilai' => 'decimal:2',
         'diajukan_at' => 'datetime',
         'berkas_fisik_diterima_at' => 'datetime',
@@ -66,6 +68,62 @@ class Spj extends Model
         'disetujui_ppspm_at' => 'datetime',
         'diselesaikan_at' => 'datetime',
     ];
+
+    /**
+     * Dapatkan format tanggal periode kegiatan (misal: "12 Februari 2026" atau "12 s.d. 15 Februari 2026").
+     */
+    public function getPeriodeKegiatanAttribute(): string
+    {
+        if (! $this->tanggal) {
+            return '-';
+        }
+
+        $mulai = Carbon::parse($this->tanggal)->locale('id');
+
+        if (! $this->tanggal_selesai || $this->tanggal->isSameDay($this->tanggal_selesai)) {
+            return $mulai->translatedFormat('d F Y');
+        }
+
+        $selesai = Carbon::parse($this->tanggal_selesai)->locale('id');
+
+        if ($mulai->format('Y-m') === $selesai->format('Y-m')) {
+            return $mulai->translatedFormat('d').' s.d. '.$selesai->translatedFormat('d F Y');
+        }
+
+        if ($mulai->format('Y') === $selesai->format('Y')) {
+            return $mulai->translatedFormat('d F').' s.d. '.$selesai->translatedFormat('d F Y');
+        }
+
+        return $mulai->translatedFormat('d F Y').' s.d. '.$selesai->translatedFormat('d F Y');
+    }
+
+    /**
+     * Dapatkan format ringkas periode kegiatan (misal: "12 Feb 2026" atau "12 - 15 Feb 2026").
+     */
+    public function getPeriodeKegiatanRingkasAttribute(): string
+    {
+        if (! $this->tanggal) {
+            return '-';
+        }
+
+        $mulai = Carbon::parse($this->tanggal)->locale('id');
+
+        if (! $this->tanggal_selesai || $this->tanggal->isSameDay($this->tanggal_selesai)) {
+            return $mulai->translatedFormat('d M Y');
+        }
+
+        $selesai = Carbon::parse($this->tanggal_selesai)->locale('id');
+
+        if ($mulai->format('Y-m') === $selesai->format('Y-m')) {
+            return $mulai->translatedFormat('d').' - '.$selesai->translatedFormat('d M Y');
+        }
+
+        if ($mulai->format('Y') === $selesai->format('Y')) {
+            return $mulai->translatedFormat('d M').' - '.$selesai->translatedFormat('d M Y');
+        }
+
+        return $mulai->translatedFormat('d M Y').' - '.$selesai->translatedFormat('d M Y');
+    }
 
     /**
      * Decode dokumen_file JSON safely.
@@ -99,8 +157,14 @@ class Spj extends Model
     public static function isBendaharaDoc(array|string $doc): bool
     {
         if (is_array($doc)) {
-            if (isset($doc['assignee']) && strcasecmp((string) $doc['assignee'], 'Bendahara') === 0) {
-                return true;
+            if (isset($doc['assignee'])) {
+                $assignee = strtolower((string) $doc['assignee']);
+                if (str_contains($assignee, 'bendahara')) {
+                    return true;
+                }
+                if (str_contains($assignee, 'sm') || str_contains($assignee, 'panitia') || str_contains($assignee, 'teknis')) {
+                    return false;
+                }
             }
             if (isset($doc['checked_by']) && strcasecmp((string) $doc['checked_by'], 'bendahara') === 0) {
                 return true;
@@ -119,8 +183,14 @@ class Spj extends Model
     public static function isPpkDoc(array|string $doc): bool
     {
         if (is_array($doc)) {
-            if (isset($doc['assignee']) && strcasecmp((string) $doc['assignee'], 'PPK') === 0) {
-                return true;
+            if (isset($doc['assignee'])) {
+                $assignee = strtolower((string) $doc['assignee']);
+                if (str_contains($assignee, 'ppk')) {
+                    return true;
+                }
+                if (str_contains($assignee, 'sm') || str_contains($assignee, 'panitia') || str_contains($assignee, 'teknis')) {
+                    return false;
+                }
             }
             $nama = $doc['nama'] ?? '';
         } else {

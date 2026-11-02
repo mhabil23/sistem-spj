@@ -479,7 +479,7 @@ class BendaharaSpjTest extends TestCase
         $this->assertSame('08222222222', $bendahara->no_wa);
     }
 
-    public function test_bendahara_cannot_change_email_without_current_password(): void
+    public function test_bendahara_can_change_email_without_current_password(): void
     {
         $bendahara = User::factory()->create([
             'role' => 'bendahara',
@@ -493,11 +493,12 @@ class BendaharaSpjTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password', 'email']);
-        $this->assertSame('lama@bps.go.id', $bendahara->fresh()->email);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertSame('baru@bps.go.id', $bendahara->fresh()->email);
     }
 
-    public function test_bendahara_cannot_change_email_with_wrong_current_password(): void
+    public function test_bendahara_cannot_change_password_without_current_password(): void
     {
         $bendahara = User::factory()->create([
             'role' => 'bendahara',
@@ -508,11 +509,13 @@ class BendaharaSpjTest extends TestCase
 
         $response = $this->actingAs($bendahara)->put(route('bendahara.profil.update'), [
             'name' => $bendahara->name,
-            'email' => 'baru@bps.go.id',
+            'email' => 'lama@bps.go.id',
+            'password' => 'newsecret123',
+            'password_confirmation' => 'newsecret123',
             'current_password' => 'wrongpassword',
         ]);
 
-        $response->assertSessionHasErrors(['current_password', 'email']);
+        $response->assertSessionHasErrors(['current_password']);
         $this->assertSame('lama@bps.go.id', $bendahara->fresh()->email);
     }
 

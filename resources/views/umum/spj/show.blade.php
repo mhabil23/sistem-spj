@@ -389,7 +389,7 @@ if ($isRevision) {
                     <div class="detail-info-item">
                         <span class="detail-info-label">Tanggal Pelaksanaan Kegiatan</span>
                         <div class="detail-info-value">
-                            {{ $spj->tanggal ? $spj->tanggal->format('d F Y') : '-' }}
+                            {{ $spj->periode_kegiatan }}
                         </div>
                     </div>
 

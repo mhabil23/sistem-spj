@@ -16,6 +16,7 @@ Route::get('/', function () {
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlowchartPdfController;
+use App\Http\Controllers\PasswordResetController;
 
 Route::get('/flowchart-sop/pdf', [FlowchartPdfController::class, 'preview'])->name('flowchart.preview');
 Route::get('/flowchart-sop/download', [FlowchartPdfController::class, 'download'])->name('flowchart.download');
@@ -25,6 +26,12 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/logout-idle', [AuthController::class, 'logoutIdle'])->name('logout.idle');
 Route::get('/ping-session', [AuthController::class, 'pingSession'])->name('session.ping');
+
+// Password Reset via Email
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotPassword'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetPassword'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

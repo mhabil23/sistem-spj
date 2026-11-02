@@ -10,7 +10,7 @@ class RoleProfilTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_teknis_cannot_change_email_without_current_password(): void
+    public function test_teknis_can_change_email_without_current_password(): void
     {
         $user = User::factory()->create([
             'role' => 'teknis',
@@ -25,8 +25,9 @@ class RoleProfilTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password', 'email']);
-        $this->assertSame('teknis.lama@bps.go.id', $user->fresh()->email);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertSame('teknis.baru@bps.go.id', $user->fresh()->email);
     }
 
     public function test_teknis_can_change_email_with_correct_current_password(): void
@@ -49,7 +50,7 @@ class RoleProfilTest extends TestCase
         $this->assertSame('teknis.baru@bps.go.id', $user->fresh()->email);
     }
 
-    public function test_umum_cannot_change_email_without_current_password(): void
+    public function test_umum_can_change_email_without_current_password(): void
     {
         $user = User::factory()->create([
             'role' => 'umum',
@@ -64,8 +65,9 @@ class RoleProfilTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password', 'email']);
-        $this->assertSame('umum.lama@bps.go.id', $user->fresh()->email);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertSame('umum.baru@bps.go.id', $user->fresh()->email);
     }
 
     public function test_umum_can_change_email_with_correct_current_password(): void
@@ -103,7 +105,7 @@ class RoleProfilTest extends TestCase
         $response->assertSee('Administrator Utama');
     }
 
-    public function test_admin_cannot_change_email_without_current_password(): void
+    public function test_admin_can_change_email_without_current_password(): void
     {
         $admin = User::factory()->create([
             'role' => 'admin',
@@ -118,8 +120,29 @@ class RoleProfilTest extends TestCase
             'current_password' => '',
         ]);
 
-        $response->assertSessionHasErrors(['current_password', 'email']);
-        $this->assertSame('admin.lama@bps.go.id', $admin->fresh()->email);
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+        $this->assertSame('admin.baru@bps.go.id', $admin->fresh()->email);
+    }
+
+    public function test_admin_cannot_change_password_without_current_password(): void
+    {
+        $admin = User::factory()->create([
+            'role' => 'admin',
+            'email' => 'admin@bps.go.id',
+            'password' => 'oldpassword123',
+            'status' => 'aktif',
+        ]);
+
+        $response = $this->actingAs($admin)->put(route('admin.profil.update'), [
+            'name' => 'Admin User',
+            'email' => 'admin@bps.go.id',
+            'password' => 'newpassword123',
+            'password_confirmation' => 'newpassword123',
+            'current_password' => '',
+        ]);
+
+        $response->assertSessionHasErrors(['current_password']);
     }
 
     public function test_admin_can_change_email_with_correct_current_password(): void

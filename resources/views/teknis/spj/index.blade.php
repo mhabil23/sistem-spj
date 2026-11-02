@@ -105,7 +105,7 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                         <td style="color: var(--dash-text-muted); white-space: nowrap;">
                             <div style="display: flex; align-items: center; gap: 6px;">
                                 <ion-icon name="calendar-outline" style="font-size: 14px;"></ion-icon>
-                                <span>{{ $spj->tanggal->format('d M Y') }}</span>
+                                <span>{{ $spj->periode_kegiatan_ringkas }}</span>
                             </div>
                         </td>
                         <td style="font-weight: 700; color: var(--dash-text-dark); white-space: nowrap;">
