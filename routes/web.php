@@ -6,13 +6,12 @@ use App\Http\Controllers\Admin\RiwayatController;
 use App\Http\Controllers\Admin\SpjController;
 use App\Http\Controllers\Admin\TemplateBerkasController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    $templates = TemplateBerkasController::getPublicTemplates();
-
-    return view('home', compact('templates'));
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/monitoring', [HomeController::class, 'index'])->name('monitoring');
+Route::get('/tracking', [HomeController::class, 'index'])->name('tracking');
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlowchartPdfController;

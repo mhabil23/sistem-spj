@@ -38,6 +38,7 @@
         <div class="navbar-right">
             <nav class="nav-links">
                 <a href="#beranda" class="nav-link active">Beranda</a>
+                <a href="#monitoring" class="nav-link">Monitoring SPJ</a>
                 <a href="#alur" class="nav-link">Alur</a>
                 <a href="#panduan" class="nav-link">Panduan</a>
                 <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">Template SPJ</a>
@@ -173,6 +174,10 @@
                     <span class="gradient-text">&amp; Transparan</span>
                 </h1>
 
+                <p class="hero-description">
+                    Sistem monitoring dan penyelesaian tagihan SPJ Badan Pusat Statistik yang terintegrasi, transparan, dan dapat dipantau langsung tanpa harus login.
+                </p>
+
             </div>
 
             <!-- Right Hero Visual (Glassmorphic Neumorphic Card with 3D Tilt & Stepper) -->
@@ -271,6 +276,331 @@
 
                 </div>
 
+            </div>
+
+        </section>
+
+        <!-- =========================================================
+             DASHBOARD MONITORING & STATUS SPJ PUBLIK (TANPA LOGIN)
+             Fitur READ & FILTER PENCARIAN (NAMA, TANGGAL, JUMLAH)
+        ========================================================= -->
+        <section class="monitoring-section" id="monitoring">
+
+            <!-- Section Title -->
+            <div class="monitoring-header">
+                <span class="monitoring-badge">
+                    <i class="bi bi-broadcast"></i>
+                    TRANSPARANSI &amp; AKUNTABILITAS PUBLIK
+                </span>
+                <h2 class="monitoring-title">
+                    Dashboard Monitoring &amp; Status SPJ
+                </h2>
+                <p class="monitoring-desc">
+                    Pantau posisi berkas pengajuan SPJ, proses verifikasi bertahap, dan status pencairan dana secara terbuka dan real-time tanpa harus login.
+                </p>
+            </div>
+
+            <!-- Summary Stats Counter Cards -->
+            <div class="monitoring-stats-grid">
+                <div class="m-stat-card" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
+                    <div class="m-stat-icon m-stat-blue">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+                    <div class="m-stat-info">
+                        <span class="m-stat-value" id="statValTotal">{{ $stats['total'] ?? count($spjs ?? []) }}</span>
+                        <span class="m-stat-label">Total SPJ Terdata</span>
+                    </div>
+                </div>
+
+                <div class="m-stat-card" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
+                    <div class="m-stat-icon m-stat-amber">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div class="m-stat-info">
+                        <span class="m-stat-value" id="statValDiajukan">{{ $stats['diajukan'] ?? 0 }}</span>
+                        <span class="m-stat-label">Menunggu Verifikasi</span>
+                    </div>
+                </div>
+
+                <div class="m-stat-card" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
+                    <div class="m-stat-icon m-stat-blue">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <div class="m-stat-info">
+                        <span class="m-stat-value" id="statValProses">{{ $stats['proses'] ?? 0 }}</span>
+                        <span class="m-stat-label">Sedang Diproses</span>
+                    </div>
+                </div>
+
+                <div class="m-stat-card" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
+                    <div class="m-stat-icon m-stat-green">
+                        <i class="bi bi-check2-circle"></i>
+                    </div>
+                    <div class="m-stat-info">
+                        <span class="m-stat-value" id="statValSelesai">{{ $stats['selesai'] ?? 0 }}</span>
+                        <span class="m-stat-label">Selesai &amp; Lunas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Toolbar Card (Nama, Tanggal, Jumlah, Urutan, Status) -->
+            <div class="monitoring-controls-card">
+                <!-- Multi-field Search Grid: Nama, Tanggal, Jumlah, Urutan -->
+                <div class="m-filter-fields-grid">
+                    
+                    <!-- 1. Filter Berdasarkan Nama (Kegiatan / Pengaju / Nomor SPJ) -->
+                    <div class="m-field-group">
+                        <label for="filterNama">
+                            <i class="bi bi-person-lines-fill"></i>
+                            <span>Cari Nama / Kegiatan</span>
+                        </label>
+                        <div class="m-field-input-box">
+                            <i class="bi bi-search field-icon"></i>
+                            <input type="text" id="filterNama" placeholder="Ketik nama kegiatan atau pengaju..." oninput="filterSpjList()" autocomplete="off">
+                            <button type="button" id="clearFilterNama" class="m-field-clear" onclick="clearField('filterNama')" aria-label="Hapus Nama">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Filter Berdasarkan Tanggal -->
+                    <div class="m-field-group">
+                        <label for="filterTanggal">
+                            <i class="bi bi-calendar3"></i>
+                            <span>Tanggal SPJ</span>
+                        </label>
+                        <div class="m-field-input-box no-icon">
+                            <input type="date" id="filterTanggal" onchange="filterSpjList()" title="Filter berdasarkan tanggal pengajuan / kegiatan">
+                            <button type="button" id="clearFilterTanggal" class="m-field-clear" onclick="clearField('filterTanggal')" aria-label="Hapus Tanggal">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Filter Berdasarkan Jumlah / Nominal -->
+                    <div class="m-field-group">
+                        <label for="filterJumlah">
+                            <i class="bi bi-cash-stack"></i>
+                            <span>Jumlah / Nominal</span>
+                        </label>
+                        <div class="m-field-input-box with-prefix">
+                            <span class="m-field-prefix">Rp</span>
+                            <input type="text" id="filterJumlah" placeholder="Contoh: 4.750.000" oninput="filterSpjList()" autocomplete="off">
+                            <button type="button" id="clearFilterJumlah" class="m-field-clear" onclick="clearField('filterJumlah')" aria-label="Hapus Jumlah">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Urutan Data (Terbaru, Terlama, Nominal) -->
+                    <div class="m-field-group">
+                        <label for="spjSortSelect">
+                            <i class="bi bi-arrow-down-up"></i>
+                            <span>Urutan Data</span>
+                        </label>
+                        <div class="m-field-input-box no-icon">
+                            <select id="spjSortSelect" onchange="filterSpjList()">
+                                <option value="terbaru" selected>Terbaru (Default)</option>
+                                <option value="terlama">Terlama</option>
+                                <option value="nilai_tertinggi">Jumlah Tertinggi</option>
+                                <option value="nilai_terendah">Jumlah Terendah</option>
+                                <option value="nama_asc">Nama Kegiatan (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 5. Tombol Reset Filter -->
+                    <div class="m-field-group">
+                        <label>&nbsp;</label>
+                        <button type="button" class="btn-reset-filters" onclick="resetSpjFilters()" title="Kembalikan semua filter ke awal">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            <span>Reset Filter</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Status Filter Chips -->
+                <div class="m-status-chips" id="spjStatusChips">
+                    <button type="button" class="m-chip active" data-status="semua" onclick="selectSpjStatus('semua')">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Semua Status</span>
+                        <span class="chip-count">{{ $stats['total'] ?? count($spjs ?? []) }}</span>
+                    </button>
+                    <button type="button" class="m-chip" data-status="diajukan" onclick="selectSpjStatus('diajukan')">
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+                        <span>Diajukan</span>
+                        <span class="chip-count">{{ $stats['diajukan'] ?? 0 }}</span>
+                    </button>
+                    <button type="button" class="m-chip" data-status="proses" onclick="selectSpjStatus('proses')">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <span>Dalam Proses</span>
+                        <span class="chip-count">{{ $stats['proses'] ?? 0 }}</span>
+                    </button>
+                    <button type="button" class="m-chip" data-status="selesai" onclick="selectSpjStatus('selesai')">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Selesai &amp; Lunas</span>
+                        <span class="chip-count">{{ $stats['selesai'] ?? 0 }}</span>
+                    </button>
+                    <button type="button" class="m-chip" data-status="revisi" onclick="selectSpjStatus('revisi')">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>Perlu Revisi</span>
+                        <span class="chip-count">{{ $stats['revisi'] ?? 0 }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Card: Hasil Pembacaan Semua Data SPJ -->
+            <div class="monitoring-table-card">
+                <div class="m-table-header-bar">
+                    <div class="m-table-header-title">
+                        <i class="bi bi-table"></i>
+                        <span>Hasil Seluruh Dokumen SPJ Terdaftar</span>
+                    </div>
+                    <div class="m-table-count-label">
+                        Menampilkan <strong id="mFilteredCount">{{ count($spjs ?? []) }}</strong> dari {{ count($spjs ?? []) }} SPJ
+                    </div>
+                </div>
+
+                <div class="m-table-wrapper">
+                    <table class="m-table" id="spjDataTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 140px;">Tanggal Masuk</th>
+                                <th style="width: 160px;">Nomor SPJ</th>
+                                <th>Nama Kegiatan &amp; Pengaju</th>
+                                <th style="width: 160px;">Jumlah / Nilai</th>
+                                <th style="width: 160px;">Posisi Berkas</th>
+                                <th style="width: 220px;">Status Terkini</th>
+                                <th style="width: 120px; text-align: center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spjTableBody">
+                            @forelse(($spjs ?? []) as $spj)
+                            @php
+                                $badge = $spj->public_badge;
+                                $stage = $spj->stage_index;
+                                $tgl = $spj->diajukan_at ? $spj->diajukan_at : ($spj->tanggal ? $spj->tanggal : $spj->created_at);
+                                $tglYmd = $tgl ? $tgl->format('Y-m-d') : '';
+                                $statusGroup = $badge['group'] ?? 'proses';
+                                $revisiNote = $spj->catatan_revisi_terbaru;
+                            @endphp
+                            <tr class="spj-row"
+                                data-id="{{ $spj->id }}"
+                                data-nomor="{{ strtolower($spj->nomor_spj ?? '') }}"
+                                data-kegiatan="{{ strtolower($spj->kegiatan ?? '') }}"
+                                data-pengaju="{{ strtolower($spj->user->name ?? 'staf teknis') }}"
+                                data-tanggal-ymd="{{ $tglYmd }}"
+                                data-status="{{ strtolower($spj->status ?? '') }}"
+                                data-status-group="{{ $statusGroup }}"
+                                data-nilai="{{ (float) $spj->nilai }}"
+                                data-nilai-raw="{{ (int) round($spj->nilai) }}"
+                                data-created="{{ $tgl ? $tgl->timestamp : 0 }}"
+                                data-stage="{{ $stage }}"
+                                data-badge-label="{{ $badge['label'] }}"
+                                data-badge-class="{{ $badge['class'] }}"
+                                data-badge-icon="{{ $badge['icon'] }}"
+                                data-tanggal-str="{{ $tgl ? $tgl->format('d M Y') : '—' }}"
+                                data-nilai-str="Rp {{ number_format($spj->nilai, 0, ',', '.') }}"
+                                data-diajukan-at="{{ $spj->diajukan_at ? $spj->diajukan_at->format('d M Y H:i') : ($spj->created_at ? $spj->created_at->format('d M Y H:i') : '—') }}"
+                                data-fisik-at="{{ $spj->berkas_fisik_diterima_at ? $spj->berkas_fisik_diterima_at->format('d M Y H:i') : '' }}"
+                                data-umum-at="{{ $spj->disetujui_umum_at ? $spj->disetujui_umum_at->format('d M Y H:i') : '' }}"
+                                data-ppk-at="{{ $spj->disetujui_ppk_at ? $spj->disetujui_ppk_at->format('d M Y H:i') : '' }}"
+                                data-ppspm-at="{{ $spj->disetujui_ppspm_at ? $spj->disetujui_ppspm_at->format('d M Y H:i') : '' }}"
+                                data-spm="{{ $spj->nomor_spm ?? '' }}"
+                                data-selesai-at="{{ $spj->diselesaikan_at ? $spj->diselesaikan_at->format('d M Y H:i') : '' }}"
+                                data-revisi-note="{{ $revisiNote ?? '' }}">
+                                
+                                <td>
+                                    <div class="m-date-text">{{ $tgl ? $tgl->format('d M Y') : '—' }}</div>
+                                    <div class="m-date-sub">{{ $tgl ? $tgl->format('H:i') . ' WITA' : '' }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="m-spj-pill" title="Nomor Registrasi SPJ Resmi">
+                                        <span>{{ $spj->nomor_spj ?? 'SPJ-'.$spj->id }}</span>
+                                        <button type="button" class="m-btn-copy" onclick="copySpjNumber(event, '{{ $spj->nomor_spj ?? $spj->id }}')" title="Salin Nomor SPJ">
+                                            <i class="bi bi-copy"></i>
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <td class="m-kegiatan-cell">
+                                    <div class="m-kegiatan-title" title="{{ $spj->kegiatan }}">{{ $spj->kegiatan }}</div>
+                                    <div class="m-pengaju-sub">
+                                        <i class="bi bi-person-circle"></i>
+                                        <span>{{ $spj->user->name ?? 'Staf Teknis' }}</span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="m-nilai-text">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</div>
+                                </td>
+
+                                <td>
+                                    <div class="m-stage-progress">
+                                        <div class="m-stage-bars">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i < $stage)
+                                                    <span class="m-stage-bar-item done"></span>
+                                                @elseif($i === $stage)
+                                                    <span class="m-stage-bar-item {{ $stage === 5 && $spj->status === 'selesai' ? 'selesai' : 'active' }}"></span>
+                                                @else
+                                                    <span class="m-stage-bar-item"></span>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <span class="m-stage-text">
+                                            @if($stage === 1) Tahap 1: Teknis
+                                            @elseif($stage === 2) Tahap 2: Subbag Umum
+                                            @elseif($stage === 3) Tahap 3: PPK
+                                            @elseif($stage === 4) Tahap 4: PPSPM
+                                            @elseif($stage === 5)
+                                                {{ $spj->status === 'selesai' ? 'Tahap 5: Lunas' : 'Tahap 5: Bendahara' }}
+                                            @endif
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="m-status-badge {{ $badge['class'] }}">
+                                        <i class="{{ $badge['icon'] }}"></i>
+                                        <span>{{ $badge['label'] }}</span>
+                                    </span>
+                                </td>
+
+                                <td style="text-align: center;">
+                                    <button type="button" class="btn-action-track" onclick="openTrackModal({{ $spj->id }})" title="Lihat alur dan rincian posisi SPJ">
+                                        <i class="bi bi-search"></i>
+                                        <span>Lacak</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr id="spjInitialEmpty">
+                                <td colspan="7">
+                                    <div class="m-empty-state">
+                                        <i class="bi bi-inbox-fill"></i>
+                                        <h4>Belum Ada Pengajuan SPJ Publik</h4>
+                                        <p>Saat ini belum ada dokumen pengajuan SPJ aktif yang tercatat di dalam sistem.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+
+                    <!-- No Results Search State -->
+                    <div class="m-empty-state" id="spjNoFilterResults" style="display: none;">
+                        <i class="bi bi-search"></i>
+                        <h4>Tidak Ada SPJ yang Cocok</h4>
+                        <p>Tidak ditemukan data SPJ yang sesuai dengan kata kunci nama, tanggal, jumlah, atau filter status yang dipilih.</p>
+                        <button type="button" class="btn-reset-filters" onclick="resetSpjFilters()">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                            <span>Tampilkan Semua SPJ</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
         </section>
@@ -485,6 +815,7 @@
             const navLinks = document.querySelectorAll('.nav-links .nav-link');
             const sections = [
                 { id: 'beranda', el: document.getElementById('beranda') },
+                { id: 'monitoring', el: document.getElementById('monitoring') },
                 { id: 'alur', el: document.getElementById('alur') },
                 { id: 'panduan', el: document.getElementById('panduan') }
             ];
@@ -848,6 +1179,275 @@
             if (searchBox) searchBox.value = '';
             selectTemplateCategory('all');
         }
+
+        /* =========================================================
+           JAVASCRIPT MONITORING & FILTER PENCARIAN SPJ PUBLIK
+           (NAMA, TANGGAL, JUMLAH, STATUS, URUTAN)
+        ========================================================= */
+        let currentStatusFilter = 'semua';
+
+        function selectSpjStatus(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('#spjStatusChips .m-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.getAttribute('data-status') === status);
+            });
+            filterSpjList();
+        }
+
+        function clearField(fieldId) {
+            const el = document.getElementById(fieldId);
+            if (el) {
+                el.value = '';
+                el.focus();
+            }
+            filterSpjList();
+        }
+
+        function resetSpjFilters() {
+            const elNama = document.getElementById('filterNama');
+            if (elNama) elNama.value = '';
+            const elTgl = document.getElementById('filterTanggal');
+            if (elTgl) elTgl.value = '';
+            const elJml = document.getElementById('filterJumlah');
+            if (elJml) elJml.value = '';
+            const elSort = document.getElementById('spjSortSelect');
+            if (elSort) elSort.value = 'terbaru';
+
+            selectSpjStatus('semua');
+        }
+
+        function filterSpjList() {
+            const namaQuery = (document.getElementById('filterNama')?.value || '').toLowerCase().trim();
+            const clearNamaBtn = document.getElementById('clearFilterNama');
+            if (clearNamaBtn) clearNamaBtn.style.display = namaQuery ? 'inline-block' : 'none';
+
+            const tglQuery = (document.getElementById('filterTanggal')?.value || '').trim();
+            const clearTglBtn = document.getElementById('clearFilterTanggal');
+            if (clearTglBtn) clearTglBtn.style.display = tglQuery ? 'inline-block' : 'none';
+
+            const rawJmlInput = (document.getElementById('filterJumlah')?.value || '').trim();
+            const jmlQuery = rawJmlInput.replace(/[^\d]/g, '');
+            const clearJmlBtn = document.getElementById('clearFilterJumlah');
+            if (clearJmlBtn) clearJmlBtn.style.display = rawJmlInput ? 'inline-block' : 'none';
+
+            const sortVal = document.getElementById('spjSortSelect')?.value || 'terbaru';
+            const tbody = document.getElementById('spjTableBody');
+            const rows = Array.from(document.querySelectorAll('#spjTableBody .spj-row'));
+
+            if (!tbody || rows.length === 0) return;
+
+            // Sort rows
+            rows.sort((a, b) => {
+                if (sortVal === 'terbaru') {
+                    return (parseInt(b.getAttribute('data-created') || 0, 10)) - (parseInt(a.getAttribute('data-created') || 0, 10));
+                }
+                if (sortVal === 'terlama') {
+                    return (parseInt(a.getAttribute('data-created') || 0, 10)) - (parseInt(b.getAttribute('data-created') || 0, 10));
+                }
+                if (sortVal === 'nilai_tertinggi') {
+                    return (parseFloat(b.getAttribute('data-nilai') || 0)) - (parseFloat(a.getAttribute('data-nilai') || 0));
+                }
+                if (sortVal === 'nilai_terendah') {
+                    return (parseFloat(a.getAttribute('data-nilai') || 0)) - (parseFloat(b.getAttribute('data-nilai') || 0));
+                }
+                if (sortVal === 'nama_asc') {
+                    return (a.getAttribute('data-kegiatan') || '').localeCompare(b.getAttribute('data-kegiatan') || '');
+                }
+                return 0;
+            });
+
+            let visibleCount = 0;
+
+            // Re-append and check filter match
+            rows.forEach(row => {
+                tbody.appendChild(row);
+
+                const rowNomor = row.getAttribute('data-nomor') || '';
+                const rowKegiatan = row.getAttribute('data-kegiatan') || '';
+                const rowPengaju = row.getAttribute('data-pengaju') || '';
+                const rowTglYmd = row.getAttribute('data-tanggal-ymd') || '';
+                const rowNilaiRaw = (row.getAttribute('data-nilai-raw') || '').toString();
+                const rowNilaiStr = (row.getAttribute('data-nilai-str') || '').toLowerCase();
+                const rowStatus = row.getAttribute('data-status') || '';
+                const rowGroup = row.getAttribute('data-status-group') || '';
+
+                // 1. Filter Nama (kegiatan, nomor, pengaju)
+                const matchNama = !namaQuery || rowNomor.includes(namaQuery) || rowKegiatan.includes(namaQuery) || rowPengaju.includes(namaQuery);
+
+                // 2. Filter Tanggal
+                const matchTanggal = !tglQuery || rowTglYmd === tglQuery;
+
+                // 3. Filter Jumlah (nominal angka)
+                const matchJumlah = !jmlQuery || rowNilaiRaw.includes(jmlQuery) || rowNilaiStr.replace(/[^\d]/g, '').includes(jmlQuery);
+
+                // 4. Filter Status
+                let matchStatus = false;
+                if (currentStatusFilter === 'semua') {
+                    matchStatus = true;
+                } else if (currentStatusFilter === 'diajukan') {
+                    matchStatus = (rowStatus === 'diajukan' || rowGroup === 'diajukan');
+                } else if (currentStatusFilter === 'proses') {
+                    matchStatus = (rowGroup === 'proses');
+                } else if (currentStatusFilter === 'selesai') {
+                    matchStatus = (rowStatus === 'selesai' || rowGroup === 'selesai');
+                } else if (currentStatusFilter === 'revisi') {
+                    matchStatus = (rowGroup === 'revisi' || rowStatus.startsWith('revisi_') || rowStatus === 'dikembalikan');
+                }
+
+                if (matchNama && matchTanggal && matchJumlah && matchStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Update counter badge
+            const countLabel = document.getElementById('mFilteredCount');
+            if (countLabel) countLabel.textContent = visibleCount.toString();
+
+            // Handle no results state
+            const noResults = document.getElementById('spjNoFilterResults');
+            if (noResults) {
+                noResults.style.display = (visibleCount === 0 && rows.length > 0) ? 'block' : 'none';
+            }
+        }
+
+        /* ---------------------------------------------
+           MODAL DETAIL & TRACKING ALUR SPJ
+        --------------------------------------------- */
+        function openTrackModal(spjId) {
+            const row = document.querySelector(`.spj-row[data-id="${spjId}"]`);
+            if (!row) return;
+
+            const modal = document.getElementById('trackModalBackdrop');
+            if (!modal) return;
+
+            const nomor = row.querySelector('.m-spj-pill span')?.textContent || row.getAttribute('data-nomor');
+            const kegiatan = row.querySelector('.m-kegiatan-title')?.textContent || row.getAttribute('data-kegiatan');
+            const pengaju = row.getAttribute('data-pengaju') || '—';
+            const tanggalStr = row.getAttribute('data-tanggal-str') || '—';
+            const nilaiStr = row.getAttribute('data-nilai-str') || '—';
+            const badgeLabel = row.getAttribute('data-badge-label') || '';
+            const badgeClass = row.getAttribute('data-badge-class') || '';
+            const badgeIcon = row.getAttribute('data-badge-icon') || '';
+            const stage = parseInt(row.getAttribute('data-stage') || '1', 10);
+            const status = row.getAttribute('data-status') || '';
+            const revisiNote = row.getAttribute('data-revisi-note') || '';
+
+            // Header & basic info
+            document.getElementById('trackModalNomor').textContent = nomor;
+            document.getElementById('trackModalKegiatan').textContent = kegiatan;
+            document.getElementById('trackModalTanggal').textContent = tanggalStr;
+            document.getElementById('trackModalPengaju').textContent = pengaju.toUpperCase();
+            document.getElementById('trackModalNilai').textContent = nilaiStr;
+
+            const modalBadge = document.getElementById('trackModalBadge');
+            if (modalBadge) {
+                modalBadge.className = `m-status-badge ${badgeClass}`;
+                modalBadge.innerHTML = `<i class="${badgeIcon}"></i> <span>${badgeLabel}</span>`;
+            }
+
+            // Timeline timestamps
+            const diajukanAt = row.getAttribute('data-diajukan-at');
+            const fisikAt = row.getAttribute('data-fisik-at');
+            const umumAt = row.getAttribute('data-umum-at');
+            const ppkAt = row.getAttribute('data-ppk-at');
+            const ppspmAt = row.getAttribute('data-ppspm-at');
+            const spm = row.getAttribute('data-spm');
+            const selesaiAt = row.getAttribute('data-selesai-at');
+
+            document.getElementById('trackTime1').textContent = diajukanAt || 'Selesai';
+            document.getElementById('trackTime2').textContent = umumAt ? 'Disetujui: ' + umumAt : (fisikAt ? 'Fisik Masuk: ' + fisikAt : (stage > 2 ? 'Selesai' : (stage === 2 ? 'Sedang Diperiksa' : 'Menunggu Berkas')));
+            document.getElementById('trackTime3').textContent = ppkAt ? 'Disetujui: ' + ppkAt : (stage > 3 ? 'Selesai' : (stage === 3 ? 'Sedang Diproses' : 'Menunggu'));
+            document.getElementById('trackTime4').textContent = ppspmAt ? 'SPM: ' + (spm || 'Terbit') + ' (' + ppspmAt + ')' : (stage > 4 ? 'Selesai' : (stage === 4 ? 'Sedang Diproses' : 'Menunggu'));
+            document.getElementById('trackTime5').textContent = selesaiAt ? 'Lunas: ' + selesaiAt : (status === 'selesai' ? 'Lunas' : (stage === 5 ? 'Proses Pencairan' : 'Menunggu'));
+
+            // Set node states (done, active, revisi)
+            for (let i = 1; i <= 5; i++) {
+                const node = document.getElementById('trackNode' + i);
+                const icon = document.getElementById('trackIcon' + i);
+                if (!node || !icon) continue;
+
+                node.classList.remove('done', 'active', 'revisi');
+
+                if (i < stage) {
+                    node.classList.add('done');
+                    icon.innerHTML = '<i class="bi bi-check-lg"></i>';
+                } else if (i === stage) {
+                    if (status.startsWith('revisi_') || status === 'dikembalikan') {
+                        node.classList.add('revisi');
+                        icon.innerHTML = '<i class="bi bi-exclamation-lg"></i>';
+                    } else if (status === 'selesai') {
+                        node.classList.add('done');
+                        icon.innerHTML = '<i class="bi bi-check-lg"></i>';
+                    } else {
+                        node.classList.add('active');
+                        icon.textContent = i.toString();
+                    }
+                } else {
+                    icon.textContent = i.toString();
+                }
+            }
+
+            // Catatan revisi alert box
+            const alertRevisi = document.getElementById('trackAlertRevisi');
+            const revisiText = document.getElementById('trackRevisiText');
+            if (alertRevisi && revisiText) {
+                if (revisiNote && (status.startsWith('revisi_') || status === 'dikembalikan')) {
+                    revisiText.textContent = revisiNote;
+                    alertRevisi.style.display = 'flex';
+                } else {
+                    alertRevisi.style.display = 'none';
+                }
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeTrackModal() {
+            const modal = document.getElementById('trackModalBackdrop');
+            if (!modal) return;
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function closeTrackModalOnBackdrop(event) {
+            if (event.target === document.getElementById('trackModalBackdrop')) {
+                closeTrackModal();
+            }
+        }
+
+        function copySpjNumber(event, nomor) {
+            if (event) event.stopPropagation();
+            if (!nomor) return;
+
+            navigator.clipboard.writeText(nomor).then(() => {
+                showToastFeedback(`Nomor SPJ ${nomor} berhasil disalin!`);
+            }).catch(() => {
+                showToastFeedback(`Nomor SPJ: ${nomor}`);
+            });
+        }
+
+        function showToastFeedback(msg) {
+            const toast = document.getElementById('spjCopyToast');
+            const toastText = document.getElementById('spjCopyToastText');
+            if (!toast) return;
+
+            if (toastText) toastText.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeTemplateModal();
+                closeTrackModal();
+            }
+        });
     </script>
 
     <!-- =========================================================
@@ -992,6 +1592,154 @@
             </div>
 
         </div>
+    </div>
+
+    <!-- =========================================================
+         MODAL DETAIL & PELACAKAN ALUR SPJ (PUBLIK - TANPA LOGIN)
+    ========================================================= -->
+    <div class="track-modal-backdrop" id="trackModalBackdrop" onclick="closeTrackModalOnBackdrop(event)" aria-hidden="true">
+        <div class="track-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="trackModalKegiatan">
+
+            <!-- Modal Header -->
+            <div class="track-modal-header">
+                <div class="track-modal-header-info">
+                    <div class="track-modal-top-tags">
+                        <span class="track-modal-id-pill" id="trackModalNomor">SPJ-000</span>
+                        <span class="m-status-badge" id="trackModalBadge">
+                            <i class="bi bi-clock-history"></i>
+                            <span id="trackModalBadgeText">Status</span>
+                        </span>
+                    </div>
+                    <h3 class="track-modal-title" id="trackModalKegiatan">Nama Kegiatan SPJ</h3>
+                </div>
+
+                <button type="button" class="track-modal-close" onclick="closeTrackModal()" aria-label="Tutup Modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="track-modal-body">
+                <!-- Info Grid -->
+                <div class="track-info-grid">
+                    <div class="track-info-item">
+                        <small>Tanggal Pengajuan</small>
+                        <strong id="trackModalTanggal">—</strong>
+                    </div>
+                    <div class="track-info-item">
+                        <small>Pengaju (Teknis)</small>
+                        <strong id="trackModalPengaju">—</strong>
+                    </div>
+                    <div class="track-info-item">
+                        <small>Nilai / Nominal Tagihan</small>
+                        <strong id="trackModalNilai" style="color: #059669;">Rp 0</strong>
+                    </div>
+                </div>
+
+                <!-- 5-Stage Visual Stepper Timeline -->
+                <h4 class="track-stepper-title">
+                    <i class="bi bi-diagram-3-fill" style="color: #0284c7;"></i>
+                    <span>Riwayat Alur Proses SOP (5 Tahap)</span>
+                </h4>
+
+                <div class="track-timeline" id="trackTimeline">
+                    <!-- Node 1: Teknis -->
+                    <div class="track-timeline-node" id="trackNode1">
+                        <div class="track-node-icon" id="trackIcon1">1</div>
+                        <div class="track-node-content">
+                            <div class="track-node-header">
+                                <span class="track-node-role">Tahap 1: Pengajuan Tim Teknis</span>
+                                <span class="track-node-time" id="trackTime1">—</span>
+                            </div>
+                            <div class="track-node-desc">
+                                Berkas SPJ disusun dan diajukan ke sistem serta diserahkan secara fisik ke Subbagian Umum.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node 2: Subbagian Umum -->
+                    <div class="track-timeline-node" id="trackNode2">
+                        <div class="track-node-icon" id="trackIcon2">2</div>
+                        <div class="track-node-content">
+                            <div class="track-node-header">
+                                <span class="track-node-role">Tahap 2: Verifikasi Subbagian Umum</span>
+                                <span class="track-node-time" id="trackTime2">—</span>
+                            </div>
+                            <div class="track-node-desc" id="trackDesc2">
+                                Pemeriksaan kelengkapan administrasi berkas fisik, kuitansi riil, dan lembar checklist SPJ.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node 3: PPK -->
+                    <div class="track-timeline-node" id="trackNode3">
+                        <div class="track-node-icon" id="trackIcon3">3</div>
+                        <div class="track-node-content">
+                            <div class="track-node-header">
+                                <span class="track-node-role">Tahap 3: Persetujuan Komitmen (PPK)</span>
+                                <span class="track-node-time" id="trackTime3">—</span>
+                            </div>
+                            <div class="track-node-desc" id="trackDesc3">
+                                Pengujian kesesuaian anggaran DIPA/POK, substansi hasil kegiatan, dan persetujuan bayar.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node 4: PPSPM -->
+                    <div class="track-timeline-node" id="trackNode4">
+                        <div class="track-node-icon" id="trackIcon4">4</div>
+                        <div class="track-node-content">
+                            <div class="track-node-header">
+                                <span class="track-node-role">Tahap 4: Pengujian &amp; Penerbitan SPM (PPSPM)</span>
+                                <span class="track-node-time" id="trackTime4">—</span>
+                            </div>
+                            <div class="track-node-desc" id="trackDesc4">
+                                Pengujian dokumen tagihan serta penerbitan Surat Perintah Membayar (SPM) resmi.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Node 5: Bendahara -->
+                    <div class="track-timeline-node" id="trackNode5">
+                        <div class="track-node-icon" id="trackIcon5">5</div>
+                        <div class="track-node-content">
+                            <div class="track-node-header">
+                                <span class="track-node-role">Tahap 5: Pencairan &amp; Pembayaran (Bendahara)</span>
+                                <span class="track-node-time" id="trackTime5">—</span>
+                            </div>
+                            <div class="track-node-desc" id="trackDesc5">
+                                Eksekusi pembayaran via CMS / QLOLA BRI, bukti setor pajak NTPN, dan arsip lunas.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Catatan Revisi Alert Box (jika ada catatan) -->
+                <div class="track-alert-revisi" id="trackAlertRevisi" style="display: none;">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <div>
+                        <strong>Catatan Perbaikan / Revisi Berkas:</strong>
+                        <p id="trackRevisiText">—</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="track-modal-footer">
+                <div class="track-modal-footer-note">
+                    <i class="bi bi-shield-check" style="color: #0284c7;"></i>
+                    <span>Data dipublikasikan secara transparan sesuai SOP BPS Kolaka Utara.</span>
+                </div>
+                <button type="button" class="btn-close-track-modal" onclick="closeTrackModal()">Tutup</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Copy Feedback -->
+    <div class="spj-copy-toast" id="spjCopyToast">
+        <i class="bi bi-check-circle-fill" style="color: #10b981;"></i>
+        <span id="spjCopyToastText">Nomor SPJ berhasil disalin!</span>
     </div>
 </body>
 

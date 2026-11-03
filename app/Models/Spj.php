@@ -362,6 +362,139 @@ class Spj extends Model
     }
 
     /**
+     * Data badge dan status publik yang informatif untuk dashboard umum.
+     *
+     * @return array{class: string, label: string, icon: string, group: string}
+     */
+    public function getPublicBadgeAttribute(): array
+    {
+        $status = (string) $this->status;
+
+        if ($status === 'selesai') {
+            return [
+                'class' => 'badge-selesai',
+                'label' => 'Selesai & Lunas',
+                'icon' => 'bi bi-check-circle-fill',
+                'group' => 'selesai',
+            ];
+        }
+
+        if (str_starts_with($status, 'revisi_') || $status === 'dikembalikan') {
+            $asal = match ($status) {
+                'revisi_umum' => 'Subbag Umum',
+                'revisi_ppk' => 'PPK',
+                'revisi_ppspm' => 'PPSPM',
+                'revisi_bendahara' => 'Bendahara',
+                default => 'Verifikator',
+            };
+
+            return [
+                'class' => 'badge-revisi',
+                'label' => 'Perlu Revisi ('.$asal.')',
+                'icon' => 'bi bi-exclamation-triangle-fill',
+                'group' => 'revisi',
+            ];
+        }
+
+        if ($status === 'disetujui_ppspm' || $status === 'menunggu_otp_kpa' || $status === 'proses_ls') {
+            $label = match ($status) {
+                'menunggu_otp_kpa' => 'Menunggu OTP KPA (Bendahara)',
+                'proses_ls' => 'Kliring Bank LS (Bendahara)',
+                default => 'SPM Terbit (Proses Bendahara)',
+            };
+
+            return [
+                'class' => 'badge-bendahara',
+                'label' => $label,
+                'icon' => 'bi bi-award-fill',
+                'group' => 'proses',
+            ];
+        }
+
+        if ($status === 'disetujui_ppk') {
+            return [
+                'class' => 'badge-ppk',
+                'label' => 'Disetujui PPK (Proses PPSPM)',
+                'icon' => 'bi bi-patch-check-fill',
+                'group' => 'proses',
+            ];
+        }
+
+        if ($status === 'disetujui_umum') {
+            return [
+                'class' => 'badge-umum',
+                'label' => 'Verifikasi Umum Selesai (Proses PPK)',
+                'icon' => 'bi bi-clipboard2-check-fill',
+                'group' => 'proses',
+            ];
+        }
+
+        // Status diajukan
+        if ($this->pemeriksaan_dimulai_at) {
+            return [
+                'class' => 'badge-proses',
+                'label' => 'Sedang Diperiksa Subbag Umum',
+                'icon' => 'bi bi-search',
+                'group' => 'proses',
+            ];
+        }
+
+        if ($this->berkas_fisik_diterima_at) {
+            return [
+                'class' => 'badge-diajukan',
+                'label' => 'Fisik Diterima (Antrean Umum)',
+                'icon' => 'bi bi-inbox-fill',
+                'group' => 'diajukan',
+            ];
+        }
+
+        return [
+            'class' => 'badge-diajukan',
+            'label' => 'Diajukan (Menunggu Fisik di Umum)',
+            'icon' => 'bi bi-file-earmark-arrow-up-fill',
+            'group' => 'diajukan',
+        ];
+    }
+
+    /**
+     * Hitung nomor tahap saat ini (1 sampai 5) untuk progress stepper.
+     */
+    public function getStageIndexAttribute(): int
+    {
+        $status = (string) $this->status;
+
+        if ($status === 'selesai') {
+            return 5;
+        }
+
+        if (in_array($status, ['menunggu_otp_kpa', 'proses_ls', 'revisi_bendahara', 'disetujui_ppspm'])) {
+            return 5;
+        }
+
+        if (in_array($status, ['disetujui_ppk', 'revisi_ppspm'])) {
+            return 4;
+        }
+
+        if (in_array($status, ['disetujui_umum', 'revisi_ppk'])) {
+            return 3;
+        }
+
+        if ($status === 'revisi_umum' || $this->pemeriksaan_dimulai_at || $this->berkas_fisik_diterima_at) {
+            return 2;
+        }
+
+        return 1;
+    }
+
+    /**
+     * Catatan revisi terbaru jika ada.
+     */
+    public function getCatatanRevisiTerbaruAttribute(): ?string
+    {
+        return $this->catatan_revisi ?: ($this->catatan_ppk ?: ($this->catatan_ppspm ?: null));
+    }
+
+    /**
      * Keterangan detail untuk alur pembayaran LS.
      */
     public function getKeteranganLsAttribute(): string
