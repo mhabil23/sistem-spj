@@ -228,9 +228,6 @@ class SpjController extends Controller
 
     public function destroy($id)
     {
-        $spj = Spj::findOrFail($id);
-        $spj->delete();
-
-        return redirect()->route('umum.spj.index')->with('success', 'SPJ berhasil dihapus.');
+        abort(403, 'Hanya Administrator yang memiliki hak akses untuk menghapus data SPJ.');
     }
 }

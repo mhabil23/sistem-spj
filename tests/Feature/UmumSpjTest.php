@@ -179,4 +179,43 @@ class UmumSpjTest extends TestCase
         $response->assertStatus(200);
         $this->assertEquals('application/pdf', $response->headers->get('content-type'));
     }
+
+    public function test_user_umum_cannot_delete_spj(): void
+    {
+        $spj = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Kegiatan SPJ Umum Non Delete',
+            'tanggal' => now(),
+            'nilai' => 2500000,
+            'status' => 'disetujui_umum',
+            'diajukan_at' => now(),
+        ]);
+
+        $responseRiwayat = $this->actingAs($this->userUmum)->delete(route('umum.riwayat.destroy', $spj->id));
+        $responseRiwayat->assertStatus(403);
+
+        $responseSpj = $this->actingAs($this->userUmum)->delete(route('umum.spj.destroy', $spj->id));
+        $responseSpj->assertStatus(403);
+
+        $this->assertDatabaseHas('spjs', ['id' => $spj->id]);
+    }
+
+    public function test_user_umum_riwayat_does_not_display_delete_button(): void
+    {
+        $spj = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Kegiatan Riwayat Tanpa Tombol Hapus',
+            'tanggal' => now(),
+            'nilai' => 3100000,
+            'status' => 'disetujui_umum',
+            'diajukan_at' => now(),
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->get(route('umum.riwayat.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Kegiatan Riwayat Tanpa Tombol Hapus');
+        $response->assertDontSee('btn-table-delete');
+        $response->assertDontSee('Hapus Permanen');
+    }
 }

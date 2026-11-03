@@ -650,4 +650,44 @@ class TeknisSpjTest extends TestCase
         $this->assertFalse($dokumenList[1]['disiapkan']);
         $this->assertEquals('Bendahara', $dokumenList[1]['assignee']);
     }
+
+    public function test_teknis_cannot_delete_spj(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-TEKNIS-DEL',
+            'kegiatan' => 'Kegiatan yang tidak boleh dihapus teknis',
+            'tanggal' => now(),
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($teknis)->delete(route('teknis.spj.destroy', $spj->id));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('spjs', ['id' => $spj->id]);
+    }
+
+    public function test_teknis_index_does_not_display_delete_button(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-TEKNIS-VIEW',
+            'kegiatan' => 'Kegiatan Uji Tombol Hapus',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Kegiatan Uji Tombol Hapus');
+        $response->assertDontSee('action-btn-delete');
+        $response->assertDontSee('Hapus SPJ');
+    }
 }

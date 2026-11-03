@@ -298,18 +298,6 @@ $title = 'Riwayat & Arsip Keputusan SPJ';
                                     <ion-icon name="eye-outline"></ion-icon>
                                     <span>Detail</span>
                                 </a>
-
-                                @if(!in_array($spj->status, ['disetujui_ppspm', 'menunggu_otp_kpa']))
-                                <form action="{{ route('bendahara.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat SPJ ini?');" style="margin: 0; display: inline-flex;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bnd-btn-delete" title="Hapus Dari Riwayat">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-                                </form>
-                                @else
-                                <span class="bnd-btn-delete-placeholder" aria-hidden="true"></span>
-                                @endif
                             </div>
                         </td>
                     </tr>

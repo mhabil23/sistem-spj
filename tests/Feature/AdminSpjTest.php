@@ -162,4 +162,45 @@ class AdminSpjTest extends TestCase
         $responseDashboard->assertViewHas('menungguProses', 3);
         $responseDashboard->assertViewHas('pengujianPpspm', 2);
     }
+
+    public function test_admin_can_delete_spj(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-ADMIN-DEL-001',
+            'kegiatan' => 'Kegiatan yang Boleh Dihapus Admin',
+            'tanggal' => now(),
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy', $spj->id));
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success', 'Data SPJ berhasil dihapus.');
+        $this->assertDatabaseMissing('spjs', ['id' => $spj->id]);
+    }
+
+    public function test_admin_spj_index_displays_delete_button(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-ADMIN-BTN-001',
+            'kegiatan' => 'Kegiatan Tampil Tombol Hapus Admin',
+            'tanggal' => now(),
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.spj.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee(route('admin.spj.destroy', $spj->id));
+    }
 }

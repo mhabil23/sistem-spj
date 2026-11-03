@@ -34,15 +34,6 @@ class RiwayatController extends Controller
 
     public function destroy($id)
     {
-        $spj = Spj::findOrFail($id);
-
-        // Pastikan hanya bisa menghapus jika status bukan diajukan (sudah ada di riwayat)
-        if ($spj->status === 'diajukan') {
-            return back()->with('error', 'SPJ yang masih dalam antrean tidak dapat dihapus.');
-        }
-
-        $spj->delete();
-
-        return back()->with('success', 'Riwayat SPJ berhasil dihapus selamanya.');
+        abort(403, 'Hanya Administrator yang memiliki hak akses untuk menghapus data SPJ.');
     }
 }

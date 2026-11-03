@@ -144,14 +144,6 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                                     <span>Edit</span>
                                 </a>
                                 @endif
-
-                                <form action="{{ route('teknis.spj.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen SPJ ini?');" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn action-btn-delete" title="Hapus SPJ">
-                                        <ion-icon name="trash-outline" style="font-size: 15px;"></ion-icon>
-                                    </button>
-                                </form>
                             </div>
                         </td>
                     </tr>

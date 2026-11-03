@@ -55,15 +55,7 @@ class RiwayatController extends Controller
 
     public function destroy($id)
     {
-        $spj = Spj::findOrFail($id);
-
-        if (in_array($spj->status, ['disetujui_ppspm', 'menunggu_otp_kpa'])) {
-            return back()->with('error', 'SPJ yang masih dalam proses tidak dapat dihapus.');
-        }
-
-        $spj->delete();
-
-        return back()->with('success', 'Riwayat SPJ berhasil dihapus selamanya.');
+        abort(403, 'Hanya Administrator yang memiliki hak akses untuk menghapus data SPJ.');
     }
 
     public function exportCsv()

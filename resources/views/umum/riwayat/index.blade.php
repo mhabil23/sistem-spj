@@ -129,15 +129,6 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                                    title="Lihat Detail SPJ">
                                     <ion-icon name="eye-outline"></ion-icon>
                                 </a>
-                                <form action="{{ route('umum.riwayat.destroy', $spj->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus permanen riwayat pengajuan ini? Tindakan ini tidak dapat dibatalkan.');" style="margin: 0;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="btn-table-delete" 
-                                            title="Hapus Permanen">
-                                        <ion-icon name="trash-outline"></ion-icon>
-                                    </button>
-                                </form>
                             </div>
                         </td>
                     </tr>

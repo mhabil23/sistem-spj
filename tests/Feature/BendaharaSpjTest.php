@@ -435,7 +435,7 @@ class BendaharaSpjTest extends TestCase
         $response->assertSee('Kegiatan Riwayat Selesai');
         $response->assertSee('REF-QLOLA-12345');
         $response->assertSee('Kwitansi belum ditandatangani');
-        $response->assertSee('bendahara/spj.css');
+        $response->assertDontSee('bnd-btn-delete');
     }
 
     public function test_bendahara_can_view_profile_page(): void
@@ -607,5 +607,47 @@ class BendaharaSpjTest extends TestCase
         $response->assertSee('Ya, Selesaikan &amp; Cairkan Sekarang', false);
         $response->assertSee('Periksa Kembali');
         $response->assertSee('bukaModalKonfirmasiCair', false);
+    }
+
+    public function test_bendahara_cannot_delete_spj(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BND-NO-DEL',
+            'kegiatan' => 'Kegiatan Bendahara Non Delete',
+            'tanggal' => now(),
+            'nilai' => 2000000,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->actingAs($bendahara)->delete(route('bendahara.riwayat.destroy', $spj->id));
+
+        $response->assertStatus(403);
+        $this->assertDatabaseHas('spjs', ['id' => $spj->id]);
+    }
+
+    public function test_bendahara_riwayat_does_not_display_delete_button(): void
+    {
+        $bendahara = User::factory()->create(['role' => 'bendahara', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BND-RIW-NO-BTN',
+            'kegiatan' => 'Kegiatan Riwayat Bendahara No Delete Button',
+            'tanggal' => now(),
+            'nilai' => 5000000,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->actingAs($bendahara)->get(route('bendahara.riwayat.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Kegiatan Riwayat Bendahara No Delete Button');
+        $response->assertDontSee('bnd-btn-delete');
+        $response->assertDontSee('Hapus Dari Riwayat');
     }
 }

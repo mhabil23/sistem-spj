@@ -8,7 +8,6 @@ use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class SpjController extends Controller
 {
@@ -239,18 +238,7 @@ class SpjController extends Controller
 
     public function destroy(Spj $spj)
     {
-        $userId = Auth::id() ?? 1;
-        if ($spj->user_id !== $userId) {
-            abort(403, 'Akses tidak diizinkan.');
-        }
-
-        if ($spj->dokumen_file && ! str_starts_with($spj->dokumen_file, '[')) {
-            Storage::disk('public')->delete($spj->dokumen_file);
-        }
-
-        $spj->delete();
-
-        return redirect()->route('teknis.spj.index')->with('success', 'Dokumen SPJ berhasil dihapus.');
+        abort(403, 'Hanya Administrator yang memiliki hak akses untuk menghapus data SPJ.');
     }
 
     public function laporan(Request $request)
