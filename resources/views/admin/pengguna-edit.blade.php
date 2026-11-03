@@ -396,6 +396,24 @@
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
+
+                {{-- SEKSI --}}
+                <div class="form-group">
+                    <label for="seksi" class="form-label">
+                        <i class="bi bi-diagram-3"></i> Seksi / Fungsi Teknis (Khusus Staf Teknis)
+                    </label>
+                    <select id="seksi" name="seksi" class="form-select">
+                        <option value="">-- Pilih Seksi / Fungsi --</option>
+                        <option value="Sosial" {{ old('seksi', $user->seksi) == 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
+                        <option value="Produksi" {{ old('seksi', $user->seksi) == 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
+                        <option value="Distribusi" {{ old('seksi', $user->seksi) == 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
+                        <option value="Neraca" {{ old('seksi', $user->seksi) == 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
+                        <option value="IPDS" {{ old('seksi', $user->seksi) == 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                    </select>
+                    @error('seksi')
+                        <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
+                    @enderror
+                </div>
             </div>
 
             {{-- STATUS --}}

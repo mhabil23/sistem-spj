@@ -392,8 +392,27 @@
                         <option value="umum" {{ old('role') == 'umum' ? 'selected' : '' }}>Bagian Umum (Verifikasi Kelengkapan Awal)</option>
                         <option value="ppk" {{ old('role') == 'ppk' ? 'selected' : '' }}>PPK (Pejabat Pembuat Komitmen)</option>
                         <option value="ppspm" {{ old('role') == 'ppspm' ? 'selected' : '' }}>PPSPM (Persetujuan Akhir SPM)</option>
+                        <option value="bendahara" {{ old('role') == 'bendahara' ? 'selected' : '' }}>Bendahara</option>
                     </select>
                     @error('role')
+                        <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- SEKSI --}}
+                <div class="form-group">
+                    <label for="seksi" class="form-label">
+                        <i class="bi bi-diagram-3"></i> Seksi / Fungsi Teknis (Khusus Staf Teknis)
+                    </label>
+                    <select id="seksi" name="seksi" class="form-select">
+                        <option value="">-- Pilih Seksi / Fungsi --</option>
+                        <option value="Sosial" {{ old('seksi') == 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
+                        <option value="Produksi" {{ old('seksi') == 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
+                        <option value="Distribusi" {{ old('seksi') == 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
+                        <option value="Neraca" {{ old('seksi') == 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
+                        <option value="IPDS" {{ old('seksi') == 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                    </select>
+                    @error('seksi')
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>

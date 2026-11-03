@@ -218,4 +218,48 @@ class UmumSpjTest extends TestCase
         $response->assertDontSee('btn-table-delete');
         $response->assertDontSee('Hapus Permanen');
     }
+
+    public function test_umum_dashboard_displays_integrated_five_seksi(): void
+    {
+        // Buat SPJ untuk seksi sosial dan produksi
+        Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Kegiatan Sensus Susenas',
+            'seksi' => 'Sosial',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'diajukan',
+        ]);
+
+        Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Survei Ubinan Padi',
+            'seksi' => 'Produksi',
+            'tanggal' => now(),
+            'nilai' => 1200000,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->get(route('umum.dashboard'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Top Pengaju per Seksi');
+        $response->assertSee('Seksi Sosial');
+        $response->assertSee('Seksi Produksi');
+        $response->assertSee('Seksi Distribusi');
+        $response->assertSee('Seksi Neraca');
+        $response->assertSee('Seksi IPDS');
+
+        // Pastikan tidak ada lagi daftar tim dummy lama
+        $response->assertDontSee('Tim Sakernas');
+        $response->assertDontSee('Tim Susenas');
+        $response->assertDontSee('Tim SBH');
+        $response->assertDontSee('Tim Pengolahan');
+
+        // Data topPengaju terisi tepat 5 seksi
+        $topPengaju = $response->viewData('topPengaju');
+        $this->assertCount(5, $topPengaju);
+        $this->assertEquals('Seksi Sosial', $topPengaju[0]['name']);
+        $this->assertEquals('1 SPJ', $topPengaju[0]['count']);
+    }
 }

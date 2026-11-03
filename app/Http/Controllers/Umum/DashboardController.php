@@ -28,45 +28,42 @@ class DashboardController extends Controller
             $pctProses = 32;
         }
 
-        // Top pengaju SPJ dari staf teknis
-        $dbTopUsers = User::where('role', 'teknis')
-            ->withCount('spjs')
-            ->orderByDesc('spjs_count')
-            ->take(10)
-            ->get();
+        // 5 Seksi Teknis BPS terintegrasi dengan data SPJ: Sosial, Produksi, Distribusi, Neraca, IPDS
+        $seksiMaster = [
+            'Sosial' => 'Seksi Sosial',
+            'Produksi' => 'Seksi Produksi',
+            'Distribusi' => 'Seksi Distribusi',
+            'Neraca' => 'Seksi Neraca',
+            'IPDS' => 'Seksi IPDS',
+        ];
 
-        $maxSpjCount = $dbTopUsers->max('spjs_count') ?: 1;
+        $seksiCounts = [];
+        foreach ($seksiMaster as $key => $label) {
+            $count = Spj::where(function ($q) use ($key) {
+                $q->where('seksi', $key)
+                    ->orWhere(function ($sub) use ($key) {
+                        $sub->whereNull('seksi')
+                            ->whereHas('user', function ($u) use ($key) {
+                                $u->where('seksi', $key);
+                            });
+                    });
+            })->count();
 
-        $topPengaju = [];
-        foreach ($dbTopUsers as $user) {
-            $count = $user->spjs_count;
-            $pct = $maxSpjCount > 0 ? round(($count / $maxSpjCount) * 100) : 0;
-            $topPengaju[] = [
-                'name' => $user->name,
-                'bar' => max($pct, 12).'%',
-                'count' => $count.' SPJ',
-            ];
+            $seksiCounts[$key] = $count;
         }
 
-        // Jika data pengaju belum sampai 10 di database, lengkapi dengan seksi/tim teknis BPS
-        $seksiDefaults = [
-            'Seksi Nerwilis', 'Seksi Stat. Sosial', 'Seksi IPDS',
-            'Seksi Distribusi', 'Seksi Produksi', 'Tim Sakernas',
-            'Tim Susenas', 'Tim SBH', 'Tim Pengolahan', 'Subbag Umum',
-        ];
-        $defaultCounts = [18, 16, 14, 12, 10, 8, 7, 5, 4, 3];
-        $maxDefault = 18;
+        // Urutkan dari pengajuan terbanyak
+        arsort($seksiCounts);
+        $maxSpjCount = max(max($seksiCounts), 1);
 
-        if (count($topPengaju) < 5) {
-            $topPengaju = [];
-            foreach ($seksiDefaults as $idx => $seksi) {
-                $val = $defaultCounts[$idx];
-                $topPengaju[] = [
-                    'name' => $seksi,
-                    'bar' => round(($val / $maxDefault) * 100).'%',
-                    'count' => $val.' SPJ',
-                ];
-            }
+        $topPengaju = [];
+        foreach ($seksiCounts as $key => $count) {
+            $pct = $count > 0 ? round(($count / $maxSpjCount) * 100) : 0;
+            $topPengaju[] = [
+                'name' => $seksiMaster[$key],
+                'bar' => $count > 0 ? max($pct, 12).'%' : '0%',
+                'count' => $count.' SPJ',
+            ];
         }
 
         // Tren 6 bulan terakhir

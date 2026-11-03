@@ -12,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['name', 'email', 'no_wa', 'avatar', 'password', 'role', 'status'])]
+#[Fillable(['name', 'email', 'no_wa', 'avatar', 'password', 'role', 'status', 'seksi'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,6 +35,19 @@ class User extends Authenticatable
     public function spjs()
     {
         return $this->hasMany(Spj::class);
+    }
+
+    public function getSeksiLabelAttribute(): string
+    {
+        $labels = [
+            'Sosial' => 'Seksi Sosial',
+            'Produksi' => 'Seksi Produksi',
+            'Distribusi' => 'Seksi Distribusi',
+            'Neraca' => 'Seksi Neraca',
+            'IPDS' => 'Seksi IPDS',
+        ];
+
+        return $labels[$this->seksi] ?? ($this->seksi ?: '-');
     }
 
     /**

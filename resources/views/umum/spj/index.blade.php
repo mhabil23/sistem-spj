@@ -75,7 +75,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                         </td>
                         <td>
                             <div style="font-weight: 600; color: var(--dash-text-dark);">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
-                            <div style="font-size: 11px; color: var(--dash-text-muted);">{{ $spj->user->seksi ?? 'Seksi Teknis' }}</div>
+                            <div style="font-size: 11px; color: var(--dash-text-muted);">{{ $spj->seksi_label }}</div>
                         </td>
                         <td>
                             <div style="font-weight: 500; max-width: 280px; white-space: normal; line-height: 1.4; color: var(--dash-text-dark);">

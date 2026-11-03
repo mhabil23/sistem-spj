@@ -242,7 +242,7 @@ $title = 'Dashboard';
         <!-- Col 3, Row 1-2: Pengajuan per Seksi / Staf Teknis (Tall Card) -->
         <div class="grid-card card-stores-tall">
             <div class="card-header-clean">
-                <h3 class="card-title">Top Pengaju per Seksi/Tim</h3>
+                <h3 class="card-title">Top Pengaju per Seksi</h3>
             </div>
             <div class="stores-ranking-list">
                 @foreach($topPengaju as $pengaju)

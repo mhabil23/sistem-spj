@@ -160,20 +160,27 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
                         </div>
 
                         <div class="profile-form-group" style="margin-bottom: 0;">
-                            <label class="profile-form-label">Peran & Hak Akses</label>
+                            <label class="profile-form-label" for="profile_seksi">Seksi / Fungsi Teknis</label>
                             <div class="profile-input-wrapper">
-                                <i class="bi bi-shield-check profile-input-icon"></i>
-                                <input 
-                                    type="text" 
-                                    class="profile-input profile-input-readonly" 
-                                    value="Tim Teknis (Pengaju SPJ)" 
-                                    readonly 
-                                    disabled>
+                                <i class="bi bi-diagram-3 profile-input-icon"></i>
+                                <select id="profile_seksi" name="seksi" class="profile-input @error('seksi') is-invalid @enderror" style="appearance: auto;">
+                                    <option value="" disabled {{ old('seksi', $user->seksi) ? '' : 'selected' }}>Pilih Seksi...</option>
+                                    <option value="Sosial" {{ old('seksi', $user->seksi) === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
+                                    <option value="Produksi" {{ old('seksi', $user->seksi) === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
+                                    <option value="Distribusi" {{ old('seksi', $user->seksi) === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
+                                    <option value="Neraca" {{ old('seksi', $user->seksi) === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
+                                    <option value="IPDS" {{ old('seksi', $user->seksi) === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                                </select>
                             </div>
                             <div class="profile-form-hint">
                                 <i class="bi bi-info-circle"></i>
-                                Peran hak akses dikelola langsung oleh Administrator sistem.
+                                Seksi asal Anda untuk otomatisasi form SPJ.
                             </div>
+                            @error('seksi')
+                                <div class="profile-invalid-feedback">
+                                    <i class="bi bi-exclamation-circle"></i> {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                 </div>

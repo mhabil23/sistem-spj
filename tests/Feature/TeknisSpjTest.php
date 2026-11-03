@@ -690,4 +690,23 @@ class TeknisSpjTest extends TestCase
         $response->assertDontSee('action-btn-delete');
         $response->assertDontSee('Hapus SPJ');
     }
+
+    public function test_teknis_can_store_spj_with_seksi(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif', 'seksi' => 'IPDS']);
+
+        $response = $this->actingAs($teknis)->post(route('teknis.spj.store'), [
+            'kegiatan' => 'Kegiatan SPJ Pengadaan Server IPDS',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => 2500000,
+            'seksi' => 'IPDS',
+            'status' => 'draft',
+        ]);
+
+        $response->assertRedirect(route('teknis.spj.index'));
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Kegiatan SPJ Pengadaan Server IPDS',
+            'seksi' => 'IPDS',
+        ]);
+    }
 }

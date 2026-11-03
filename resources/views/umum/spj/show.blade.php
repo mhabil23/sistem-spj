@@ -119,7 +119,7 @@ if ($isRevision) {
             <p class="verify-header-meta">
                 <span>Diajukan pada: <strong>{{ $spj->created_at->format('d M Y, H:i') }}</strong></span>
                 <span>&bull;</span>
-                <span>Pengaju: <strong>{{ $spj->user->name ?? 'Staf Teknis' }}</strong> ({{ $spj->user->seksi ?? 'Seksi Teknis' }})</span>
+                <span>Pengaju: <strong>{{ $spj->user->name ?? 'Staf Teknis' }}</strong> ({{ $spj->seksi_label }})</span>
                 @if($spj->nomor_spj)
                     <span>&bull;</span>
                     <span>No. SPJ: <strong>{{ $spj->nomor_spj }}</strong></span>
@@ -418,7 +418,7 @@ if ($isRevision) {
                     <div class="detail-info-item">
                         <span class="detail-info-label">Fungsi / Seksi Teknis</span>
                         <div class="detail-info-value">
-                            {{ $spj->user->seksi ?? 'Seksi / Tim Teknis BPS' }}
+                            {{ $spj->seksi_label }}
                         </div>
                     </div>
                 </div>

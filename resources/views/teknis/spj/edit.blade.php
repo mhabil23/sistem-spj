@@ -206,11 +206,29 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 </div>
             </div>
 
-            <div class="spj-form-group">
-                <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
-                <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa', $spj->no_wa) }}" placeholder="Contoh: 081234567890">
-                <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp Anda agar Bagian Umum & Bendahara dapat menghubungi Anda langsung.</span>
-                @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
+                <div>
+                    <label class="spj-label">
+                        Seksi / Tim Teknis <span style="color: #ef4444;">*</span>
+                    </label>
+                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
+                        <option value="" disabled {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') ? '' : 'selected' }}>Pilih Seksi...</option>
+                        <option value="Sosial" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
+                        <option value="Produksi" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
+                        <option value="Distribusi" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
+                        <option value="Neraca" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
+                        <option value="IPDS" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                    </select>
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Seksi teknis pelaksana kegiatan SPJ.</span>
+                    @error('seksi') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
+                    <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa', $spj->no_wa ?? Auth::user()->no_wa ?? '') }}" placeholder="Contoh: 081234567890">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp Anda agar Bagian Umum & Bendahara dapat menghubungi Anda langsung.</span>
+                    @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
             </div>
 
             <div class="spj-form-group">

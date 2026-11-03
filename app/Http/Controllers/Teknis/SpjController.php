@@ -48,6 +48,7 @@ class SpjController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
+            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
         ], [
@@ -94,6 +95,7 @@ class SpjController extends Controller
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'tanggal_selesai' => $request->tanggal_selesai ?: null,
+            'seksi' => $request->seksi ?: (Auth::user()->seksi ?? 'Sosial'),
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa,
@@ -157,6 +159,7 @@ class SpjController extends Controller
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
             'status' => 'required|in:draft,diajukan',
             'nilai' => 'required|numeric|min:0',
+            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
         ], [
@@ -217,6 +220,7 @@ class SpjController extends Controller
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
             'tanggal_selesai' => $request->tanggal_selesai ?: null,
+            'seksi' => $request->seksi ?: (Auth::user()->seksi ?? 'Sosial'),
             'nilai' => $request->nilai,
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa,

@@ -98,9 +98,12 @@ $subtitle = 'Kelola semua pengajuan SPJ Anda di sini.';
                         </td>
                         <td style="max-width: 300px; font-weight: 600;" title="{{ $spj->kegiatan }}">
                             <div style="font-size: 13.5px; color: var(--dash-text-dark); line-height: 1.4;">{{ $spj->kegiatan }}</div>
-                            @if($spj->keterangan)
-                                <div style="font-size: 11px; color: var(--dash-text-muted); margin-top: 2px;">{{ Str::limit($spj->keterangan, 40) }}</div>
-                            @endif
+                            <div style="display: flex; align-items: center; gap: 6px; margin-top: 3px;">
+                                <span style="font-size: 10.5px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 1px 6px; border-radius: 4px;">{{ $spj->seksi_label }}</span>
+                                @if($spj->keterangan)
+                                    <span style="font-size: 11px; color: var(--dash-text-muted);">{{ Str::limit($spj->keterangan, 30) }}</span>
+                                @endif
+                            </div>
                         </td>
                         <td style="color: var(--dash-text-muted); white-space: nowrap;">
                             <div style="display: flex; align-items: center; gap: 6px;">

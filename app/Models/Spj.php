@@ -18,6 +18,7 @@ class Spj extends Model
         'no_wa',
         'status',
         'user_id',
+        'seksi',
         'dokumen_file',
         'file_lampiran',
         'catatan_revisi',
@@ -95,6 +96,21 @@ class Spj extends Model
         }
 
         return $mulai->translatedFormat('d F Y').' s.d. '.$selesai->translatedFormat('d F Y');
+    }
+
+    public function getSeksiLabelAttribute(): string
+    {
+        $labels = [
+            'Sosial' => 'Seksi Sosial',
+            'Produksi' => 'Seksi Produksi',
+            'Distribusi' => 'Seksi Distribusi',
+            'Neraca' => 'Seksi Neraca',
+            'IPDS' => 'Seksi IPDS',
+        ];
+
+        $val = $this->seksi ?: ($this->user?->seksi ?: null);
+
+        return $labels[$val] ?? ($val ?: 'Seksi Teknis');
     }
 
     /**

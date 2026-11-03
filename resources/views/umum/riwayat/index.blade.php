@@ -71,7 +71,7 @@ $subtitle = 'Arsip seluruh SPJ yang pernah Anda verifikasi (diterima atau ditola
                         </td>
                         <td>
                             <div style="font-weight: 600; color: var(--dash-text-dark);">{{ $spj->user->name ?? 'Staf Teknis' }}</div>
-                            <div style="font-size: 11px; color: var(--dash-text-muted);">{{ $spj->user->seksi ?? 'Seksi Teknis' }}</div>
+                            <div style="font-size: 11px; color: var(--dash-text-muted);">{{ $spj->seksi_label }}</div>
                         </td>
                         <td>
                             <a href="{{ route('umum.spj.show', $spj->id) }}" style="color: #0284c7; font-weight: 600; text-decoration: none; line-height: 1.4; display: block; max-width: 280px; white-space: normal;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';">

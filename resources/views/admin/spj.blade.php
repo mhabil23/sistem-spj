@@ -703,7 +703,10 @@
                                 <div class="pic-avatar">
                                     {{ strtoupper(substr($spj->user->name ?? 'T', 0, 1)) }}
                                 </div>
-                                <span>{{ $spj->user->name ?? 'Staf Teknis' }}</span>
+                                <div>
+                                    <span style="display: block; font-weight: 700;">{{ $spj->user->name ?? 'Staf Teknis' }}</span>
+                                    <span style="font-size: 11px; color: var(--dash-slate-400);">{{ $spj->seksi_label }}</span>
+                                </div>
                             </div>
                         </td>
 

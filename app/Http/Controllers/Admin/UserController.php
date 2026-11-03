@@ -29,6 +29,7 @@ class UserController extends Controller
             'no_wa' => 'nullable|string|max:25',
             'password' => 'required|min:8',
             'role' => 'required|in:admin,teknis,umum,ppk,ppspm,bendahara',
+            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
             'status' => 'required|in:aktif,nonaktif',
         ]);
 
@@ -38,6 +39,7 @@ class UserController extends Controller
             'no_wa' => $validated['no_wa'] ?? null,
             'password' => $validated['password'],
             'role' => $validated['role'],
+            'seksi' => $validated['seksi'] ?? null,
             'status' => $validated['status'],
         ]);
 
@@ -60,6 +62,7 @@ class UserController extends Controller
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'no_wa' => 'nullable|string|max:25',
             'role' => 'required|in:admin,teknis,umum,ppk,ppspm,bendahara',
+            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
             'status' => 'required|in:aktif,nonaktif',
             'password' => 'nullable|min:8|confirmed',
         ]);
@@ -68,6 +71,7 @@ class UserController extends Controller
         $user->email = $validated['email'];
         $user->no_wa = $validated['no_wa'] ?? null;
         $user->role = $validated['role'];
+        $user->seksi = $validated['seksi'] ?? null;
         $user->status = $validated['status'];
 
         // Password hanya diubah kalau diisi

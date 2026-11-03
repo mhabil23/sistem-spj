@@ -279,7 +279,7 @@
         <tr>
             <td class="info-label">Staf Pengaju (PIC)</td>
             <td class="info-sep">:</td>
-            <td class="info-val">{{ $spj->user->name ?? 'Staf Teknis' }} ({{ $spj->user->seksi ?? 'Seksi Teknis' }})</td>
+            <td class="info-val">{{ $spj->user->name ?? 'Staf Teknis' }} ({{ $spj->seksi_label }})</td>
             <td class="info-label">Nomor WhatsApp PIC</td>
             <td class="info-sep">:</td>
             <td class="info-val">{{ $spj->no_wa ?: ($spj->user->no_wa ?? '-') }}</td>

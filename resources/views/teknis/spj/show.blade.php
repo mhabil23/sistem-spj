@@ -218,6 +218,11 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
                 <div class="spj-detail-label">WhatsApp PIC / Pengaju</div>
                 <div class="spj-detail-value" style="color: var(--dash-cyan-text);">{{ $spj->no_wa ?: '-' }}</div>
             </div>
+
+            <div class="spj-detail-item">
+                <div class="spj-detail-label">Seksi / Tim Teknis</div>
+                <div class="spj-detail-value" style="font-weight: 600; color: #0284c7;">{{ $spj->seksi_label }}</div>
+            </div>
         </div>
 
         <div style="margin-top: 16px;" class="spj-detail-item">

@@ -529,6 +529,11 @@
                         </div>
 
                         <div class="info-item">
+                            <span class="info-label">Seksi / Fungsi Teknis</span>
+                            <span class="info-value">{{ $spj->seksi_label }}</span>
+                        </div>
+
+                        <div class="info-item">
                             <span class="info-label">No. WhatsApp Konfirmasi</span>
                             <span class="info-value">{{ $spj->no_wa ?: '-' }}</span>
                         </div>

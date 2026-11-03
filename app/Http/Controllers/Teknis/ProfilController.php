@@ -33,6 +33,7 @@ class ProfilController extends Controller
                 Rule::unique('users', 'email')->ignore($user->id),
             ],
             'no_wa' => ['nullable', 'string', 'max:25'],
+            'seksi' => ['nullable', 'string', 'in:Sosial,Produksi,Distribusi,Neraca,IPDS'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'current_password' => ['nullable', 'string'],
             'password' => ['nullable', 'confirmed', Password::defaults()],
@@ -71,6 +72,9 @@ class ProfilController extends Controller
         $user->name = $request->name;
         $user->email = $newEmail;
         $user->no_wa = $request->no_wa;
+        if ($request->has('seksi')) {
+            $user->seksi = $request->seksi ?: null;
+        }
 
         if ($request->hasFile('avatar')) {
             if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
