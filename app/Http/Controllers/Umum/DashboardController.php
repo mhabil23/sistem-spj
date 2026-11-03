@@ -28,39 +28,20 @@ class DashboardController extends Controller
             $pctProses = 32;
         }
 
-        // 5 Seksi Teknis BPS terintegrasi dengan data SPJ: Sosial, Produksi, Distribusi, Neraca, IPDS
-        $seksiMaster = [
-            'Sosial' => 'Seksi Sosial',
-            'Produksi' => 'Seksi Produksi',
-            'Distribusi' => 'Seksi Distribusi',
-            'Neraca' => 'Seksi Neraca',
-            'IPDS' => 'Seksi IPDS',
-        ];
+        // Seluruh staf teknis riil terintegrasi sesuai username/nama di database
+        $dbTopUsers = User::where('role', 'teknis')
+            ->withCount('spjs')
+            ->orderByDesc('spjs_count')
+            ->get();
 
-        $seksiCounts = [];
-        foreach ($seksiMaster as $key => $label) {
-            $count = Spj::where(function ($q) use ($key) {
-                $q->where('seksi', $key)
-                    ->orWhere(function ($sub) use ($key) {
-                        $sub->whereNull('seksi')
-                            ->whereHas('user', function ($u) use ($key) {
-                                $u->where('seksi', $key);
-                            });
-                    });
-            })->count();
-
-            $seksiCounts[$key] = $count;
-        }
-
-        // Urutkan dari pengajuan terbanyak
-        arsort($seksiCounts);
-        $maxSpjCount = max(max($seksiCounts), 1);
+        $maxSpjCount = $dbTopUsers->max('spjs_count') ?: 1;
 
         $topPengaju = [];
-        foreach ($seksiCounts as $key => $count) {
+        foreach ($dbTopUsers as $user) {
+            $count = (int) $user->spjs_count;
             $pct = $count > 0 ? round(($count / $maxSpjCount) * 100) : 0;
             $topPengaju[] = [
-                'name' => $seksiMaster[$key],
+                'name' => $user->name,
                 'bar' => $count > 0 ? max($pct, 12).'%' : '0%',
                 'count' => $count.' SPJ',
             ];

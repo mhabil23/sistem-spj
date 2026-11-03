@@ -239,13 +239,13 @@ $title = 'Dashboard';
             </div>
         </div>
 
-        <!-- Col 3, Row 1-2: Pengajuan per Seksi / Staf Teknis (Tall Card) -->
+        <!-- Col 3, Row 1-2: Pengajuan Staf Teknis (Tall Card) -->
         <div class="grid-card card-stores-tall">
             <div class="card-header-clean">
-                <h3 class="card-title">Top Pengaju per Seksi</h3>
+                <h3 class="card-title">Top Pengaju Teknis</h3>
             </div>
             <div class="stores-ranking-list">
-                @foreach($topPengaju as $pengaju)
+                @forelse($topPengaju as $pengaju)
                 <div class="store-row-item">
                     <span class="store-label" title="{{ $pengaju['name'] }}">{{ $pengaju['name'] }}</span>
                     <div class="store-bar-track">
@@ -253,7 +253,11 @@ $title = 'Dashboard';
                     </div>
                     <span class="store-sales">{{ $pengaju['count'] }}</span>
                 </div>
-                @endforeach
+                @empty
+                <div style="text-align: center; color: var(--dash-text-muted); font-size: 13px; padding: 24px 0;">
+                    Belum ada pengaju teknis terdaftar.
+                </div>
+                @endforelse
             </div>
         </div>
 

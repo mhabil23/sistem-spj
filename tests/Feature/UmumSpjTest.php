@@ -219,13 +219,17 @@ class UmumSpjTest extends TestCase
         $response->assertDontSee('Hapus Permanen');
     }
 
-    public function test_umum_dashboard_displays_integrated_five_seksi(): void
+    public function test_umum_dashboard_displays_all_teknis_users_with_real_counts(): void
     {
-        // Buat SPJ untuk seksi sosial dan produksi
+        $teknis2 = User::factory()->create([
+            'role' => 'teknis',
+            'name' => 'Budi Teknis',
+            'status' => 'aktif',
+        ]);
+
         Spj::create([
             'user_id' => $this->userTeknis->id,
             'kegiatan' => 'Kegiatan Sensus Susenas',
-            'seksi' => 'Sosial',
             'tanggal' => now(),
             'nilai' => 1500000,
             'status' => 'diajukan',
@@ -234,21 +238,25 @@ class UmumSpjTest extends TestCase
         Spj::create([
             'user_id' => $this->userTeknis->id,
             'kegiatan' => 'Survei Ubinan Padi',
-            'seksi' => 'Produksi',
             'tanggal' => now(),
             'nilai' => 1200000,
+            'status' => 'selesai',
+        ]);
+
+        Spj::create([
+            'user_id' => $teknis2->id,
+            'kegiatan' => 'Kegiatan Sakernas',
+            'tanggal' => now(),
+            'nilai' => 2000000,
             'status' => 'selesai',
         ]);
 
         $response = $this->actingAs($this->userUmum)->get(route('umum.dashboard'));
 
         $response->assertStatus(200);
-        $response->assertSee('Top Pengaju per Seksi');
-        $response->assertSee('Seksi Sosial');
-        $response->assertSee('Seksi Produksi');
-        $response->assertSee('Seksi Distribusi');
-        $response->assertSee('Seksi Neraca');
-        $response->assertSee('Seksi IPDS');
+        $response->assertSee('Top Pengaju Teknis');
+        $response->assertSee($this->userTeknis->name);
+        $response->assertSee('Budi Teknis');
 
         // Pastikan tidak ada lagi daftar tim dummy lama
         $response->assertDontSee('Tim Sakernas');
@@ -256,10 +264,12 @@ class UmumSpjTest extends TestCase
         $response->assertDontSee('Tim SBH');
         $response->assertDontSee('Tim Pengolahan');
 
-        // Data topPengaju terisi tepat 5 seksi
+        // Data topPengaju terisi user teknis riil sesuai urutan jumlah SPJ terbanyak
         $topPengaju = $response->viewData('topPengaju');
-        $this->assertCount(5, $topPengaju);
-        $this->assertEquals('Seksi Sosial', $topPengaju[0]['name']);
-        $this->assertEquals('1 SPJ', $topPengaju[0]['count']);
+        $this->assertCount(2, $topPengaju);
+        $this->assertEquals($this->userTeknis->name, $topPengaju[0]['name']);
+        $this->assertEquals('2 SPJ', $topPengaju[0]['count']);
+        $this->assertEquals('Budi Teknis', $topPengaju[1]['name']);
+        $this->assertEquals('1 SPJ', $topPengaju[1]['count']);
     }
 }
