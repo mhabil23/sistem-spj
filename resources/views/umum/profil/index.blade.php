@@ -105,7 +105,7 @@ $subtitle = 'Perbarui data profil dan kata sandi Anda.';
 
                     <div>
                         <label class="filter-label" style="font-size: 13px; color: var(--dash-text-dark);">Peran & Hak Akses</label>
-                        <input type="text" class="dash-input" value="Verifikator Bagian Umum" disabled style="opacity: 0.7; cursor: not-allowed; background-color: var(--dash-table-header-bg);">
+                        <input type="text" class="dash-input" value="Verifikator Subbag Umum" disabled style="opacity: 0.7; cursor: not-allowed; background-color: var(--dash-table-header-bg);">
                     </div>
                 </div>
 

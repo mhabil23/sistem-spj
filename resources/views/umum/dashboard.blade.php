@@ -21,7 +21,7 @@ $title = 'Dashboard';
         <div class="hero-main-content">
             <div class="hero-meta-badge">
                 <span class="hero-pulse-dot"></span>
-                <span>BPS Kab. Kolaka Utara • Verifikasi & Tata Usaha</span>
+                <span>BPS Kab. Kolaka Utara • Verifikasi & Subbag Umum</span>
             </div>
 
             <div class="hero-title-group">

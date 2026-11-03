@@ -38,7 +38,7 @@
                 <span>{{ $greeting }}, <strong class="topbar-user-name">{{ $firstName }}</strong></span>
                 <span class="topbar-role-badge">
                     <ion-icon name="shield-checkmark"></ion-icon>
-                    Bagian Umum
+                    Subbag Umum
                 </span>
             </div>
             <div class="topbar-sub-meta">
@@ -98,7 +98,7 @@
             </div>
             <div>
                 <div class="topbar-user-chip-name">{{ $firstName }}</div>
-                <div class="topbar-user-chip-role">Tata Usaha</div>
+                <div class="topbar-user-chip-role">Subbag Umum</div>
             </div>
         </a>
     </div>
