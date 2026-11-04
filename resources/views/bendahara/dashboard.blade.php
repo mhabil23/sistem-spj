@@ -429,6 +429,19 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                             <ion-icon name="open-outline" style="color: #94a3b8; font-size: 16px;"></ion-icon>
                         </a>
 
+                        <a href="{{ route('panduan-role.preview') }}" target="_blank" class="bnd-quick-link-item">
+                            <div class="bnd-quick-link-left">
+                                <div class="bnd-quick-link-icon" style="background: #e0f2fe; color: #0284c7;">
+                                    <ion-icon name="book-outline"></ion-icon>
+                                </div>
+                                <div>
+                                    <div class="bnd-quick-link-title">Panduan Hak & Tugas Role (PDF)</div>
+                                    <div class="bnd-quick-link-sub">Rincian wewenang Teknis, Umum & Bendahara</div>
+                                </div>
+                            </div>
+                            <ion-icon name="open-outline" style="color: #94a3b8; font-size: 16px;"></ion-icon>
+                        </a>
+
                     </div>
                 </div>
             </div>

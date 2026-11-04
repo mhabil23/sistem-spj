@@ -77,6 +77,10 @@ $title = 'Dashboard';
                     <ion-icon name="git-network-outline"></ion-icon>
                     <span>Buka Alur SOP (PDF)</span>
                 </a>
+                <a href="{{ route('panduan-role.preview') }}" target="_blank" class="hero-btn-glass" title="Buka Panduan Hak & Tugas Role (PDF)">
+                    <ion-icon name="book-outline"></ion-icon>
+                    <span>Panduan Role (PDF)</span>
+                </a>
                 <a href="{{ route('umum.laporan.index') }}" class="hero-btn-glass" title="Rekapitulasi Laporan SPJ">
                     <ion-icon name="bar-chart-outline"></ion-icon>
                     <span>Rekap Laporan</span>

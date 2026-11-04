@@ -16,10 +16,14 @@ Route::get('/', function () {
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlowchartPdfController;
+use App\Http\Controllers\PanduanRolePdfController;
 use App\Http\Controllers\PasswordResetController;
 
 Route::get('/flowchart-sop/pdf', [FlowchartPdfController::class, 'preview'])->name('flowchart.preview');
 Route::get('/flowchart-sop/download', [FlowchartPdfController::class, 'download'])->name('flowchart.download');
+
+Route::get('/panduan-role/pdf', [PanduanRolePdfController::class, 'preview'])->name('panduan-role.preview');
+Route::get('/panduan-role/download', [PanduanRolePdfController::class, 'download'])->name('panduan-role.download');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);

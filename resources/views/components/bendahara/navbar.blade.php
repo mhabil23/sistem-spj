@@ -62,6 +62,12 @@
             <span>Alur SOP</span>
         </a>
 
+        <!-- Quick Panduan Role Chip -->
+        <a href="{{ route('panduan-role.preview') }}" target="_blank" class="topbar-chip-btn" title="Buka Dokumen Panduan Hak & Tugas Role SPJ (PDF)">
+            <ion-icon name="book-outline"></ion-icon>
+            <span>Panduan Role</span>
+        </a>
+
         <!-- Search Pill Form -->
         <form action="{{ route('bendahara.spj.index') }}" method="GET" class="topbar-search-form">
             <div class="search-pill-wrapper">
