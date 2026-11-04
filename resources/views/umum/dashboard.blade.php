@@ -68,6 +68,10 @@ $title = 'Dashboard';
 
             <!-- Action Buttons Wrap -->
             <div class="hero-actions-wrap">
+                <a href="{{ route('umum.spj.create') }}" class="hero-btn-primary" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <ion-icon name="add-circle-outline"></ion-icon>
+                    <span>Ajukan SPJ Baru</span>
+                </a>
                 <a href="{{ route('umum.spj.index', ['status' => 'diajukan']) }}" class="hero-btn-primary">
                     <ion-icon name="clipboard-outline"></ion-icon>
                     <span>Periksa Antrean SPJ</span>

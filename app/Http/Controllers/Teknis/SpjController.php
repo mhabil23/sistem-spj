@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Teknis;
 
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
+use App\Models\SyaratDokumenSpj;
 use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class SpjController extends Controller
 {
     public function index(Request $request)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         $query = Spj::where('user_id', $userId);
 
         if ($request->filled('search')) {
@@ -35,8 +36,9 @@ class SpjController extends Controller
     public function create()
     {
         $nomorSpjOtomatis = Spj::generateNomorSpj();
+        $spjData = SyaratDokumenSpj::getSpjData();
 
-        return view('teknis.spj.create', compact('nomorSpjOtomatis'));
+        return view('teknis.spj.create', compact('nomorSpjOtomatis', 'spjData'));
     }
 
     public function store(Request $request)
@@ -90,7 +92,7 @@ class SpjController extends Controller
         $nomorSpj = $request->filled('nomor_spj') ? $request->nomor_spj : Spj::generateNomorSpj();
 
         $spj = Spj::create([
-            'user_id' => Auth::id() ?? 1,
+            'user_id' => Auth::id(),
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
@@ -117,9 +119,9 @@ class SpjController extends Controller
 
     public function show(Spj $spj)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         if ($spj->user_id !== $userId) {
-            abort(403, 'Akses tidak diizinkan.');
+            abort(403, 'Akses tidak diizinkan. SPJ ini bukan milik akun Anda.');
         }
 
         return view('teknis.spj.show', compact('spj'));
@@ -127,9 +129,9 @@ class SpjController extends Controller
 
     public function edit(Spj $spj)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         if ($spj->user_id !== $userId) {
-            abort(403, 'Akses tidak diizinkan.');
+            abort(403, 'Akses tidak diizinkan. SPJ ini bukan milik akun Anda.');
         }
 
         if (! in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
@@ -137,15 +139,16 @@ class SpjController extends Controller
         }
 
         $nomorSpjOtomatis = $spj->nomor_spj ?: Spj::generateNomorSpj();
+        $spjData = SyaratDokumenSpj::getSpjData();
 
-        return view('teknis.spj.edit', compact('spj', 'nomorSpjOtomatis'));
+        return view('teknis.spj.edit', compact('spj', 'nomorSpjOtomatis', 'spjData'));
     }
 
     public function update(Request $request, Spj $spj)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         if ($spj->user_id !== $userId) {
-            abort(403, 'Akses tidak diizinkan.');
+            abort(403, 'Akses tidak diizinkan. SPJ ini bukan milik akun Anda.');
         }
 
         if (! in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
@@ -247,7 +250,7 @@ class SpjController extends Controller
 
     public function laporan(Request $request)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         $query = Spj::where('user_id', $userId);
 
         // Filter status
@@ -311,7 +314,7 @@ class SpjController extends Controller
      */
     public function print($id)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         $spj = Spj::with('user')
             ->where('user_id', $userId)
             ->findOrFail($id);
@@ -326,7 +329,7 @@ class SpjController extends Controller
      */
     public function printLaporan(Request $request)
     {
-        $userId = Auth::id() ?? 1;
+        $userId = Auth::id();
         $query = Spj::where('user_id', $userId);
 
         // Filter status

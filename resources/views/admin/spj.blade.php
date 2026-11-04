@@ -532,10 +532,6 @@
             </h2>
             <p>Kelola, pantau kelengkapan berkas, dan verifikasi seluruh pengajuan tagihan SPJ BPS Kolaka Utara.</p>
         </div>
-
-        <a href="{{ route('admin.spj.create') }}" class="btn-create-spj">
-            <i class="bi bi-plus-circle-fill"></i> Tambah SPJ Baru
-        </a>
     </div>
 
     {{-- 2. STATISTIK KPI CARDS (BPS COLOR PALETTE) --}}

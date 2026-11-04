@@ -20,6 +20,11 @@ class HomeController extends Controller
         // SPJ publik: hanya SPJ yang telah diajukan (bukan draft pribadi)
         $baseQuery = Spj::with('user')->where('status', '!=', 'draft');
 
+        // Privasi masing-masing akun teknis: staf teknis hanya dapat melihat SPJ miliknya sendiri
+        if (auth()->check() && auth()->user()->role === 'teknis') {
+            $baseQuery->where('user_id', auth()->id());
+        }
+
         // Statistik ringkas untuk counter badges di dashboard umum
         $stats = [
             'total' => (clone $baseQuery)->count(),

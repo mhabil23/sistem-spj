@@ -21,11 +21,19 @@
         </a>
 
         <!-- Kotak Masuk SPJ -->
-        <a href="{{ route('umum.spj.index') }}" class="nav-item {{ request()->routeIs('umum.spj.*') ? 'active' : '' }}">
+        <a href="{{ route('umum.spj.index') }}" class="nav-item {{ request()->routeIs('umum.spj.index', 'umum.spj.show') ? 'active' : '' }}">
             <span class="nav-icon-wrap">
                 <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
             </span>
             <span class="nav-label">Kotak Masuk SPJ</span>
+        </a>
+
+        <!-- Pengajuan SPJ -->
+        <a href="{{ route('umum.spj.create') }}" class="nav-item {{ request()->routeIs('umum.spj.create') ? 'active' : '' }}">
+            <span class="nav-icon-wrap">
+                <ion-icon name="add-circle-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Pengajuan SPJ</span>
         </a>
 
         <div class="sidebar-section-label" style="margin-top: 14px;">ARSIP & LAPORAN</div>

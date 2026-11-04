@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Umum;
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
 use App\Models\SpjHistory;
+use App\Models\SyaratDokumenSpj;
 use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -33,6 +34,107 @@ class SpjController extends Controller
         $spjs = $query->orderBy('created_at', 'desc')->get();
 
         return view('umum.spj.index', compact('spjs'));
+    }
+
+    /**
+     * Tampilkan form pembuatan pengajuan SPJ untuk Subbagian Umum.
+     */
+    public function create()
+    {
+        $nomorSpjOtomatis = Spj::generateNomorSpj();
+        $spjData = SyaratDokumenSpj::getSpjData();
+
+        return view('umum.spj.create', compact('nomorSpjOtomatis', 'spjData'));
+    }
+
+    /**
+     * Simpan pengajuan SPJ baru oleh Subbagian Umum.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj',
+            'kegiatan' => 'required|string|max:255',
+            'tanggal' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
+            'status' => 'required|in:draft,diajukan',
+            'nilai' => 'required|numeric|min:0',
+            'seksi' => 'nullable|string|max:50',
+            'keterangan' => 'nullable|string',
+            'no_wa' => 'nullable|string|max:25',
+        ], [
+            'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
+        ]);
+
+        if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
+            return back()->withInput()->withErrors([
+                'status' => 'SPJ tidak dapat diajukan jika belum menekan Print sampai tercetak. Silakan cetak lembar checklist berkas terlebih dahulu.',
+            ]);
+        }
+
+        $dokumenKelengkapan = [];
+        if ($request->has('nama_dokumen') && is_array($request->input('nama_dokumen'))) {
+            foreach ($request->input('nama_dokumen') as $index => $namaDokumen) {
+                $assignee = $request->input("assignee_dokumen.{$index}");
+                $isBendahara = Spj::isBendaharaDoc(['nama' => $namaDokumen, 'assignee' => $assignee]);
+                $isPpk = Spj::isPpkDoc(['nama' => $namaDokumen, 'assignee' => $assignee]);
+
+                if ($isBendahara || $isPpk) {
+                    $dokumenKelengkapan[] = [
+                        'nama' => $namaDokumen,
+                        'disiapkan' => false,
+                        'assignee' => $assignee ?: ($isBendahara ? 'Bendahara' : 'PPK'),
+                    ];
+                } else {
+                    $isChecked = $request->has("berkas.{$index}");
+                    $dokumenKelengkapan[] = [
+                        'nama' => $namaDokumen,
+                        'disiapkan' => $isChecked,
+                        'assignee' => $assignee ?: 'SM',
+                        'checked_by' => $isChecked ? 'umum' : null,
+                    ];
+                }
+            }
+        }
+
+        $nomorSpj = $request->filled('nomor_spj') ? $request->nomor_spj : Spj::generateNomorSpj();
+
+        $spj = Spj::create([
+            'user_id' => Auth::id(),
+            'nomor_spj' => $nomorSpj,
+            'kegiatan' => $request->kegiatan,
+            'tanggal' => $request->tanggal,
+            'tanggal_selesai' => $request->tanggal_selesai ?: null,
+            'seksi' => $request->seksi ?: (Auth::user()->seksi ?? 'Subbag Umum'),
+            'nilai' => $request->nilai,
+            'keterangan' => $request->keterangan,
+            'no_wa' => $request->no_wa ?: Auth::user()->no_wa,
+            'status' => $request->status,
+            'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
+            'diajukan_at' => $request->status === 'diajukan' ? now() : null,
+        ]);
+
+        SpjHistory::create([
+            'spj_id' => $spj->id,
+            'user_id' => Auth::id(),
+            'aksi' => $request->status === 'diajukan' ? 'Pengajuan SPJ oleh Subbag Umum' : 'Draf SPJ dibuat oleh Subbag Umum',
+            'status_lama' => null,
+            'status_baru' => $request->status,
+            'keterangan' => $request->status === 'diajukan'
+                ? 'SPJ dibuat dan diajukan oleh Subbagian Umum ke alur verifikasi.'
+                : 'SPJ disimpan sebagai draft oleh Subbagian Umum.',
+        ]);
+
+        if ($request->status === 'diajukan') {
+            WhatsAppService::notifySubmitted($spj);
+        }
+
+        $msg = $request->status === 'diajukan'
+            ? 'SPJ berhasil diajukan oleh Subbagian Umum.'
+            : 'Draft SPJ berhasil disimpan.';
+
+        return redirect()->route('umum.spj.index')->with('success', $msg);
     }
 
     public function show($id)

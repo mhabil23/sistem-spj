@@ -58,5 +58,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'bendahara',
             'password' => bcrypt('password'),
         ]);
+
+        $this->call(SyaratDokumenSpjSeeder::class);
     }
 }

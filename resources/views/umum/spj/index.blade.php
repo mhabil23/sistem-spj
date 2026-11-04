@@ -17,8 +17,14 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
             <h2 style="font-size: 24px; font-weight: 700; color: var(--dash-text-dark); margin: 0 0 4px 0; letter-spacing: -0.01em;">Kotak Masuk SPJ</h2>
             <p style="color: var(--dash-text-muted); font-size: 14px; margin: 0;">SPJ yang berstatus 'Menunggu Pemeriksaan' harus segera ditinjau dan diproses.</p>
         </div>
-        <div style="font-size: 13px; font-weight: 600; color: var(--dash-text-muted); background-color: var(--dash-card-bg); padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--dash-border);">
-            Total: <span style="color: var(--dash-text-dark); font-weight: 700;">{{ $spjs->count() }}</span> Pengajuan
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <a href="{{ route('umum.spj.create') }}" class="btn-dash-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; text-decoration: none;">
+                <ion-icon name="add-circle-outline" style="font-size: 18px;"></ion-icon>
+                <span>Ajukan SPJ Baru</span>
+            </a>
+            <div style="font-size: 13px; font-weight: 600; color: var(--dash-text-muted); background-color: var(--dash-card-bg); padding: 8px 16px; border-radius: 9999px; border: 1px solid var(--dash-border);">
+                Total: <span style="color: var(--dash-text-dark); font-weight: 700;">{{ $spjs->count() }}</span> Pengajuan
+            </div>
         </div>
     </div>
 

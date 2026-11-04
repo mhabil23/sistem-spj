@@ -10,7 +10,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $userId = Auth::id() ?? 1; // Fallback jika tidak ada auth saat ini
+        $userId = Auth::id();
 
         $totalSpj = Spj::where('user_id', $userId)->count();
         $diprosesSpj = Spj::where('user_id', $userId)->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa'])->count();

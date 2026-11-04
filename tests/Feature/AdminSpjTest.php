@@ -49,31 +49,18 @@ class AdminSpjTest extends TestCase
         $response->assertSee('Verifikasi Berkas');
     }
 
-    public function test_admin_creating_spj_records_spj_history(): void
+    public function test_admin_cannot_create_spj(): void
     {
         $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
 
-        $response = $this->actingAs($admin)->post(route('admin.spj.store'), [
+        $response = $this->actingAs($admin)->get('/admin/spj/create');
+        $response->assertStatus(404);
+
+        $postResponse = $this->actingAs($admin)->post('/admin/spj', [
             'nomor_spj' => 'SPJ-ADMIN-NEW-001',
             'kegiatan' => 'Sosialisasi Sensus Pertanian 2026',
-            'tanggal' => '2026-10-27',
-            'nilai' => 7500000,
-            'status' => 'diajukan',
-            'is_printed' => 1,
-            'keterangan' => 'Dibuat oleh admin',
         ]);
-
-        $response->assertRedirect(route('admin.spj.index'));
-
-        $spj = Spj::where('nomor_spj', 'SPJ-ADMIN-NEW-001')->first();
-        $this->assertNotNull($spj);
-
-        $this->assertDatabaseHas('spj_histories', [
-            'spj_id' => $spj->id,
-            'user_id' => $admin->id,
-            'aksi' => 'Pengajuan SPJ oleh Admin',
-            'status_baru' => 'diajukan',
-        ]);
+        $postResponse->assertStatus(405);
     }
 
     public function test_admin_updating_spj_records_spj_history(): void

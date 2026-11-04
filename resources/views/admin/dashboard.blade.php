@@ -859,8 +859,8 @@
                 </p>
             </div>
             <div class="hero-actions">
-                <a href="{{ route('admin.spj.create') }}" class="btn-hero-primary">
-                    <i class="bi bi-plus-circle-fill"></i> Buat SPJ Baru
+                <a href="{{ route('admin.syarat-dokumen.index') }}" class="btn-hero-primary">
+                    <i class="bi bi-card-checklist"></i> Syarat Dokumen SPJ
                 </a>
                 <a href="{{ route('admin.laporan.spj') }}" class="btn-hero-glass">
                     <i class="bi bi-file-earmark-bar-graph"></i> Rekap Laporan
@@ -1143,10 +1143,7 @@
                                 <td colspan="6" style="text-align: center; padding: 36px 20px; color: var(--dash-slate-400);">
                                     <i class="bi bi-inbox" style="font-size: 32px; display: block; margin-bottom: 6px;"></i>
                                     <div style="font-size: 13px; font-weight: 600; color: var(--dash-slate-600); margin-bottom: 4px;">Belum ada berkas SPJ yang terdaftar dalam sistem.</div>
-                                    <p style="font-size: 11.5px; margin: 0 0 12px 0;">Mulai dengan menginput pengajuan SPJ baru melalui tombol di bawah ini.</p>
-                                    <a href="{{ route('admin.spj.create') }}" class="btn-hero-primary" style="font-size: 11.5px; padding: 7px 14px; box-shadow: none;">
-                                        <i class="bi bi-plus-circle-fill"></i> Buat SPJ Baru
-                                    </a>
+                                    <p style="font-size: 11.5px; margin: 0;">Menunggu pengajuan berkas SPJ dari staf Teknis atau Subbagian Umum.</p>
                                 </td>
                             </tr>
                             @endforelse
@@ -1327,11 +1324,11 @@
             </div>
             <div class="dash-card-body">
                 <div class="shortcuts-grid">
-                    <a href="{{ route('admin.spj.create') }}" class="shortcut-btn">
+                    <a href="{{ route('admin.syarat-dokumen.index') }}" class="shortcut-btn">
                         <div class="shortcut-icon">
-                            <i class="bi bi-file-earmark-plus-fill"></i>
+                            <i class="bi bi-card-checklist"></i>
                         </div>
-                        <span class="shortcut-label">Input SPJ Baru</span>
+                        <span class="shortcut-label">Syarat Dokumen</span>
                     </a>
                     <a href="{{ route('admin.template-berkas.index') }}" class="shortcut-btn">
                         <div class="shortcut-icon">

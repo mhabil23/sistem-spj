@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProfilController as AdminProfilController;
 use App\Http\Controllers\Admin\RiwayatController;
 use App\Http\Controllers\Admin\SpjController;
+use App\Http\Controllers\Admin\SyaratDokumenController;
 use App\Http\Controllers\Admin\TemplateBerkasController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\HomeController;
@@ -39,14 +40,18 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Daftar SPJ
+    // Daftar SPJ (Admin hanya memonitor, mengedit & menghapus; pengajuan dilakukan oleh Teknis & Umum)
     Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');
-    Route::get('/spj/create', [SpjController::class, 'create'])->name('spj.create');
-    Route::post('/spj', [SpjController::class, 'store'])->name('spj.store');
     Route::get('/spj/{spj}', [SpjController::class, 'show'])->name('spj.show');
     Route::get('/spj/{spj}/edit', [SpjController::class, 'edit'])->name('spj.edit');
     Route::put('/spj/{spj}', [SpjController::class, 'update'])->name('spj.update');
     Route::delete('/spj/{spj}', [SpjController::class, 'destroy'])->name('spj.destroy');
+
+    // Syarat Dokumen SPJ (Kelola Dokumen Persyaratan per Jenis Belanja)
+    Route::get('/syarat-dokumen', [SyaratDokumenController::class, 'index'])->name('syarat-dokumen.index');
+    Route::post('/syarat-dokumen', [SyaratDokumenController::class, 'store'])->name('syarat-dokumen.store');
+    Route::put('/syarat-dokumen/{syaratDokumen}', [SyaratDokumenController::class, 'update'])->name('syarat-dokumen.update');
+    Route::delete('/syarat-dokumen/{syaratDokumen}', [SyaratDokumenController::class, 'destroy'])->name('syarat-dokumen.destroy');
 
     // Pengguna
     Route::get('/pengguna', [UserController::class, 'index'])->name('pengguna.index');
@@ -116,6 +121,8 @@ Route::redirect('/umum', '/umum/dashboard');
 Route::middleware(['auth', 'role:umum'])->prefix('umum')->name('umum.')->group(function () {
     Route::get('/dashboard', [UmumDashboardController::class, 'index'])->name('dashboard');
     Route::get('/spj', [UmumSpjController::class, 'index'])->name('spj.index');
+    Route::get('/spj/create', [UmumSpjController::class, 'create'])->name('spj.create');
+    Route::post('/spj', [UmumSpjController::class, 'store'])->name('spj.store');
     Route::get('/spj/{id}', [UmumSpjController::class, 'show'])->name('spj.show');
     Route::delete('/spj/{id}', [UmumSpjController::class, 'destroy'])->name('spj.destroy');
     Route::get('/spj/{id}/print', [UmumSpjController::class, 'print'])->name('spj.print');
