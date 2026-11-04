@@ -21,9 +21,10 @@ class PublicSpjMonitoringTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Dashboard Monitoring &amp; Status SPJ', false);
-        $response->assertSee('Cari Nama / Kegiatan');
         $response->assertSee('Tanggal SPJ');
-        $response->assertSee('Jumlah / Nominal');
+        $response->assertSee('Urutan Data');
+        $response->assertDontSee('Cari Nama / Kegiatan');
+        $response->assertDontSee('Jumlah / Nominal');
     }
 
     /**

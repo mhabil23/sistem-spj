@@ -2044,7 +2044,7 @@ body {
 
 /* 3. Control Card: Search, Sort, Filters */
 .monitoring-controls-card {
-    background: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(203, 213, 225, 0.85);
@@ -2054,12 +2054,46 @@ body {
     box-shadow: 0 8px 30px -4px rgba(15, 23, 42, 0.06);
 }
 
-.m-filter-fields-grid {
-    display: grid;
-    grid-template-columns: 2fr 1.3fr 1.3fr 1.3fr auto;
-    gap: 14px;
+/* Baris 1: Filter Tanggal, Urutan Data, & Tombol Reset (Centered) */
+.m-filter-top-bar {
+    display: flex;
     align-items: flex-end;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.m-filter-top-bar .m-field-group {
+    width: 270px;
+    max-width: 100%;
+}
+
+.m-filter-action {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 0;
+}
+
+/* Fallback grid if needed */
+.m-filter-fields-grid {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
     margin-bottom: 20px;
+}
+
+.m-filter-fields-grid .m-field-group {
+    flex: 1;
+    min-width: 220px;
+    max-width: 320px;
+}
+
+.m-filter-fields-grid .m-field-group:last-child {
+    flex: 0 0 auto;
+    min-width: auto;
+    max-width: none;
 }
 
 .m-field-group {
@@ -2131,8 +2165,21 @@ body {
     outline: none;
 }
 
-.m-field-input-box.no-icon input {
+.m-field-input-box.no-icon input,
+.m-field-input-box.no-icon select {
     padding-left: 14px;
+}
+
+.m-field-input-box select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 36px;
 }
 
 .m-field-input-box.with-prefix input {
@@ -2159,9 +2206,9 @@ body {
     height: 44px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 16px;
-    background: #f1f5f9;
+    gap: 7px;
+    padding: 0 18px;
+    background: #f8fafc;
     border: 1.5px solid #cbd5e1;
     border-radius: 12px;
     font-size: 13px;
@@ -2176,15 +2223,69 @@ body {
     background: #e2e8f0;
     color: #0f172a;
     border-color: #94a3b8;
+    transform: translateY(-1px);
+}
+
+.btn-reset-filters:active {
+    transform: translateY(0);
+}
+
+.btn-reset-filters i {
+    font-size: 14px;
+    color: #64748b;
+    transition: transform 0.3s ease;
+}
+
+.btn-reset-filters:hover i {
+    transform: rotate(-90deg);
+    color: #0f172a;
+}
+
+/* Subtle Divider Antar Baris Filter (Centered Symmetrical) */
+.m-filter-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(203, 213, 225, 0.8) 15%, rgba(203, 213, 225, 0.8) 85%, transparent 100%);
+    margin: 18px auto 16px auto;
+    width: 100%;
+    max-width: 860px;
+}
+
+/* Status Filter Row (Centered) */
+.m-filter-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.m-status-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.m-status-title i {
+    color: #0284c7;
+    font-size: 13px;
 }
 
 /* Status Filter Chips */
 .m-status-chips {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 4px;
+    padding-bottom: 2px;
     scrollbar-width: thin;
 }
 
@@ -2288,7 +2389,7 @@ body {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 900px;
+    min-width: 640px;
 }
 
 .m-table th {
@@ -2369,6 +2470,56 @@ body {
 
 .m-kegiatan-cell {
     max-width: 320px;
+}
+
+.m-pengaju-cell {
+    vertical-align: middle;
+}
+
+.m-pengaju-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.m-pengaju-title i {
+    color: #0284c7;
+    font-size: 14px;
+}
+
+.m-kegiatan-sub {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-top: 4px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.m-status-cell {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.m-stage-sub {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+.spj-row {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.spj-row:hover td {
+    background-color: rgba(2, 132, 199, 0.05) !important;
 }
 
 .m-kegiatan-title {
@@ -2916,10 +3067,6 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .m-filter-fields-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
     .track-info-grid {
         grid-template-columns: 1fr;
     }
@@ -2934,13 +3081,46 @@ body {
         font-size: 26px;
     }
 
+    .m-filter-top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .m-filter-top-bar .m-field-group {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .m-filter-action {
+        width: 100%;
+        margin-left: 0;
+    }
+
     .m-filter-fields-grid {
-        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .m-filter-fields-grid .m-field-group {
+        max-width: 100%;
+        width: 100%;
     }
 
     .btn-reset-filters {
         width: 100%;
         justify-content: center;
+    }
+
+    .m-filter-status-row {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .m-status-chips {
+        width: 100%;
+        justify-content: flex-start;
     }
 
     .track-modal-header {
