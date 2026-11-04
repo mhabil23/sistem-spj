@@ -290,6 +290,89 @@
     .btn-action-icon.delete { color: #dc2626; }
     .btn-action-icon.delete:hover { background: #fee2e2; }
 
+    /* PAGINATION */
+    .admin-pagination-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 14px 20px;
+        background: #ffffff;
+        border-top: 1px solid var(--dash-slate-200);
+    }
+
+    .admin-pagination-info {
+        font-size: 12.5px;
+        color: var(--dash-slate-500);
+    }
+
+    .admin-pagination-info span {
+        font-weight: 700;
+        color: var(--bps-navy);
+    }
+
+    .admin-pagination-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        flex-wrap: wrap;
+    }
+
+    .page-link-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 34px;
+        height: 34px;
+        padding: 0 10px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--dash-slate-700);
+        background: #ffffff;
+        border: 1px solid var(--dash-slate-200);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        gap: 5px;
+        cursor: pointer;
+    }
+
+    .page-link-item:hover:not(.disabled):not(.active) {
+        background: #e0f2fe;
+        border-color: #bae6fd;
+        color: #0284c7;
+    }
+
+    .page-link-item.active {
+        background: var(--bps-blue);
+        border-color: var(--bps-blue);
+        color: #ffffff;
+        font-weight: 700;
+        cursor: default;
+        box-shadow: 0 2px 6px rgba(2, 75, 134, 0.25);
+    }
+
+    .page-link-item.disabled {
+        color: #94a3b8;
+        background: #f8fafc;
+        border-color: #e2e8f0;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .page-link-item.dots {
+        border: none;
+        background: transparent;
+        cursor: default;
+        padding: 0 4px;
+        min-width: auto;
+    }
+
+    .admin-pagination-nav svg {
+        display: none !important;
+    }
+
     /* MODAL */
     .modal-backdrop-custom {
         display: none;
@@ -595,9 +678,7 @@
         </div>
 
         @if($syaratDokumens->hasPages())
-        <div style="padding: 16px 20px; border-top: 1px solid var(--dash-slate-200); background: #ffffff;">
-            {{ $syaratDokumens->links() }}
-        </div>
+            {{ $syaratDokumens->links('vendor.pagination.admin') }}
         @endif
     </div>
 
@@ -779,3 +860,4 @@
 @endpush
 
 @endsection
+
