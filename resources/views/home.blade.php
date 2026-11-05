@@ -41,7 +41,7 @@
                 <a href="#monitoring" class="nav-link">Monitoring SPJ</a>
                 <a href="#alur" class="nav-link">Alur</a>
                 <a href="#panduan" class="nav-link">Panduan</a>
-                <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">Template SPJ</a>
+                <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">Format SPJ</a>
             </nav>
 
             <div class="nav-actions">
@@ -173,10 +173,6 @@
                     Kelola SPJ Cerdas <br>
                     <span class="gradient-text">&amp; Transparan</span>
                 </h1>
-
-                <p class="hero-description">
-                    Sistem monitoring dan penyelesaian tagihan SPJ Badan Pusat Statistik yang terintegrasi, transparan, dan dapat dipantau langsung tanpa harus login.
-                </p>
 
             </div>
 
@@ -714,17 +710,17 @@
                     </p>
                 </div>
 
-                <div class="feature feature-link feature-tpl-trigger" onclick="openTemplateModal()" id="cardTemplateSpj" role="button" tabindex="0" title="Buka & Unduh Katalog Template Berkas SPJ">
+                <div class="feature feature-link feature-tpl-trigger" onclick="openTemplateModal()" id="cardTemplateSpj" role="button" tabindex="0" title="Buka & Unduh Katalog Format Berkas SPJ">
                     <div class="feature-icon feat-rose">
                         <i class="bi bi-file-earmark-arrow-down"></i>
                     </div>
                     <div class="feature-title-row">
-                        <h3>Template SPJ</h3>
+                        <h3>Format SPJ</h3>
                         <span class="feature-ext-badge"><i class="bi bi-download"></i></span>
                     </div>
                     <p>
-                        Format dan template berkas
-                        kelengkapan SPJ siap diunduh.
+                        Format dan kelengkapan berkas
+                        SPJ siap diunduh.
                     </p>
                     <div class="feature-action-hint">
                         <span>Unduh Format ({{ count($templates) }})</span>
@@ -1391,7 +1387,7 @@
                         <i class="bi bi-file-earmark-arrow-down-fill"></i>
                         <span>Pusat Unduhan Resmi</span>
                     </div>
-                    <h2 id="tplModalTitle">Format &amp; Template Berkas SPJ</h2>
+                    <h2 id="tplModalTitle">Format Berkas SPJ</h2>
                     <p>
                         Unduh format dokumen kelengkapan SPJ resmi BPS tanpa perlu login. Berkas siap diisi untuk kelancaran administrasi dan pengajuan tagihan.
                     </p>
@@ -1494,8 +1490,8 @@
                     @empty
                     <div class="tpl-empty-box" id="tplEmptyState">
                         <i class="bi bi-inbox-fill"></i>
-                        <h4>Belum ada format template yang diunggah</h4>
-                        <p>Administrator belum menambahkan template format SPJ ke sistem.</p>
+                        <h4>Belum ada berkas format yang diunggah</h4>
+                        <p>Administrator belum menambahkan berkas format SPJ ke sistem.</p>
                     </div>
                     @endforelse
                 </div>
@@ -1503,7 +1499,7 @@
                 <!-- Empty Search Filter State -->
                 <div class="tpl-empty-box" id="tplNoResults" style="display: none;">
                     <i class="bi bi-search"></i>
-                    <h4>Tidak ditemukan template yang cocok</h4>
+                    <h4>Tidak ditemukan berkas format yang cocok</h4>
                     <p>Coba kata kunci lain atau pilih tab kategori 'Semua Format'.</p>
                     <button type="button" class="btn-reset-filter" onclick="resetTemplateFilters()">Tampilkan Semua Format</button>
                 </div>
@@ -1513,7 +1509,7 @@
             <div class="tpl-modal-footer">
                 <div class="tpl-footer-note">
                     <i class="bi bi-shield-check"></i>
-                    <span>Template resmi Badan Pusat Statistik Kabupaten Kolaka Utara &bull; Siap digunakan untuk pelaporan SPJ APBN.</span>
+                    <span>Format resmi Badan Pusat Statistik Kabupaten Kolaka Utara &bull; Siap digunakan untuk pelaporan SPJ APBN.</span>
                 </div>
                 <button type="button" class="btn-close-modal" onclick="closeTemplateModal()">Tutup</button>
             </div>
