@@ -123,104 +123,12 @@
     </div>
 
 
-    <!-- HERO SECTION WITH HIGH-TECH GRAPHICS & GLASSMORPHISM -->
-    <!-- MAIN SEAMLESS CANVAS (Unified background atmosphere spanning Hero and Workflow) -->
+    <!-- MAIN CANVAS -->
     <main class="page-canvas">
 
-        <!-- Unified background layer that runs seamlessly across both sections -->
+        <!-- Clean minimal background — single noise dot layer -->
         <div class="unified-bg-canvas" aria-hidden="true">
-            <!-- Continuous grid mesh -->
             <div class="bg-grid-mesh"></div>
-
-            <!-- Ambient glowing orbs (smooth continuous glow) -->
-            <div class="glow-orb glow-cyan-hero"></div>
-            <div class="glow-orb glow-orange-hero"></div>
-            <div class="glow-orb glow-cyan-wf"></div>
-            <div class="glow-orb glow-orange-wf"></div>
-            <div class="glow-orb glow-cyan-ft"></div>
-            <div class="glow-orb glow-orange-ft"></div>
-
-            <!-- Financial Chart silhouette in Hero background -->
-            <svg class="bg-chart-lines" viewBox="0 0 1000 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g opacity="0.14">
-                    <rect x="420" y="300" width="14" height="150" rx="3" fill="#0284c7"/>
-                    <rect x="442" y="250" width="14" height="200" rx="3" fill="#38bdf8"/>
-                    <rect x="464" y="210" width="14" height="240" rx="3" fill="#0284c7"/>
-                    <rect x="486" y="270" width="14" height="180" rx="3" fill="#38bdf8"/>
-                    <rect x="508" y="180" width="14" height="270" rx="3" fill="#0284c7"/>
-                    <rect x="530" y="150" width="14" height="300" rx="3" fill="#38bdf8"/>
-                    <rect x="552" y="200" width="14" height="250" rx="3" fill="#0284c7"/>
-                    <rect x="574" y="130" width="14" height="320" rx="3" fill="#38bdf8"/>
-                    <rect x="596" y="190" width="14" height="260" rx="3" fill="#0284c7"/>
-                    <rect x="618" y="240" width="14" height="210" rx="3" fill="#38bdf8"/>
-                </g>
-                <path d="M380 340 Q 480 300 520 200 T 600 140 T 700 240 T 820 120" stroke="rgba(56, 189, 248, 0.35)" stroke-width="2" stroke-dasharray="4 4" fill="none"/>
-            </svg>
-
-            <!-- Crystal Facets in Workflow (Left) -->
-            <svg class="wf-facets" viewBox="0 0 500 450" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="facetGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.32"/>
-                        <stop offset="100%" stop-color="#818cf8" stop-opacity="0.12"/>
-                    </linearGradient>
-                    <linearGradient id="facetGrad2" x1="0%" y1="100%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#c084fc" stop-opacity="0.22"/>
-                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.08"/>
-                    </linearGradient>
-                    <linearGradient id="facetGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45"/>
-                        <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.18"/>
-                    </linearGradient>
-                </defs>
-                <polygon points="0,50 180,120 70,240" fill="url(#facetGrad1)"/>
-                <polygon points="70,240 180,120 220,280" fill="url(#facetGrad2)"/>
-                <polygon points="0,50 70,240 0,320" fill="url(#facetGrad3)"/>
-                <polygon points="180,120 320,80 220,280" fill="url(#facetGrad1)" opacity="0.6"/>
-                <polygon points="220,280 320,80 340,240" fill="url(#facetGrad2)" opacity="0.4"/>
-                <line x1="0" y1="50" x2="180" y2="120" stroke="rgba(255,255,255,0.7)" stroke-width="1.5"/>
-                <line x1="180" y1="120" x2="70" y2="240" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/>
-                <line x1="70" y1="240" x2="220" y2="280" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/>
-                <line x1="180" y1="120" x2="220" y2="280" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
-                <line x1="180" y1="120" x2="320" y2="80" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
-            </svg>
-
-            <!-- Dot Grid in Workflow & Features -->
-            <div class="workflow-dot-grid wf-dots-tr"></div>
-            <div class="workflow-dot-grid wf-dots-bl"></div>
-            <div class="workflow-dot-grid wf-dots-ft"></div>
-
-            <!-- Flowing Wave Ribbons across both sections -->
-            <svg class="bg-wave-ribbons" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                    <linearGradient id="ribbonGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#38bdf8" stop-opacity="0"/>
-                        <stop offset="35%" stop-color="#38bdf8" stop-opacity="0.55"/>
-                        <stop offset="70%" stop-color="#2563eb" stop-opacity="0.45"/>
-                        <stop offset="100%" stop-color="#f97316" stop-opacity="0.35"/>
-                    </linearGradient>
-                    <linearGradient id="ribbonGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stop-color="#0284c7" stop-opacity="0"/>
-                        <stop offset="45%" stop-color="#38bdf8" stop-opacity="0.6"/>
-                        <stop offset="100%" stop-color="#fb923c" stop-opacity="0.45"/>
-                    </linearGradient>
-                </defs>
-                <path d="M 320 380 C 470 340, 580 240, 730 280 C 880 320, 1030 200, 1180 220 C 1280 230, 1370 160, 1440 140" stroke="url(#ribbonGrad1)" stroke-width="1.6"/>
-                <path d="M 350 390 C 500 350, 600 260, 750 290 C 900 320, 1050 210, 1200 240 C 1290 250, 1380 180, 1440 160" stroke="url(#ribbonGrad2)" stroke-width="1.4"/>
-                <path d="M 380 400 C 530 360, 620 280, 770 300 C 920 320, 1070 220, 1220 260 C 1300 270, 1390 200, 1440 180" stroke="url(#ribbonGrad1)" stroke-width="1.2"/>
-                <path d="M 280 420 C 480 380, 640 480, 850 440 C 1060 400, 1240 280, 1440 310" stroke="url(#ribbonGrad2)" stroke-width="1.2"/>
-                <path d="M 120 480 C 340 430, 560 540, 780 500 C 1000 460, 1200 350, 1440 370" stroke="url(#ribbonGrad1)" stroke-width="1"/>
-            </svg>
-
-            <!-- Luminous sparkles -->
-            <div class="particle-sparkle sparkle-1"></div>
-            <div class="particle-sparkle sparkle-2"></div>
-            <div class="particle-sparkle sparkle-3"></div>
-            <div class="particle-sparkle sparkle-4"></div>
-            <div class="particle-sparkle sparkle-5"></div>
-            <div class="particle-sparkle wf-sp-1"></div>
-            <div class="particle-sparkle wf-sp-2"></div>
-            <div class="particle-sparkle wf-sp-3"></div>
         </div>
 
         <!-- HERO SECTION -->
@@ -236,98 +144,203 @@
 
             </div>
 
-            <!-- Right Hero Visual (Glassmorphic Neumorphic Card with 3D Tilt & Stepper) -->
+            <!-- Right Hero Visual (Modern Clean UI Card for SPJ Tracking with Cartoon Mascot) -->
             <div class="hero-card-wrapper" id="heroCardWrapper">
 
-                <!-- Interactive 3D Glass Card -->
-                <div class="hero-glass-card" id="heroInteractiveCard">
+                <!-- Interactive Card (Clean White, Soft Blue, Micro-Animations) -->
+                <div class="spj-tracking-card cool-card-reveal is-revealed" id="heroInteractiveCard">
 
-                    <!-- Header -->
-                    <div class="glass-card-header">
-                        <span class="card-status-label">
-                            <span class="live-indicator-dot"></span>
-                            LIVE STATUS SPJ
-                        </span>
+                    <!-- 1. Header: Live Status SPJ & Badge Diproses Bendahara -->
+                    <div class="card-head-row">
+                        <div class="live-status-indicator">
+                            <span class="live-dot-beacon">
+                                <span class="beacon-ping"></span>
+                                <span class="beacon-core"></span>
+                            </span>
+                            <span class="live-text-tag">LIVE STATUS SPJ</span>
+                        </div>
 
-                        <div class="live-status-pill status-ready smooth-crossfade" id="cardStatusBadge">
-                            <i class="bi bi-file-earmark-arrow-up"></i>
-                            <span id="cardStatusText">Pengajuan Dibuat</span>
+                        <div class="status-badge-bendahara">
+                            <i class="bi bi-hourglass-split"></i>
+                            <span>Diproses Bendahara</span>
                         </div>
                     </div>
 
-                    <!-- Stepper Progress Bar (5 Steps) -->
-                    <div class="stepper-container" id="heroStepper">
+                    <!-- 2. Progress Tracker: 5 Titik Langkah dengan Dashed Line & Karakter Kartun -->
+                    <div class="tracker-box">
+                        <div class="tracker-steps-line">
 
-                        <div class="stepper-step step-active-now" data-step="0" title="Tahap 1: Teknis">
-                            <div class="step-circle step-glow">1</div>
-                            <span class="step-label">Teknis</span>
+                            <!-- Langkah 1: Teknis (Selesai / Centang) -->
+                            <div class="tracker-step-item">
+                                <div class="step-check-circle" title="Tahap 1: Teknis (Selesai)">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <span class="step-title">Teknis</span>
+                            </div>
+
+                            <!-- Dashed Line 1 - 2 -->
+                            <div class="tracker-dashed-connector connector-done"></div>
+
+                            <!-- Langkah 2: Umum (Selesai / Centang) -->
+                            <div class="tracker-step-item">
+                                <div class="step-check-circle" title="Tahap 2: Subbagian Umum (Selesai)">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <span class="step-title">Umum</span>
+                            </div>
+
+                            <!-- Dashed Line 2 - 3 -->
+                            <div class="tracker-dashed-connector connector-done"></div>
+
+                            <!-- Langkah 3: PPK (Selesai / Centang) -->
+                            <div class="tracker-step-item">
+                                <div class="step-check-circle" title="Tahap 3: PPK (Selesai)">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <span class="step-title">PPK</span>
+                            </div>
+
+                            <!-- Dashed Line 3 - 4 -->
+                            <div class="tracker-dashed-connector connector-done"></div>
+
+                            <!-- Langkah 4: PPSPM (Selesai / Centang) -->
+                            <div class="tracker-step-item">
+                                <div class="step-check-circle" title="Tahap 4: PPSPM (Selesai)">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <span class="step-title">PPSPM</span>
+                            </div>
+
+                            <!-- Dashed Line 4 - 5 (Jalur Menuju Bendahara) -->
+                            <div class="tracker-dashed-connector connector-active"></div>
+
+                            <!-- Langkah 5: Bendahara dengan Maskot Kartun 2D/3D Minimalis -->
+                            <div class="tracker-step-item step-mascot-target">
+                                
+                                <!-- Maskot Kartun Amplop Dokumen Berkaki Sedang Menunggu di Meja Bendahara -->
+                                <div class="mascot-walker" title="Dokumen SPJ Anda sedang menunggu proses di Bendahara!">
+                                    <div class="mascot-bubble">
+                                        <span>Menunggu...</span>
+                                    </div>
+
+                                    <svg class="mascot-svg" width="56" height="64" viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <!-- Shadow under feet -->
+                                        <ellipse class="mascot-shadow-anim" cx="28" cy="60" rx="14" ry="3" fill="#0284c7" opacity="0.22"/>
+                                        
+                                        <!-- Left Leg (Standing firm) -->
+                                        <g class="leg-left">
+                                            <rect x="20" y="43" width="4.5" height="12" rx="2" fill="#0284c7"/>
+                                            <path d="M17 54 C17 52 23 52 25 54 L25 57 C25 58.5 17 58.5 17 57 Z" fill="#0f172a"/>
+                                        </g>
+                                        
+                                        <!-- Right Leg (Foot Tapping Idle Animation) -->
+                                        <g class="leg-right-tap">
+                                            <rect x="31.5" y="43" width="4.5" height="12" rx="2" fill="#0284c7"/>
+                                            <path class="foot-tapping" d="M28.5 54 C28.5 52 34.5 52 36.5 54 L36.5 57 C36.5 58.5 28.5 58.5 28.5 57 Z" fill="#0f172a"/>
+                                        </g>
+
+                                        <!-- Mascot Body / Document Envelope (Breathing Idle Animation) -->
+                                        <g class="mascot-torso">
+                                            <!-- Main Envelope / Document Shape -->
+                                            <rect x="6.5" y="11" width="43" height="34" rx="8" fill="#ffffff" stroke="#0284c7" stroke-width="2.5"/>
+                                            
+                                            <!-- Soft inner gradient fill -->
+                                            <rect x="9" y="13.5" width="38" height="29" rx="6" fill="url(#mascotGradient)"/>
+                                            
+                                            <!-- Envelope Flap / Crease Lines -->
+                                            <path d="M7.5 13 L28 29 L48.5 13" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <path d="M7.5 43 L21 31" stroke="#e0f2fe" stroke-width="1.6" stroke-linecap="round"/>
+                                            <path d="M48.5 43 L35 31" stroke="#e0f2fe" stroke-width="1.6" stroke-linecap="round"/>
+                                            
+                                            <!-- Stamp / Official BPS Ribbon in top right corner -->
+                                            <rect x="35" y="15" width="9" height="11" rx="2" fill="#e0f2fe" stroke="#0284c7" stroke-width="1"/>
+                                            <line x1="37" y1="18.5" x2="42" y2="18.5" stroke="#0284c7" stroke-width="1"/>
+                                            <line x1="37" y1="21.5" x2="41" y2="21.5" stroke="#f97316" stroke-width="1"/>
+                                            
+                                            <!-- Cute Big Eyes (With Blinking Animation) -->
+                                            <g class="mascot-eyes">
+                                                <ellipse cx="20.5" cy="32.5" rx="2.4" ry="2.8" fill="#0f172a"/>
+                                                <circle cx="19.7" cy="31.5" r="0.9" fill="#ffffff"/>
+                                                <ellipse cx="29.5" cy="32.5" rx="2.4" ry="2.8" fill="#0f172a"/>
+                                                <circle cx="28.7" cy="31.5" r="0.9" fill="#ffffff"/>
+                                            </g>
+                                            
+                                            <!-- Rosy Blushing Cheeks -->
+                                            <ellipse cx="15.5" cy="35.5" rx="2.2" ry="1.4" fill="#fb7185" opacity="0.45"/>
+                                            <ellipse cx="34.5" cy="35.5" rx="2.2" ry="1.4" fill="#fb7185" opacity="0.45"/>
+                                            
+                                            <!-- Cheerful Smile -->
+                                            <path d="M23 35.5 Q25 38.5 27 35.5" stroke="#0f172a" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                                            
+                                            <!-- Cute Little Arms Resting on Hips -->
+                                            <path d="M5.5 28 C3.5 31 3.5 35 6.5 36" stroke="#0284c7" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+                                            <path d="M50.5 28 C52.5 31 52.5 35 49.5 36" stroke="#0284c7" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+                                        </g>
+                                        
+                                        <!-- Thinking / Waiting Sparkle Dots -->
+                                        <g class="mascot-sparkles">
+                                            <circle cx="22" cy="6" r="1.5" fill="#38bdf8"/>
+                                            <circle cx="28" cy="3" r="2" fill="#f59e0b"/>
+                                            <circle cx="34" cy="6" r="1.5" fill="#38bdf8"/>
+                                        </g>
+                                        
+                                        <defs>
+                                            <linearGradient id="mascotGradient" x1="28" y1="13" x2="28" y2="43" gradientUnits="userSpaceOnUse">
+                                                <stop stop-color="#ffffff"/>
+                                                <stop offset="1" stop-color="#f0f9ff"/>
+                                            </linearGradient>
+                                        </defs>
+                                    </svg>
+                                </div>
+
+                                <!-- Titik 5: Bendahara Node -->
+                                <div class="step-target-circle" title="Tahap 5: Bendahara Pengeluaran (Sedang Berjalan)">
+                                    <span class="target-pulse-ring"></span>
+                                    <span class="step-num">5</span>
+                                </div>
+                                <span class="step-title title-active">Bendahara</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 3. Informasi Detail: Dua Kotak Informasi Sejajar (Kegiatan & Nilai SPJ) -->
+                    <div class="card-detail-grid">
+                        
+                        <!-- Kotak Kiri: Kegiatan -->
+                        <div class="info-card-box">
+                            <div class="info-box-text">
+                                <span class="info-label">Kegiatan</span>
+                                <strong class="info-value" title="Survei Sosial Ekonomi (Susenas)">
+                                    Survei Sosial Ekonomi (Susenas)
+                                </strong>
+                            </div>
+                            <div class="info-box-icon icon-briefcase">
+                                <i class="bi bi-briefcase-fill"></i>
+                            </div>
                         </div>
 
-                        <div class="step-line" data-line="0"></div>
-
-                        <div class="stepper-step" data-step="1" title="Tahap 2: Subbagian Umum">
-                            <div class="step-circle step-pending">2</div>
-                            <span class="step-label">Umum</span>
-                        </div>
-
-                        <div class="step-line" data-line="1"></div>
-
-                        <div class="stepper-step" data-step="2" title="Tahap 3: PPK">
-                            <div class="step-circle step-pending">3</div>
-                            <span class="step-label">PPK</span>
-                        </div>
-
-                        <div class="step-line" data-line="2"></div>
-
-                        <div class="stepper-step" data-step="3" title="Tahap 4: PPSPM">
-                            <div class="step-circle step-pending">4</div>
-                            <span class="step-label">PPSPM</span>
-                        </div>
-
-                        <div class="step-line" data-line="3"></div>
-
-                        <div class="stepper-step" data-step="4" title="Tahap 5: Bendahara">
-                            <div class="step-circle step-pending">5</div>
-                            <span class="step-label">Bendahara</span>
+                        <!-- Kotak Kanan: Nilai SPJ -->
+                        <div class="info-card-box">
+                            <div class="info-box-text">
+                                <span class="info-label">Nilai SPJ</span>
+                                <strong class="info-value value-money">
+                                    Rp 12.300.000
+                                </strong>
+                            </div>
+                            <div class="info-box-icon icon-money">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
                         </div>
 
                     </div>
 
-                    <!-- Live Stage Detail Note Box -->
-                    <div class="live-detail-box smooth-crossfade" id="simDetailBox">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2px;">
-                            <span style="font-size:10.5px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:0.4px;" id="simStageRole">Posisi: Tim Teknis Kegiatan</span>
-                            <span style="font-size:10.5px; font-weight:700; color:#0284c7;" id="simStageSla">Estimasi: Hari H</span>
-                        </div>
-                        <div class="live-detail-note">
-                            <i class="bi bi-info-circle-fill"></i>
-                            <span id="simStageDesc">Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.</span>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Info Cards -->
-                    <div class="glass-card-info-grid">
-
-                        <div class="info-pill-card">
-                            <div class="info-pill-text">
-                                <small>Kegiatan</small>
-                                <strong id="cardKegiatanText" class="smooth-crossfade">Survei Pertanian 2026</strong>
-                            </div>
-                            <div class="info-pill-icon icon-blue">
-                                <i class="bi bi-briefcase-fill" style="font-size:15px;"></i>
-                            </div>
-                        </div>
-
-                        <div class="info-pill-card">
-                            <div class="info-pill-text">
-                                <small>Nilai SPJ</small>
-                                <strong id="cardNominalText" class="smooth-crossfade">Rp 4.750.000</strong>
-                            </div>
-                            <div class="info-pill-icon icon-orange">
-                                <i class="bi bi-cash-stack" style="font-size:16px;"></i>
-                            </div>
-                        </div>
-
+                    <!-- 4. Footer (CTA): Tombol Aksi Penuh Berwarna Biru -->
+                    <div class="card-footer-cta">
+                        <a href="#monitoring" onclick="focusDetailSpj('Susenas', event)" class="btn-detail-cta">
+                            <span>Lihat Detail Dokumen</span>
+                            <i class="bi bi-arrow-right-circle-fill"></i>
+                        </a>
                     </div>
 
                 </div>
@@ -337,13 +350,44 @@
         </section>
 
         <!-- =========================================================
+             VELOCITY SCROLL MARQUEE — satu baris, clean, profesional
+        ========================================================= -->
+        <div class="velocity-scroll-strip" id="velocityScrollStrip" aria-hidden="true">
+            <div class="v-scroll-row">
+                <div class="v-scroll-track" id="vScrollTrack1">
+                    <span class="v-scroll-item item-accent"><i class="bi bi-broadcast-pin"></i> Live Status SPJ</span>
+                    <span class="v-scroll-item"><i class="bi bi-building"></i> BPS Kabupaten Kolaka Utara</span>
+                    <span class="v-scroll-item"><i class="bi bi-shield-check"></i> Akuntabel &amp; Transparan</span>
+                    <span class="v-scroll-item item-accent"><i class="bi bi-diagram-3"></i> 5 Tahap Alur SOP</span>
+                    <span class="v-scroll-item"><i class="bi bi-file-earmark-check"></i> Verifikasi Subbagian Umum</span>
+                    <span class="v-scroll-item"><i class="bi bi-patch-check"></i> Persetujuan PPK</span>
+                    <span class="v-scroll-item"><i class="bi bi-award"></i> Penerbitan SPM PPSPM</span>
+                    <span class="v-scroll-item item-accent"><i class="bi bi-cash-stack"></i> Pencairan Dana Bendahara</span>
+                    <span class="v-scroll-item"><i class="bi bi-folder-check"></i> Arsip Digital Permanen</span>
+                    <span class="v-scroll-item"><i class="bi bi-speedometer2"></i> Real-time Tracking</span>
+                    <!-- duplicate for seamless loop -->
+                    <span class="v-scroll-item item-accent"><i class="bi bi-broadcast-pin"></i> Live Status SPJ</span>
+                    <span class="v-scroll-item"><i class="bi bi-building"></i> BPS Kabupaten Kolaka Utara</span>
+                    <span class="v-scroll-item"><i class="bi bi-shield-check"></i> Akuntabel &amp; Transparan</span>
+                    <span class="v-scroll-item item-accent"><i class="bi bi-diagram-3"></i> 5 Tahap Alur SOP</span>
+                    <span class="v-scroll-item"><i class="bi bi-file-earmark-check"></i> Verifikasi Subbagian Umum</span>
+                    <span class="v-scroll-item"><i class="bi bi-patch-check"></i> Persetujuan PPK</span>
+                    <span class="v-scroll-item"><i class="bi bi-award"></i> Penerbitan SPM PPSPM</span>
+                    <span class="v-scroll-item item-accent"><i class="bi bi-cash-stack"></i> Pencairan Dana Bendahara</span>
+                    <span class="v-scroll-item"><i class="bi bi-folder-check"></i> Arsip Digital Permanen</span>
+                    <span class="v-scroll-item"><i class="bi bi-speedometer2"></i> Real-time Tracking</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================================
              DASHBOARD MONITORING & STATUS SPJ PUBLIK (TANPA LOGIN)
              Fitur READ & FILTER PENCARIAN (NAMA, TANGGAL, JUMLAH)
         ========================================================= -->
         <section class="monitoring-section" id="monitoring">
 
             <!-- Section Title -->
-            <div class="monitoring-header">
+            <div class="monitoring-header cool-header-reveal">
                 <span class="monitoring-badge">
                     <i class="bi bi-broadcast"></i>
                     TRANSPARANSI &amp; AKUNTABILITAS PUBLIK
@@ -358,7 +402,7 @@
 
             <!-- Summary Stats Counter Cards -->
             <div class="monitoring-stats-grid">
-                <div class="m-stat-card" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
+                <div class="m-stat-card cool-card-reveal" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
                     <div class="m-stat-icon m-stat-blue">
                         <i class="bi bi-folder2-open"></i>
                     </div>
@@ -368,7 +412,7 @@
                     </div>
                 </div>
 
-                <div class="m-stat-card" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
+                <div class="m-stat-card cool-card-reveal" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
                     <div class="m-stat-icon m-stat-amber">
                         <i class="bi bi-clock-history"></i>
                     </div>
@@ -378,7 +422,7 @@
                     </div>
                 </div>
 
-                <div class="m-stat-card" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
+                <div class="m-stat-card cool-card-reveal" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
                     <div class="m-stat-icon m-stat-blue">
                         <i class="bi bi-arrow-repeat"></i>
                     </div>
@@ -388,7 +432,7 @@
                     </div>
                 </div>
 
-                <div class="m-stat-card" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
+                <div class="m-stat-card cool-card-reveal" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
                     <div class="m-stat-icon m-stat-green">
                         <i class="bi bi-check2-circle"></i>
                     </div>
@@ -400,7 +444,7 @@
             </div>
 
             <!-- Filter Toolbar Card (Tanggal, Urutan, Reset, Status) -->
-            <div class="monitoring-controls-card">
+            <div class="monitoring-controls-card cool-card-reveal">
                 <!-- Baris 1: Filter Tanggal, Urutan Data, & Tombol Reset (Centered) -->
                 <div class="m-filter-top-bar">
                     <!-- 1. Filter Berdasarkan Tanggal -->
@@ -483,7 +527,7 @@
             </div>
 
             <!-- Table Card: Hasil Pembacaan Semua Data SPJ -->
-            <div class="monitoring-table-card">
+            <div class="monitoring-table-card cool-card-reveal">
                 <div class="m-table-header-bar">
                     <div class="m-table-header-title">
                         <i class="bi bi-table"></i>
@@ -615,7 +659,7 @@
         <!-- ALUR 5 TAHAPAN LENGKAP -->
         <section class="workflow" id="alur">
 
-            <div class="section-title">
+            <div class="section-title cool-header-reveal">
                 <span class="section-label">ALUR PROSES TERSTANDAR</span>
 
                 <h2 class="section-heading">
@@ -630,7 +674,7 @@
             <div class="flow-container">
 
                 <!-- 01: TEKNIS -->
-                <div class="flow-card blue">
+                <div class="flow-card blue cool-card-reveal">
                     <div class="number">01</div>
                     <div class="icon">
                         <i class="bi bi-file-earmark-text" style="font-size: 20px;"></i>
@@ -647,7 +691,7 @@
                 </div>
 
                 <!-- 02: SUBBAGIAN UMUM -->
-                <div class="flow-card green">
+                <div class="flow-card green cool-card-reveal">
                     <div class="number">02</div>
                     <div class="icon">
                         <i class="bi bi-clipboard2-check" style="font-size: 20px;"></i>
@@ -664,7 +708,7 @@
                 </div>
 
                 <!-- 03: PPK -->
-                <div class="flow-card orange">
+                <div class="flow-card orange cool-card-reveal">
                     <div class="number">03</div>
                     <div class="icon">
                         <i class="bi bi-patch-check" style="font-size: 20px;"></i>
@@ -681,7 +725,7 @@
                 </div>
 
                 <!-- 04: PPSPM -->
-                <div class="flow-card purple">
+                <div class="flow-card purple cool-card-reveal">
                     <div class="number">04</div>
                     <div class="icon">
                         <i class="bi bi-award" style="font-size: 20px;"></i>
@@ -698,7 +742,7 @@
                 </div>
 
                 <!-- 05: BENDAHARA -->
-                <div class="flow-card emerald">
+                <div class="flow-card emerald cool-card-reveal">
                     <div class="number">05</div>
                     <div class="icon">
                         <i class="bi bi-cash-coin" style="font-size: 20px;"></i>
@@ -715,7 +759,7 @@
         <!-- FEATURES -->
         <section class="features" id="panduan">
 
-            <div class="section-title">
+            <div class="section-title cool-header-reveal">
                 <span class="section-label">FITUR SISTEM</span>
 
                 <h2 class="section-heading">
@@ -726,7 +770,7 @@
 
             <div class="feature-grid">
 
-                <div class="feature">
+                <div class="feature cool-card-reveal">
                     <div class="feature-icon feat-blue">
                         <i class="bi bi-file-earmark-text"></i>
                     </div>
@@ -737,7 +781,7 @@
                     </p>
                 </div>
 
-                <div class="feature">
+                <div class="feature cool-card-reveal">
                     <div class="feature-icon feat-green">
                         <i class="bi bi-search"></i>
                     </div>
@@ -748,7 +792,7 @@
                     </p>
                 </div>
 
-                <div class="feature">
+                <div class="feature cool-card-reveal">
                     <div class="feature-icon feat-amber">
                         <i class="bi bi-bell"></i>
                     </div>
@@ -759,7 +803,7 @@
                     </p>
                 </div>
 
-                <div class="feature">
+                <div class="feature cool-card-reveal">
                     <div class="feature-icon feat-purple">
                         <i class="bi bi-folder2-open"></i>
                     </div>
@@ -770,7 +814,7 @@
                     </p>
                 </div>
 
-                <div class="feature feature-link feature-tpl-trigger" onclick="openTemplateModal()" id="cardTemplateSpj" role="button" tabindex="0" title="Buka & Unduh Katalog Format Berkas SPJ">
+                <div class="feature feature-link feature-tpl-trigger cool-card-reveal" onclick="openTemplateModal()" id="cardTemplateSpj" role="button" tabindex="0" title="Buka & Unduh Katalog Format Berkas SPJ">
                     <div class="feature-icon feat-rose">
                         <i class="bi bi-file-earmark-arrow-down"></i>
                     </div>
@@ -897,204 +941,68 @@
             }
 
             /* ---------------------------------------------
-               3. 5-STAGE INTERACTIVE STEPPER
+               3. SCROLL REVEAL + VELOCITY MARQUEE
             --------------------------------------------- */
-            const stages = [
-                {
-                    name: 'Teknis',
-                    role: 'Posisi: Tim Teknis Kegiatan',
-                    statusClass: 'status-ready',
-                    statusText: 'Pengajuan Dibuat',
-                    statusIcon: 'bi bi-file-earmark-arrow-up',
-                    sla: 'Estimasi: Hari H',
-                    desc: 'Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.',
-                    kegiatan: 'Survei Pertanian 2026',
-                    nominal: 'Rp 4.750.000',
-                    wa: 'Notifikasi: SPJ berhasil diajukan'
-                },
-                {
-                    name: 'Umum',
-                    role: 'Posisi: Subbagian Umum',
-                    statusClass: 'status-diproses',
-                    statusText: 'Verifikasi Berkas',
-                    statusIcon: 'bi bi-search',
-                    sla: 'Estimasi: 1 - 2 Hari',
-                    desc: 'Memeriksa kelengkapan administrasi kuitansi, daftar hadir, dan rincian riil kegiatan.',
-                    kegiatan: 'Survei Industri Manufaktur',
-                    nominal: 'Rp 5.850.000',
-                    wa: 'Notifikasi: Sedang diverifikasi Umum'
-                },
-                {
-                    name: 'PPK',
-                    role: 'Posisi: Pejabat Pembuat Komitmen (PPK)',
-                    statusClass: 'status-ppk',
-                    statusText: 'Disetujui PPK',
-                    statusIcon: 'bi bi-patch-check',
-                    sla: 'Estimasi: 1 - 2 Hari',
-                    desc: 'Pengujian kesesuaian anggaran DIPA/POK, substansi hasil kegiatan, dan persetujuan SPJ.',
-                    kegiatan: 'Sensus Ekonomi Lanjutan',
-                    nominal: 'Rp 6.200.000',
-                    wa: 'Notifikasi: PPK menyetujui SPJ'
-                },
-                {
-                    name: 'PPSPM',
-                    role: 'Posisi: Pejabat Penandatangan SPM (PPSPM)',
-                    statusClass: 'status-ppspm',
-                    statusText: 'Penerbitan SPM',
-                    statusIcon: 'bi bi-award',
-                    sla: 'Estimasi: 1 - 2 Hari',
-                    desc: 'Pengujian dokumen tagihan, validasi ketersediaan dana, dan penerbitan SPM ke KPPN.',
-                    kegiatan: 'Survei Angkatan Kerja (Sakernas)',
-                    nominal: 'Rp 8.450.000',
-                    wa: 'Notifikasi: SPM diterbitkan ke KPPN'
-                },
-                {
-                    name: 'Bendahara',
-                    role: 'Posisi: Bendahara Pengeluaran',
-                    statusClass: 'status-selesai',
-                    statusText: 'Selesai & Lunas',
-                    statusIcon: 'bi bi-check-circle-fill',
-                    sla: 'Estimasi: 1 Hari Kerja',
-                    desc: 'Pencairan dana SP2D, pembayaran ke pelaksana kegiatan, dan pengarsipan bukti setor sah.',
-                    kegiatan: 'Survei Sosial Ekonomi (Susenas)',
-                    nominal: 'Rp 12.300.000',
-                    wa: 'Notifikasi: Pembayaran SPJ Selesai!'
-                }
-            ];
-
-            let currentStep = 0; // start on 'Teknis'
-            let autoStepInterval = null;
-            let transitionTimeout = null;
-
-            const elStatusBadge = document.getElementById('cardStatusBadge');
-            const elStageRole = document.getElementById('simStageRole');
-            const elStageSla = document.getElementById('simStageSla');
-            const elStageDesc = document.getElementById('simStageDesc');
-            const elKegiatanText = document.getElementById('cardKegiatanText');
-            const elNominalText = document.getElementById('cardNominalText');
-            const elWaNote = document.getElementById('heroWaNote');
-            const elDetailBox = document.getElementById('simDetailBox');
-
-            const stepperEl = document.getElementById('heroStepper');
-            const stepItems = stepperEl ? stepperEl.querySelectorAll('.stepper-step') : [];
-            const stepLines = stepperEl ? stepperEl.querySelectorAll('.step-line') : [];
-
-            const renderStep = (idx, immediate = false) => {
-                const s = stages[idx];
-                if (!s) return;
-
-                // 1. Instantly update stepper circles and animated progress lines
-                stepItems.forEach((stepNode, i) => {
-                    const circle = stepNode.querySelector('.step-circle');
-                    stepNode.classList.remove('step-done', 'step-active-now');
-
-                    if (i < idx) {
-                        stepNode.classList.add('step-done');
-                        if (circle) {
-                            circle.className = 'step-circle';
-                            circle.innerHTML = '<i class="bi bi-check-lg"></i>';
-                        }
-                    } else if (i === idx) {
-                        stepNode.classList.add('step-active-now');
-                        if (circle) {
-                            circle.className = 'step-circle step-glow';
-                            circle.innerHTML = (i + 1).toString();
-                        }
-                    } else {
-                        if (circle) {
-                            circle.className = 'step-circle step-pending';
-                            circle.textContent = (i + 1).toString();
-                        }
-                    }
-                });
-
-                // Fluid line glow animation
-                stepLines.forEach((lineNode, i) => {
-                    if (i < idx) {
-                        lineNode.classList.add('line-glow');
-                    } else {
-                        lineNode.classList.remove('line-glow');
-                    }
-                });
-
-                const applyContent = () => {
-                    if (elStageRole) elStageRole.textContent = s.role;
-                    if (elStageSla) elStageSla.textContent = s.sla;
-                    if (elStageDesc) elStageDesc.textContent = s.desc;
-                    if (elKegiatanText) elKegiatanText.textContent = s.kegiatan;
-                    if (elNominalText) elNominalText.textContent = s.nominal;
-                    if (elWaNote) elWaNote.textContent = s.wa;
-
-                    if (elStatusBadge) {
-                        elStatusBadge.className = `live-status-pill ${s.statusClass} smooth-crossfade`;
-                        elStatusBadge.innerHTML = `<i class="${s.statusIcon}"></i> <span>${s.statusText}</span>`;
-                    }
-                };
-
-                if (immediate) {
-                    applyContent();
-                    return;
-                }
-
-                // 2. Ultra-smooth crossfade for text, badges, and card values
-                if (transitionTimeout) clearTimeout(transitionTimeout);
-
-                const fadeTargets = [elStatusBadge, elDetailBox, elKegiatanText, elNominalText].filter(Boolean);
-
-                // Fade out softly
-                fadeTargets.forEach(el => el.classList.add('fading-out'));
-
-                transitionTimeout = setTimeout(() => {
-                    applyContent();
-
-                    fadeTargets.forEach(el => {
-                        el.classList.remove('fading-out');
-                        el.classList.add('prep-in');
+            // A. Stagger delays for grids (clean, 60ms between cards)
+            const cardGridSelectors = ['.monitoring-stats-grid', '.flow-container', '.feature-grid'];
+            cardGridSelectors.forEach(selector => {
+                const container = document.querySelector(selector);
+                if (container) {
+                    container.querySelectorAll('.cool-card-reveal').forEach((card, idx) => {
+                        card.style.transitionDelay = `${idx * 60}ms`;
                     });
-
-                    // Force browser reflow to register starting position
-                    void (elDetailBox ? elDetailBox.offsetWidth : 0);
-
-                    requestAnimationFrame(() => {
-                        fadeTargets.forEach(el => el.classList.remove('prep-in'));
-                    });
-                }, 180);
-            };
-
-            const startAutoStep = () => {
-                if (autoStepInterval) clearInterval(autoStepInterval);
-                autoStepInterval = setInterval(() => {
-                    currentStep = (currentStep + 1) % stages.length;
-                    renderStep(currentStep);
-                }, 3200);
-            };
-
-            // Pause auto progression when hovered to inspect details
-            if (glassCard) {
-                glassCard.addEventListener('mouseenter', () => {
-                    if (autoStepInterval) clearInterval(autoStepInterval);
-                });
-
-                glassCard.addEventListener('mouseleave', () => {
-                    startAutoStep();
-                });
-            }
-
-            // Click on step dots to inspect stage and continue auto progression
-            stepItems.forEach((stepNode) => {
-                stepNode.addEventListener('click', () => {
-                    const stepIdx = parseInt(stepNode.getAttribute('data-step'), 10);
-                    if (!isNaN(stepIdx)) {
-                        currentStep = stepIdx;
-                        renderStep(currentStep);
-                        startAutoStep();
-                    }
-                });
+                }
             });
 
-            // Initialize on start immediately without flash
-            renderStep(currentStep, true);
-            startAutoStep();
+            // B. IntersectionObserver — fade + translateY reveal
+            const revealEls = document.querySelectorAll('.cool-card-reveal, .cool-header-reveal');
+            if ('IntersectionObserver' in window) {
+                const revealObs = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.07, rootMargin: '0px 0px -32px 0px' });
+                revealEls.forEach(el => revealObs.observe(el));
+            } else {
+                revealEls.forEach(el => el.classList.add('is-revealed'));
+            }
+
+            // C. Velocity Marquee — single track, speed reacts to scroll velocity
+            const track1 = document.getElementById('vScrollTrack1');
+            let track1X = 0;
+            const baseSpeed = 0.6;
+            let scrollVelocity = 0;
+            let lastScrollY = window.scrollY;
+            let lastScrollTime = performance.now();
+            let rafId = null;
+
+            function marqueeLoop() {
+                // Decay velocity each frame
+                scrollVelocity *= 0.92;
+                // Advance marquee — base speed + velocity boost
+                track1X += baseSpeed + Math.abs(scrollVelocity) * 0.3;
+                if (track1 && track1.scrollWidth > 0) {
+                    const half = track1.scrollWidth / 2;
+                    if (track1X >= half) track1X -= half;
+                    track1.style.transform = `translate3d(${-track1X.toFixed(2)}px, 0, 0)`;
+                }
+                rafId = requestAnimationFrame(marqueeLoop);
+            }
+
+            function onVelocityScroll() {
+                const now = performance.now();
+                const dy = window.scrollY - lastScrollY;
+                const dt = Math.max(now - lastScrollTime, 8);
+                scrollVelocity = (dy / dt) * 16;
+                lastScrollY = window.scrollY;
+                lastScrollTime = now;
+            }
+
+            requestAnimationFrame(marqueeLoop);
+            window.addEventListener('scroll', onVelocityScroll, { passive: true });
 
             // Auto-open modal if hash is #templates or #template-spj
             if (window.location.hash === '#templates' || window.location.hash === '#template-spj') {
@@ -1126,6 +1034,21 @@
             if (drawer) drawer.classList.remove('show');
             if (backdrop) backdrop.classList.remove('show');
             document.body.style.overflow = '';
+        }
+
+        function focusDetailSpj(keyword, event) {
+            if (event) event.preventDefault();
+            const elMonitoring = document.getElementById('monitoring');
+            if (elMonitoring) {
+                elMonitoring.scrollIntoView({ behavior: 'smooth' });
+            }
+            const elSearch = document.getElementById('searchKeyword');
+            if (elSearch && keyword) {
+                elSearch.value = keyword;
+                if (typeof filterSpjList === 'function') {
+                    filterSpjList();
+                }
+            }
         }
 
         /* =========================================================
