@@ -17,32 +17,65 @@
 
 <body>
 
-    <!-- NAVBAR -->
-    <header class="navbar">
-        <div class="brand">
-            <div class="brand-logo">
-                @if(file_exists(public_path('images/logo-bps-app.png')))
-                    <img src="{{ asset('images/logo-bps-app.png') }}" alt="Logo BPS">
-                @else
-                    BPS
-                @endif
+    <!-- 1. TOP ANNOUNCEMENT & UTILITY BAR (GAZU STYLE) -->
+    <div class="top-announcement-bar">
+        <div class="top-bar-inner">
+            <div class="top-bar-left">
+                <span class="top-bar-dot"></span>
+                <span class="top-bar-text">SISTEM INFORMASI PENYELESAIAN TAGIHAN &bull; BPS KABUPATEN KOLAKA UTARA</span>
             </div>
-
-            <div>
-                <h1>SISTEM INFORMASI PENYELESAIAN TAGIHAN</h1>
-                <span>Badan Pusat Statistik</span>
+            <div class="top-bar-right">
+                <span class="top-bar-address">
+                    <i class="bi bi-geo-alt-fill"></i>
+                    Jl. Trans Sulawesi Kompleks Perkantoran Pemda Kolaka Utara, Lasusua
+                </span>
             </div>
         </div>
+    </div>
 
-        <!-- Right Side Nav (Links + Login Button matching Reference) -->
-        <div class="navbar-right">
+    <!-- 2. MAIN NAVBAR (GAZU 3-COLUMN CENTERED BRAND) -->
+    <header class="navbar">
+        <!-- LEFT: NAVIGATION LINKS (Uppercase, Minimalist) -->
+        <div class="navbar-left">
+            <button type="button" class="mobile-toggle-btn" onclick="toggleMobileNav(event)" aria-label="Menu Navigasi">
+                <i class="bi bi-list"></i>
+            </button>
             <nav class="nav-links">
-                <a href="#beranda" class="nav-link active">Beranda</a>
-                <a href="#monitoring" class="nav-link">Monitoring SPJ</a>
-                <a href="#alur" class="nav-link">Alur</a>
-                <a href="#panduan" class="nav-link">Panduan</a>
-                <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">Format SPJ</a>
+                <a href="#beranda" class="nav-link active">BERANDA</a>
+                <a href="#monitoring" class="nav-link">MONITORING</a>
+                <a href="#alur" class="nav-link">ALUR SPJ</a>
+                <a href="#panduan" class="nav-link">PANDUAN</a>
+                <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">FORMAT SPJ</a>
             </nav>
+        </div>
+
+        <!-- CENTER: BOLD CENTERED BRAND (GAZU STYLE) -->
+        <div class="navbar-center">
+            <a href="{{ route('home') }}" class="brand-centered" title="Sistem Informasi Penyelesaian Tagihan SPJ">
+                <div class="brand-logo-centered">
+                    @if(file_exists(public_path('images/logo-bps-app.png')))
+                        <img src="{{ asset('images/logo-bps-app.png') }}" alt="Logo BPS">
+                    @else
+                        <span class="brand-logo-fallback">BPS</span>
+                    @endif
+                </div>
+                <div class="brand-titles-centered">
+                    <span class="brand-main-title">BADAN PUSAT STATISTIK</span>
+                    <span class="brand-sub-title">KABUPATEN KOLAKA UTARA</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- RIGHT: UTILITY ACTIONS & LOGIN -->
+        <div class="navbar-right">
+            <a href="#monitoring" class="nav-action-item" title="Cari atau Filter SPJ">
+                <i class="bi bi-search"></i>
+                <span class="action-label">CARI</span>
+            </a>
+            <a href="#templates" class="nav-action-item" onclick="openTemplateModal(event)" title="Unduh Format Berkas">
+                <i class="bi bi-folder2-open"></i>
+                <span class="action-label">BERKAS</span>
+            </a>
 
             <div class="nav-actions">
                 @auth
@@ -50,17 +83,44 @@
                         $role = auth()->user()->role;
                         $dashboardUrl = url('/' . $role . '/dashboard');
                     @endphp
-                    <a href="{{ $dashboardUrl }}" class="login-btn dashboard-badge">
-                        Dashboard ({{ strtoupper($role) }})
+                    <a href="{{ $dashboardUrl }}" class="login-btn dashboard-badge" title="Menuju Dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>DASHBOARD ({{ strtoupper($role) }})</span>
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="login-btn">
-                        Login
+                    <a href="{{ route('login') }}" class="login-btn" title="Masuk ke Sistem">
+                        <i class="bi bi-person"></i>
+                        <span>LOGIN</span>
                     </a>
                 @endauth
             </div>
         </div>
     </header>
+
+    <!-- MOBILE NAVIGATION DRAWER -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" onclick="closeMobileNav()"></div>
+    <div class="mobile-nav-drawer" id="mobileNavDrawer">
+        <div class="mobile-drawer-header">
+            <div class="brand-centered" style="gap: 10px;">
+                <img src="{{ asset('images/logo-bps-app.png') }}" alt="Logo BPS" style="height: 30px; width: auto;">
+                <div style="display: flex; flex-direction: column;">
+                    <span style="font-weight: 800; font-size: 11.5px; letter-spacing: 0.8px; color: #0c2556; line-height: 1.2;">BADAN PUSAT STATISTIK</span>
+                    <span style="font-weight: 700; font-size: 8px; letter-spacing: 1px; color: #0284c7;">KABUPATEN KOLAKA UTARA</span>
+                </div>
+            </div>
+            <button type="button" class="btn-close-drawer" onclick="closeMobileNav()">&times;</button>
+        </div>
+        <div class="mobile-drawer-links">
+            <a href="#beranda" onclick="closeMobileNav()">BERANDA</a>
+            <a href="#monitoring" onclick="closeMobileNav()">MONITORING SPJ</a>
+            <a href="#alur" onclick="closeMobileNav()">ALUR SPJ</a>
+            <a href="#panduan" onclick="closeMobileNav()">PANDUAN</a>
+            <a href="#templates" onclick="closeMobileNav(); openTemplateModal(event)">FORMAT BERKAS SPJ</a>
+            <div class="mobile-drawer-divider"></div>
+            <a href="{{ route('flowchart.preview') }}" target="_blank"><i class="bi bi-diagram-3"></i> FLOWCHART SOP</a>
+            <a href="{{ route('panduan-role.preview') }}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> PANDUAN ROLE</a>
+        </div>
+    </div>
 
 
     <!-- HERO SECTION WITH HIGH-TECH GRAPHICS & GLASSMORPHISM -->
@@ -1041,6 +1101,32 @@
                 setTimeout(() => openTemplateModal(), 300);
             }
         });
+
+        /* =========================================================
+           JAVASCRIPT MOBILE DRAWER NAVIGATION (GAZU STYLE)
+        ========================================================= */
+        function toggleMobileNav(event) {
+            if (event) event.preventDefault();
+            const drawer = document.getElementById('mobileNavDrawer');
+            const backdrop = document.getElementById('mobileNavBackdrop');
+            if (!drawer || !backdrop) return;
+            const isOpen = drawer.classList.contains('show');
+            if (isOpen) {
+                closeMobileNav();
+            } else {
+                drawer.classList.add('show');
+                backdrop.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeMobileNav() {
+            const drawer = document.getElementById('mobileNavDrawer');
+            const backdrop = document.getElementById('mobileNavBackdrop');
+            if (drawer) drawer.classList.remove('show');
+            if (backdrop) backdrop.classList.remove('show');
+            document.body.style.overflow = '';
+        }
 
         /* =========================================================
            JAVASCRIPT MODAL TEMPLATE BERKAS SPJ (PUBLIK)
