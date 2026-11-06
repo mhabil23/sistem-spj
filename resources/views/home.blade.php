@@ -129,6 +129,7 @@
             <div class="formal-ambient-glow glow-hero-top"></div>
             <div class="formal-ambient-glow glow-showcase"></div>
             <div class="formal-ambient-glow glow-pipeline"></div>
+            <div class="formal-ambient-glow glow-monitoring"></div>
         </div>
 
         <!-- =========================================================
@@ -551,43 +552,63 @@
 
             <!-- Summary Stats Counter Cards -->
             <div class="monitoring-stats-grid">
-                <div class="m-stat-card reveal-pop delay-1" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
-                    <div class="m-stat-icon m-stat-blue">
-                        <i class="bi bi-folder2-open"></i>
+                <div class="m-stat-card reveal-pop delay-1" data-stat-filter="semua" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
+                    <div class="m-stat-left">
+                        <div class="m-stat-icon m-stat-all">
+                            <i class="bi bi-folder2-open"></i>
+                        </div>
+                        <div class="m-stat-info">
+                            <span class="m-stat-value" id="statValTotal">{{ $stats['total'] ?? count($spjs ?? []) }}</span>
+                            <span class="m-stat-label">Total SPJ Terdata</span>
+                        </div>
                     </div>
-                    <div class="m-stat-info">
-                        <span class="m-stat-value" id="statValTotal">{{ $stats['total'] ?? count($spjs ?? []) }}</span>
-                        <span class="m-stat-label">Total SPJ Terdata</span>
-                    </div>
-                </div>
-
-                <div class="m-stat-card reveal-pop delay-2" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
-                    <div class="m-stat-icon m-stat-amber">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-                    <div class="m-stat-info">
-                        <span class="m-stat-value" id="statValDiajukan">{{ $stats['diajukan'] ?? 0 }}</span>
-                        <span class="m-stat-label">Menunggu Verifikasi</span>
+                    <div class="m-stat-action-indicator" aria-hidden="true">
+                        <i class="bi bi-arrow-up-right"></i>
                     </div>
                 </div>
 
-                <div class="m-stat-card reveal-pop delay-3" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
-                    <div class="m-stat-icon m-stat-blue">
-                        <i class="bi bi-arrow-repeat"></i>
+                <div class="m-stat-card reveal-pop delay-2" data-stat-filter="diajukan" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
+                    <div class="m-stat-left">
+                        <div class="m-stat-icon m-stat-amber">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="m-stat-info">
+                            <span class="m-stat-value" id="statValDiajukan">{{ $stats['diajukan'] ?? 0 }}</span>
+                            <span class="m-stat-label">Menunggu Verifikasi</span>
+                        </div>
                     </div>
-                    <div class="m-stat-info">
-                        <span class="m-stat-value" id="statValProses">{{ $stats['proses'] ?? 0 }}</span>
-                        <span class="m-stat-label">Sedang Diproses</span>
+                    <div class="m-stat-action-indicator" aria-hidden="true">
+                        <i class="bi bi-arrow-up-right"></i>
                     </div>
                 </div>
 
-                <div class="m-stat-card reveal-pop delay-4" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
-                    <div class="m-stat-icon m-stat-green">
-                        <i class="bi bi-check2-circle"></i>
+                <div class="m-stat-card reveal-pop delay-3" data-stat-filter="proses" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
+                    <div class="m-stat-left">
+                        <div class="m-stat-icon m-stat-salmon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="m-stat-info">
+                            <span class="m-stat-value" id="statValProses">{{ $stats['proses'] ?? 0 }}</span>
+                            <span class="m-stat-label">Sedang Diproses</span>
+                        </div>
                     </div>
-                    <div class="m-stat-info">
-                        <span class="m-stat-value" id="statValSelesai">{{ $stats['selesai'] ?? 0 }}</span>
-                        <span class="m-stat-label">Selesai &amp; Lunas</span>
+                    <div class="m-stat-action-indicator" aria-hidden="true">
+                        <i class="bi bi-arrow-up-right"></i>
+                    </div>
+                </div>
+
+                <div class="m-stat-card reveal-pop delay-4" data-stat-filter="selesai" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
+                    <div class="m-stat-left">
+                        <div class="m-stat-icon m-stat-green">
+                            <i class="bi bi-check2-circle"></i>
+                        </div>
+                        <div class="m-stat-info">
+                            <span class="m-stat-value" id="statValSelesai">{{ $stats['selesai'] ?? 0 }}</span>
+                            <span class="m-stat-label">Selesai &amp; Lunas</span>
+                        </div>
+                    </div>
+                    <div class="m-stat-action-indicator" aria-hidden="true">
+                        <i class="bi bi-arrow-up-right"></i>
                     </div>
                 </div>
             </div>
@@ -1615,6 +1636,9 @@
             currentStatusFilter = status;
             document.querySelectorAll('#spjStatusChips .m-chip').forEach(chip => {
                 chip.classList.toggle('active', chip.getAttribute('data-status') === status);
+            });
+            document.querySelectorAll('.m-stat-card').forEach(card => {
+                card.classList.toggle('is-active-filter', card.getAttribute('data-stat-filter') === status);
             });
             filterSpjList();
         }
