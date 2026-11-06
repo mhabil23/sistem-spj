@@ -1246,17 +1246,16 @@
             --------------------------------------------- */
             const cardWrapper = document.getElementById('heroCardWrapper');
             const glassCard = document.getElementById('heroInteractiveCard');
+            let isHeroHovered = false;
 
             if (cardWrapper && glassCard) {
-                let isHovering = false;
-
                 cardWrapper.addEventListener('mouseenter', () => {
-                    isHovering = true;
+                    isHeroHovered = true;
                     glassCard.style.transition = 'transform 0.1s ease-out';
                 });
 
                 cardWrapper.addEventListener('mousemove', (e) => {
-                    if (!isHovering) return;
+                    if (!isHeroHovered) return;
                     const rect = cardWrapper.getBoundingClientRect();
                     const x = (e.clientX - rect.left) / rect.width - 0.5;
                     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -1269,11 +1268,106 @@
                 });
 
                 cardWrapper.addEventListener('mouseleave', () => {
-                    isHovering = false;
+                    isHeroHovered = false;
                     glassCard.style.transition = 'transform 0.5s ease-out';
                     glassCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
                 });
             }
+
+            /* ---------------------------------------------
+               2B. DANCING VELOCITY SCROLL ENGINE (ALWAYS ACTIVE UP & DOWN)
+            --------------------------------------------- */
+            const velocityCards = Array.from(document.querySelectorAll(
+                '.hero-glass-card, .formal-hud-panel, .v-step-card, .m-stat-card, .monitoring-controls-card, .monitoring-table-card, .specs-col'
+            ));
+
+            velocityCards.forEach((card, idx) => {
+                card.classList.add('velocity-card');
+                card.setAttribute('data-vel-idx', idx);
+            });
+
+            let lastScrollY = window.scrollY;
+            let currentVelocity = 0;
+            let targetVelocity = 0;
+            let isVelocityTicking = false;
+            let scrollDecayTimeout = null;
+
+            const updateVelocityCards = (timestamp) => {
+                // Spring damping interpolation
+                currentVelocity += (targetVelocity - currentVelocity) * 0.15;
+                targetVelocity *= 0.82;
+
+                const absVel = Math.abs(currentVelocity);
+
+                // Stop loop when fully at rest
+                if (absVel < 0.02 && Math.abs(targetVelocity) < 0.02) {
+                    currentVelocity = 0;
+                    targetVelocity = 0;
+                    isVelocityTicking = false;
+
+                    velocityCards.forEach(card => {
+                        if (card.id === 'heroInteractiveCard' && isHeroHovered) return;
+                        card.style.transform = '';
+                    });
+                    return;
+                }
+
+                const vh = window.innerHeight;
+
+                velocityCards.forEach((card, index) => {
+                    if (card.id === 'heroInteractiveCard' && isHeroHovered) return;
+
+                    const rect = card.getBoundingClientRect();
+                    // Performance optimization: skip off-screen cards
+                    if (rect.bottom < -80 || rect.top > vh + 80) return;
+
+                    // 1. Dynamic Skew (reacts to direction of scroll: up tilts up, down tilts down)
+                    const skew = Math.max(-3.5, Math.min(3.5, -currentVelocity * 0.16));
+
+                    // 2. Harmonic Dancing Wave between cards
+                    const phase = (timestamp * 0.007) + (index * 1.35);
+                    const sway = Math.sin(phase) * (absVel * 0.22);
+
+                    // 3. Alternate Rotation Sway (creates rhythmic dancing motion)
+                    const baseRot = (index % 2 === 0 ? 1 : -1) * (currentVelocity * 0.07);
+                    const rot = Math.max(-2.5, Math.min(2.5, baseRot + sway * 0.35));
+
+                    // 4. Inertial Y Displacement with dancing bounce
+                    const baseY = -currentVelocity * 0.28;
+                    const waveY = (index % 2 === 0 ? sway : -sway) * 1.4;
+                    const translateY = Math.max(-14, Math.min(14, baseY + waveY));
+
+                    // 5. Hover preservation
+                    const isHovered = card.matches(':hover');
+                    const hoverX = isHovered && card.classList.contains('v-step-card') ? 6 : 0;
+                    const hoverY = isHovered && card.classList.contains('m-stat-card') ? -4 : 0;
+
+                    card.style.transform = `translate3d(${hoverX}px, ${(translateY + hoverY).toFixed(2)}px, 0) skewY(${skew.toFixed(2)}deg) rotateZ(${rot.toFixed(2)}deg)`;
+                });
+
+                requestAnimationFrame(updateVelocityCards);
+            };
+
+            const onScrollVelocity = () => {
+                const currentY = window.scrollY;
+                const delta = currentY - lastScrollY;
+                lastScrollY = currentY;
+
+                // Clamp delta to safe physical bounds
+                targetVelocity = Math.max(-40, Math.min(40, delta));
+
+                if (!isVelocityTicking) {
+                    isVelocityTicking = true;
+                    requestAnimationFrame(updateVelocityCards);
+                }
+
+                clearTimeout(scrollDecayTimeout);
+                scrollDecayTimeout = setTimeout(() => {
+                    targetVelocity = 0;
+                }, 50);
+            };
+
+            window.addEventListener('scroll', onScrollVelocity, { passive: true });
 
             /* ---------------------------------------------
                3. 5-STAGE INTERACTIVE STEPPER
