@@ -863,7 +863,10 @@
             <div class="specs-grid">
                 <!-- Col 1 -->
                 <div class="specs-col reveal-pop delay-1">
-                    <h4 class="specs-col-title">DASAR HUKUM &amp; REGULASI</h4>
+                    <h4 class="specs-col-title">
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                        <span>DASAR HUKUM &amp; REGULASI</span>
+                    </h4>
                     <ul class="specs-list">
                         <li>
                             <span class="specs-item-label">UU No. 17 / 2003</span>
@@ -886,7 +889,10 @@
 
                 <!-- Col 2 -->
                 <div class="specs-col reveal-pop delay-2">
-                    <h4 class="specs-col-title">SERVICE LEVEL AGREEMENT (SLA)</h4>
+                    <h4 class="specs-col-title">
+                        <i class="bi bi-stopwatch-fill"></i>
+                        <span>SERVICE LEVEL AGREEMENT (SLA)</span>
+                    </h4>
                     <ul class="specs-list">
                         <li>
                             <span class="specs-item-label">Tahap 1 (Teknis)</span>
@@ -913,7 +919,10 @@
 
                 <!-- Col 3 -->
                 <div class="specs-col reveal-pop delay-3">
-                    <h4 class="specs-col-title">PERSYARATAN BERKAS</h4>
+                    <h4 class="specs-col-title">
+                        <i class="bi bi-file-earmark-check-fill"></i>
+                        <span>PERSYARATAN BERKAS</span>
+                    </h4>
                     <ul class="specs-list">
                         <li>
                             <span class="specs-item-label">Bukti Riil</span>
@@ -936,7 +945,10 @@
 
                 <!-- Col 4 -->
                 <div class="specs-col reveal-pop delay-4">
-                    <h4 class="specs-col-title">KEAMANAN &amp; AKUNTABILITAS</h4>
+                    <h4 class="specs-col-title">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <span>KEAMANAN &amp; AKUNTABILITAS</span>
+                    </h4>
                     <ul class="specs-list">
                         <li>
                             <span class="specs-item-label">Audit Trail</span>
