@@ -137,7 +137,7 @@
         <section class="hero" id="beranda">
 
             <!-- Left Hero Content -->
-            <div class="hero-content">
+            <div class="hero-content reveal-slide-left">
 
                 <h1 class="hero-main-title">
                     Kelola SPJ Cerdas <br>
@@ -147,7 +147,7 @@
             </div>
 
             <!-- Right Hero Visual: Formal SPJ Tracking Card with Indicator Annotations -->
-            <div class="hero-card-wrapper" id="heroCardWrapper">
+            <div class="hero-card-wrapper reveal-pop delay-1" id="heroCardWrapper">
 
                 <!-- Annotation Callouts -->
                 <div class="hud-callout callout-top">
@@ -299,7 +299,7 @@
             <div class="split-showcase-inner">
 
                 <!-- Left Visual Preview: Lembar Kendali Digital -->
-                <div class="showcase-visual-wrapper">
+                <div class="showcase-visual-wrapper reveal-slide-left">
                     <!-- Soft organic pastel blob behind preview -->
                     <div class="showcase-organic-blob" aria-hidden="true"></div>
 
@@ -362,7 +362,7 @@
                 </div>
 
                 <!-- Right Copy & Action -->
-                <div class="showcase-content-wrapper">
+                <div class="showcase-content-wrapper reveal-slide-right">
                     <span class="section-micro-label">TRANSPARANSI BIROKRASI BPS</span>
                     <h2 class="showcase-title">
                         Pantau Posisi Berkas Kapan Saja <br>
@@ -391,7 +391,7 @@
         ========================================================= -->
         <section class="pipeline-section" id="alur">
 
-            <div class="section-title-centered">
+            <div class="section-title-centered reveal-slide-up">
                 <span class="section-micro-label">ALUR PROSES TERSTANDAR</span>
                 <h2 class="section-main-heading">Alur 5 Tahapan Pengajuan &amp; Penyelesaian SPJ</h2>
                 <p class="section-main-desc">
@@ -409,7 +409,7 @@
                     <div class="v-step-node">
                         <div class="v-node-dot">1</div>
                     </div>
-                    <div class="v-step-card">
+                    <div class="v-step-card reveal-slide-left">
                         <div class="v-card-top">
                             <span class="v-step-num">TAHAP 01</span>
                             <span class="v-sla-badge"><i class="bi bi-clock"></i> Estimasi: Hari H</span>
@@ -430,7 +430,7 @@
                     <div class="v-step-node">
                         <div class="v-node-dot">2</div>
                     </div>
-                    <div class="v-step-card">
+                    <div class="v-step-card reveal-slide-right">
                         <div class="v-card-top">
                             <span class="v-step-num">TAHAP 02</span>
                             <span class="v-sla-badge"><i class="bi bi-clock"></i> Estimasi: 1 – 2 Hari Kerja</span>
@@ -451,7 +451,7 @@
                     <div class="v-step-node">
                         <div class="v-node-dot">3</div>
                     </div>
-                    <div class="v-step-card">
+                    <div class="v-step-card reveal-slide-left">
                         <div class="v-card-top">
                             <span class="v-step-num">TAHAP 03</span>
                             <span class="v-sla-badge"><i class="bi bi-clock"></i> Estimasi: 1 – 2 Hari Kerja</span>
@@ -472,7 +472,7 @@
                     <div class="v-step-node">
                         <div class="v-node-dot">4</div>
                     </div>
-                    <div class="v-step-card">
+                    <div class="v-step-card reveal-slide-right">
                         <div class="v-card-top">
                             <span class="v-step-num">TAHAP 04</span>
                             <span class="v-sla-badge"><i class="bi bi-clock"></i> Estimasi: 1 – 2 Hari Kerja</span>
@@ -493,7 +493,7 @@
                     <div class="v-step-node">
                         <div class="v-node-dot">5</div>
                     </div>
-                    <div class="v-step-card">
+                    <div class="v-step-card reveal-pop">
                         <div class="v-card-top">
                             <span class="v-step-num">TAHAP 05</span>
                             <span class="v-sla-badge sla-green"><i class="bi bi-check2-circle"></i> Estimasi: 1 Hari Kerja</span>
@@ -536,7 +536,7 @@
         <section class="monitoring-section" id="monitoring">
 
             <!-- Section Title -->
-            <div class="monitoring-header">
+            <div class="monitoring-header reveal-slide-up">
                 <span class="monitoring-badge">
                     <i class="bi bi-broadcast"></i>
                     TRANSPARANSI &amp; AKUNTABILITAS PUBLIK
@@ -551,7 +551,7 @@
 
             <!-- Summary Stats Counter Cards -->
             <div class="monitoring-stats-grid">
-                <div class="m-stat-card" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
+                <div class="m-stat-card reveal-pop delay-1" onclick="selectSpjStatus('semua')" title="Klik untuk menampilkan semua SPJ">
                     <div class="m-stat-icon m-stat-blue">
                         <i class="bi bi-folder2-open"></i>
                     </div>
@@ -561,7 +561,7 @@
                     </div>
                 </div>
 
-                <div class="m-stat-card" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
+                <div class="m-stat-card reveal-pop delay-2" onclick="selectSpjStatus('diajukan')" title="Klik untuk filter SPJ yang baru diajukan">
                     <div class="m-stat-icon m-stat-amber">
                         <i class="bi bi-clock-history"></i>
                     </div>
@@ -571,7 +571,7 @@
                     </div>
                 </div>
 
-                <div class="m-stat-card" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
+                <div class="m-stat-card reveal-pop delay-3" onclick="selectSpjStatus('proses')" title="Klik untuk filter SPJ dalam proses">
                     <div class="m-stat-icon m-stat-blue">
                         <i class="bi bi-arrow-repeat"></i>
                     </div>
@@ -581,7 +581,7 @@
                     </div>
                 </div>
 
-                <div class="m-stat-card" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
+                <div class="m-stat-card reveal-pop delay-4" onclick="selectSpjStatus('selesai')" title="Klik untuk filter SPJ yang telah selesai">
                     <div class="m-stat-icon m-stat-green">
                         <i class="bi bi-check2-circle"></i>
                     </div>
@@ -593,7 +593,7 @@
             </div>
 
             <!-- Filter Toolbar Card (Tanggal, Urutan, Reset, Status) -->
-            <div class="monitoring-controls-card">
+            <div class="monitoring-controls-card reveal-slide-up">
                 <!-- Baris 1: Filter Tanggal, Urutan Data, & Tombol Reset (Centered) -->
                 <div class="m-filter-top-bar">
                     <!-- 1. Filter Berdasarkan Tanggal -->
@@ -676,7 +676,7 @@
             </div>
 
             <!-- Table Card: Hasil Pembacaan Semua Data SPJ -->
-            <div class="monitoring-table-card">
+            <div class="monitoring-table-card reveal-slide-up">
                 <div class="m-table-header-bar">
                     <div class="m-table-header-title">
                         <i class="bi bi-table"></i>
@@ -809,7 +809,7 @@
              6. TECHNICAL SPECIFICATIONS GRID (FORMAL REGULASI)
         ========================================================= -->
         <section class="specs-section">
-            <div class="section-title-centered">
+            <div class="section-title-centered reveal-slide-up">
                 <span class="section-micro-label">REGULASI &amp; STANDAR OPERASIONAL</span>
                 <h2 class="section-main-heading">Spesifikasi &amp; Ketentuan Layanan</h2>
                 <p class="section-main-desc">
@@ -819,7 +819,7 @@
 
             <div class="specs-grid">
                 <!-- Col 1 -->
-                <div class="specs-col">
+                <div class="specs-col reveal-pop delay-1">
                     <h4 class="specs-col-title">DASAR HUKUM &amp; REGULASI</h4>
                     <ul class="specs-list">
                         <li>
@@ -842,7 +842,7 @@
                 </div>
 
                 <!-- Col 2 -->
-                <div class="specs-col">
+                <div class="specs-col reveal-pop delay-2">
                     <h4 class="specs-col-title">SERVICE LEVEL AGREEMENT (SLA)</h4>
                     <ul class="specs-list">
                         <li>
@@ -869,7 +869,7 @@
                 </div>
 
                 <!-- Col 3 -->
-                <div class="specs-col">
+                <div class="specs-col reveal-pop delay-3">
                     <h4 class="specs-col-title">PERSYARATAN BERKAS</h4>
                     <ul class="specs-list">
                         <li>
@@ -892,7 +892,7 @@
                 </div>
 
                 <!-- Col 4 -->
-                <div class="specs-col">
+                <div class="specs-col reveal-pop delay-4">
                     <h4 class="specs-col-title">KEAMANAN &amp; AKUNTABILITAS</h4>
                     <ul class="specs-list">
                         <li>
@@ -1275,99 +1275,39 @@
             }
 
             /* ---------------------------------------------
-               2B. DANCING VELOCITY SCROLL ENGINE (ALWAYS ACTIVE UP & DOWN)
+               2B. BIDIRECTIONAL SCROLL ENTRANCE REVEAL ENGINE
+               (Pop up, slide kiri/kanan, slide up - ALWAYS ACTIVE UP & DOWN)
             --------------------------------------------- */
-            const velocityCards = Array.from(document.querySelectorAll(
-                '.hero-glass-card, .formal-hud-panel, .v-step-card, .m-stat-card, .monitoring-controls-card, .monitoring-table-card, .specs-col'
-            ));
+            document.documentElement.classList.add('reveal-engine-active');
 
-            velocityCards.forEach((card, idx) => {
-                card.classList.add('velocity-card');
-                card.setAttribute('data-vel-idx', idx);
-            });
+            const revealTargets = document.querySelectorAll(
+                '.reveal-pop, .reveal-slide-left, .reveal-slide-right, .reveal-slide-up'
+            );
 
-            let lastScrollY = window.scrollY;
-            let currentVelocity = 0;
-            let targetVelocity = 0;
-            let isVelocityTicking = false;
-            let scrollDecayTimeout = null;
-
-            const updateVelocityCards = (timestamp) => {
-                // Spring damping interpolation
-                currentVelocity += (targetVelocity - currentVelocity) * 0.15;
-                targetVelocity *= 0.82;
-
-                const absVel = Math.abs(currentVelocity);
-
-                // Stop loop when fully at rest
-                if (absVel < 0.02 && Math.abs(targetVelocity) < 0.02) {
-                    currentVelocity = 0;
-                    targetVelocity = 0;
-                    isVelocityTicking = false;
-
-                    velocityCards.forEach(card => {
-                        if (card.id === 'heroInteractiveCard' && isHeroHovered) return;
-                        card.style.transform = '';
+            if ('IntersectionObserver' in window) {
+                const revealObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                        } else {
+                            // Selalu aktif saat scroll ke atas maupun ke bawah:
+                            // Menghapus kelas 'is-revealed' saat elemen keluar layar,
+                            // sehingga saat di-scroll kembali (dari atas atau bawah)
+                            // animasi entrance (pop up / slide) akan selalu aktif memukau.
+                            entry.target.classList.remove('is-revealed');
+                        }
                     });
-                    return;
-                }
-
-                const vh = window.innerHeight;
-
-                velocityCards.forEach((card, index) => {
-                    if (card.id === 'heroInteractiveCard' && isHeroHovered) return;
-
-                    const rect = card.getBoundingClientRect();
-                    // Performance optimization: skip off-screen cards
-                    if (rect.bottom < -80 || rect.top > vh + 80) return;
-
-                    // 1. Dynamic Skew (reacts to direction of scroll: up tilts up, down tilts down)
-                    const skew = Math.max(-3.5, Math.min(3.5, -currentVelocity * 0.16));
-
-                    // 2. Harmonic Dancing Wave between cards
-                    const phase = (timestamp * 0.007) + (index * 1.35);
-                    const sway = Math.sin(phase) * (absVel * 0.22);
-
-                    // 3. Alternate Rotation Sway (creates rhythmic dancing motion)
-                    const baseRot = (index % 2 === 0 ? 1 : -1) * (currentVelocity * 0.07);
-                    const rot = Math.max(-2.5, Math.min(2.5, baseRot + sway * 0.35));
-
-                    // 4. Inertial Y Displacement with dancing bounce
-                    const baseY = -currentVelocity * 0.28;
-                    const waveY = (index % 2 === 0 ? sway : -sway) * 1.4;
-                    const translateY = Math.max(-14, Math.min(14, baseY + waveY));
-
-                    // 5. Hover preservation
-                    const isHovered = card.matches(':hover');
-                    const hoverX = isHovered && card.classList.contains('v-step-card') ? 6 : 0;
-                    const hoverY = isHovered && card.classList.contains('m-stat-card') ? -4 : 0;
-
-                    card.style.transform = `translate3d(${hoverX}px, ${(translateY + hoverY).toFixed(2)}px, 0) skewY(${skew.toFixed(2)}deg) rotateZ(${rot.toFixed(2)}deg)`;
+                }, {
+                    root: null,
+                    rootMargin: '0px 0px -25px 0px',
+                    threshold: 0.08
                 });
 
-                requestAnimationFrame(updateVelocityCards);
-            };
-
-            const onScrollVelocity = () => {
-                const currentY = window.scrollY;
-                const delta = currentY - lastScrollY;
-                lastScrollY = currentY;
-
-                // Clamp delta to safe physical bounds
-                targetVelocity = Math.max(-40, Math.min(40, delta));
-
-                if (!isVelocityTicking) {
-                    isVelocityTicking = true;
-                    requestAnimationFrame(updateVelocityCards);
-                }
-
-                clearTimeout(scrollDecayTimeout);
-                scrollDecayTimeout = setTimeout(() => {
-                    targetVelocity = 0;
-                }, 50);
-            };
-
-            window.addEventListener('scroll', onScrollVelocity, { passive: true });
+                revealTargets.forEach(el => revealObserver.observe(el));
+            } else {
+                // Fallback untuk browser tanpa dukungan IntersectionObserver
+                revealTargets.forEach(el => el.classList.add('is-revealed'));
+            }
 
             /* ---------------------------------------------
                3. 5-STAGE INTERACTIVE STEPPER
