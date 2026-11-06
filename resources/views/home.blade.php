@@ -150,136 +150,262 @@
 
             </div>
 
-            <!-- Right Hero Visual: Formal SPJ Tracking Card with Indicator Annotations -->
-            <div class="hero-card-wrapper reveal-pop delay-1" id="heroCardWrapper">
+            <!-- Right Hero Visual: 3D Floating Card Shuffle Deck (Living Official BPS Documents) -->
+            <div class="hero-deck-wrapper reveal-pop delay-1" id="heroDeckWrapper">
 
-                <!-- Annotation Callouts -->
-                <div class="hud-callout callout-top">
-                    <div class="callout-dot"></div>
-                    <div class="callout-line"></div>
-                    <div class="callout-box">
-                        <span class="callout-tag">VERIFIKASI BERJENJANG</span>
-                        <span class="callout-desc">5 Tahap Pengujian SOP APBN</span>
-                    </div>
+                <!-- Ambient Subtle Floating Tags -->
+                <div class="deck-floating-tag tag-top">
+                    <span class="tag-pulse-dot"></span>
+                    <i class="bi bi-shield-check"></i>
+                    <span>5 TAHAP SOP &bull; AUDIT-READY APBN</span>
                 </div>
 
-                <div class="hud-callout callout-left">
-                    <div class="callout-dot"></div>
-                    <div class="callout-line"></div>
-                    <div class="callout-box">
-                        <span class="callout-tag">AKSES TERBUKA 24/7</span>
-                        <span class="callout-desc">Monitoring Real-Time Tanpa Login</span>
-                    </div>
+                <div class="deck-floating-tag tag-bottom">
+                    <i class="bi bi-broadcast"></i>
+                    <span>MONITORING REAL-TIME 24/7</span>
                 </div>
 
-                <div class="hud-callout callout-bottom">
-                    <div class="callout-dot"></div>
-                    <div class="callout-line"></div>
-                    <div class="callout-box">
-                        <span class="callout-tag">ARSIP RESMI DIGITAL</span>
-                        <span class="callout-desc">Standar Akuntansi &amp; Audit Trail</span>
-                    </div>
+                <!-- 3D Card Stack Container -->
+                <div class="deck-cards-stage" id="deckCardsStage" title="Klik kartu untuk shuffle ke dokumen berikutnya">
+
+                    <!-- CARD 1: PERJALANAN DINAS -->
+                    <article class="deck-card deck-card-1 card-pos-front" data-card-index="0">
+                        <!-- Card Header Strip -->
+                        <div class="dcard-header">
+                            <div class="dcard-header-left">
+                                <span class="dcard-type-badge badge-salmon">
+                                    <i class="bi bi-airplane-fill"></i>
+                                    <span>SURAT TUGAS &amp; PERJADIN</span>
+                                </span>
+                                <span class="dcard-ref-no">SPJ/2026/02/084</span>
+                            </div>
+                            <div class="dcard-status-pill pill-lunas">
+                                <span class="dcard-pulse-dot dot-green"></span>
+                                <span>Selesai &amp; Lunas</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body Content -->
+                        <div class="dcard-body">
+                            <div class="dcard-title-row">
+                                <h3 class="dcard-title">Survei Pendataan Potensi Desa (Podes) 2026</h3>
+                                <span class="dcard-loc-tag">
+                                    <i class="bi bi-geo-alt-fill"></i> Lasusua &ndash; Kendari
+                                </span>
+                            </div>
+
+                            <!-- Document Metrics Grid -->
+                            <div class="dcard-metrics-grid">
+                                <div class="dcard-metric-item">
+                                    <span class="dmetric-label">Pelaksana / Tanggung Jawab</span>
+                                    <strong class="dmetric-val">Tim Teknis Statistik Sosial</strong>
+                                </div>
+                                <div class="dcard-metric-item">
+                                    <span class="dmetric-label">Nominal Realisasi SP2D</span>
+                                    <strong class="dmetric-val val-nominal">Rp 4.750.000</strong>
+                                </div>
+                            </div>
+
+                            <!-- 5-Step Miniature Audit Pipeline Indicator -->
+                            <div class="dcard-pipeline-wrap">
+                                <div class="dpipeline-header">
+                                    <span class="dpipeline-title">Audit Trail &amp; Verifikasi SOP</span>
+                                    <span class="dpipeline-sla"><i class="bi bi-check-circle-fill"></i> SOP APBN Selesai</span>
+                                </div>
+                                <div class="dpipeline-nodes">
+                                    <div class="dp-node is-done" title="Tahap 1: Teknis"><i class="bi bi-check-lg"></i><span>Teknis</span></div>
+                                    <div class="dp-connector is-done"></div>
+                                    <div class="dp-node is-done" title="Tahap 2: Subbag Umum"><i class="bi bi-check-lg"></i><span>Umum</span></div>
+                                    <div class="dp-connector is-done"></div>
+                                    <div class="dp-node is-done" title="Tahap 3: PPK"><i class="bi bi-check-lg"></i><span>PPK</span></div>
+                                    <div class="dp-connector is-done"></div>
+                                    <div class="dp-node is-done" title="Tahap 4: PPSPM"><i class="bi bi-check-lg"></i><span>PPSPM</span></div>
+                                    <div class="dp-connector is-done"></div>
+                                    <div class="dp-node is-done node-lunas" title="Tahap 5: Bendahara"><i class="bi bi-cash-stack"></i><span>Lunas</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer / Authentic Stamp Seal -->
+                        <div class="dcard-footer">
+                            <div class="dcard-stamp-seal stamp-salmon">
+                                <div class="stamp-inner">
+                                    <span class="stamp-org">BPS KOLUT</span>
+                                    <span class="stamp-main">VERIFIED</span>
+                                    <span class="stamp-code">SP2D &bull; LUNAS</span>
+                                </div>
+                            </div>
+                            <div class="dcard-footer-info">
+                                <span class="dcard-footer-caption">Telah diverifikasi sesuai Standar Biaya Masukan (SBM) PMK APBN</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- CARD 2: HONORARIUM MITRA -->
+                    <article class="deck-card deck-card-2 card-pos-middle" data-card-index="1">
+                        <!-- Card Header Strip -->
+                        <div class="dcard-header">
+                            <div class="dcard-header-left">
+                                <span class="dcard-type-badge badge-amber">
+                                    <i class="bi bi-people-fill"></i>
+                                    <span>HONORARIUM MITRA</span>
+                                </span>
+                                <span class="dcard-ref-no">SPJ/2026/03/112</span>
+                            </div>
+                            <div class="dcard-status-pill pill-ppspm">
+                                <span class="dcard-pulse-dot dot-cyan"></span>
+                                <span>Tahap 4: Penerbitan SPM</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body Content -->
+                        <div class="dcard-body">
+                            <div class="dcard-title-row">
+                                <h3 class="dcard-title">Honor Petugas Lapangan Sensus Ekonomi Lanjutan</h3>
+                                <span class="dcard-loc-tag">
+                                    <i class="bi bi-person-badge-fill"></i> 14 Mitra Statistik
+                                </span>
+                            </div>
+
+                            <!-- Document Metrics Grid -->
+                            <div class="dcard-metrics-grid">
+                                <div class="dcard-metric-item">
+                                    <span class="dmetric-label">Penanggung Jawab Kegiatan</span>
+                                    <strong class="dmetric-val">Tim Nerwilis &amp; Distribusi</strong>
+                                </div>
+                                <div class="dcard-metric-item">
+                                    <span class="dmetric-label">Alokasi Anggaran DIPA</span>
+                                    <strong class="dmetric-val val-nominal">Rp 8.400.000</strong>
+                                </div>
+                            </div>
+
+                            <!-- 5-Step Miniature Audit Pipeline Indicator -->
+                            <div class="dcard-pipeline-wrap">
+                                <div class="dpipeline-header">
+                                    <span class="dpipeline-title">Audit Trail &amp; Verifikasi SOP</span>
+                                    <span class="dpipeline-sla"><i class="bi bi-stopwatch-fill"></i> Estimasi: 1 Hari</span>
+                                </div>
+                                <div class="dpipeline-nodes">
+                                    <div class="dp-node is-done" title="Tahap 1: Teknis"><i class="bi bi-check-lg"></i><span>Teknis</span></div>
+                                    <div class="dp-connector is-done"></div>
+                                    <div class="dp-node is-done" title="Tahap 2: Subbag Umum"><i class="bi bi-check-lg"></i><span>Umum</span></div>
+                                    <div class="dp-connector is-done"></div>
+                                    <div class="dp-node is-done" title="Tahap 3: PPK"><i class="bi bi-check-lg"></i><span>PPK</span></div>
+                                    <div class="dp-connector is-active"></div>
+                                    <div class="dp-node is-current" title="Tahap 4: PPSPM (Sedang Diproses)"><i class="bi bi-arrow-repeat"></i><span>PPSPM</span></div>
+                                    <div class="dp-connector"></div>
+                                    <div class="dp-node is-pending" title="Tahap 5: Bendahara"><span>5</span><span>Bendahara</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer / Authentic Stamp Seal -->
+                        <div class="dcard-footer">
+                            <div class="dcard-stamp-seal stamp-blue">
+                                <div class="stamp-inner">
+                                    <span class="stamp-org">KOLAKA UTARA</span>
+                                    <span class="stamp-main">KOMITMEN</span>
+                                    <span class="stamp-code">PPK &bull; VALID</span>
+                                </div>
+                            </div>
+                            <div class="dcard-footer-info">
+                                <span class="dcard-footer-caption">Daftar hadir fisik &amp; bukti potong PPh 21 telah diverifikasi lengkap</span>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- CARD 3: PENGADAAN & ATK -->
+                    <article class="deck-card deck-card-3 card-pos-back" data-card-index="2">
+                        <!-- Card Header Strip -->
+                        <div class="dcard-header">
+                            <div class="dcard-header-left">
+                                <span class="dcard-type-badge badge-sage">
+                                    <i class="bi bi-box-seam-fill"></i>
+                                    <span>BELANJA OPERASIONAL</span>
+                                </span>
+                                <span class="dcard-ref-no">SPJ/2026/03/129</span>
+                            </div>
+                            <div class="dcard-status-pill pill-umum">
+                                <span class="dcard-pulse-dot dot-orange"></span>
+                                <span>Tahap 2: Verifikasi Subbag Umum</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body Content -->
+                        <div class="dcard-body">
+                            <div class="dcard-title-row">
+                                <h3 class="dcard-title">Penggandaan Dokumen &amp; ATK Penunjang Sensus</h3>
+                                <span class="dcard-loc-tag">
+                                    <i class="bi bi-card-checklist"></i> Bukti Riil Lengkap
+                                </span>
+                            </div>
+
+                            <!-- Document Metrics Grid -->
+                            <div class="dcard-metrics-grid">
+                                <div class="dcard-metric-item">
+                                    <span class="dmetric-label">Unit Pengaju Berkas</span>
+                                    <strong class="dmetric-val">Subbagian Umum &amp; Teknis</strong>
+                                </div>
+                                <div class="dcard-metric-item">
+                                    <span class="dmetric-label">Nilai Kuitansi Riil</span>
+                                    <strong class="dmetric-val val-nominal">Rp 2.850.000</strong>
+                                </div>
+                            </div>
+
+                            <!-- 5-Step Miniature Audit Pipeline Indicator -->
+                            <div class="dcard-pipeline-wrap">
+                                <div class="dpipeline-header">
+                                    <span class="dpipeline-title">Audit Trail &amp; Verifikasi SOP</span>
+                                    <span class="dpipeline-sla"><i class="bi bi-clock-history"></i> Pemeriksaan Fisik</span>
+                                </div>
+                                <div class="dpipeline-nodes">
+                                    <div class="dp-node is-done" title="Tahap 1: Teknis"><i class="bi bi-check-lg"></i><span>Teknis</span></div>
+                                    <div class="dp-connector is-active"></div>
+                                    <div class="dp-node is-current" title="Tahap 2: Subbag Umum (Verifikasi Dokumen)"><i class="bi bi-search"></i><span>Umum</span></div>
+                                    <div class="dp-connector"></div>
+                                    <div class="dp-node is-pending" title="Tahap 3: PPK"><span>3</span><span>PPK</span></div>
+                                    <div class="dp-connector"></div>
+                                    <div class="dp-node is-pending" title="Tahap 4: PPSPM"><span>4</span><span>PPSPM</span></div>
+                                    <div class="dp-connector"></div>
+                                    <div class="dp-node is-pending" title="Tahap 5: Bendahara"><span>5</span><span>Bendahara</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Footer / Authentic Stamp Seal -->
+                        <div class="dcard-footer">
+                            <div class="dcard-stamp-seal stamp-green">
+                                <div class="stamp-inner">
+                                    <span class="stamp-org">SUBBAG UMUM</span>
+                                    <span class="stamp-main">CHECKED</span>
+                                    <span class="stamp-code">BUKTI SAH</span>
+                                </div>
+                            </div>
+                            <div class="dcard-footer-info">
+                                <span class="dcard-footer-caption">Kuitansi sah bermeterai &amp; faktur toko telah diserahkan fisik</span>
+                            </div>
+                        </div>
+                    </article>
+
                 </div>
 
-                <!-- Interactive 3D Formal White Card -->
-                <div class="hero-glass-card" id="heroInteractiveCard">
-
-                    <!-- Card Header -->
-                    <div class="glass-card-header">
-                        <span class="card-status-label">
-                            <span class="live-indicator-dot"></span>
-                            LIVE STATUS SPJ
-                        </span>
-
-                        <div class="live-status-pill status-ready smooth-crossfade" id="cardStatusBadge">
-                            <i class="bi bi-file-earmark-arrow-up"></i>
-                            <span id="cardStatusText">Pengajuan Dibuat</span>
-                        </div>
+                <!-- Deck Navigation & Interaction Deck -->
+                <div class="deck-controls-strip">
+                    <div class="deck-dots" id="deckDotsWrap">
+                        <button type="button" class="deck-dot is-active" data-deck-target="0" aria-label="Lihat Dokumen 1"></button>
+                        <button type="button" class="deck-dot" data-deck-target="1" aria-label="Lihat Dokumen 2"></button>
+                        <button type="button" class="deck-dot" data-deck-target="2" aria-label="Lihat Dokumen 3"></button>
                     </div>
-
-                    <!-- Stepper Progress Bar (5 Steps) -->
-                    <div class="stepper-container" id="heroStepper">
-
-                        <div class="stepper-step step-active-now" data-step="0" title="Tahap 1: Teknis">
-                            <div class="step-circle step-glow">1</div>
-                            <span class="step-label">Teknis</span>
-                        </div>
-
-                        <div class="step-line" data-line="0"></div>
-
-                        <div class="stepper-step" data-step="1" title="Tahap 2: Subbagian Umum">
-                            <div class="step-circle step-pending">2</div>
-                            <span class="step-label">Umum</span>
-                        </div>
-
-                        <div class="step-line" data-line="1"></div>
-
-                        <div class="stepper-step" data-step="2" title="Tahap 3: PPK">
-                            <div class="step-circle step-pending">3</div>
-                            <span class="step-label">PPK</span>
-                        </div>
-
-                        <div class="step-line" data-line="2"></div>
-
-                        <div class="stepper-step" data-step="3" title="Tahap 4: PPSPM">
-                            <div class="step-circle step-pending">4</div>
-                            <span class="step-label">PPSPM</span>
-                        </div>
-
-                        <div class="step-line" data-line="3"></div>
-
-                        <div class="stepper-step" data-step="4" title="Tahap 5: Bendahara">
-                            <div class="step-circle step-pending">5</div>
-                            <span class="step-label">Bendahara</span>
-                        </div>
-
-                    </div>
-
-                    <!-- Live Stage Detail Note Box -->
-                    <div class="live-detail-box smooth-crossfade" id="simDetailBox">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 2px;">
-                            <span style="font-size:11px; font-weight:700; color:#0c2556; text-transform:uppercase; letter-spacing:0.5px;" id="simStageRole">Posisi: Tim Teknis Kegiatan</span>
-                            <span style="font-size:11px; font-weight:700; color:#0284c7;" id="simStageSla">Estimasi: Hari H</span>
-                        </div>
-                        <div class="live-detail-note">
-                            <i class="bi bi-info-circle-fill"></i>
-                            <span id="simStageDesc">Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.</span>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Info Cards -->
-                    <div class="glass-card-info-grid">
-
-                        <div class="info-pill-card">
-                            <div class="info-pill-text">
-                                <small>Kegiatan</small>
-                                <strong id="cardKegiatanText" class="smooth-crossfade">Survei Pertanian 2026</strong>
-                            </div>
-                            <div class="info-pill-icon icon-blue">
-                                <i class="bi bi-briefcase-fill"></i>
-                            </div>
-                        </div>
-
-                        <div class="info-pill-card">
-                            <div class="info-pill-text">
-                                <small>Nilai SPJ</small>
-                                <strong id="cardNominalText" class="smooth-crossfade">Rp 4.750.000</strong>
-                            </div>
-                            <div class="info-pill-icon icon-orange">
-                                <i class="bi bi-cash-stack"></i>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Card CTA Button -->
-                    <div class="glass-card-footer">
-                        <a href="#monitoring" class="btn-card-action">
-                            <span>Lihat Detail Alur Dokumen</span>
-                            <i class="bi bi-arrow-right"></i>
+                    <div class="deck-action-buttons">
+                        <button type="button" class="btn-deck-shuffle" id="btnDeckShuffle" title="Geser ke dokumen SPJ berikutnya">
+                            <span>Geser Dokumen</span>
+                            <i class="bi bi-arrow-right-short"></i>
+                        </button>
+                        <a href="#monitoring" class="btn-deck-detail" title="Lihat semua data di Dashboard Monitoring">
+                            <span>Semua SPJ</span>
+                            <i class="bi bi-chevron-right"></i>
                         </a>
                     </div>
-
                 </div>
 
             </div>
@@ -1302,36 +1428,148 @@
             onScroll();
 
             /* ---------------------------------------------
-               2. 3D TILT EFFECT (PARALLAX ON HERO CARD)
+               2. 3D FLOATING CARD SHUFFLE DECK ENGINE
             --------------------------------------------- */
-            const cardWrapper = document.getElementById('heroCardWrapper');
-            const glassCard = document.getElementById('heroInteractiveCard');
-            let isHeroHovered = false;
+            const deckWrapper = document.getElementById('heroDeckWrapper');
+            const deckStage = document.getElementById('deckCardsStage');
+            const deckDots = document.querySelectorAll('#deckDotsWrap .deck-dot');
+            const btnShuffle = document.getElementById('btnDeckShuffle');
+            const deckCards = deckStage ? Array.from(deckStage.querySelectorAll('.deck-card')) : [];
 
-            if (cardWrapper && glassCard) {
-                cardWrapper.addEventListener('mouseenter', () => {
-                    isHeroHovered = true;
-                    glassCard.style.transition = 'transform 0.1s ease-out';
+            let deckOrder = [0, 1, 2]; // index of card currently [front, middle, back]
+            let deckShuffleTimer = null;
+            let isDeckHovered = false;
+            let isShuffling = false;
+
+            const updateDeckClasses = () => {
+                deckCards.forEach((card, idx) => {
+                    card.classList.remove('card-pos-front', 'card-pos-middle', 'card-pos-back', 'card-shuffling-out');
+                    const posIndex = deckOrder.indexOf(idx);
+                    if (posIndex === 0) {
+                        card.classList.add('card-pos-front');
+                    } else if (posIndex === 1) {
+                        card.classList.add('card-pos-middle');
+                    } else if (posIndex === 2) {
+                        card.classList.add('card-pos-back');
+                    }
                 });
 
-                cardWrapper.addEventListener('mousemove', (e) => {
-                    if (!isHeroHovered) return;
-                    const rect = cardWrapper.getBoundingClientRect();
+                // Update dots
+                const frontCardIdx = deckOrder[0];
+                deckDots.forEach((dot, dIdx) => {
+                    if (dIdx === frontCardIdx) {
+                        dot.classList.add('is-active');
+                    } else {
+                        dot.classList.remove('is-active');
+                    }
+                });
+            };
+
+            const shuffleNextCard = () => {
+                if (isShuffling || deckCards.length < 3) return;
+                isShuffling = true;
+
+                const frontIdx = deckOrder[0];
+                const frontCard = deckCards[frontIdx];
+
+                // Animate front card flying out smoothly
+                if (frontCard) {
+                    frontCard.classList.add('card-shuffling-out');
+                }
+
+                setTimeout(() => {
+                    // Rotate the deck array: front goes to back
+                    const oldFront = deckOrder.shift();
+                    deckOrder.push(oldFront);
+
+                    updateDeckClasses();
+
+                    setTimeout(() => {
+                        isShuffling = false;
+                    }, 350);
+                }, 380);
+            };
+
+            const jumpToCard = (targetCardIdx) => {
+                if (isShuffling || deckOrder[0] === targetCardIdx) return;
+                isShuffling = true;
+
+                const frontCard = deckCards[deckOrder[0]];
+                if (frontCard) {
+                    frontCard.classList.add('card-shuffling-out');
+                }
+
+                setTimeout(() => {
+                    // Reorder deck so targetCardIdx is at front
+                    while (deckOrder[0] !== targetCardIdx) {
+                        const shift = deckOrder.shift();
+                        deckOrder.push(shift);
+                    }
+                    updateDeckClasses();
+
+                    setTimeout(() => {
+                        isShuffling = false;
+                    }, 350);
+                }, 350);
+            };
+
+            const startDeckAutoShuffle = () => {
+                if (deckShuffleTimer) clearInterval(deckShuffleTimer);
+                deckShuffleTimer = setInterval(() => {
+                    if (!isDeckHovered) {
+                        shuffleNextCard();
+                    }
+                }, 4500);
+            };
+
+            if (deckWrapper && deckStage) {
+                // Interactive controls
+                if (btnShuffle) {
+                    btnShuffle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        shuffleNextCard();
+                        startDeckAutoShuffle();
+                    });
+                }
+
+                deckStage.addEventListener('click', () => {
+                    shuffleNextCard();
+                    startDeckAutoShuffle();
+                });
+
+                deckDots.forEach(dot => {
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const target = parseInt(dot.getAttribute('data-deck-target'), 10);
+                        if (!isNaN(target)) {
+                            jumpToCard(target);
+                            startDeckAutoShuffle();
+                        }
+                    });
+                });
+
+                // Mouse hover pause
+                deckWrapper.addEventListener('mouseenter', () => {
+                    isDeckHovered = true;
+                });
+
+                deckWrapper.addEventListener('mouseleave', () => {
+                    isDeckHovered = false;
+                    deckStage.style.transform = 'rotateX(0deg) rotateY(0deg)';
+                });
+
+                // 3D Parallax Tilt
+                deckWrapper.addEventListener('mousemove', (e) => {
+                    const rect = deckWrapper.getBoundingClientRect();
                     const x = (e.clientX - rect.left) / rect.width - 0.5;
                     const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-                    const maxTilt = 8;
-                    const tiltX = -y * maxTilt;
-                    const tiltY = x * maxTilt;
-
-                    glassCard.style.transform = `perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+                    const tiltX = -y * 8;
+                    const tiltY = x * 8;
+                    deckStage.style.transform = `rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
                 });
 
-                cardWrapper.addEventListener('mouseleave', () => {
-                    isHeroHovered = false;
-                    glassCard.style.transition = 'transform 0.5s ease-out';
-                    glassCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-                });
+                updateDeckClasses();
+                startDeckAutoShuffle();
             }
 
             /* ---------------------------------------------
@@ -1368,191 +1606,6 @@
                 // Fallback untuk browser tanpa dukungan IntersectionObserver
                 revealTargets.forEach(el => el.classList.add('is-revealed'));
             }
-
-            /* ---------------------------------------------
-               3. 5-STAGE INTERACTIVE STEPPER
-            --------------------------------------------- */
-            const stages = [
-                {
-                    name: 'Teknis',
-                    role: 'Posisi: Tim Teknis Kegiatan',
-                    statusClass: 'status-ready',
-                    statusText: 'Pengajuan Dibuat',
-                    statusIcon: 'bi bi-file-earmark-arrow-up',
-                    sla: 'Estimasi: Hari H',
-                    desc: 'Menginput rincian SPJ, melampirkan berkas bukti sah, dan menyerahkan ke Subbagian Umum.',
-                    kegiatan: 'Survei Pertanian 2026',
-                    nominal: 'Rp 4.750.000'
-                },
-                {
-                    name: 'Umum',
-                    role: 'Posisi: Subbagian Umum',
-                    statusClass: 'status-diproses',
-                    statusText: 'Verifikasi Berkas',
-                    statusIcon: 'bi bi-search',
-                    sla: 'Estimasi: 1 - 2 Hari',
-                    desc: 'Memeriksa kelengkapan administrasi kuitansi, daftar hadir, dan rincian riil kegiatan.',
-                    kegiatan: 'Survei Industri Manufaktur',
-                    nominal: 'Rp 5.850.000'
-                },
-                {
-                    name: 'PPK',
-                    role: 'Posisi: Pejabat Pembuat Komitmen (PPK)',
-                    statusClass: 'status-ppk',
-                    statusText: 'Disetujui PPK',
-                    statusIcon: 'bi bi-patch-check',
-                    sla: 'Estimasi: 1 - 2 Hari',
-                    desc: 'Pengujian kesesuaian anggaran DIPA/POK, substansi hasil kegiatan, dan persetujuan SPJ.',
-                    kegiatan: 'Sensus Ekonomi Lanjutan',
-                    nominal: 'Rp 6.200.000'
-                },
-                {
-                    name: 'PPSPM',
-                    role: 'Posisi: Pejabat Penandatangan SPM (PPSPM)',
-                    statusClass: 'status-ppspm',
-                    statusText: 'Penerbitan SPM',
-                    statusIcon: 'bi bi-award',
-                    sla: 'Estimasi: 1 - 2 Hari',
-                    desc: 'Pengujian dokumen tagihan, validasi ketersediaan dana, dan penerbitan SPM ke KPPN.',
-                    kegiatan: 'Survei Angkatan Kerja (Sakernas)',
-                    nominal: 'Rp 8.450.000'
-                },
-                {
-                    name: 'Bendahara',
-                    role: 'Posisi: Bendahara Pengeluaran',
-                    statusClass: 'status-selesai',
-                    statusText: 'Selesai & Lunas',
-                    statusIcon: 'bi bi-check-circle-fill',
-                    sla: 'Estimasi: 1 Hari Kerja',
-                    desc: 'Pencairan dana SP2D, pembayaran ke pelaksana kegiatan, dan pengarsipan bukti setor sah.',
-                    kegiatan: 'Survei Sosial Ekonomi (Susenas)',
-                    nominal: 'Rp 12.300.000'
-                }
-            ];
-
-            let currentStep = 0;
-            let autoStepInterval = null;
-            let transitionTimeout = null;
-
-            const elStatusBadge = document.getElementById('cardStatusBadge');
-            const elStageRole = document.getElementById('simStageRole');
-            const elStageSla = document.getElementById('simStageSla');
-            const elStageDesc = document.getElementById('simStageDesc');
-            const elKegiatanText = document.getElementById('cardKegiatanText');
-            const elNominalText = document.getElementById('cardNominalText');
-            const elDetailBox = document.getElementById('simDetailBox');
-
-            const stepperEl = document.getElementById('heroStepper');
-            const stepItems = stepperEl ? stepperEl.querySelectorAll('.stepper-step') : [];
-            const stepLines = stepperEl ? stepperEl.querySelectorAll('.step-line') : [];
-
-            const renderStep = (idx, immediate = false) => {
-                const s = stages[idx];
-                if (!s) return;
-
-                stepItems.forEach((stepNode, i) => {
-                    const circle = stepNode.querySelector('.step-circle');
-                    stepNode.classList.remove('step-done', 'step-active-now');
-
-                    if (i < idx) {
-                        stepNode.classList.add('step-done');
-                        if (circle) {
-                            circle.className = 'step-circle';
-                            circle.innerHTML = '<i class="bi bi-check-lg"></i>';
-                        }
-                    } else if (i === idx) {
-                        stepNode.classList.add('step-active-now');
-                        if (circle) {
-                            circle.className = 'step-circle step-glow';
-                            circle.innerHTML = (i + 1).toString();
-                        }
-                    } else {
-                        if (circle) {
-                            circle.className = 'step-circle step-pending';
-                            circle.textContent = (i + 1).toString();
-                        }
-                    }
-                });
-
-                stepLines.forEach((lineNode, i) => {
-                    if (i < idx) {
-                        lineNode.classList.add('line-glow');
-                    } else {
-                        lineNode.classList.remove('line-glow');
-                    }
-                });
-
-                const applyContent = () => {
-                    if (elStageRole) elStageRole.textContent = s.role;
-                    if (elStageSla) elStageSla.textContent = s.sla;
-                    if (elStageDesc) elStageDesc.textContent = s.desc;
-                    if (elKegiatanText) elKegiatanText.textContent = s.kegiatan;
-                    if (elNominalText) elNominalText.textContent = s.nominal;
-
-                    if (elStatusBadge) {
-                        elStatusBadge.className = `live-status-pill ${s.statusClass} smooth-crossfade`;
-                        elStatusBadge.innerHTML = `<i class="${s.statusIcon}"></i> <span>${s.statusText}</span>`;
-                    }
-                };
-
-                if (immediate) {
-                    applyContent();
-                    return;
-                }
-
-                if (transitionTimeout) clearTimeout(transitionTimeout);
-
-                const fadeTargets = [elStatusBadge, elDetailBox, elKegiatanText, elNominalText].filter(Boolean);
-
-                fadeTargets.forEach(el => el.classList.add('fading-out'));
-
-                transitionTimeout = setTimeout(() => {
-                    applyContent();
-
-                    fadeTargets.forEach(el => {
-                        el.classList.remove('fading-out');
-                        el.classList.add('prep-in');
-                    });
-
-                    void (elDetailBox ? elDetailBox.offsetWidth : 0);
-
-                    requestAnimationFrame(() => {
-                        fadeTargets.forEach(el => el.classList.remove('prep-in'));
-                    });
-                }, 180);
-            };
-
-            const startAutoStep = () => {
-                if (autoStepInterval) clearInterval(autoStepInterval);
-                autoStepInterval = setInterval(() => {
-                    currentStep = (currentStep + 1) % stages.length;
-                    renderStep(currentStep);
-                }, 3200);
-            };
-
-            if (glassCard) {
-                glassCard.addEventListener('mouseenter', () => {
-                    if (autoStepInterval) clearInterval(autoStepInterval);
-                });
-
-                glassCard.addEventListener('mouseleave', () => {
-                    startAutoStep();
-                });
-            }
-
-            stepItems.forEach((stepNode) => {
-                stepNode.addEventListener('click', () => {
-                    const stepIdx = parseInt(stepNode.getAttribute('data-step'), 10);
-                    if (!isNaN(stepIdx)) {
-                        currentStep = stepIdx;
-                        renderStep(currentStep);
-                        startAutoStep();
-                    }
-                });
-            });
-
-            renderStep(currentStep, true);
-            startAutoStep();
 
             if (window.location.hash === '#templates' || window.location.hash === '#template-spj') {
                 setTimeout(() => openTemplateModal(), 300);
