@@ -35,64 +35,66 @@
 
     <!-- 2. MAIN NAVBAR (FORMAL EXECUTIVE BPS GLASS) -->
     <header class="navbar">
-        <!-- LEFT: NAVIGATION LINKS -->
-        <div class="navbar-left">
-            <button type="button" class="mobile-toggle-btn" onclick="toggleMobileNav(event)" aria-label="Menu Navigasi">
-                <i class="bi bi-list"></i>
-            </button>
-            <nav class="nav-links">
-                <a href="#beranda" class="nav-link active">BERANDA</a>
-                <a href="#monitoring" class="nav-link">MONITORING</a>
-                <a href="#alur" class="nav-link">ALUR SPJ</a>
-                <a href="{{ route('panduan-role.preview') }}" target="_blank" class="nav-link">PANDUAN</a>
-                <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">TEMPLATE</a>
-            </nav>
-        </div>
+        <div class="navbar-inner">
+            <!-- LEFT: NAVIGATION LINKS -->
+            <div class="navbar-left">
+                <button type="button" class="mobile-toggle-btn" onclick="toggleMobileNav(event)" aria-label="Menu Navigasi">
+                    <i class="bi bi-list"></i>
+                </button>
+                <nav class="nav-links">
+                    <a href="#beranda" class="nav-link active">BERANDA</a>
+                    <a href="#monitoring" class="nav-link">MONITORING</a>
+                    <a href="#alur" class="nav-link">ALUR SPJ</a>
+                    <a href="{{ route('panduan-role.preview') }}" target="_blank" class="nav-link">PANDUAN</a>
+                    <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">TEMPLATE</a>
+                </nav>
+            </div>
 
-        <!-- CENTER: BOLD CENTERED BRAND -->
-        <div class="navbar-center">
-            <a href="{{ route('home') }}" class="brand-centered" title="Sistem Informasi Penyelesaian Tagihan SPJ">
-                <div class="brand-logo-centered">
-                    @if(file_exists(public_path('images/logo-bps-app.png')))
-                        <img src="{{ asset('images/logo-bps-app.png') }}" alt="Logo BPS">
+            <!-- CENTER: BOLD CENTERED BRAND -->
+            <div class="navbar-center">
+                <a href="{{ route('home') }}" class="brand-centered" title="Sistem Informasi Penyelesaian Tagihan SPJ">
+                    <div class="brand-logo-centered">
+                        @if(file_exists(public_path('images/logo-bps-app.png')))
+                            <img src="{{ asset('images/logo-bps-app.png') }}" alt="Logo BPS">
+                        @else
+                            <span class="brand-logo-fallback">BPS</span>
+                        @endif
+                    </div>
+                    <div class="brand-titles-centered">
+                        <span class="brand-main-title">BADAN PUSAT STATISTIK</span>
+                        <span class="brand-sub-title">KABUPATEN KOLAKA UTARA</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- RIGHT: UTILITY ACTIONS & LOGIN -->
+            <div class="navbar-right">
+                <a href="#monitoring" class="nav-action-item" title="Cari atau Filter SPJ">
+                    <i class="bi bi-search"></i>
+                    <span class="action-label">CARI</span>
+                </a>
+                <a href="#templates" class="nav-action-item" onclick="openTemplateModal(event)" title="Unduh Format Berkas">
+                    <i class="bi bi-folder2-open"></i>
+                    <span class="action-label">BERKAS</span>
+                </a>
+
+                <div class="nav-actions">
+                    @auth
+                        @php
+                            $role = auth()->user()->role;
+                            $dashboardUrl = url('/' . $role . '/dashboard');
+                        @endphp
+                        <a href="{{ $dashboardUrl }}" class="login-btn dashboard-badge" title="Menuju Dashboard">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>DASHBOARD ({{ strtoupper($role) }})</span>
+                        </a>
                     @else
-                        <span class="brand-logo-fallback">BPS</span>
-                    @endif
+                        <a href="{{ route('login') }}" class="login-btn" title="Masuk ke Sistem">
+                            <i class="bi bi-person"></i>
+                            <span>LOGIN</span>
+                        </a>
+                    @endauth
                 </div>
-                <div class="brand-titles-centered">
-                    <span class="brand-main-title">BADAN PUSAT STATISTIK</span>
-                    <span class="brand-sub-title">KABUPATEN KOLAKA UTARA</span>
-                </div>
-            </a>
-        </div>
-
-        <!-- RIGHT: UTILITY ACTIONS & LOGIN -->
-        <div class="navbar-right">
-            <a href="#monitoring" class="nav-action-item" title="Cari atau Filter SPJ">
-                <i class="bi bi-search"></i>
-                <span class="action-label">CARI</span>
-            </a>
-            <a href="#templates" class="nav-action-item" onclick="openTemplateModal(event)" title="Unduh Format Berkas">
-                <i class="bi bi-folder2-open"></i>
-                <span class="action-label">BERKAS</span>
-            </a>
-
-            <div class="nav-actions">
-                @auth
-                    @php
-                        $role = auth()->user()->role;
-                        $dashboardUrl = url('/' . $role . '/dashboard');
-                    @endphp
-                    <a href="{{ $dashboardUrl }}" class="login-btn dashboard-badge" title="Menuju Dashboard">
-                        <i class="bi bi-speedometer2"></i>
-                        <span>DASHBOARD ({{ strtoupper($role) }})</span>
-                    </a>
-                @else
-                    <a href="{{ route('login') }}" class="login-btn" title="Masuk ke Sistem">
-                        <i class="bi bi-person"></i>
-                        <span>LOGIN</span>
-                    </a>
-                @endauth
             </div>
         </div>
     </header>
@@ -136,6 +138,7 @@
              1. HERO SECTION (FORMAL EXECUTIVE BPS STYLE)
         ========================================================= -->
         <section class="hero" id="beranda">
+            <div class="hero-inner">
 
             <!-- Left Hero Content -->
             <div class="hero-content reveal-slide-left">
@@ -278,6 +281,8 @@
                     </div>
 
                 </div>
+
+            </div>
 
             </div>
 
