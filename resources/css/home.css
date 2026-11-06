@@ -1481,20 +1481,20 @@ body.formal-bps-theme {
 }
 
 /* ==========================================================
-   9. MONITORING DASHBOARD (CONTEMPORARY FROSTED BOTANICAL GLASS)
-   Modern, integrated, and harmonized with the Soft Sage & Cream theme
+   9. MONITORING DASHBOARD (ORGANIC BENTO & FLOATING CARD-LIST)
+   Sleek, fluid, contemporary and harmonized with Botanical Sage
    ========================================================= */
 .monitoring-section {
     position: relative;
     z-index: 5;
-    padding: 70px 5% 100px;
+    padding: 70px 5% 110px;
     background: var(--sage-monitoring);
 }
 
 .monitoring-header {
     text-align: center;
     max-width: 800px;
-    margin: 0 auto 40px;
+    margin: 0 auto 44px;
 }
 
 .monitoring-badge {
@@ -1533,329 +1533,361 @@ body.formal-bps-theme {
 }
 
 /* ----------------------------------------------------------
-   Stat Cards: Sleek Contemporary Frosted Glass Cards
+   ORGANIC BENTO GRID FOR STATS (PILIHAN 1)
    ---------------------------------------------------------- */
-.monitoring-stats-grid {
+.monitoring-bento-grid {
     max-width: 1280px;
-    margin: 0 auto 24px;
+    margin: 0 auto 28px;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 20px;
+    align-items: stretch;
 }
 
-.m-stat-card {
+/* Featured Hero Bento Card */
+.bento-hero-card {
     position: relative;
+    background: linear-gradient(135deg, rgba(38, 64, 53, 0.85) 0%, rgba(22, 38, 31, 0.78) 100%);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
+    border-radius: 32px 18px 32px 22px;
+    padding: 30px 34px;
+    box-shadow: 0 20px 50px -10px rgba(10, 22, 17, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 290px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bento-hero-blob {
+    position: absolute;
+    width: 240px;
+    height: 240px;
+    right: -40px;
+    bottom: -40px;
+    background: radial-gradient(circle, rgba(224, 122, 95, 0.24) 0%, rgba(250, 245, 235, 0.08) 50%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
+    transition: transform 0.4s ease;
+}
+
+.bento-hero-card:hover .bento-hero-blob {
+    transform: scale(1.3);
+}
+
+.bento-hero-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(224, 122, 95, 0.5);
+    box-shadow: 0 24px 56px -10px rgba(10, 22, 17, 0.55), 0 0 28px rgba(224, 122, 95, 0.18);
+}
+
+.bento-hero-card.is-active-filter {
+    border-color: var(--salmon-accent);
+    box-shadow: 0 0 0 2px rgba(224, 122, 95, 0.35), 0 20px 50px -10px rgba(10, 22, 17, 0.5);
+}
+
+.bento-hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.bento-hero-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bento-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--salmon-accent);
+    letter-spacing: 0.8px;
+    background: rgba(224, 122, 95, 0.12);
+    border: 1px solid rgba(224, 122, 95, 0.25);
+    padding: 5px 12px;
+    border-radius: 9999px;
+}
+
+.bento-action-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #FAF5EB;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 5px 12px;
+    border-radius: 9999px;
+    transition: all 0.25s ease;
+}
+
+.bento-hero-card:hover .bento-action-badge {
+    background: var(--salmon-accent);
+    color: #ffffff;
+    border-color: var(--salmon-accent);
+    transform: translate(2px, -2px);
+}
+
+.bento-hero-body {
+    margin: 22px 0 24px;
+}
+
+.bento-hero-metric {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.bento-hero-val {
+    font-size: clamp(48px, 4.5vw, 64px);
+    font-weight: 900;
+    color: #FAF5EB;
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+.bento-hero-unit {
+    font-size: 13px;
+    font-weight: 800;
+    color: #CBDCD4;
+    letter-spacing: 1px;
+}
+
+.bento-hero-desc {
+    color: var(--text-muted-sage);
+    font-size: 14px;
+    line-height: 1.55;
+    margin-top: 10px;
+    max-width: 440px;
+}
+
+.bento-hero-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bento-pill-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #CBDCD4;
+}
+
+.bento-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 10px #10b981;
+    animation: statusPulse 2s infinite ease-in-out;
+}
+
+.bento-click-hint {
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--salmon-accent);
+    transition: transform 0.25s ease;
+}
+
+.bento-hero-card:hover .bento-click-hint {
+    transform: translateX(4px);
+}
+
+/* Right Column: 3 Sculpted Pebble Cards */
+.bento-pebbles-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    justify-content: space-between;
+}
+
+.bento-pebble-card {
     background: rgba(22, 38, 31, 0.72);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-    padding: 20px 22px;
+    padding: 16px 22px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    box-shadow: 0 16px 36px -8px rgba(10, 22, 17, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 16px;
+    box-shadow: 0 12px 30px -8px rgba(10, 22, 17, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    overflow: hidden;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.m-stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+/* Organic Asymmetrical Radii */
+.bento-pebble-card.pebble-diajukan {
+    border-radius: 24px 16px 22px 28px;
 }
 
-.m-stat-card:hover {
-    transform: translateY(-4px);
+.bento-pebble-card.pebble-proses {
+    border-radius: 20px 28px 18px 24px;
+}
+
+.bento-pebble-card.pebble-selesai {
+    border-radius: 26px 20px 28px 16px;
+}
+
+.bento-pebble-card:hover {
+    transform: translateX(6px) translateY(-2px);
+    background: rgba(28, 48, 39, 0.88);
     border-color: rgba(224, 122, 95, 0.45);
-    background: rgba(26, 46, 38, 0.85);
-    box-shadow: 0 20px 44px -8px rgba(10, 22, 17, 0.55), 0 0 24px rgba(224, 122, 95, 0.16);
+    box-shadow: 0 16px 36px -8px rgba(10, 22, 17, 0.45), 0 0 20px rgba(224, 122, 95, 0.14);
 }
 
-.m-stat-card:hover::before {
-    opacity: 1;
-}
-
-.m-stat-card.is-active-filter {
+.bento-pebble-card.is-active-filter {
     border-color: var(--salmon-accent);
-    background: rgba(30, 52, 43, 0.9);
-    box-shadow: 0 0 0 2px rgba(224, 122, 95, 0.35), 0 16px 36px -8px rgba(10, 22, 17, 0.5);
+    background: rgba(30, 52, 43, 0.92);
+    box-shadow: 0 0 0 2px rgba(224, 122, 95, 0.35), 0 14px 34px -8px rgba(10, 22, 17, 0.45);
 }
 
-.m-stat-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.m-stat-icon {
-    width: 48px;
-    height: 48px;
+.pebble-icon-box {
+    width: 44px;
+    height: 44px;
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 21px;
+    font-size: 20px;
     flex-shrink: 0;
     transition: transform 0.25s ease;
 }
 
-.m-stat-card:hover .m-stat-icon {
-    transform: scale(1.08);
+.bento-pebble-card:hover .pebble-icon-box {
+    transform: scale(1.1);
 }
 
-/* Harmonized Palette for Stat Icons */
-.m-stat-blue,
-.m-stat-all {
-    background: rgba(250, 245, 235, 0.1);
-    color: #FAF5EB;
-    border: 1px solid rgba(250, 245, 235, 0.2);
-}
-
-.m-stat-amber {
-    background: rgba(245, 158, 11, 0.14);
+.pebble-diajukan .pebble-icon-box {
+    background: rgba(245, 158, 11, 0.16);
     color: #FCD34D;
-    border: 1px solid rgba(245, 158, 11, 0.28);
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.m-stat-salmon,
-.m-stat-proses {
+.pebble-proses .pebble-icon-box {
     background: rgba(224, 122, 95, 0.16);
     color: #FFAA94;
     border: 1px solid rgba(224, 122, 95, 0.32);
 }
 
-.m-stat-green {
-    background: rgba(16, 185, 129, 0.15);
+.pebble-selesai .pebble-icon-box {
+    background: rgba(16, 185, 129, 0.16);
     color: #6EE7B7;
-    border: 1px solid rgba(16, 185, 129, 0.28);
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-.m-stat-info {
+.pebble-content {
+    flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-.m-stat-value {
-    font-size: 28px;
+.pebble-metric-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pebble-val {
+    font-size: 24px;
     font-weight: 900;
     color: #FAF5EB;
-    line-height: 1.1;
+    line-height: 1;
     letter-spacing: -0.02em;
 }
 
-.m-stat-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #A3BFB2;
-    margin-top: 3px;
-    letter-spacing: 0.2px;
+.pebble-status-tag {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
 }
 
-.m-stat-action-indicator {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.pebble-status-tag.tag-amber {
+    background: rgba(245, 158, 11, 0.18);
+    color: #FDE047;
+}
+
+.pebble-status-tag.tag-salmon {
+    background: rgba(224, 122, 95, 0.2);
+    color: #FFAA94;
+}
+
+.pebble-status-tag.tag-green {
+    background: rgba(16, 185, 129, 0.2);
+    color: #86EFAC;
+}
+
+.pebble-label {
     font-size: 13px;
+    font-weight: 700;
+    color: #FAF5EB;
+    margin-top: 4px;
+}
+
+.pebble-sub {
+    font-size: 11px;
+    color: #A3BFB2;
+    margin-top: 1px;
+}
+
+.pebble-arrow {
+    font-size: 14px;
     color: #7A9B8D;
     transition: all 0.25s ease;
 }
 
-.m-stat-card:hover .m-stat-action-indicator {
-    background: var(--salmon-accent);
-    color: #ffffff;
-    transform: translate(2px, -2px);
+.bento-pebble-card:hover .pebble-arrow {
+    color: var(--salmon-accent);
+    transform: translateX(3px);
 }
 
 /* ----------------------------------------------------------
-   Filter Toolbar Card: Modern Deck on Frosted Glass
+   INTEGRATED FLOATING CONTROL DECK / ISLAND (PILIHAN 1)
    ---------------------------------------------------------- */
-.monitoring-controls-card {
+.monitoring-filter-island {
     max-width: 1280px;
-    margin: 0 auto 24px;
-    background: rgba(22, 38, 31, 0.72);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
-    padding: 22px 26px;
-    box-shadow: 0 16px 40px -8px rgba(10, 22, 17, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-.m-filter-top-bar {
+    margin: 0 auto 28px;
+    background: rgba(20, 36, 29, 0.75);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
+    padding: 14px 22px;
+    box-shadow: 0 16px 40px -8px rgba(8, 18, 14, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
     gap: 16px;
     flex-wrap: wrap;
-    width: 100%;
 }
 
-.m-filter-top-bar .m-field-group {
-    width: 280px;
-    max-width: 100%;
-}
-
-.m-field-group {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.m-field-group label {
-    font-size: 11px;
-    font-weight: 800;
-    color: #FAF5EB;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.m-field-group label i {
-    color: var(--salmon-accent);
-}
-
-.m-field-input-box {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background: rgba(14, 26, 21, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    height: 46px;
-    transition: all 0.25s ease;
-}
-
-.m-field-input-box:focus-within {
-    border-color: var(--salmon-accent);
-    background: rgba(14, 26, 21, 0.85);
-    box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.25);
-}
-
-.m-field-input-box input,
-.m-field-input-box select {
-    width: 100%;
-    height: 100%;
-    border: none;
-    background: transparent;
-    padding: 0 34px 0 14px;
-    font-size: 13.5px;
-    font-family: inherit;
-    color: #FAF5EB;
-    outline: none;
-}
-
-.m-field-input-box input[type="date"] {
-    color-scheme: dark;
-}
-
-.m-field-input-box select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23CBDCD4' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 12px 10px;
-    appearance: none;
-}
-
-.m-field-input-box select option {
-    background-color: #1a2f26;
-    color: #FAF5EB;
-}
-
-.m-field-clear {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    color: #A3BFB2;
-    cursor: pointer;
-    font-size: 15px;
-    display: none;
-    padding: 2px;
-    transition: color 0.2s ease;
-}
-
-.m-field-clear:hover {
-    color: var(--salmon-accent);
-}
-
-.btn-reset-filters {
-    height: 46px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 0 20px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #FAF5EB;
-    cursor: pointer;
-    transition: all 0.22s ease;
-}
-
-.btn-reset-filters:hover {
-    background: var(--salmon-accent);
-    color: #ffffff;
-    border-color: var(--salmon-accent);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(224, 122, 95, 0.35);
-}
-
-.m-filter-divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
-    margin: 18px auto 16px;
-    width: 100%;
-}
-
-.m-filter-status-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.m-status-title {
-    font-size: 11px;
-    font-weight: 800;
-    color: #A3BFB2;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.m-status-title i {
-    color: var(--salmon-accent);
-}
-
-.m-status-chips {
+.filter-island-status-chips {
     display: flex;
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
 }
 
-.m-chip {
+.filter-island-status-chips .m-chip {
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -1870,17 +1902,17 @@ body.formal-bps-theme {
     transition: all 0.22s ease;
 }
 
-.m-chip:hover {
+.filter-island-status-chips .m-chip:hover {
     background: rgba(255, 255, 255, 0.12);
     color: #FAF5EB;
     border-color: rgba(255, 255, 255, 0.25);
 }
 
-.m-chip.active {
+.filter-island-status-chips .m-chip.active {
     background: var(--salmon-accent);
     border-color: var(--salmon-accent);
     color: #ffffff;
-    box-shadow: 0 4px 18px rgba(224, 122, 95, 0.4);
+    box-shadow: 0 4px 18px rgba(224, 122, 95, 0.42);
 }
 
 .chip-count {
@@ -1892,104 +1924,212 @@ body.formal-bps-theme {
     font-weight: 800;
 }
 
-.m-chip.active .chip-count {
+.filter-island-status-chips .m-chip.active .chip-count {
     background: rgba(0, 0, 0, 0.22);
     color: #ffffff;
 }
 
-/* ----------------------------------------------------------
-   Monitoring Table Card: Sleek Contemporary Data Surface
-   ---------------------------------------------------------- */
-.monitoring-table-card {
-    max-width: 1280px;
-    margin: 0 auto;
-    background: rgba(22, 38, 31, 0.72);
-    backdrop-filter: blur(20px) saturate(160%);
-    -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
-    overflow: hidden;
-    box-shadow: 0 16px 48px -10px rgba(10, 22, 17, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+.filter-island-tools {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.m-table-header-bar {
-    padding: 18px 26px;
+.filter-tool-pill {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background: rgba(14, 26, 21, 0.65);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 9999px;
+    height: 40px;
+    padding: 0 14px;
+    transition: all 0.25s ease;
+}
+
+.filter-tool-pill i {
+    color: var(--salmon-accent);
+    font-size: 13px;
+}
+
+.filter-tool-pill input,
+.filter-tool-pill select {
+    border: none;
+    background: transparent;
+    color: #FAF5EB;
+    font-size: 12.5px;
+    font-family: inherit;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-tool-pill input[type="date"] {
+    color-scheme: dark;
+}
+
+.filter-tool-pill select {
+    appearance: none;
+    padding-right: 18px;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23CBDCD4' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 2px center;
+    background-size: 11px 9px;
+}
+
+.filter-tool-pill select option {
+    background-color: #1a2f26;
+    color: #FAF5EB;
+}
+
+.filter-tool-pill:focus-within {
+    border-color: var(--salmon-accent);
+    box-shadow: 0 0 0 3px rgba(224, 122, 95, 0.25);
+    background: rgba(14, 26, 21, 0.85);
+}
+
+.filter-tool-clear {
+    background: none;
+    border: none;
+    color: #A3BFB2;
+    cursor: pointer;
+    font-size: 13px;
+    display: none;
+    padding: 0;
+}
+
+.filter-tool-clear:hover {
+    color: var(--salmon-accent);
+}
+
+.btn-filter-reset-pill {
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #FAF5EB;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.22s ease;
+}
+
+.btn-filter-reset-pill:hover {
+    background: var(--salmon-accent);
+    color: #ffffff;
+    border-color: var(--salmon-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(224, 122, 95, 0.35);
+}
+
+/* ----------------------------------------------------------
+   FLOATING CARD LIST FOR RECORDS (PILIHAN 2)
+   ---------------------------------------------------------- */
+.monitoring-records-container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.records-deck-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 6px 18px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.m-table-header-title {
+.deck-header-left {
     display: flex;
     align-items: center;
-    gap: 9px;
-    font-size: 13px;
-    font-weight: 800;
-    color: #FAF5EB;
-    letter-spacing: 0.5px;
+    gap: 12px;
 }
 
-.m-table-header-title i {
+.deck-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: rgba(250, 245, 235, 0.08);
+    border: 1px solid rgba(250, 245, 235, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--salmon-accent);
     font-size: 16px;
 }
 
-.m-table-count-label {
+.deck-header-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #FAF5EB;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.deck-header-sub {
     font-size: 12px;
     color: #A3BFB2;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 4px 12px;
+    margin: 2px 0 0;
+}
+
+.deck-count-badge {
+    font-size: 12px;
+    color: #A3BFB2;
+    background: rgba(20, 36, 29, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 6px 14px;
     border-radius: 9999px;
 }
 
-.m-table-count-label strong {
+.deck-count-badge strong {
     color: #FAF5EB;
 }
 
-.m-table-wrapper {
-    overflow-x: auto;
+/* The Cards Stack */
+.records-cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.m-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-.m-table thead tr {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(14, 26, 21, 0.4);
-}
-
-.m-table th {
-    padding: 14px 24px;
-    font-size: 11px;
-    font-weight: 800;
-    color: #A3BFB2;
-    text-transform: uppercase;
-    letter-spacing: 0.9px;
-}
-
-.m-table tbody tr.spj-row {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.m-table tbody tr.spj-row:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.m-table td {
+.m-record-card {
+    position: relative;
+    background: rgba(22, 38, 31, 0.72);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px 16px 20px 16px;
     padding: 18px 24px;
-    vertical-align: middle;
+    display: grid;
+    grid-template-columns: 240px 1fr 240px;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 10px 28px -6px rgba(10, 22, 17, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* SPJ Pill: Refined Monospace Token with Warm Salmon Copy Button */
-.m-spj-pill {
+.m-record-card:hover {
+    transform: translateY(-3px) scale(1.006);
+    background: rgba(28, 48, 39, 0.88);
+    border-color: rgba(224, 122, 95, 0.45);
+    box-shadow: 0 18px 42px -8px rgba(10, 22, 17, 0.5), 0 0 24px rgba(224, 122, 95, 0.14);
+}
+
+/* 1. Left: Token & Date */
+.record-meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.record-meta-block .m-spj-pill {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -2002,31 +2142,35 @@ body.formal-bps-theme {
     font-weight: 700;
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
     letter-spacing: 0.5px;
+    width: fit-content;
     transition: all 0.2s ease;
 }
 
-.spj-row:hover .m-spj-pill {
-    border-color: rgba(224, 122, 95, 0.4);
-    background: rgba(250, 245, 235, 0.12);
+.record-meta-block .m-spj-pill i.bi-file-earmark-text {
+    color: var(--salmon-accent);
 }
 
-.m-btn-copy {
+.m-record-card:hover .record-meta-block .m-spj-pill {
+    background: rgba(250, 245, 235, 0.12);
+    border-color: rgba(224, 122, 95, 0.4);
+}
+
+.record-meta-block .m-btn-copy {
     background: none;
     border: none;
     color: var(--salmon-accent);
     cursor: pointer;
     padding: 2px;
     font-size: 12px;
-    transition: transform 0.2s ease, color 0.2s ease;
+    transition: transform 0.2s ease;
 }
 
-.m-btn-copy:hover {
+.record-meta-block .m-btn-copy:hover {
     transform: scale(1.2);
     color: #FFAA94;
 }
 
-.m-date-sub {
-    margin-top: 6px;
+.record-meta-block .m-date-sub {
     font-size: 11.5px;
     color: #A3BFB2;
     display: flex;
@@ -2034,44 +2178,89 @@ body.formal-bps-theme {
     gap: 6px;
 }
 
-.m-date-sub i {
-    color: rgba(255, 255, 255, 0.45);
-}
-
-.m-pengaju-cell {
+/* 2. Middle: Pengaju & Kegiatan */
+.record-main-block {
     display: flex;
     flex-direction: column;
+    gap: 4px;
+    min-width: 0;
 }
 
-.m-pengaju-title {
+.record-pengaju-row {
     display: flex;
     align-items: center;
-    gap: 7px;
-    font-size: 13.5px;
+    gap: 8px;
+}
+
+.record-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(224, 122, 95, 0.35) 0%, rgba(250, 245, 235, 0.15) 100%);
+    border: 1px solid rgba(224, 122, 95, 0.4);
+    color: #FAF5EB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: 800;
+}
+
+.record-pengaju-name {
+    font-size: 13px;
     font-weight: 700;
     color: #FAF5EB;
 }
 
-.m-pengaju-title i {
-    color: var(--salmon-accent);
-}
-
-.m-kegiatan-sub {
-    font-size: 12.5px;
+.record-main-block .m-kegiatan-sub {
+    font-size: 13px;
+    font-weight: 500;
     color: #CBDCD4;
-    margin-top: 3px;
+    margin: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 460px;
     line-height: 1.4;
 }
 
-.m-status-cell {
-    text-align: center;
+/* 3. Right: Status & Action */
+.record-action-block {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
 }
 
-/* Contemporary Luminous Status Badges */
+.record-status-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.record-chevron-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A3BFB2;
+    font-size: 20px;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+}
+
+.m-record-card:hover .record-chevron-btn {
+    background: var(--salmon-accent);
+    color: #ffffff;
+    border-color: var(--salmon-accent);
+    transform: translateX(3px);
+}
+
+/* Status Badges */
 .m-status-badge {
     display: inline-flex;
     align-items: center;
@@ -2114,7 +2303,7 @@ body.formal-bps-theme {
 .m-stage-sub {
     font-size: 11px;
     color: #A3BFB2;
-    margin-top: 5px;
+    margin-top: 2px;
     font-weight: 500;
 }
 
@@ -2142,6 +2331,33 @@ body.formal-bps-theme {
     color: #CBDCD4;
     max-width: 480px;
     margin: 0 auto 18px;
+}
+
+/* Breakpoints */
+@media (max-width: 1024px) {
+    .monitoring-bento-grid {
+        grid-template-columns: 1fr;
+    }
+    .m-record-card {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    .record-action-block {
+        justify-content: space-between;
+    }
+    .record-status-group {
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .monitoring-filter-island {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .filter-island-tools {
+        justify-content: space-between;
+    }
 }
 
 /* ==========================================================
@@ -2752,6 +2968,24 @@ body.formal-bps-theme {
 .reveal-engine-active .v-pipeline-step:hover .v-step-card.is-revealed {
     transform: translateX(6px) !important;
     transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
+}
+
+.reveal-engine-active .bento-hero-card.is-revealed:hover {
+    transform: translateY(-4px) !important;
+    border-color: rgba(224, 122, 95, 0.5) !important;
+    box-shadow: 0 24px 56px -10px rgba(10, 22, 17, 0.55), 0 0 28px rgba(224, 122, 95, 0.18) !important;
+}
+
+.reveal-engine-active .bento-pebble-card.is-revealed:hover {
+    transform: translateX(6px) translateY(-2px) !important;
+    border-color: rgba(224, 122, 95, 0.45) !important;
+    box-shadow: 0 16px 36px -8px rgba(10, 22, 17, 0.45), 0 0 20px rgba(224, 122, 95, 0.14) !important;
+}
+
+.reveal-engine-active .m-record-card.is-revealed:hover {
+    transform: translateY(-3px) scale(1.006) !important;
+    border-color: rgba(224, 122, 95, 0.45) !important;
+    box-shadow: 0 18px 42px -8px rgba(10, 22, 17, 0.5), 0 0 24px rgba(224, 122, 95, 0.14) !important;
 }
 
 .reveal-engine-active .m-stat-card.is-revealed:hover {
