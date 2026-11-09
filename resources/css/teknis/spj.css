@@ -483,3 +483,290 @@
         box-sizing: border-box;
     }
 }
+
+/* ==========================================================================
+   FORMULIR SPJ - KOMPONEN KATEGORI & DARK MODE
+   ========================================================================== */
+
+.spj-kategori-section {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-radius: var(--radius-md, 12px);
+    border: 1px solid var(--dash-border, #e2edf5);
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+}
+
+.spj-kategori-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--dash-text-dark, #0f172a);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.spj-kategori-sub {
+    font-size: 0.75rem;
+    color: var(--dash-text-muted, #64748b);
+    display: block;
+}
+
+.spj-field-hint {
+    font-size: 0.75rem;
+    color: var(--dash-text-muted, #64748b);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.spj-input-readonly {
+    background-color: #f8fafc !important;
+    font-weight: 700 !important;
+    color: var(--dash-text-dark, #0f172a) !important;
+    cursor: not-allowed !important;
+    border-color: var(--dash-border, #cbdde8) !important;
+}
+
+.spj-badge-auto {
+    font-size: 0.72rem;
+    color: #0284c7;
+    background: #e0f2fe;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.spj-badge-optional {
+    font-size: 0.72rem;
+    font-weight: normal;
+    color: var(--dash-text-muted, #64748b);
+    background: #f1f5f9;
+    padding: 2px 7px;
+    border-radius: 4px;
+}
+
+.spj-doc-checkbox-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--dash-text-dark, #0f172a);
+}
+
+.spj-hint-box {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md, 12px);
+    background: #fff7ed;
+    border: 1px solid #fed7aa;
+    color: #c2410c;
+    font-size: 0.825rem;
+}
+
+.spj-banner-printed {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 1.25rem;
+    padding: 0.85rem 1.25rem;
+    border-radius: var(--radius-md, 12px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #34d399;
+}
+
+.upload-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--dash-card-bg, #ffffff);
+    border: 1px solid var(--dash-border, #e2edf5);
+    border-radius: var(--radius-md, 12px);
+    margin-bottom: 0.75rem;
+    transition: var(--transition);
+}
+
+.upload-item:hover {
+    border-color: #0284c7;
+    box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.15);
+}
+
+.upload-info {
+    flex: 1;
+}
+
+.upload-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dash-text-dark);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.upload-desc {
+    font-size: 0.75rem;
+    color: var(--dash-text-muted);
+}
+
+.upload-action {
+    margin-left: 1rem;
+}
+
+.badge-assignee {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    background: var(--dash-cyan-badge);
+    color: var(--dash-cyan-text);
+    margin-left: 0.5rem;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.badge-bendahara {
+    background: var(--dash-peach-badge);
+    color: var(--dash-peach-text);
+}
+
+.badge-ppk {
+    background: #fce7f3;
+    color: #db2777;
+}
+
+/* ==========================================================================
+   DARK THEME OVERRIDES FOR SPJ FORM
+   ========================================================================== */
+html.dark-theme .spj-panel {
+    background: var(--dash-card-bg, #142530);
+    border-color: var(--dash-border, #1f3747);
+}
+
+html.dark-theme .spj-panel-header,
+html.dark-theme .spj-panel-body {
+    background: var(--dash-card-bg, #142530);
+}
+
+html.dark-theme .spj-kategori-section {
+    background: #0f1c25 !important;
+    border-color: #1f3747 !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+html.dark-theme .spj-kategori-title {
+    color: var(--dash-text-dark, #f0f6fa) !important;
+}
+
+html.dark-theme .spj-kategori-sub,
+html.dark-theme .spj-field-hint {
+    color: var(--dash-text-muted, #8ea8b8) !important;
+}
+
+html.dark-theme .upload-item {
+    background: #142530 !important;
+    border-color: #1f3747 !important;
+}
+
+html.dark-theme .upload-item:hover {
+    background: #182e3c !important;
+    border-color: #38bdf8 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+html.dark-theme .upload-label {
+    color: var(--dash-text-dark, #f0f6fa) !important;
+}
+
+html.dark-theme .upload-desc {
+    color: var(--dash-text-muted, #8ea8b8) !important;
+}
+
+html.dark-theme .spj-doc-checkbox-label {
+    color: var(--dash-text-dark, #f0f6fa) !important;
+}
+
+html.dark-theme .spj-input-readonly {
+    background-color: #0d1a22 !important;
+    color: #f0f6fa !important;
+    border-color: #1f3747 !important;
+}
+
+html.dark-theme .spj-badge-auto {
+    color: #38bdf8 !important;
+    background: rgba(2, 132, 199, 0.22) !important;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+}
+
+html.dark-theme .spj-badge-optional {
+    color: var(--dash-text-muted, #8ea8b8) !important;
+    background: #0d1a22 !important;
+    border: 1px solid #1f3747;
+}
+
+html.dark-theme .badge-ppk {
+    background: rgba(219, 39, 119, 0.2) !important;
+    color: #f472b6 !important;
+    border: 1px solid rgba(244, 114, 182, 0.25);
+}
+
+html.dark-theme .spj-hint-box {
+    background: rgba(234, 88, 12, 0.16) !important;
+    border-color: rgba(234, 88, 12, 0.35) !important;
+    color: #fb923c !important;
+}
+
+html.dark-theme .spj-banner-printed {
+    background-color: rgba(16, 185, 129, 0.16) !important;
+    color: #6ee7b7 !important;
+    border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+html.dark-theme .spj-kategori-section .spj-btn-secondary {
+    background: #142530;
+    color: #f0f6fa;
+    border-color: #1f3747;
+}
+
+html.dark-theme .spj-kategori-section .spj-btn-secondary:hover {
+    background: #1b3240;
+    color: #ffffff;
+    border-color: #38bdf8;
+}
+
+html.dark-theme select.spj-input,
+html.dark-theme input.spj-input,
+html.dark-theme textarea.spj-input {
+    background-color: #12212b;
+    color: #f0f6fa;
+    border-color: #243e4f;
+    color-scheme: dark;
+}
+
+html.dark-theme select.spj-input:focus,
+html.dark-theme input.spj-input:focus,
+html.dark-theme textarea.spj-input:focus {
+    border-color: #38bdf8;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+html.dark-theme select.spj-input option {
+    background-color: #142530;
+    color: #f0f6fa;
+}
+
+html.dark-theme .spj-radio-content {
+    background: #142530;
+    border-color: #1f3747;
+}
+
+html.dark-theme .spj-radio-card input:checked + .spj-radio-content {
+    border-color: #38bdf8;
+    background: rgba(2, 132, 199, 0.2);
+}
+
+html.dark-theme .spj-label {
+    color: var(--dash-text-dark, #f0f6fa);
+}

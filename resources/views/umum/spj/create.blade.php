@@ -9,12 +9,89 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 @push('styles')
     @vite(['resources/css/teknis/spj.css'])
     <style>
+        .spj-kategori-section {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: var(--radius-md, 12px);
+            border: 1px solid var(--border, #e2edf5);
+            margin-bottom: 1.5rem;
+            transition: var(--transition, all 0.25s ease);
+        }
+        .spj-kategori-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dash-text-dark, #0f172a);
+        }
+        .spj-kategori-sub {
+            font-size: 0.75rem;
+            color: var(--dash-text-muted, #64748b);
+            display: block;
+        }
+        .spj-field-hint {
+            font-size: 0.75rem;
+            color: var(--dash-text-muted, #64748b);
+            margin-top: 0.25rem;
+            display: block;
+        }
+        .spj-input-readonly {
+            background-color: #f8fafc !important;
+            font-weight: 700 !important;
+            color: var(--dash-text-dark, #0f172a) !important;
+            cursor: not-allowed !important;
+            border-color: var(--dash-border, #cbdde8) !important;
+        }
+        .spj-badge-auto {
+            font-size: 0.72rem;
+            color: #0284c7;
+            background: #e0f2fe;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .spj-badge-optional {
+            font-size: 0.72rem;
+            font-weight: normal;
+            color: var(--dash-text-muted, #64748b);
+            background: #f1f5f9;
+            padding: 2px 7px;
+            border-radius: 4px;
+        }
+        .spj-doc-checkbox-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--dash-text-dark, #0f172a);
+        }
+        .spj-hint-box {
+            margin-top: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md, 12px);
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #c2410c;
+            font-size: 0.825rem;
+        }
+        .spj-banner-printed {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: 1.25rem;
+            padding: 0.85rem 1.25rem;
+            border-radius: var(--radius-md, 12px);
+            font-size: 0.875rem;
+            font-weight: 500;
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #34d399;
+        }
         .upload-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem;
-            background: var(--dash-input-bg, #f8fafc);
+            background: var(--dash-card-bg, #ffffff);
             border: 1px solid var(--dash-border, #e2edf5);
             border-radius: var(--radius-md, 12px);
             margin-bottom: 0.75rem;
@@ -91,6 +168,125 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             transform: translateY(-1px);
             color: #0284c7;
         }
+
+        /* Dark Theme Specific Overrides */
+        html.dark-theme .spj-panel {
+            background: var(--dash-card-bg, #142530);
+            border-color: var(--dash-border, #1f3747);
+        }
+        html.dark-theme .spj-panel-header,
+        html.dark-theme .spj-panel-body {
+            background: var(--dash-card-bg, #142530);
+        }
+        html.dark-theme .spj-kategori-section {
+            background: #0f1c25 !important;
+            border-color: #1f3747 !important;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        html.dark-theme .spj-kategori-title {
+            color: var(--dash-text-dark, #f0f6fa) !important;
+        }
+        html.dark-theme .spj-kategori-sub,
+        html.dark-theme .spj-field-hint {
+            color: var(--dash-text-muted, #8ea8b8) !important;
+        }
+        html.dark-theme .upload-item {
+            background: #142530 !important;
+            border-color: #1f3747 !important;
+        }
+        html.dark-theme .upload-item:hover {
+            background: #182e3c !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+        html.dark-theme .upload-label {
+            color: var(--dash-text-dark, #f0f6fa) !important;
+        }
+        html.dark-theme .upload-desc {
+            color: var(--dash-text-muted, #8ea8b8) !important;
+        }
+        html.dark-theme .spj-doc-checkbox-label {
+            color: var(--dash-text-dark, #f0f6fa) !important;
+        }
+        html.dark-theme .spj-input-readonly {
+            background-color: #0d1a22 !important;
+            color: #f0f6fa !important;
+            border-color: #1f3747 !important;
+        }
+        html.dark-theme .spj-badge-auto {
+            color: #38bdf8 !important;
+            background: rgba(2, 132, 199, 0.22) !important;
+            border: 1px solid rgba(56, 189, 248, 0.25);
+        }
+        html.dark-theme .spj-badge-optional {
+            color: var(--dash-text-muted, #8ea8b8) !important;
+            background: #0d1a22 !important;
+            border: 1px solid #1f3747;
+        }
+        html.dark-theme .badge-ppk {
+            background: rgba(219, 39, 119, 0.2) !important;
+            color: #f472b6 !important;
+            border: 1px solid rgba(244, 114, 182, 0.25);
+        }
+        html.dark-theme .spj-hint-box {
+            background: rgba(234, 88, 12, 0.16) !important;
+            border-color: rgba(234, 88, 12, 0.35) !important;
+            color: #fb923c !important;
+        }
+        html.dark-theme .spj-banner-printed {
+            background-color: rgba(16, 185, 129, 0.16) !important;
+            color: #6ee7b7 !important;
+            border-color: rgba(16, 185, 129, 0.35) !important;
+        }
+        html.dark-theme .spj-kategori-section .spj-btn-secondary {
+            background: #142530;
+            color: #f0f6fa;
+            border-color: #1f3747;
+        }
+        html.dark-theme .spj-kategori-section .spj-btn-secondary:hover {
+            background: #1b3240;
+            color: #ffffff;
+            border-color: #38bdf8;
+        }
+        html.dark-theme .btn-dash-back {
+            background: #142530;
+            color: #f0f6fa;
+            border-color: #1f3747;
+        }
+        html.dark-theme .btn-dash-back:hover {
+            background: #1b3240;
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+        html.dark-theme select.spj-input,
+        html.dark-theme input.spj-input,
+        html.dark-theme textarea.spj-input {
+            background-color: #12212b;
+            color: #f0f6fa;
+            border-color: #243e4f;
+            color-scheme: dark;
+        }
+        html.dark-theme select.spj-input:focus,
+        html.dark-theme input.spj-input:focus,
+        html.dark-theme textarea.spj-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+        }
+        html.dark-theme select.spj-input option {
+            background-color: #142530;
+            color: #f0f6fa;
+        }
+        html.dark-theme .spj-radio-content {
+            background: #142530;
+            border-color: #1f3747;
+        }
+        html.dark-theme .spj-radio-card input:checked + .spj-radio-content {
+            border-color: #38bdf8;
+            background: rgba(2, 132, 199, 0.2);
+        }
+        html.dark-theme .spj-label {
+            color: var(--dash-text-dark, #f0f6fa);
+        }
     </style>
 @endpush
 
@@ -121,8 +317,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             @csrf
 
             <!-- 1. KATEGORI & KELENGKAPAN BERKAS (ALUR SAMA PERSIS DENGAN TEKNIS) -->
-            <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md, 12px); border: 1px solid var(--border, #e2edf5); margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0f172a;">Kategori &amp; Kelengkapan Berkas</h3>
+            <div class="spj-kategori-section">
+                <h3 class="spj-kategori-title">Kategori &amp; Kelengkapan Berkas</h3>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                     <div>
@@ -144,14 +340,14 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
                     <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                         <div>
                             <label class="spj-label" style="margin-bottom: 0;">Dokumen Wajib</label>
-                            <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                            <span class="spj-kategori-sub">Centang berkas fisik yang sudah disiapkan</span>
                         </div>
                         <div style="display: flex; gap: 0.5rem;">
                             <button type="button" onclick="centangSemuaBerkas(true)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                 Centang Semua
                             </button>
-                            <button type="button" onclick="centangSemuaBerkas(false)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto; opacity: 0.8;">
+                            <button type="button" onclick="centangSemuaBerkas(false)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto; opacity: 0.85;">
                                 Batal Semua
                             </button>
                         </div>
@@ -168,10 +364,10 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
                 <div>
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
                         <label class="spj-label" for="nomor_spj_input" style="margin-bottom: 0;">Nomor SPJ</label>
-                        <span style="font-size: 0.72rem; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Otomatis Sistem</span>
+                        <span class="spj-badge-auto">Otomatis Sistem</span>
                     </div>
-                    <input type="text" name="nomor_spj" id="nomor_spj_input" class="spj-input" value="{{ old('nomor_spj', $nomorSpjOtomatis ?? '') }}" placeholder="Digenerate otomatis oleh sistem" readonly style="background-color: #f8fafc; font-weight: 700; color: #0f172a; cursor: not-allowed;" title="Nomor SPJ dibuat otomatis oleh sistem">
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor registrasi SPJ digenerate secara otomatis oleh sistem.</span>
+                    <input type="text" name="nomor_spj" id="nomor_spj_input" class="spj-input spj-input-readonly" value="{{ old('nomor_spj', $nomorSpjOtomatis ?? '') }}" placeholder="Digenerate otomatis oleh sistem" readonly title="Nomor SPJ dibuat otomatis oleh sistem">
+                    <span class="spj-field-hint">Nomor registrasi SPJ digenerate secara otomatis oleh sistem.</span>
                     @error('nomor_spj') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
                 <div>
@@ -193,17 +389,17 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
                         Tanggal Mulai Kegiatan <span style="color: #ef4444;">*</span>
                     </label>
                     <input type="date" name="tanggal" id="tanggal_mulai_input" required class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal', date('Y-m-d')) }}">
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Tanggal dimulainya pelaksanaan kegiatan.</span>
+                    <span class="spj-field-hint">Tanggal dimulainya pelaksanaan kegiatan.</span>
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
                     <label class="spj-label" for="tanggal_selesai_input" style="display: flex; justify-content: space-between; align-items: center;">
                         <span>Tanggal Selesai Kegiatan</span>
-                        <span style="font-size: 0.72rem; font-weight: normal; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 4px;">Opsional</span>
+                        <span class="spj-badge-optional">Opsional</span>
                     </label>
                     <input type="date" name="tanggal_selesai" id="tanggal_selesai_input" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai') }}" min="{{ old('tanggal', date('Y-m-d')) }}">
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Kosongkan jika kegiatan hanya berlangsung 1 hari.</span>
+                    <span class="spj-field-hint">Kosongkan jika kegiatan hanya berlangsung 1 hari.</span>
                     @error('tanggal_selesai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 
@@ -212,7 +408,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
                 <div style="grid-column: span 2;">
                     <label class="spj-label" for="no_wa_input">Nomor WhatsApp Pengaju / PIC</label>
                     <input type="text" name="no_wa" id="no_wa_input" class="spj-input @error('no_wa') has-error @enderror" value="{{ old('no_wa', Auth::user()->no_wa ?? '') }}" placeholder="Contoh: 081234567890">
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp aktif untuk menerima pembaruan status SPJ.</span>
+                    <span class="spj-field-hint">Nomor WhatsApp aktif untuk menerima pembaruan status SPJ.</span>
                     @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -244,9 +440,14 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
                 </div>
                 @error('status') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
 
-                <div id="print_status_banner" style="display: none; width: 100%; margin-top: 1.25rem; padding: 0.85rem 1.25rem; border-radius: var(--radius-md, 12px); font-size: 0.875rem; font-weight: 500;"></div>
+                <div id="print_status_banner" class="spj-banner-printed" style="display: none;"></div>
 
-                <div id="print_requirement_hint" style="display: none; margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-md, 12px); background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; font-size: 0.825rem;">
+                <div id="print_requirement_hint" class="spj-hint-box" style="display: none;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        <span><strong>Wajib Print:</strong> Anda memilih opsi <strong>Ajukan Sekarang</strong>. Sesuai ketentuan, Anda <u>wajib menekan tombol Print</u> dan mencetak lembar checklist berkas SPJ terlebih dahulu sebelum pengajuan dapat disimpan.</span>
+                    </div>
+                </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                         <span><strong>Wajib Print:</strong> Anda memilih opsi <strong>Ajukan Sekarang</strong>. Sesuai ketentuan, Anda <u>wajib menekan tombol Print</u> dan mencetak lembar checklist berkas SPJ terlebih dahulu sebelum pengajuan dapat disimpan.</span>
@@ -341,16 +542,16 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 
                 if (doc.assignee.includes('Bendahara')) {
                     badgeHtml = '<span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>';
-                    uploadHtml = '<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>';
+                    uploadHtml = '<span style="font-size: 0.8rem; color: var(--dash-text-muted, #94a3b8); font-style: italic;">Tidak perlu (Diurus Bendahara)</span>';
                 } else if (doc.assignee.includes('PPK')) {
                     badgeHtml = '<span class="badge-assignee badge-ppk">Dilengkapi PPK</span>';
-                    uploadHtml = '<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>';
+                    uploadHtml = '<span style="font-size: 0.8rem; color: var(--dash-text-muted, #94a3b8); font-style: italic;">Tidak perlu (Diurus PPK)</span>';
                 } else {
                     badgeHtml = '<span class="badge-assignee">Wajib Disiapkan (Fisik)</span>';
                     uploadHtml = `
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                         <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary, #0284c7);">
-                        <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
+                        <span class="spj-doc-checkbox-label">Ada (Fisik)</span>
                     </label>
                     `;
                 }
@@ -753,12 +954,11 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 
             const banner = document.getElementById('print_status_banner');
             if (banner) {
+                banner.className = 'spj-banner-printed';
                 banner.style.display = 'flex';
-                banner.style.alignItems = 'center';
-                banner.style.gap = '0.5rem';
-                banner.style.backgroundColor = '#d1fae5';
-                banner.style.color = '#065f46';
-                banner.style.border = '1px solid #34d399';
+                banner.style.backgroundColor = '';
+                banner.style.color = '';
+                banner.style.border = '';
                 banner.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Tombol pengajuan sekarang aktif berwarna hijau!</span>

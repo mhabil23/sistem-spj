@@ -61,6 +61,7 @@
    DARK THEME VARIABLES
    ========================================================================== */
 html.dark-theme {
+    color-scheme: dark;
     --dash-sidebar-bg: #10232e;
     --dash-sidebar-hover: rgba(255, 255, 255, 0.1);
     --dash-sidebar-text: #8aaabb;
