@@ -2,37 +2,72 @@
 
 @php
 $title = 'Pengajuan SPJ Baru';
-$subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
+$subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 @endphp
 
+@section('content')
 @push('styles')
     @vite(['resources/css/teknis/spj.css'])
     <style>
-        /* ==========================================================================
-           FORMULIR PENGAJUAN SPJ SUBBAG UMUM - MODERN CLEAN DESIGN
-           ========================================================================== */
-
-        .dashboard-heading {
+        .upload-item {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-            gap: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--dash-input-bg, #f8fafc);
+            border: 1px solid var(--dash-border, #e2edf5);
+            border-radius: var(--radius-md, 12px);
+            margin-bottom: 0.75rem;
+            transition: var(--transition, all 0.25s ease);
         }
-
-        .dashboard-heading-title {
-            font-size: 1.45rem;
-            font-weight: 800;
+        .upload-item:hover {
+            border-color: #0284c7;
+            box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.15);
+        }
+        .upload-info {
+            flex: 1;
+        }
+        .upload-label {
+            font-size: 0.9rem;
+            font-weight: 600;
             color: var(--dash-text-dark, #1c3f52);
-            margin: 0 0 0.25rem 0;
-            letter-spacing: -0.02em;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .upload-desc {
+            font-size: 0.75rem;
+            color: var(--dash-text-muted, #768f9e);
+        }
+        .upload-action {
+            margin-left: 1rem;
+        }
+        .badge-assignee {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background: var(--dash-cyan-badge, #ddf2f7);
+            color: var(--dash-cyan-text, #0284c7);
+            margin-left: 0.5rem;
+            display: inline-block;
+            font-weight: 600;
+        }
+        .badge-bendahara {
+            background: var(--dash-peach-badge, #fed7aa);
+            color: var(--dash-peach-text, #ea580c);
+        }
+        .badge-ppk {
+            background: #fce7f3;
+            color: #db2777;
         }
 
-        .dashboard-heading-subtitle {
-            font-size: 0.875rem;
-            color: var(--dash-text-muted, #768f9e);
-            margin: 0;
+        /* Shake animation for print button */
+        @keyframes printShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .print-btn-shake {
+            animation: printShake 0.45s ease-in-out;
         }
 
         .btn-dash-back {
@@ -50,938 +85,210 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
         }
-
         .btn-dash-back:hover {
             background: var(--dash-table-header-bg, #f8fafb);
             border-color: #cbdde8;
             transform: translateY(-1px);
             color: #0284c7;
         }
-
-        /* Panel Container */
-        .spj-create-card {
-            background: var(--dash-card-bg, #ffffff);
-            border: 1px solid var(--dash-border, #e2edf5);
-            border-radius: 18px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-            overflow: hidden;
-            transition: background-color 0.25s ease, border-color 0.25s ease;
-        }
-
-        .spj-create-header {
-            padding: 1.5rem 2rem;
-            background: linear-gradient(to right, rgba(2, 132, 199, 0.04), transparent);
-            border-bottom: 1px solid var(--dash-border, #e2edf5);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .spj-create-header-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
-        }
-
-        .spj-create-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--dash-text-dark, #1c3f52);
-            margin: 0 0 0.2rem 0;
-            letter-spacing: -0.01em;
-        }
-
-        .spj-create-subtitle {
-            font-size: 0.825rem;
-            color: var(--dash-text-muted, #768f9e);
-            margin: 0;
-        }
-
-        .spj-create-body {
-            padding: 2rem 2.25rem;
-        }
-
-        /* Sections */
-        .spj-form-section {
-            margin-bottom: 2.25rem;
-            padding-bottom: 2rem;
-            border-bottom: 1px dashed var(--dash-border, #e2edf5);
-        }
-
-        .spj-form-section:last-of-type {
-            margin-bottom: 1.5rem;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .spj-section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            margin-bottom: 1.35rem;
-        }
-
-        .spj-step-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 9px;
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 0.95rem;
-            flex-shrink: 0;
-            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.28);
-        }
-
-        .spj-section-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--dash-text-dark, #1c3f52);
-            margin: 0;
-            letter-spacing: -0.01em;
-        }
-
-        .spj-section-subtitle {
-            font-size: 0.8rem;
-            color: var(--dash-text-muted, #768f9e);
-            margin: 0.2rem 0 0 0;
-        }
-
-        /* Form Grid */
-        .spj-form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.35rem;
-        }
-
-        .grid-col-full {
-            grid-column: 1 / -1;
-        }
-
-        .spj-label-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.45rem;
-        }
-
-        .spj-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--dash-text-dark, #1c3f52);
-            margin-bottom: 0.45rem;
-        }
-
-        .spj-label-row .spj-label {
-            margin-bottom: 0;
-        }
-
-        .required-star {
-            color: #ef4444;
-            font-weight: 700;
-        }
-
-        .spj-chip-auto {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #0284c7;
-            background: rgba(2, 132, 199, 0.1);
-            padding: 2px 8px;
-            border-radius: 6px;
-        }
-
-        .spj-chip-optional {
-            font-size: 0.72rem;
-            font-weight: 500;
-            color: var(--dash-text-muted, #768f9e);
-            background: rgba(148, 163, 184, 0.12);
-            padding: 2px 8px;
-            border-radius: 6px;
-        }
-
-        /* Inputs & Controls */
-        .spj-input,
-        .spj-select,
-        .spj-textarea {
-            width: 100%;
-            padding: 0.65rem 0.95rem;
-            font-size: 0.875rem;
-            font-family: inherit;
-            color: var(--dash-text-dark, #1c3f52);
-            background: #ffffff;
-            border: 1.5px solid #cbdde8;
-            border-radius: 10px;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        html.dark-theme .spj-input,
-        html.dark-theme .spj-select,
-        html.dark-theme .spj-textarea {
-            background: #142530;
-            border-color: #243e4f;
-            color: #f0f6fa;
-        }
-
-        .spj-input:focus,
-        .spj-select:focus,
-        .spj-textarea:focus {
-            border-color: #0284c7;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18);
-        }
-
-        .spj-input.has-error,
-        .spj-select.has-error,
-        .spj-textarea.has-error {
-            border-color: #ef4444;
-            background: #fffbfa;
-        }
-
-        html.dark-theme .spj-input.has-error,
-        html.dark-theme .spj-select.has-error,
-        html.dark-theme .spj-textarea.has-error {
-            background: rgba(239, 68, 68, 0.08);
-            border-color: #ef4444;
-        }
-
-        .spj-input-readonly {
-            background: #f8fafc !important;
-            color: #0284c7 !important;
-            font-weight: 700 !important;
-            cursor: not-allowed;
-            border-style: dashed;
-        }
-
-        html.dark-theme .spj-input-readonly {
-            background: #10212c !important;
-            color: #38bdf8 !important;
-        }
-
-        .spj-textarea {
-            resize: vertical;
-            min-height: 80px;
-            line-height: 1.45;
-        }
-
-        .spj-input-prefix-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .spj-input-prefix {
-            position: absolute;
-            left: 12px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #64748b;
-            pointer-events: none;
-        }
-
-        .spj-input.with-prefix {
-            padding-left: 2.35rem;
-            font-weight: 600;
-        }
-
-        .spj-hint {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--dash-text-muted, #768f9e);
-            margin-top: 0.35rem;
-            line-height: 1.35;
-        }
-
-        .spj-error-msg {
-            display: block;
-            color: #ef4444;
-            font-size: 0.775rem;
-            font-weight: 500;
-            margin-top: 0.35rem;
-        }
-
-        /* Category Card Box */
-        .spj-category-box {
-            background: linear-gradient(135deg, rgba(2, 132, 199, 0.02) 0%, rgba(248, 250, 252, 0.8) 100%);
-            border: 1px solid var(--dash-border, #e2edf5);
-            border-radius: 14px;
-            padding: 1.35rem 1.5rem;
-        }
-
-        html.dark-theme .spj-category-box {
-            background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(20, 37, 48, 0.7) 100%);
-            border-color: #1f3747;
-        }
-
-        /* Checklist Section */
-        .checklist-header-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            padding-top: 0.75rem;
-            border-top: 1px dashed var(--dash-border, #e2edf5);
-        }
-
-        .checklist-header-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--dash-text-dark, #1c3f52);
-            display: block;
-        }
-
-        .checklist-header-subtitle {
-            font-size: 0.775rem;
-            color: var(--dash-text-muted, #768f9e);
-            margin: 0.15rem 0 0 0;
-        }
-
-        .checklist-action-btns {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-check-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.35rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: #e0f2fe;
-            color: #0284c7;
-            border: 1px solid #bae6fd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.18s ease;
-        }
-
-        .btn-check-toggle:hover {
-            background: #bae6fd;
-            color: #0369a1;
-        }
-
-        .btn-check-toggle.secondary {
-            background: var(--dash-card-bg, #ffffff);
-            color: var(--dash-text-muted, #768f9e);
-            border-color: var(--dash-border, #e2edf5);
-        }
-
-        .btn-check-toggle.secondary:hover {
-            background: var(--dash-table-header-bg, #f8fafb);
-            color: var(--dash-text-dark, #1c3f52);
-        }
-
-        .checklist-items-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 0.65rem;
-        }
-
-        .checklist-row-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.85rem 1.15rem;
-            background: var(--dash-card-bg, #ffffff);
-            border: 1px solid var(--dash-border, #e2edf5);
-            border-radius: 12px;
-            transition: all 0.2s ease;
-            gap: 1rem;
-        }
-
-        .checklist-row-item:hover {
-            border-color: #93c5fd;
-            box-shadow: 0 3px 10px rgba(2, 132, 199, 0.06);
-            transform: translateY(-1px);
-        }
-
-        html.dark-theme .checklist-row-item {
-            background: #142530;
-            border-color: #1f3747;
-        }
-
-        html.dark-theme .checklist-row-item:hover {
-            border-color: #0284c7;
-        }
-
-        .checklist-doc-info {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            flex: 1;
-            flex-wrap: wrap;
-        }
-
-        .checklist-doc-name {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--dash-text-dark, #1c3f52);
-        }
-
-        .badge-doc-status {
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 9999px;
-            white-space: nowrap;
-        }
-
-        .badge-doc-status.bendahara {
-            background: #fffbeb;
-            color: #b45309;
-            border: 1px solid #fde68a;
-        }
-
-        .badge-doc-status.wajib {
-            background: #eff6ff;
-            color: #1d4ed8;
-            border: 1px solid #bfdbfe;
-        }
-
-        .checklist-checkbox-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            cursor: pointer;
-            font-size: 0.825rem;
-            font-weight: 700;
-            color: #0284c7;
-            user-select: none;
-            padding: 0.3rem 0.65rem;
-            border-radius: 8px;
-            transition: background 0.15s ease;
-        }
-
-        .checklist-checkbox-label:hover {
-            background: rgba(2, 132, 199, 0.08);
-        }
-
-        .checklist-checkbox-input {
-            width: 17px;
-            height: 17px;
-            cursor: pointer;
-            accent-color: #0284c7;
-        }
-
-        /* Status Radio Cards */
-        .spj-status-radio-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.15rem;
-        }
-
-        .spj-status-card {
-            position: relative;
-            cursor: pointer;
-            display: block;
-            margin: 0;
-        }
-
-        .spj-status-card input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .spj-status-card-inner {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.85rem;
-            padding: 1.15rem 1.25rem;
-            border: 2px solid var(--dash-border, #e2edf5);
-            border-radius: 14px;
-            background: var(--dash-card-bg, #ffffff);
-            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-            height: 100%;
-            box-sizing: border-box;
-        }
-
-        .spj-status-card:hover .spj-status-card-inner {
-            border-color: #93c5fd;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        }
-
-        .status-card-radio-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid #cbd5e1;
-            margin-top: 2px;
-            flex-shrink: 0;
-            position: relative;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-        }
-
-        .status-card-radio-dot::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #0284c7;
-            transition: transform 0.2s ease;
-        }
-
-        .spj-status-card input[type="radio"]:checked + .spj-status-card-inner {
-            border-color: #0284c7;
-            background: rgba(2, 132, 199, 0.04);
-            box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
-        }
-
-        .spj-status-card input[type="radio"]:checked + .spj-status-card-inner .status-card-radio-dot {
-            border-color: #0284c7;
-        }
-
-        .spj-status-card input[type="radio"]:checked + .spj-status-card-inner .status-card-radio-dot::after {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .status-card-title {
-            display: block;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--dash-text-dark, #1c3f52);
-            margin-bottom: 0.25rem;
-        }
-
-        .status-card-desc {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--dash-text-muted, #768f9e);
-            line-height: 1.4;
-        }
-
-        /* Alert Banners */
-        .spj-alert-banner {
-            margin-top: 1.15rem;
-            padding: 1rem 1.25rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            line-height: 1.45;
-        }
-
-        .spj-alert-banner.warning {
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            color: #c2410c;
-        }
-
-        html.dark-theme .spj-alert-banner.warning {
-            background: rgba(194, 65, 12, 0.15);
-            border-color: rgba(254, 215, 170, 0.3);
-            color: #fb923c;
-        }
-
-        .spj-alert-banner.success {
-            background: #ecfdf5;
-            border: 1px solid #a7f3d0;
-            color: #047857;
-        }
-
-        html.dark-theme .spj-alert-banner.success {
-            background: rgba(4, 120, 87, 0.15);
-            border-color: rgba(167, 243, 208, 0.3);
-            color: #34d399;
-        }
-
-        .alert-banner-icon {
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        /* Action Buttons Footer */
-        .spj-form-footer {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 0.85rem;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--dash-border, #e2edf5);
-            flex-wrap: wrap;
-        }
-
-        .btn-spj-action {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.4rem;
-            font-size: 0.875rem;
-            font-weight: 700;
-            border-radius: 11px;
-            cursor: pointer;
-            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-            text-decoration: none;
-            border: none;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-
-        .btn-spj-cancel {
-            background: var(--dash-card-bg, #ffffff);
-            color: var(--dash-text-muted, #768f9e);
-            border: 1.5px solid var(--dash-border, #e2edf5);
-        }
-
-        .btn-spj-cancel:hover {
-            background: var(--dash-table-header-bg, #f8fafb);
-            color: var(--dash-text-dark, #1c3f52);
-            border-color: #cbdde8;
-        }
-
-        .btn-spj-print {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
-        }
-
-        .btn-spj-print:hover {
-            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
-        }
-
-        .btn-spj-print.is-printed {
-            background: #10b981;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-spj-submit {
-            background: var(--dash-btn-primary-bg, #1e4253);
-            color: #ffffff;
-            box-shadow: 0 4px 14px rgba(30, 66, 83, 0.25);
-        }
-
-        .btn-spj-submit:hover {
-            filter: brightness(1.1);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(30, 66, 83, 0.35);
-        }
-
-        /* Shake animation for print button */
-        @keyframes printShake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-6px); }
-            40%, 80% { transform: translateX(6px); }
-        }
-
-        .print-btn-shake {
-            animation: printShake 0.45s ease-in-out;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .spj-create-header {
-                padding: 1.25rem 1.5rem;
-            }
-            .spj-create-body {
-                padding: 1.35rem 1.25rem;
-            }
-            .spj-form-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            .spj-status-radio-grid {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-            }
-            .spj-form-footer {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .btn-spj-action {
-                width: 100%;
-            }
-        }
     </style>
 @endpush
 
-@section('content')
-<div style="padding-top: 4px;">
-    <!-- PAGE HEADING -->
-    <div class="dashboard-heading">
+<div class="dashboard-heading">
+    <div>
+        <h2 class="dashboard-heading-title">Formulir Pengajuan SPJ Baru</h2>
+        <p class="dashboard-heading-subtitle">Isi rincian kegiatan belanja dan siapkan kelengkapan berkas fisik sebelum diajukan.</p>
+    </div>
+    <a href="{{ route('umum.spj.index') }}" class="btn-dash-back" onclick="clearFormState()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Kembali ke Antrean
+    </a>
+</div>
+
+<div class="spj-panel" style="animation-delay: 0.1s;">
+    <div class="spj-panel-header">
         <div>
-            <h2 class="dashboard-heading-title">Formulir Pengajuan SPJ Baru</h2>
-            <p class="dashboard-heading-subtitle">Isi rincian kegiatan belanja dan siapkan kelengkapan berkas fisik sebelum diajukan.</p>
-        </div>
-        <div>
-            <a href="{{ route('umum.spj.index') }}" class="btn-dash-back" onclick="clearFormState()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                Kembali ke Antrean
-            </a>
+            <h2>Detail Pengajuan</h2>
+            <p>Pastikan data yang dimasukkan valid dan sesuai bukti fisik.</p>
         </div>
     </div>
+    
+    <div class="spj-panel-body">
+        <form action="{{ route('umum.spj.store') }}" method="POST" id="formPengajuanSpj">
+            @csrf
 
-    <!-- MAIN FORM CARD -->
-    <div class="spj-create-card">
-        <div class="spj-create-header">
-            <div class="spj-create-header-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                    <polyline points="14 2 14 8 20 8"></polyline>
-                    <line x1="16" y1="13" x2="8" y2="13"></line>
-                    <line x1="16" y1="17" x2="8" y2="17"></line>
-                    <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
+            <!-- 1. KATEGORI & KELENGKAPAN BERKAS (ALUR SAMA PERSIS DENGAN TEKNIS) -->
+            <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md, 12px); border: 1px solid var(--border, #e2edf5); margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0f172a;">Kategori &amp; Kelengkapan Berkas</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <label class="spj-label" for="nama_belanja">Nama Belanja</label>
+                        <select id="nama_belanja" name="nama_belanja" class="spj-input" required onchange="handleNamaBelanjaChange()">
+                            <option value="" disabled selected>Pilih Nama Belanja...</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="spj-label" for="jenis_belanja">Jenis Belanja</label>
+                        <select id="jenis_belanja" name="jenis_belanja" class="spj-input" required disabled onchange="handleJenisBelanjaChange()">
+                            <option value="" disabled selected>Pilih Jenis Belanja...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="dokumen_container" style="display: none;">
+                    <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <label class="spj-label" style="margin-bottom: 0;">Dokumen Wajib</label>
+                            <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" onclick="centangSemuaBerkas(true)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                Centang Semua
+                            </button>
+                            <button type="button" onclick="centangSemuaBerkas(false)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto; opacity: 0.8;">
+                                Batal Semua
+                            </button>
+                        </div>
+                    </div>
+                    <div id="dokumen_list">
+                        <!-- File inputs / checklists will be generated here -->
+                    </div>
+                </div>
             </div>
-            <div>
-                <h3 class="spj-create-title">Detail Pengajuan SPJ Subbag Umum</h3>
-                <p class="spj-create-subtitle">Pastikan data pengajuan valid dan sesuai dengan bukti fisik yang dipersiapkan.</p>
+            <!-- DYNAMIC DROPDOWNS END -->
+
+            <!-- 2. IDENTITAS KEGIATAN & ANGGARAN -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;" class="spj-form-group">
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+                        <label class="spj-label" for="nomor_spj_input" style="margin-bottom: 0;">Nomor SPJ</label>
+                        <span style="font-size: 0.72rem; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 4px; font-weight: 600;">Otomatis Sistem</span>
+                    </div>
+                    <input type="text" name="nomor_spj" id="nomor_spj_input" class="spj-input" value="{{ old('nomor_spj', $nomorSpjOtomatis ?? '') }}" placeholder="Digenerate otomatis oleh sistem" readonly style="background-color: #f8fafc; font-weight: 700; color: #0f172a; cursor: not-allowed;" title="Nomor SPJ dibuat otomatis oleh sistem">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor registrasi SPJ digenerate secara otomatis oleh sistem.</span>
+                    @error('nomor_spj') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+                <div>
+                    <label class="spj-label" for="nilai_input">Nilai (Rp) <span style="color: #ef4444;">*</span></label>
+                    <input type="number" name="nilai" id="nilai_input" class="spj-input" value="{{ old('nilai') }}" placeholder="Contoh: 1500000" min="0" step="any" required>
+                    @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
             </div>
-        </div>
 
-        <div class="spj-create-body">
-            <form action="{{ route('umum.spj.store') }}" method="POST" id="formPengajuanSpj">
-                @csrf
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
+                <div style="grid-column: span 2;">
+                    <label class="spj-label" for="kegiatan_input">Uraian Kegiatan <span style="color: #ef4444;">*</span></label>
+                    <textarea name="kegiatan" required class="spj-input spj-textarea" placeholder="Contoh: Pengadaan Alat Tulis Kantor Subbagian Umum..." id="kegiatan_input">{{ old('kegiatan') }}</textarea>
+                    @error('kegiatan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+                
+                <div>
+                    <label class="spj-label" for="tanggal_mulai_input">
+                        Tanggal Mulai Kegiatan <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="date" name="tanggal" id="tanggal_mulai_input" required class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal', date('Y-m-d')) }}">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Tanggal dimulainya pelaksanaan kegiatan.</span>
+                    @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
 
-                <!-- STEP 1: KATEGORI BELANJA & KELENGKAPAN BERKAS FISIK -->
-                <div class="spj-form-section">
-                    <div class="spj-section-header">
-                        <span class="spj-step-badge">1</span>
-                        <div>
-                            <h4 class="spj-section-title">Kategori Belanja &amp; Kelengkapan Berkas Fisik</h4>
-                            <p class="spj-section-subtitle">Tentukan kategori belanja untuk memuat daftar kelengkapan berkas fisik yang dipersyaratkan.</p>
+                <div>
+                    <label class="spj-label" for="tanggal_selesai_input" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Tanggal Selesai Kegiatan</span>
+                        <span style="font-size: 0.72rem; font-weight: normal; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 4px;">Opsional</span>
+                    </label>
+                    <input type="date" name="tanggal_selesai" id="tanggal_selesai_input" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai') }}" min="{{ old('tanggal', date('Y-m-d')) }}">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Kosongkan jika kegiatan hanya berlangsung 1 hari.</span>
+                    @error('tanggal_selesai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="spj-label" for="seksi_input">
+                        Seksi / Tim Pengusul <span style="color: #ef4444;">*</span>
+                    </label>
+                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
+                        <option value="Subbag Umum" {{ old('seksi', 'Subbag Umum') === 'Subbag Umum' ? 'selected' : '' }}>Subbag Umum</option>
+                        <option value="Sosial" {{ old('seksi') === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
+                        <option value="Produksi" {{ old('seksi') === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
+                        <option value="Distribusi" {{ old('seksi') === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
+                        <option value="Neraca" {{ old('seksi') === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
+                        <option value="IPDS" {{ old('seksi') === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                    </select>
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Unit kerja pembebanan anggaran SPJ ini.</span>
+                    @error('seksi') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+
+                <div>
+                    <label class="spj-label" for="no_wa_input">Nomor WhatsApp Pengaju / PIC</label>
+                    <input type="text" name="no_wa" id="no_wa_input" class="spj-input @error('no_wa') has-error @enderror" value="{{ old('no_wa', Auth::user()->no_wa ?? '') }}" placeholder="Contoh: 081234567890">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp aktif untuk menerima pembaruan status SPJ.</span>
+                    @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                </div>
+            </div>
+
+            <div class="spj-form-group" style="margin-top: 1.5rem;">
+                <label class="spj-label" for="keterangan_input">Keterangan Tambahan</label>
+                <textarea name="keterangan" id="keterangan_input" class="spj-input spj-textarea" placeholder="Opsional: Keterangan tambahan untuk verifikator atau bendahara...">{{ old('keterangan') }}</textarea>
+                @error('keterangan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- 3. TINDAKAN LANJUTAN -->
+            <div class="spj-form-group" style="margin-top: 2rem;">
+                <label class="spj-label">Tindakan Lanjutan</label>
+                <div class="spj-radio-group">
+                    <label class="spj-radio-card">
+                        <input type="radio" name="status" value="draft" {{ old('status', 'draft') === 'draft' ? 'checked' : '' }}>
+                        <div class="spj-radio-content">
+                            <strong>Simpan sebagai Draft</strong>
+                            <span>Dapat diubah kembali nanti sebelum diajukan</span>
                         </div>
-                    </div>
-
-                    <div class="spj-category-box">
-                        <div class="spj-form-grid" style="margin-bottom: 1.25rem;">
-                            <div>
-                                <label class="spj-label" for="nama_belanja">Nama Belanja (Kategori Akun) <span class="required-star">*</span></label>
-                                <select id="nama_belanja" name="nama_belanja" class="spj-select" required onchange="handleNamaBelanjaChange()">
-                                    <option value="">-- Pilih Nama Belanja --</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="spj-label" for="jenis_belanja">Jenis Belanja <span class="required-star">*</span></label>
-                                <select id="jenis_belanja" name="jenis_belanja" class="spj-select" required disabled onchange="handleJenisBelanjaChange()">
-                                    <option value="">-- Pilih Jenis Belanja --</option>
-                                </select>
-                            </div>
+                    </label>
+                    <label class="spj-radio-card">
+                        <input type="radio" name="status" value="diajukan" {{ old('status') === 'diajukan' ? 'checked' : '' }}>
+                        <div class="spj-radio-content">
+                            <strong>Ajukan Sekarang ke Alur SPJ</strong>
+                            <span>Simpan pengajuan dan teruskan ke alur pemeriksaan berkas</span>
                         </div>
+                    </label>
+                </div>
+                @error('status') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
 
-                        <!-- DOKUMEN CHECKLIST CONTAINER -->
-                        <div id="dokumen_container" style="display: none;">
-                            <div class="checklist-header-row">
-                                <div>
-                                    <span class="checklist-header-title">Dokumen Persyaratan Fisik Wajib</span>
-                                    <p class="checklist-header-subtitle">Centang berkas fisik yang sudah disiapkan untuk diserahkan ke verifikator.</p>
-                                </div>
-                                <div class="checklist-action-btns">
-                                    <button type="button" onclick="checkAllBerkas(true)" class="btn-check-toggle" title="Centang seluruh berkas fisik">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                        Centang Semua
-                                    </button>
-                                    <button type="button" onclick="checkAllBerkas(false)" class="btn-check-toggle secondary" title="Kosongkan seluruh centang berkas">
-                                        Batal Semua
-                                    </button>
-                                </div>
-                            </div>
+                <div id="print_status_banner" style="display: none; width: 100%; margin-top: 1.25rem; padding: 0.85rem 1.25rem; border-radius: var(--radius-md, 12px); font-size: 0.875rem; font-weight: 500;"></div>
 
-                            <div id="dokumen_list" class="checklist-items-wrapper"></div>
-                        </div>
+                <div id="print_requirement_hint" style="display: none; margin-top: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-md, 12px); background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c; font-size: 0.825rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                        <span><strong>Wajib Print:</strong> Anda memilih opsi <strong>Ajukan Sekarang</strong>. Sesuai ketentuan, Anda <u>wajib menekan tombol Print</u> dan mencetak lembar checklist berkas SPJ terlebih dahulu sebelum pengajuan dapat disimpan.</span>
                     </div>
                 </div>
 
-                <!-- STEP 2: IDENTITAS KEGIATAN & ANGGARAN -->
-                <div class="spj-form-section">
-                    <div class="spj-section-header">
-                        <span class="spj-step-badge">2</span>
-                        <div>
-                            <h4 class="spj-section-title">Identitas Kegiatan &amp; Anggaran</h4>
-                            <p class="spj-section-subtitle">Informasi umum mengenai rincian belanja dan alokasi anggaran SPJ.</p>
-                        </div>
-                    </div>
+                <input type="hidden" name="is_printed" id="is_printed_input" value="{{ old('is_printed', '0') }}">
+            </div>
 
-                    <div class="spj-form-grid">
-                        <!-- Nomor Registrasi SPJ -->
-                        <div>
-                            <div class="spj-label-row">
-                                <label class="spj-label" for="nomor_spj">Nomor Registrasi SPJ</label>
-                                <span class="spj-chip-auto">Otomatis Sistem</span>
-                            </div>
-                            <input type="text" name="nomor_spj" id="nomor_spj" class="spj-input spj-input-readonly" value="{{ old('nomor_spj', $nomorSpjOtomatis) }}" readonly title="Nomor SPJ dibuat secara otomatis oleh sistem">
-                            <span class="spj-hint">Nomor registrasi unik digenerate otomatis oleh sistem.</span>
-                            @error('nomor_spj') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-
-                        <!-- Nilai Anggaran -->
-                        <div>
-                            <label class="spj-label" for="nilai_input">Nilai Anggaran / Nominal (Rp) <span class="required-star">*</span></label>
-                            <div class="spj-input-prefix-wrapper">
-                                <span class="spj-input-prefix">Rp</span>
-                                <input type="number" name="nilai" id="nilai_input" class="spj-input with-prefix @error('nilai') has-error @enderror" value="{{ old('nilai') }}" placeholder="Contoh: 1500000" min="0" step="any" required>
-                            </div>
-                            @error('nilai') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                            <span class="spj-hint" id="terbilang_hint">Ketik angka nominal tanpa tanda titik atau koma.</span>
-                        </div>
-
-                        <!-- Uraian Kegiatan (Full width) -->
-                        <div class="grid-col-full">
-                            <label class="spj-label" for="kegiatan_input">Uraian / Nama Kegiatan Belanja <span class="required-star">*</span></label>
-                            <textarea name="kegiatan" id="kegiatan_input" class="spj-textarea @error('kegiatan') has-error @enderror" rows="2" placeholder="Tuliskan uraian nama kegiatan belanja secara lengkap dan jelas..." required>{{ old('kegiatan') }}</textarea>
-                            @error('kegiatan') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-
-                        <!-- Tanggal Mulai -->
-                        <div>
-                            <label class="spj-label" for="tanggal_mulai">Tanggal Mulai Pelaksanaan <span class="required-star">*</span></label>
-                            <input type="date" name="tanggal" id="tanggal_mulai" class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal', date('Y-m-d')) }}" required>
-                            @error('tanggal') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-
-                        <!-- Tanggal Selesai -->
-                        <div>
-                            <div class="spj-label-row">
-                                <label class="spj-label" for="tanggal_selesai">Tanggal Selesai Pelaksanaan</label>
-                                <span class="spj-chip-optional">Opsional</span>
-                            </div>
-                            <input type="date" name="tanggal_selesai" id="tanggal_selesai" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai') }}" min="{{ old('tanggal', date('Y-m-d')) }}">
-                            @error('tanggal_selesai') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                            <span class="spj-hint">Kosongkan jika kegiatan berlangsung satu hari saja.</span>
-                        </div>
-
-                        <!-- Seksi / Unit Kerja -->
-                        <div>
-                            <label class="spj-label" for="seksi_input">Seksi / Unit Kerja Pengusul <span class="required-star">*</span></label>
-                            <select name="seksi" id="seksi_input" class="spj-select @error('seksi') has-error @enderror" required>
-                                <option value="Subbag Umum" {{ old('seksi', 'Subbag Umum') === 'Subbag Umum' ? 'selected' : '' }}>Subbag Umum</option>
-                                <option value="Sosial" {{ old('seksi') === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
-                                <option value="Produksi" {{ old('seksi') === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
-                                <option value="Distribusi" {{ old('seksi') === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
-                                <option value="Neraca" {{ old('seksi') === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
-                                <option value="IPDS" {{ old('seksi') === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
-                            </select>
-                            <span class="spj-hint">Unit kerja pembebanan anggaran SPJ ini.</span>
-                            @error('seksi') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-
-                        <!-- Nomor WhatsApp PIC -->
-                        <div>
-                            <label class="spj-label" for="no_wa_input">Nomor WhatsApp PIC / Pengusul</label>
-                            <input type="text" name="no_wa" id="no_wa_input" class="spj-input @error('no_wa') has-error @enderror" value="{{ old('no_wa', Auth::user()->no_wa ?? '') }}" placeholder="Contoh: 081234567890">
-                            <span class="spj-hint">Nomor WhatsApp aktif untuk menerima pembaruan status SPJ.</span>
-                            @error('no_wa') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-
-                        <!-- Keterangan Tambahan (Full width) -->
-                        <div class="grid-col-full">
-                            <div class="spj-label-row">
-                                <label class="spj-label" for="keterangan_input">Keterangan Tambahan</label>
-                                <span class="spj-chip-optional">Opsional</span>
-                            </div>
-                            <textarea name="keterangan" id="keterangan_input" class="spj-textarea @error('keterangan') has-error @enderror" rows="2" placeholder="Catatan internal tambahan untuk verifikator atau bendahara (opsional)...">{{ old('keterangan') }}</textarea>
-                            @error('keterangan') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 3: TINDAKAN LANJUTAN -->
-                <div class="spj-form-section">
-                    <div class="spj-section-header">
-                        <span class="spj-step-badge">3</span>
-                        <div>
-                            <h4 class="spj-section-title">Tindakan Lanjutan</h4>
-                            <p class="spj-section-subtitle">Tentukan apakah pengajuan disimpan sementara sebagai draft atau langsung diajukan ke antrean.</p>
-                        </div>
-                    </div>
-
-                    <div class="spj-status-radio-grid">
-                        <label class="spj-status-card">
-                            <input type="radio" name="status" value="draft" {{ old('status', 'draft') === 'draft' ? 'checked' : '' }}>
-                            <div class="spj-status-card-inner">
-                                <div class="status-card-radio-dot"></div>
-                                <div class="status-card-text">
-                                    <strong class="status-card-title">Simpan sebagai Draft</strong>
-                                    <span class="status-card-desc">Simpan pengajuan tanpa memproses ke alur. Data dapat diubah dan diajukan nanti.</span>
-                                </div>
-                            </div>
-                        </label>
-
-                        <label class="spj-status-card">
-                            <input type="radio" name="status" value="diajukan" {{ old('status') === 'diajukan' ? 'checked' : '' }}>
-                            <div class="spj-status-card-inner">
-                                <div class="status-card-radio-dot"></div>
-                                <div class="status-card-text">
-                                    <strong class="status-card-title">Ajukan Sekarang ke Alur SPJ</strong>
-                                    <span class="status-card-desc">Simpan pengajuan dan teruskan ke alur pemeriksaan berkas Subbag Umum.</span>
-                                </div>
-                            </div>
-                        </label>
-                    </div>
-                    @error('status') <span class="spj-error-msg" style="margin-top: 0.5rem;">{{ $message }}</span> @enderror
-
-                    <!-- BANNERS -->
-                    <div id="print_status_banner" class="spj-alert-banner success" style="display: none;"></div>
-
-                    <div id="print_requirement_hint" class="spj-alert-banner warning" style="display: none;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-banner-icon">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <div class="alert-banner-content">
-                            <strong>Wajib Cetak Lembar Checklist:</strong> Anda memilih opsi <strong>Ajukan Sekarang</strong>. Sesuai SOP, Anda wajib menekan tombol <strong>Print Checklist</strong> untuk mencetak lembar kendali checklist berkas fisik sebelum formulir dapat diajukan.
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="is_printed" id="is_printed_input" value="{{ old('is_printed', '0') }}">
-                </div>
-
-                <!-- BUTTON ACTIONS FOOTER -->
-                <div class="spj-form-footer">
-                    <a href="{{ route('umum.spj.index') }}" class="btn-spj-action btn-spj-cancel" onclick="clearFormState()">
-                        Batal
-                    </a>
-                    <button type="button" id="btn_cetak_langsung" onclick="cetakLangsung()" class="btn-spj-action btn-spj-print" title="Cetak langsung lembar kendali checklist berkas fisik SPJ">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-                            <rect x="6" y="14" width="12" height="8"></rect>
-                        </svg>
-                        <span id="btn_cetak_text">Print Checklist</span>
-                    </button>
-                    <button type="submit" id="btn_submit_spj" class="btn-spj-action btn-spj-submit">
-                        <span id="btn_submit_icon" style="display: inline-flex; align-items: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                                <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                                <polyline points="7 3 7 8 15 8"></polyline>
-                            </svg>
-                        </span>
-                        <span id="btn_submit_text">Simpan Pengajuan</span>
-                    </button>
-                </div>
-            </form>
-        </div>
+            <!-- BUTTONS -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; gap: 1rem; margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border, #e2edf5); flex-wrap: wrap;">
+                <a href="{{ route('umum.spj.index') }}" class="spj-btn spj-btn-secondary" onclick="clearFormState()">Batal</a>
+                <button type="button" id="btn_cetak_langsung" onclick="cetakLangsung()" class="spj-btn spj-btn-print" title="Cetak langsung lembar checklist berkas fisik SPJ">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                        <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                    <span id="btn_cetak_text">Print</span>
+                </button>
+                <button type="submit" id="btn_submit_spj" class="spj-btn spj-btn-primary" style="transition: all 0.25s ease;">
+                    <span id="btn_submit_icon" style="display: inline-flex; align-items: center; margin-right: 6px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                    </span>
+                    <span id="btn_submit_text">Simpan Pengajuan</span>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -993,6 +300,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
 <script>
     // Data Kategori SPJ (Dinamis dari Database Syarat Dokumen SPJ)
     const spjData = @json($spjData ?? \App\Models\SyaratDokumenSpj::getSpjData());
+
     const oldNamaBelanja = {!! json_encode(old('nama_belanja', '')) !!};
     const oldJenisBelanja = {!! json_encode(old('jenis_belanja', '')) !!};
     const oldBerkas = {!! json_encode(old('berkas', [])) !!};
@@ -1000,304 +308,495 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
     function clearFormState() {
         sessionStorage.removeItem('umum_spj_form_nama_belanja');
         sessionStorage.removeItem('umum_spj_form_jenis_belanja');
+        sessionStorage.removeItem('umum_spj_form_berkas');
     }
 
-    function checkAllBerkas(checked) {
-        const checkboxes = document.querySelectorAll('#dokumen_list input[type="checkbox"]:not([disabled])');
-        checkboxes.forEach(cb => { cb.checked = checked; });
+    function saveBerkasState() {
+        const checkboxes = document.querySelectorAll('input[name^="berkas["]');
+        const state = {};
+        checkboxes.forEach(cb => {
+            const match = cb.name.match(/\[(\d+)\]/);
+            if (match) {
+                state[match[1]] = cb.checked ? 1 : 0;
+            }
+        });
+        sessionStorage.setItem('umum_spj_form_berkas', JSON.stringify(state));
     }
 
-    let isPrinted = {{ old('is_printed', '0') === '1' ? 'true' : 'false' }};
-
-    function markAsPrinted() {
-        isPrinted = true;
-
-        const printedInput = document.getElementById('is_printed_input');
-        if (printedInput) printedInput.value = '1';
-
-        const printBtn = document.getElementById('btn_cetak_langsung');
-        if (printBtn) {
-            printBtn.classList.remove('print-btn-shake');
-            printBtn.classList.add('is-printed');
-            printBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-                <span>Sudah Dicetak</span>
-            `;
-        }
-
-        const banner = document.getElementById('print_status_banner');
-        if (banner) {
-            banner.style.display = 'flex';
-            banner.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-banner-icon">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
-                <div class="alert-banner-content">
-                    <strong>✓ Siap Diajukan:</strong> Lembar checklist berkas fisik telah dicetak. Tombol pengajuan sekarang aktif berwarna hijau!
-                </div>
-            `;
-        }
-
-        const printHint = document.getElementById('print_requirement_hint');
-        if (printHint) printHint.style.display = 'none';
-
-        updateSubmitButtonState();
+    function centangSemuaBerkas(val = true) {
+        const checkboxes = document.querySelectorAll('input[name^="berkas["]');
+        checkboxes.forEach(cb => {
+            cb.checked = val;
+        });
+        saveBerkasState();
     }
 
-    function updateSubmitButtonState() {
-        const statusSelected = document.querySelector('input[name="status"]:checked')?.value || 'draft';
-        const btnSubmit = document.getElementById('btn_submit_spj');
-        const btnSubmitText = document.getElementById('btn_submit_text');
-        const btnSubmitIcon = document.getElementById('btn_submit_icon');
-        const printHint = document.getElementById('print_requirement_hint');
-        const banner = document.getElementById('print_status_banner');
+    function renderDokumenList(nama, jenis, savedCheckboxes = null) {
+        const docContainer = document.getElementById("dokumen_container");
+        const docList = document.getElementById("dokumen_list");
+        if (!docContainer || !docList) return;
 
-        if (!btnSubmit) return;
+        docList.innerHTML = "";
 
-        if (statusSelected === 'diajukan') {
-            if (isPrinted) {
-                // STATUS DIAJUKAN & SUDAH PRINT -> AKTIF (HIJAU EMERALD)
-                btnSubmit.disabled = false;
-                btnSubmit.style.background = '#059669';
-                btnSubmit.style.borderColor = '#047857';
-                btnSubmit.style.color = '#ffffff';
-                btnSubmit.style.cursor = 'pointer';
-                btnSubmit.style.opacity = '1';
-                btnSubmit.style.boxShadow = '0 4px 14px rgba(5, 150, 105, 0.35)';
-                btnSubmit.title = 'Lembar checklist telah dicetak. Klik untuk mengajukan SPJ ke alur pemeriksaan.';
+        if (nama && jenis && spjData[nama] && spjData[nama][jenis]) {
+            docContainer.style.display = "block";
+            const docs = spjData[nama][jenis];
+            
+            docs.forEach((doc, idx) => {
+                let badgeHtml = '';
+                let uploadHtml = '';
+                
+                let isChecked = false;
+                if (savedCheckboxes) {
+                    isChecked = savedCheckboxes[idx] == 1 || savedCheckboxes[idx] === true || savedCheckboxes[idx] === '1';
+                } else {
+                    isChecked = true;
+                }
 
-                if (btnSubmitIcon) {
-                    btnSubmitIcon.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
+                if (doc.assignee.includes('Bendahara')) {
+                    badgeHtml = '<span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>';
+                    uploadHtml = '<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>';
+                } else if (doc.assignee.includes('PPK')) {
+                    badgeHtml = '<span class="badge-assignee badge-ppk">Dilengkapi PPK</span>';
+                    uploadHtml = '<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>';
+                } else {
+                    badgeHtml = '<span class="badge-assignee">Wajib Disiapkan (Fisik)</span>';
+                    uploadHtml = `
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary, #0284c7);">
+                        <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
+                    </label>
                     `;
                 }
-                if (btnSubmitText) btnSubmitText.innerText = 'Ajukan Sekarang ke Alur SPJ';
-                if (printHint) printHint.style.display = 'none';
-                if (banner) banner.style.display = 'flex';
-            } else {
-                // STATUS DIAJUKAN & BELUM PRINT -> JANGAN DISABLED AGAR BISA MEMICU MODAL KETIKA DIKLIK
-                btnSubmit.disabled = false;
-                btnSubmit.style.background = '#94a3b8';
-                btnSubmit.style.borderColor = '#94a3b8';
-                btnSubmit.style.color = '#ffffff';
-                btnSubmit.style.cursor = 'pointer';
-                btnSubmit.style.opacity = '0.85';
-                btnSubmit.style.boxShadow = 'none';
-                btnSubmit.title = 'Wajib menekan tombol Print Checklist terlebih dahulu sebelum pengajuan dapat disimpan.';
 
-                if (btnSubmitIcon) {
-                    btnSubmitIcon.innerHTML = `
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                        </svg>
-                    `;
+                const item = document.createElement("div");
+                item.className = "upload-item";
+                item.innerHTML = `
+                    <div class="upload-info">
+                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                            <span class="upload-label" style="margin: 0;">${doc.name}</span>
+                            ${badgeHtml}
+                        </div>
+                        <input type="hidden" name="nama_dokumen[${idx}]" value="${doc.name}">
+                        <input type="hidden" name="assignee_dokumen[${idx}]" value="${doc.assignee}">
+                    </div>
+                    <div class="upload-action">
+                        ${uploadHtml}
+                    </div>
+                `;
+                docList.appendChild(item);
+            });
+        } else {
+            docContainer.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        
+        // Populate first dropdown
+        if (selNamaBelanja) {
+            for (const nama in spjData) {
+                const opt = document.createElement("option");
+                opt.value = nama;
+                opt.textContent = nama;
+                selNamaBelanja.appendChild(opt);
+            }
+        }
+
+        // Pulihkan pilihan form yang sudah dipilih agar tidak reset
+        const activeNama = oldNamaBelanja || sessionStorage.getItem('umum_spj_form_nama_belanja') || '';
+        const activeJenis = oldJenisBelanja || sessionStorage.getItem('umum_spj_form_jenis_belanja') || '';
+        let activeBerkas = (oldBerkas && Object.keys(oldBerkas).length > 0)
+            ? oldBerkas
+            : JSON.parse(sessionStorage.getItem('umum_spj_form_berkas') || '{}');
+
+        if (activeNama && spjData[activeNama] && selNamaBelanja) {
+            selNamaBelanja.value = activeNama;
+
+            if (selJenisBelanja) {
+                selJenisBelanja.innerHTML = '<option value="" disabled>Pilih Jenis Belanja...</option>';
+                selJenisBelanja.disabled = false;
+                for (const jenis in spjData[activeNama]) {
+                    const opt = document.createElement("option");
+                    opt.value = jenis;
+                    opt.textContent = jenis;
+                    if (jenis === activeJenis) {
+                        opt.selected = true;
+                    }
+                    selJenisBelanja.appendChild(opt);
                 }
-                if (btnSubmitText) btnSubmitText.innerText = 'Ajukan SPJ (Wajib Print Dulu)';
-                if (printHint) printHint.style.display = 'flex';
-                if (banner) banner.style.display = 'none';
+            }
+
+            if (activeJenis && spjData[activeNama][activeJenis]) {
+                renderDokumenList(activeNama, activeJenis, activeBerkas);
+            }
+        }
+    });
+
+    function handleNamaBelanjaChange() {
+        resetPrintStatus();
+        const nama = document.getElementById("nama_belanja").value;
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        const docContainer = document.getElementById("dokumen_container");
+        
+        sessionStorage.setItem('umum_spj_form_nama_belanja', nama);
+        sessionStorage.removeItem('umum_spj_form_jenis_belanja');
+        sessionStorage.removeItem('umum_spj_form_berkas');
+
+        // Reset and enable 2nd dropdown
+        selJenisBelanja.innerHTML = '<option value="" disabled selected>Pilih Jenis Belanja...</option>';
+        docContainer.style.display = "none";
+
+        if (nama && spjData[nama]) {
+            selJenisBelanja.disabled = false;
+            for (const jenis in spjData[nama]) {
+                const opt = document.createElement("option");
+                opt.value = jenis;
+                opt.textContent = jenis;
+                selJenisBelanja.appendChild(opt);
             }
         } else {
-            // STATUS DRAFT -> BIRU / TEAL BRAND STANDAR
-            btnSubmit.disabled = false;
-            btnSubmit.style.background = 'var(--dash-btn-primary-bg, #1e4253)';
-            btnSubmit.style.borderColor = 'var(--dash-btn-primary-bg, #1e4253)';
-            btnSubmit.style.color = '#ffffff';
-            btnSubmit.style.cursor = 'pointer';
-            btnSubmit.style.opacity = '1';
-            btnSubmit.style.boxShadow = '0 4px 14px rgba(30, 66, 83, 0.25)';
-            btnSubmit.title = 'Simpan draft SPJ untuk diedit kembali nanti.';
-
-            if (btnSubmitIcon) {
-                btnSubmitIcon.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                        <polyline points="7 3 7 8 15 8"></polyline>
-                    </svg>
-                `;
-            }
-            if (btnSubmitText) btnSubmitText.innerText = 'Simpan sebagai Draft';
-            if (printHint) printHint.style.display = 'none';
-            if (banner) banner.style.display = 'none';
+            selJenisBelanja.disabled = true;
         }
+    }
+
+    function handleJenisBelanjaChange() {
+        resetPrintStatus();
+        const nama = document.getElementById("nama_belanja").value;
+        const jenis = document.getElementById("jenis_belanja").value;
+
+        sessionStorage.setItem('umum_spj_form_jenis_belanja', jenis);
+        renderDokumenList(nama, jenis);
+    }
+
+    function formatRupiah(number) {
+        if (!number || isNaN(number)) return 'Rp 0';
+        return 'Rp ' + Number(number).toLocaleString('id-ID');
+    }
+
+    function formatDateIndo(dateStr) {
+        if (!dateStr) return '—';
+        const months = [
+            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+            const year = parts[0];
+            const month = months[parseInt(parts[1], 10) - 1] || parts[1];
+            const day = parseInt(parts[2], 10);
+            return `${day} ${month} ${year}`;
+        }
+        return dateStr;
+    }
+
+    const masterDocDefs = [
+        { label: 'KAK', keywords: ['KAK'] },
+        { label: 'Form Permintaan', keywords: ['FP', 'Form Permintaan'] },
+        { label: 'Surat Tugas', keywords: ['Surat Tugas', 'SPPD', 'Visum'] },
+        { label: 'SK / SPK', keywords: ['SK KPA', 'Surat Keputusan', 'Surat kontrak', 'SPK', 'Polis', 'Perjanjian'] },
+        { label: 'Undangan', keywords: ['Undangan', 'Surat Undangan'] },
+        { label: 'Daftar Hadir / Penerima', keywords: ['Daftar Hadir', 'Daftar Penerima', 'Daftar nama', 'Daftar Alokasi', 'Daftar rekap kuitansi'] },
+        { label: 'Notula / Laporan', keywords: ['Notula', 'Notulensi', 'Laporan tim', 'Laporan pengajar', 'Laporan pelaksanaan', 'Laporan perjalanan dinas'] },
+        { label: 'Bukti Beli / Nota', keywords: ['Bukti pembelian', 'Bukti Pembelian', 'nota', 'kwitansi', 'Kuitansi', 'invoice', 'Invoice', 'Tagihan', 'Tiket', 'Kwitansi Transpor', 'Daftar Pengeluaran riil'] },
+        { label: 'BAST', keywords: ['BAST', 'BAPP'] },
+        { label: 'Bukti Bayar / Pajak', keywords: ['Faktur Pajak', 'SSP', 'PPh', 'PPn', 'Screenshoot bukti transfer'] },
+        { label: 'Kesesuaian MRK', keywords: ['Kesesuaian MRK'] },
+        { label: 'CMS', keywords: ['CMS'] },
+        { label: 'Cek SBKS', keywords: ['SBKS'] }
+    ];
+
+    function getCleanDocLabel(docName) {
+        for (let i = 0; i < masterDocDefs.length; i++) {
+            const def = masterDocDefs[i];
+            for (let j = 0; j < def.keywords.length; j++) {
+                if (docName.toLowerCase().indexOf(def.keywords[j].toLowerCase()) !== -1) {
+                    return def.label;
+                }
+            }
+        }
+        return docName.length > 25 ? docName.substring(0, 22) + '...' : docName;
     }
 
     function cetakLangsung() {
-        const form = document.getElementById("formPengajuanSpj");
-        const missingFields = [];
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        const namaBelanja = selNamaBelanja ? selNamaBelanja.value : '';
+        const jenisBelanja = selJenisBelanja ? selJenisBelanja.value : '';
 
-        const uraianVal = form.querySelector('[name="kegiatan"]')?.value?.trim();
-        const nilaiVal = form.querySelector('[name="nilai"]')?.value?.trim();
-        const tglVal = form.querySelector('[name="tanggal"]')?.value?.trim();
-        const namaBelanjaVal = document.getElementById("nama_belanja")?.value?.trim();
-        const jenisBelanjaVal = document.getElementById("jenis_belanja")?.value?.trim();
-
-        if (!namaBelanjaVal) missingFields.push("Nama Belanja (Kategori Akun)");
-        if (!jenisBelanjaVal) missingFields.push("Jenis Belanja");
-        if (!uraianVal) missingFields.push("Uraian / Nama Kegiatan Belanja");
-        if (!nilaiVal) missingFields.push("Nilai Anggaran / Nominal (Rp)");
-        if (!tglVal) missingFields.push("Tanggal Mulai Pelaksanaan");
-
-        if (missingFields.length > 0) {
-            alert("Harap lengkapi isian berikut sebelum mencetak lembar checklist:\n\n• " + missingFields.join("\n• "));
-            if (!namaBelanjaVal) { document.getElementById("nama_belanja")?.focus(); }
-            else if (!jenisBelanjaVal) { document.getElementById("jenis_belanja")?.focus(); }
-            else if (!uraianVal) { form.querySelector('[name="kegiatan"]')?.focus(); }
-            else if (!nilaiVal) { form.querySelector('[name="nilai"]')?.focus(); }
+        if (!namaBelanja || !jenisBelanja) {
+            alert("Silakan pilih Nama Belanja dan Jenis Belanja terlebih dahulu serta centang berkas fisik yang sudah disiapkan.");
+            if (selNamaBelanja) selNamaBelanja.focus();
             return;
         }
 
-        const nomorSpj = document.getElementById("nomor_spj")?.value || "-";
-        const kegiatan = uraianVal;
-        const nilaiNum = parseFloat(nilaiVal) || 0;
-        const nilaiFormatted = "Rp " + Math.round(nilaiNum).toLocaleString("id-ID");
-        const tglMulai = tglVal;
-        const tglSelesai = document.getElementById("tanggal_selesai")?.value?.trim() || "";
-        const tanggalStr = tglSelesai && tglSelesai !== tglMulai ? tglMulai + " s.d. " + tglSelesai : tglMulai;
-        const seksi = form.querySelector('[name="seksi"]')?.value || "Subbag Umum";
-        const pengaju = "{{ Auth::user()->name ?? 'Subbagian Umum' }}";
-        const noWa = form.querySelector('[name="no_wa"]')?.value || "-";
-        const tglCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const docInputs = document.querySelectorAll('input[name^="nama_dokumen"]');
+        if (docInputs.length === 0) {
+            alert("Daftar dokumen belum tersedia. Silakan pilih Jenis Belanja terlebih dahulu.");
+            return;
+        }
 
-        const docs = [];
-        const rows = document.querySelectorAll("#dokumen_list .checklist-row-item");
-        rows.forEach(r => {
-            const label = r.querySelector(".checklist-doc-name")?.innerText || "";
-            const isChecked = r.querySelector('input[type="checkbox"]')?.checked;
-            const isBendahara = r.innerText.includes("Dilengkapi Bendahara");
-            docs.push({ name: label, isChecked: !!isChecked, isBendahara: isBendahara });
+        const nomorSpj = document.querySelector('[name="nomor_spj"]')?.value.trim() || '—';
+        const kegiatan = document.querySelector('[name="kegiatan"]')?.value.trim() || '—';
+        const tanggal = document.querySelector('[name="tanggal"]')?.value || '';
+        const tanggalSelesai = document.querySelector('[name="tanggal_selesai"]')?.value || '';
+        const nilai = document.querySelector('[name="nilai"]')?.value || '0';
+        const noWa = document.querySelector('[name="no_wa"]')?.value.trim() || '—';
+        const keterangan = document.querySelector('[name="keterangan"]')?.value.trim() || '—';
+        const pengajuName = "{{ Auth::user()->name ?? 'Subbagian Umum' }}";
+        const logoUrl = "{{ asset('images/logo-bps.png') }}";
+        const tanggalCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+        const tanggalFormatted = formatDateIndo(tanggal) || tanggalCetak;
+        const periodeKegiatanFormatted = (tanggal && tanggalSelesai && tanggalSelesai !== tanggal)
+            ? (formatDateIndo(tanggal) + ' s.d. ' + formatDateIndo(tanggalSelesai))
+            : tanggalFormatted;
+
+        const seenLabels = {};
+        const docCols = [];
+        docInputs.forEach((input, i) => {
+            const match = input.name.match(/\[(\d+)\]/);
+            const idx = match ? match[1] : i;
+            const checkbox = document.querySelector(`input[name="berkas[${idx}]"]`);
+            const docName = input.value;
+            let label = getCleanDocLabel(docName);
+            if (seenLabels[label]) {
+                seenLabels[label]++;
+                label = label + ' (' + seenLabels[label] + ')';
+            } else {
+                seenLabels[label] = 1;
+            }
+            docCols.push({
+                label: label,
+                fullName: docName,
+                isChecked: checkbox ? checkbox.checked : false
+            });
         });
 
-        let rowsHtml = "";
-        docs.forEach((d, idx) => {
-            const statusBadge = d.isBendahara
-                ? '<span style="color:#d97706; font-size:10.5pt; font-weight:700;">[ Dilengkapi Bendahara ]</span>'
-                : (d.isChecked
-                    ? '<span style="color:#15803d; font-size:11pt; font-weight:800;">[ ✓ Ada (Fisik) ]</span>'
-                    : '<span style="color:#64748b; font-size:10.5pt;">[ - Belum Dilampirkan ]</span>');
-            rowsHtml += `<tr>
-                <td style="border:1px solid #cbd5e1; padding:7px 10px; text-align:center; width:35px; font-weight:600;">${idx + 1}</td>
-                <td style="border:1px solid #cbd5e1; padding:7px 10px; font-weight:500;">${d.name}</td>
-                <td style="border:1px solid #cbd5e1; padding:7px 10px; text-align:center; width:200px;">${statusBadge}</td>
-            </tr>`;
+        const totalDocCols = docCols.length;
+        const totalKelengkapanColspan = totalDocCols + 4;
+
+        let docHeadersHtml = '';
+        docCols.forEach(col => {
+            docHeadersHtml += '                    <th>' + col.label + '</th>\n';
         });
 
-        const printHtml = `<!DOCTYPE html>
-        <html lang="id">
-        <head>
-            <meta charset="UTF-8">
-            <title>Lembar Kendali SPJ - ${nomorSpj}</title>
-            <style>
-                @page { size: portrait; margin: 15mm; }
-                * { box-sizing: border-box; }
-                body { font-family: 'Plus Jakarta Sans', Arial, sans-serif; font-size: 10.5pt; color: #1e293b; margin: 0; padding: 10px; line-height: 1.4; }
-                .kop-header { text-align: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 16px; }
-                .kop-header h2 { margin: 0 0 4px 0; font-size: 13pt; font-weight: 800; color: #0c2556; letter-spacing: 0.5px; }
-                .kop-header h3 { margin: 0 0 4px 0; font-size: 11pt; font-weight: 700; color: #0284c7; }
-                .kop-header p { margin: 0; font-size: 9pt; color: #475569; }
-                .title-badge { text-align: center; margin-bottom: 16px; }
-                .title-badge h4 { display: inline-block; margin: 0; padding: 6px 18px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11pt; font-weight: 800; color: #0f172a; text-transform: uppercase; }
-                table.meta-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 10pt; }
-                table.meta-table td { padding: 4px 6px; vertical-align: top; }
-                table.meta-table td.label { width: 160px; font-weight: 700; color: #334155; }
-                table.doc-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10pt; }
-                table.doc-table th { background: #f8fafc; border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; font-size: 9.5pt; font-weight: 800; color: #1e293b; text-transform: uppercase; }
-                table.doc-table td { border: 1px solid #cbd5e1; vertical-align: middle; }
-                .sig-box { width: 100%; margin-top: 30px; display: flex; justify-content: space-between; font-size: 10pt; }
-                .sig-col { width: 45%; text-align: center; }
-                .sig-space { height: 60px; }
-            </style>
-        </head>
-        <body>
-            <div class="kop-header">
-                <h2>BADAN PUSAT STATISTIK KABUPATEN KOLAKA UTARA</h2>
-                <h3>SISTEM INFORMASI PENYELESAIAN TAGIHAN (SPJ)</h3>
-                <p>Jl. Trans Sulawesi Kompleks Perkantoran Pemda Kolaka Utara, Lasusua &bull; Tanggal Cetak: ${tglCetak}</p>
-            </div>
+        let docValuesHtml = '';
+        docCols.forEach(col => {
+            docValuesHtml += '                    <td style="font-size: 11pt; font-weight: bold; text-align: center;">' + (col.isChecked ? '&radic;' : '') + '</td>\n';
+        });
 
-            <div class="title-badge">
-                <h4>LEMBAR KENDALI KELENGKAPAN BERKAS FISIK SPJ</h4>
-            </div>
+        const printHtml = '<!DOCTYPE html>\n'
+            + '<html lang="id">\n'
+            + '<head>\n'
+            + '    <meta charset="UTF-8">\n'
+            + '    <title>Laporan SPJ - ' + (kegiatan !== '—' ? kegiatan : 'Kegiatan') + '</title>\n'
+            + '    <style>\n'
+            + '        @page { size: landscape; margin: 10mm; }\n'
+            + '        * { box-sizing: border-box; }\n'
+            + '        body {\n'
+            + '            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;\n'
+            + '            background: #fff;\n'
+            + '            color: #111;\n'
+            + '            margin: 0;\n'
+            + '            padding: 0;\n'
+            + '            font-size: 10px;\n'
+            + '        }\n'
+            + '        .print-only-logo { text-align: center; margin-bottom: 18px; }\n'
+            + '        .print-only-logo img { height: 50px; margin-bottom: 6px; }\n'
+            + '        .print-only-logo h2 { font-size: 16px; margin: 5px 0 3px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }\n'
+            + '        .print-only-logo p { font-size: 12px; margin: 0; color: #374151; }\n'
+            + '        .meta-info {\n'
+            + '            display: flex;\n'
+            + '            justify-content: space-between;\n'
+            + '            align-items: center;\n'
+            + '            font-size: 11px;\n'
+            + '            margin-bottom: 10px;\n'
+            + '            padding: 0 4px;\n'
+            + '        }\n'
+            + '        .table-responsive { overflow: visible !important; width: 100% !important; }\n'
+            + '        .cetak-table {\n'
+            + '            width: 100%;\n'
+            + '            border-collapse: collapse;\n'
+            + '            font-size: 8px;\n'
+            + '            text-align: center;\n'
+            + '            margin-bottom: 15px;\n'
+            + '            table-layout: auto;\n'
+            + '        }\n'
+            + '        .cetak-table th, .cetak-table td {\n'
+            + '            border: 1px solid #333;\n'
+            + '            padding: 4px 2px;\n'
+            + '            white-space: normal;\n'
+            + '            word-wrap: break-word;\n'
+            + '        }\n'
+            + '        .cetak-table th {\n'
+            + '            background-color: #f5f5f5;\n'
+            + '            font-weight: bold;\n'
+            + '            text-align: center;\n'
+            + '            min-width: 25px;\n'
+            + '        }\n'
+            + '        .ttd-container {\n'
+            + '            display: flex;\n'
+            + '            justify-content: flex-end;\n'
+            + '            padding-right: 50px;\n'
+            + '            text-align: left;\n'
+            + '            font-size: 12px;\n'
+            + '            margin-top: 35px;\n'
+            + '            page-break-inside: avoid;\n'
+            + '        }\n'
+            + '        @media print {\n'
+            + '            .no-print { display: none !important; }\n'
+            + '            .print-wrapper { padding: 0 !important; }\n'
+            + '        }\n'
+            + '        .no-print {\n'
+            + '            position: sticky;\n'
+            + '            top: 0;\n'
+            + '            left: 0;\n'
+            + '            right: 0;\n'
+            + '            background: #0f172a;\n'
+            + '            color: #ffffff;\n'
+            + '            padding: 12px 20px;\n'
+            + '            display: flex;\n'
+            + '            justify-content: space-between;\n'
+            + '            align-items: center;\n'
+            + '            box-shadow: 0 4px 12px rgba(0,0,0,0.15);\n'
+            + '            z-index: 99999;\n'
+            + '            margin-bottom: 20px;\n'
+            + '            font-family: Arial, sans-serif;\n'
+            + '        }\n'
+            + '    </style>\n'
+            + '</head>\n'
+            + '<body>\n'
+            + '    <div class="no-print">\n'
+            + '        <div style="display: flex; align-items: center; gap: 8px;">\n'
+            + '            <strong style="font-size: 13px;">📄 Pratinjau Lembar Checklist Berkas Fisik SPJ</strong>\n'
+            + '            <span style="background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 11px;">Tab Baru</span>\n'
+            + '        </div>\n'
+            + '        <div style="display: flex; gap: 10px;">\n'
+            + '            <button type="button" onclick="window.print()" style="background: #0284c7; color: #ffffff; border: none; padding: 7px 16px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer;">🖨️ Cetak Lembar Checklist</button>\n'
+            + '            <button type="button" onclick="window.close()" style="background: #475569; color: #ffffff; border: none; padding: 7px 14px; border-radius: 6px; font-size: 12px; cursor: pointer;">✕ Tutup Tab</button>\n'
+            + '        </div>\n'
+            + '    </div>\n'
+            + '    <div class="print-wrapper" style="padding: 10px 20px;">\n'
+            + '        <div class="print-only-logo">\n'
+            + '            <img src="' + logoUrl + '" alt="Logo BPS" onerror="this.style.display=\'none\'">\n'
+            + '            <h2>LAPORAN REKAPITULASI SPJ</h2>\n'
+            + '            <p>Badan Pusat Statistik Kabupaten Kolaka Utara</p>\n'
+            + '        </div>\n'
+            + '        <div class="meta-info">\n'
+            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Periode Kegiatan: <strong>' + periodeKegiatanFormatted + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '</strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '</div>\n'
+            + '            <div>Belanja: <strong>' + namaBelanja + ' (' + jenisBelanja + ')</strong></div>\n'
+            + '        </div>\n'
+            + '        <div class="table-responsive">\n'
+            + '            <table class="cetak-table">\n'
+            + '                <thead>\n'
+            + '                    <tr>\n'
+            + '                        <th rowspan="2" style="width: 30px;">No</th>\n'
+            + '                        <th rowspan="2" style="min-width: 170px;">Nama Kegiatan</th>\n'
+            + '                        <th rowspan="2" style="min-width: 95px;">Jumlah Anggaran</th>\n'
+            + '                        <th rowspan="2" style="min-width: 80px;">Tanggal Penginputan SPJ</th>\n'
+            + '                        <th colspan="' + totalKelengkapanColspan + '">Kelengkapan Administrasi</th>\n'
+            + '                        <th rowspan="2" style="min-width: 80px;">Keterangan</th>\n'
+            + '                    </tr>\n'
+            + '                    <tr>\n'
+            + docHeadersHtml
+            + '                        <th style="min-width: 65px;">Tgl Masuk SPJ</th>\n'
+            + '                        <th style="min-width: 65px;">Tgl Periksa PPK</th>\n'
+            + '                        <th style="min-width: 45px;">Paraf PPSPM</th>\n'
+            + '                        <th style="min-width: 45px;">Paraf Bendahara</th>\n'
+            + '                    </tr>\n'
+            + '                </thead>\n'
+            + '                <tbody>\n'
+            + '                    <tr>\n'
+            + '                        <td>1</td>\n'
+            + '                        <td style="text-align: left; padding: 5px 6px;">' + kegiatan + '</td>\n'
+            + '                        <td style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '</td>\n'
+            + '                        <td>' + tanggalCetak + '</td>\n'
+            + docValuesHtml
+            + '                        <td>-</td>\n'
+            + '                        <td>-</td>\n'
+            + '                        <td></td>\n'
+            + '                        <td></td>\n'
+            + '                        <td style="text-align: left; padding: 5px 6px;">' + (keterangan !== '—' ? keterangan : '') + '</td>\n'
+            + '                    </tr>\n'
+            + '                </tbody>\n'
+            + '                <tfoot>\n'
+            + '                    <tr>\n'
+            + '                        <th colspan="2" style="text-align: right; padding-right: 15px;">TOTAL</th>\n'
+            + '                        <th style="text-align: right; white-space: nowrap; font-weight: bold; padding: 5px 6px;">Rp. ' + formatRupiah(nilai) + '</th>\n'
+            + '                        <th colspan="' + (totalKelengkapanColspan + 2) + '"></th>\n'
+            + '                    </tr>\n'
+            + '                </tfoot>\n'
+            + '            </table>\n'
+            + '        </div>\n'
+            + '        <div class="ttd-container">\n'
+            + '            <div>\n'
+            + '                <p style="margin: 0;">setor ke PPSPM :</p>\n'
+            + '                <p style="margin: 0;">Lasusua, ' + tanggalCetak + '</p>\n'
+            + '                <p style="margin: 0;">Pejabat Pembuat Komitmen</p>\n'
+            + '                <br><br><br><br>\n'
+            + '                <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah</p>\n'
+            + '                <p style="margin: 0;">NIP.198510292011011009</p>\n'
+            + '            </div>\n'
+            + '        </div>\n'
+            + '    </div>\n'
+            + '    <' + 'script>\n'
+            + '        window.addEventListener("load", function() {\n'
+            + '            setTimeout(function() {\n'
+            + '                window.focus();\n'
+            + '                window.print();\n'
+            + '            }, 350);\n'
+            + '        });\n'
+            + '    <' + '/script>\n'
+            + '</body>\n'
+            + '</html>';
 
-            <table class="meta-table">
-                <tr>
-                    <td class="label">Nomor Registrasi SPJ</td>
-                    <td>: <strong>${nomorSpj}</strong></td>
-                    <td class="label">Unit Kerja / Seksi</td>
-                    <td>: ${seksi}</td>
-                </tr>
-                <tr>
-                    <td class="label">Uraian Kegiatan Belanja</td>
-                    <td colspan="3">: ${kegiatan}</td>
-                </tr>
-                <tr>
-                    <td class="label">Nilai Anggaran (Rp)</td>
-                    <td>: <strong>${nilaiFormatted}</strong></td>
-                    <td class="label">Tanggal Pelaksanaan</td>
-                    <td>: ${tanggalStr}</td>
-                </tr>
-                <tr>
-                    <td class="label">Nama Belanja (Kategori)</td>
-                    <td>: ${namaBelanjaVal}</td>
-                    <td class="label">Jenis Belanja</td>
-                    <td>: ${jenisBelanjaVal}</td>
-                </tr>
-                <tr>
-                    <td class="label">Pengusul / PIC</td>
-                    <td>: ${pengaju}</td>
-                    <td class="label">Nomor Kontak WhatsApp</td>
-                    <td>: ${noWa}</td>
-                </tr>
-            </table>
+        let printCompleted = false;
+        const markAsPrinted = function() {
+            if (printCompleted) return;
+            printCompleted = true;
+            isPrinted = true;
 
-            <table class="doc-table">
-                <thead>
-                    <tr>
-                        <th style="text-align: center; width: 35px;">No</th>
-                        <th>Daftar Dokumen Persyaratan Fisik</th>
-                        <th style="text-align: center; width: 200px;">Status Kelengkapan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rowsHtml}
-                </tbody>
-            </table>
+            const isPrintedInput = document.getElementById('is_printed_input');
+            if (isPrintedInput) isPrintedInput.value = '1';
 
-            <div class="sig-box">
-                <div class="sig-col">
-                    <p style="margin: 0 0 4px 0;">Pengusul / Yang Menyerahkan,</p>
-                    <p style="margin: 0; font-size: 9pt; color: #64748b;">Subbagian Umum</p>
-                    <div class="sig-space"></div>
-                    <p style="margin: 0; font-weight: 700; text-decoration: underline;">${pengaju}</p>
-                </div>
-                <div class="sig-col">
-                    <p style="margin: 0 0 4px 0;">Verifikator / Yang Menerima Berkas,</p>
-                    <p style="margin: 0; font-size: 9pt; color: #64748b;">Meja Pemeriksaan Subbag Umum</p>
-                    <div class="sig-space"></div>
-                    <p style="margin: 0; font-weight: 700;">( .................................................... )</p>
-                </div>
-            </div>
+            const printBtn = document.getElementById('btn_cetak_langsung');
+            if (printBtn) {
+                printBtn.classList.remove('print-btn-shake');
+                printBtn.classList.add('is-printed');
+                printBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Sudah Dicetak
+                `;
+            }
 
-            <script>
-                window.addEventListener('load', function() {
-                    setTimeout(function() {
-                        window.focus();
-                        window.print();
-                    }, 350);
-                });
-            <\/script>
-        </body>
-        </html>`;
+            const banner = document.getElementById('print_status_banner');
+            if (banner) {
+                banner.style.display = 'flex';
+                banner.style.alignItems = 'center';
+                banner.style.gap = '0.5rem';
+                banner.style.backgroundColor = '#d1fae5';
+                banner.style.color = '#065f46';
+                banner.style.border = '1px solid #34d399';
+                banner.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    <span><strong>Checklist Telah Dicetak:</strong> Lembar checklist SPJ telah dicetak di tab baru. Tombol pengajuan sekarang aktif berwarna hijau!</span>
+                `;
+            }
 
-        const printWin = window.open("", "_blank");
+            const hint = document.getElementById('print_requirement_hint');
+            if (hint) {
+                hint.style.display = 'none';
+            }
+
+            updateSubmitButtonState();
+        };
+
+        const printWin = window.open('', '_blank');
         if (!printWin) {
-            // Jika popup diblokir oleh browser
             markAsPrinted();
             alert("Pop-up cetak otomatis diblokir oleh browser Anda. Namun berkas telah berhasil ditandai 'Sudah Dicetak' sehingga Anda dapat langsung menekan tombol 'Ajukan Sekarang'.\n\nUntuk mencetak lembar fisik, silakan izinkan pop-up pada bilah URL browser Anda.");
             return;
@@ -1307,120 +806,172 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
         printWin.document.write(printHtml);
         printWin.document.close();
 
-        // Tandai langsung di form bahwa lembar checklist telah dicetak
         markAsPrinted();
+
+        try {
+            printWin.addEventListener('afterprint', markAsPrinted, { once: true });
+        } catch(e) {}
     }
 
-    function initNamaBelanja() {
-        const selNamaBelanja = document.getElementById("nama_belanja");
-        if (!selNamaBelanja) return;
+    let isPrinted = {{ old('is_printed', '0') == '1' ? 'true' : 'false' }};
 
-        selNamaBelanja.innerHTML = '<option value="">-- Pilih Nama Belanja --</option>';
-        Object.keys(spjData).forEach(nama => {
-            const opt = document.createElement("option");
-            opt.value = nama;
-            opt.textContent = nama;
-            selNamaBelanja.appendChild(opt);
-        });
+    function resetPrintStatus() {
+        isPrinted = false;
+        const input = document.getElementById('is_printed_input');
+        if (input) input.value = '0';
 
-        const activeNama = oldNamaBelanja || sessionStorage.getItem('umum_spj_form_nama_belanja') || '';
-        if (activeNama && spjData[activeNama]) {
-            selNamaBelanja.value = activeNama;
-            handleNamaBelanjaChange(true);
+        const printBtn = document.getElementById('btn_cetak_langsung');
+        if (printBtn) {
+            printBtn.classList.remove('is-printed');
+            printBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                    <rect x="6" y="14" width="12" height="8"></rect>
+                </svg>
+                <span id="btn_cetak_text">Print</span>
+            `;
         }
+
+        const banner = document.getElementById('print_status_banner');
+        if (banner) {
+            banner.style.display = 'none';
+        }
+
+        updatePrintNotice();
+        updateSubmitButtonState();
     }
 
-    function handleNamaBelanjaChange(isInitial = false) {
-        const nama = document.getElementById("nama_belanja").value;
-        const selJenisBelanja = document.getElementById("jenis_belanja");
-        const docContainer = document.getElementById("dokumen_container");
+    function updateSubmitButtonState() {
+        const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+        const submitBtn = document.getElementById('btn_submit_spj');
+        const submitIcon = document.getElementById('btn_submit_icon');
+        const submitText = document.getElementById('btn_submit_text');
+        const hint = document.getElementById('print_requirement_hint');
 
-        sessionStorage.setItem('umum_spj_form_nama_belanja', nama);
+        if (!submitBtn) return;
 
-        selJenisBelanja.innerHTML = '<option value="">-- Pilih Jenis Belanja --</option>';
-        docContainer.style.display = "none";
+        if (selectedStatus === 'diajukan') {
+            if (isPrinted) {
+                // STATUS DIAJUKAN & SUDAH PRINT -> AKTIF & WARNA HIJAU
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#059669';
+                submitBtn.style.borderColor = '#047857';
+                submitBtn.style.color = '#ffffff';
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+                submitBtn.style.boxShadow = '0 4px 14px rgba(5, 150, 105, 0.4)';
+                submitBtn.title = 'Lembar checklist telah dicetak. Klik untuk mengajukan SPJ ke alur pemeriksaan.';
+                
+                if (submitIcon) {
+                    submitIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    `;
+                }
+                if (submitText) {
+                    submitText.textContent = 'Ajukan Sekarang ke Alur SPJ';
+                }
+                if (hint) {
+                    hint.style.display = 'none';
+                }
+            } else {
+                // STATUS DIAJUKAN & BELUM PRINT -> JANGAN DISABLED AGAR MEMICU MODAL
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#94a3b8';
+                submitBtn.style.borderColor = '#94a3b8';
+                submitBtn.style.color = '#ffffff';
+                submitBtn.style.opacity = '0.75';
+                submitBtn.style.cursor = 'not-allowed';
+                submitBtn.style.boxShadow = 'none';
+                submitBtn.title = 'Wajib menekan tombol Print terlebih dahulu sebelum pengajuan dapat disimpan.';
 
-        if (nama && spjData[nama]) {
-            selJenisBelanja.disabled = false;
-            Object.keys(spjData[nama]).forEach(jenis => {
-                const opt = document.createElement("option");
-                opt.value = jenis;
-                opt.textContent = jenis;
-                selJenisBelanja.appendChild(opt);
-            });
-
-            const activeJenis = (isInitial ? oldJenisBelanja : '') || sessionStorage.getItem('umum_spj_form_jenis_belanja') || '';
-            if (activeJenis && spjData[nama][activeJenis]) {
-                selJenisBelanja.value = activeJenis;
-                handleJenisBelanjaChange(isInitial);
+                if (submitIcon) {
+                    submitIcon.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    `;
+                }
+                if (submitText) {
+                    submitText.textContent = 'Ajukan SPJ (Wajib Print Dulu)';
+                }
+                if (hint) {
+                    hint.style.display = 'block';
+                }
             }
         } else {
-            selJenisBelanja.disabled = true;
-        }
-    }
+            // STATUS DRAFT -> BIRU / TEAL STANDAR
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = 'var(--primary, #1e4253)';
+            submitBtn.style.borderColor = 'var(--primary, #1e4253)';
+            submitBtn.style.color = '#ffffff';
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+            submitBtn.style.boxShadow = 'none';
+            submitBtn.title = 'Simpan draft SPJ untuk diedit kembali nanti.';
 
-    function handleJenisBelanjaChange(isInitial = false) {
-        const nama = document.getElementById("nama_belanja").value;
-        const jenis = document.getElementById("jenis_belanja").value;
-        const docContainer = document.getElementById("dokumen_container");
-        const docList = document.getElementById("dokumen_list");
-
-        sessionStorage.setItem('umum_spj_form_jenis_belanja', jenis);
-
-        if (nama && jenis && spjData[nama] && spjData[nama][jenis]) {
-            const items = spjData[nama][jenis];
-            docList.innerHTML = "";
-
-            items.forEach((item, index) => {
-                const row = document.createElement("div");
-                row.className = "checklist-row-item";
-
-                const isBendahara = (item.assignee === 'Bendahara') || (item.name.toLowerCase().includes('pph 22') && !item.name.toLowerCase().includes('ppn'));
-
-                let isChecked = false;
-                if (isInitial && oldBerkas[index]) isChecked = true;
-                else if (!isBendahara) isChecked = true;
-
-                row.innerHTML = `
-                    <div class="checklist-doc-info">
-                        <input type="hidden" name="nama_dokumen[${index}]" value="${item.name}">
-                        <input type="hidden" name="assignee_dokumen[${index}]" value="${item.assignee || 'SM'}">
-                        <span class="checklist-doc-name">${item.name}</span>
-                        ${isBendahara
-                            ? '<span class="badge-doc-status bendahara">Dilengkapi Bendahara</span>'
-                            : '<span class="badge-doc-status wajib">Wajib Disiapkan</span>'
-                        }
-                    </div>
-                    <div>
-                        ${isBendahara
-                            ? '<span style="font-size: 0.775rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>'
-                            : `<label class="checklist-checkbox-label">
-                                   <input type="checkbox" name="berkas[${index}]" value="1" ${isChecked ? 'checked' : ''} class="checklist-checkbox-input">
-                                   <span>Ada (Fisik)</span>
-                               </label>`
-                        }
-                    </div>
+            if (submitIcon) {
+                submitIcon.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
                 `;
-                docList.appendChild(row);
-            });
-
-            docContainer.style.display = "block";
-        } else {
-            docContainer.style.display = "none";
+            }
+            if (submitText) {
+                submitText.textContent = 'Simpan sebagai Draft';
+            }
+            if (hint) {
+                hint.style.display = 'none';
+            }
         }
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-        initNamaBelanja();
+    function updatePrintNotice() {
+        const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+        const hint = document.getElementById('print_requirement_hint');
+        if (hint) {
+            if (selectedStatus === 'diajukan' && !isPrinted) {
+                hint.style.display = 'block';
+            } else {
+                hint.style.display = 'none';
+            }
+        }
+        updateSubmitButtonState();
+    }
 
-        const radioStatus = document.querySelectorAll('input[name="status"]');
-        radioStatus.forEach(r => {
-            r.addEventListener('change', updateSubmitButtonState);
+    document.addEventListener("DOMContentLoaded", function() {
+        const statusRadios = document.querySelectorAll('input[name="status"]');
+        statusRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                updatePrintNotice();
+                updateSubmitButtonState();
+            });
         });
 
+        if (isPrinted) {
+            const printBtn = document.getElementById('btn_cetak_langsung');
+            if (printBtn) {
+                printBtn.classList.add('is-printed');
+                printBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Sudah Dicetak
+                `;
+            }
+        }
+
+        updatePrintNotice();
+        updateSubmitButtonState();
+
         // Sinkronisasi rentang tanggal (mulai & selesai)
-        const inputTglMulai = document.getElementById('tanggal_mulai');
-        const inputTglSelesai = document.getElementById('tanggal_selesai');
+        const inputTglMulai = document.getElementById('tanggal_mulai_input');
+        const inputTglSelesai = document.getElementById('tanggal_selesai_input');
         if (inputTglMulai && inputTglSelesai) {
             function syncTanggalMin() {
                 if (inputTglMulai.value) {
@@ -1434,12 +985,12 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
             syncTanggalMin();
         }
 
-        // Intercept klik submit jika status diajukan & belum print -> TAMPILKAN MODAL POP-UP
+        // Intercept klik pada tombol submit jika status diajukan dan belum print -> langsung POP-UP MODAL!
         const submitBtn = document.getElementById('btn_submit_spj');
         if (submitBtn) {
             submitBtn.addEventListener('click', function(e) {
-                const statusSelected = document.querySelector('input[name="status"]:checked')?.value || 'draft';
-                if (statusSelected === 'diajukan' && !isPrinted) {
+                const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+                if (selectedStatus === 'diajukan' && !isPrinted) {
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -1454,33 +1005,37 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
                     if (typeof openPrintValidationModal === 'function') {
                         openPrintValidationModal();
                     } else {
-                        alert("Sesuai ketentuan, Anda wajib menekan tombol 'Print Checklist' terlebih dahulu sebelum pengajuan dapat disimpan.");
+                        alert("Sesuai ketentuan, Anda wajib menekan tombol 'Print' terlebih dahulu sebelum pengajuan dapat disimpan.");
                     }
                     return false;
                 }
             });
         }
 
-        const form = document.getElementById('formPengajuanSpj');
+        const form = document.querySelector('form[action="{{ route('umum.spj.store') }}"]') || document.querySelector('form');
         if (form) {
             form.addEventListener('submit', function(e) {
-                const statusSelected = document.querySelector('input[name="status"]:checked')?.value || 'draft';
-                if (statusSelected === 'diajukan' && !isPrinted) {
+                const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
+                if (selectedStatus === 'diajukan' && !isPrinted) {
                     e.preventDefault();
                     e.stopPropagation();
+
+                    const printBtn = document.getElementById('btn_cetak_langsung');
+                    if (printBtn) {
+                        printBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        printBtn.classList.remove('print-btn-shake');
+                        void printBtn.offsetWidth;
+                        printBtn.classList.add('print-btn-shake');
+                    }
+
                     if (typeof openPrintValidationModal === 'function') {
                         openPrintValidationModal();
                     }
                     return false;
                 }
+
                 clearFormState();
             });
-        }
-
-        if (isPrinted) {
-            markAsPrinted();
-        } else {
-            updateSubmitButtonState();
         }
 
         @if($errors->has('status') && str_contains($errors->first('status'), 'Print'))
