@@ -36,7 +36,7 @@ class SpjController extends Controller
     public function create()
     {
         $nomorSpjOtomatis = Spj::generateNomorSpj();
-        $spjData = SyaratDokumenSpj::getSpjData();
+        $spjData = SyaratDokumenSpj::getSpjData('teknis');
 
         return view('teknis.spj.create', compact('nomorSpjOtomatis', 'spjData'));
     }
@@ -141,7 +141,7 @@ class SpjController extends Controller
         }
 
         $nomorSpjOtomatis = $spj->nomor_spj ?: Spj::generateNomorSpj();
-        $spjData = SyaratDokumenSpj::getSpjData();
+        $spjData = SyaratDokumenSpj::getSpjData('teknis');
 
         return view('teknis.spj.edit', compact('spj', 'nomorSpjOtomatis', 'spjData'));
     }

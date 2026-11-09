@@ -348,6 +348,46 @@ $subtitle = 'Rekap dan riwayat laporan data SPJ Anda.';
                         'keywords' => ['FP', 'Form Permintaan'],
                         'legacy' => ['kel_form_permintaan']
                     ],
+                    'gaji_induk' => [
+                        'label' => 'Daftar Gaji Induk',
+                        'keywords' => ['Daftar Gaji Induk', 'Gaji Induk'],
+                        'legacy' => []
+                    ],
+                    'rekap_gaji' => [
+                        'label' => 'Rekap Daftar Gaji',
+                        'keywords' => ['Rekapitulasi Daftar Gaji', 'Rekap Gaji'],
+                        'legacy' => []
+                    ],
+                    'perubahan_gaji' => [
+                        'label' => 'Perubahan Gaji',
+                        'keywords' => ['Perubahan Gaji', 'Daftar Perubahan'],
+                        'legacy' => []
+                    ],
+                    'rekapitulasi' => [
+                        'label' => 'Daftar Rekapitulasi',
+                        'keywords' => ['Daftar Rekapitulasi'],
+                        'legacy' => []
+                    ],
+                    'sptjm' => [
+                        'label' => 'SPTJM',
+                        'keywords' => ['SPTJM'],
+                        'legacy' => []
+                    ],
+                    'surat_lembur' => [
+                        'label' => 'Surat Perintah Lembur',
+                        'keywords' => ['Surat Perintah Lembur', 'Perintah Lembur'],
+                        'legacy' => []
+                    ],
+                    'hadir_lembur' => [
+                        'label' => 'Daftar Hadir Lembur',
+                        'keywords' => ['Daftar Hadir Lembur'],
+                        'legacy' => []
+                    ],
+                    'hitung_lembur' => [
+                        'label' => 'Perhitungan Lembur',
+                        'keywords' => ['Perhitungan Uang Lembur', 'Perhitungan Lembur', 'Daftar Perhitungan Uang Lembur', 'Daftar Perhitungan'],
+                        'legacy' => []
+                    ],
                     'surat_tugas' => [
                         'label' => 'Surat Tugas',
                         'keywords' => ['Surat Tugas', 'SPPD', 'Visum'],

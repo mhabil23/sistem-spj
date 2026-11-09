@@ -80,6 +80,7 @@ class SyaratDokumenController extends Controller
             'jenis_belanja' => 'required|string|max:255',
             'nama_dokumen' => 'required|string|max:255',
             'assignee' => 'required|in:SM,Bendahara,PPK',
+            'peruntukan' => 'nullable|in:semua,teknis,umum',
             'urutan' => 'nullable|integer|min:0',
         ], [
             'nama_belanja.required' => 'Nama Belanja wajib diisi atau dipilih.',
@@ -88,6 +89,10 @@ class SyaratDokumenController extends Controller
             'assignee.required' => 'Pihak yang menyiapkan wajib dipilih.',
             'assignee.in' => 'Pihak yang menyiapkan harus SM, Bendahara, atau PPK.',
         ]);
+
+        if (empty($validated['peruntukan'])) {
+            $validated['peruntukan'] = 'semua';
+        }
 
         if (empty($validated['urutan'])) {
             $maxUrutan = SyaratDokumenSpj::where('nama_belanja', $validated['nama_belanja'])
@@ -114,6 +119,7 @@ class SyaratDokumenController extends Controller
             'jenis_belanja' => 'required|string|max:255',
             'nama_dokumen' => 'required|string|max:255',
             'assignee' => 'required|in:SM,Bendahara,PPK',
+            'peruntukan' => 'nullable|in:semua,teknis,umum',
             'urutan' => 'nullable|integer|min:0',
         ], [
             'nama_belanja.required' => 'Nama Belanja wajib diisi atau dipilih.',
@@ -121,6 +127,10 @@ class SyaratDokumenController extends Controller
             'nama_dokumen.required' => 'Nama Dokumen wajib diisi.',
             'assignee.required' => 'Pihak yang menyiapkan wajib dipilih.',
         ]);
+
+        if (empty($validated['peruntukan'])) {
+            $validated['peruntukan'] = $syaratDokumen->peruntukan ?: 'semua';
+        }
 
         if (empty($validated['urutan'])) {
             $validated['urutan'] = $syaratDokumen->urutan ?: 1;

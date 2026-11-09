@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
 use App\Models\SpjHistory;
+use App\Models\SyaratDokumenSpj;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -44,11 +46,21 @@ class SpjController extends Controller
     }
 
     /**
-     * Menampilkan form tambah SPJ (Dinonaktifkan untuk Admin)
+     * Menampilkan form tambah SPJ baru oleh Administrator
      */
     public function create()
     {
-        return redirect()->route('admin.spj.index')->with('info', 'Administrator tidak memiliki kewenangan mengajukan SPJ. Pengajuan SPJ dilakukan oleh Tim Teknis atau Subbagian Umum.');
+        $nomorSpjOtomatis = Spj::generateNomorSpj();
+        $teknisSpjData = SyaratDokumenSpj::getSpjData('teknis');
+        $umumSpjData = SyaratDokumenSpj::getSpjData('umum');
+        $availableSeksi = User::getAvailableSeksi();
+
+        return view('admin.spj-create', compact(
+            'nomorSpjOtomatis',
+            'teknisSpjData',
+            'umumSpjData',
+            'availableSeksi'
+        ));
     }
 
     /**
@@ -72,11 +84,95 @@ class SpjController extends Controller
     }
 
     /**
-     * Menyimpan SPJ baru (Dinonaktifkan untuk Admin)
+     * Menyimpan SPJ baru oleh Administrator
      */
     public function store(Request $request)
     {
-        return redirect()->route('admin.spj.index')->with('info', 'Administrator tidak memiliki kewenangan mengajukan SPJ. Pengajuan SPJ dilakukan oleh Tim Teknis atau Subbagian Umum.');
+        $this->normalizeNilai($request);
+
+        $request->validate([
+            'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj',
+            'peruntukan' => 'required|in:teknis,umum',
+            'kegiatan' => 'required|string|max:255',
+            'tanggal' => 'required|date',
+            'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
+            'nilai' => 'required|numeric|min:0',
+            'seksi' => 'nullable|string|max:100',
+            'nama_belanja' => 'required|string',
+            'jenis_belanja' => 'required|string',
+            'no_wa' => 'nullable|string|max:25',
+            'keterangan' => 'nullable|string',
+            'status' => 'required|in:draft,diajukan',
+        ], [
+            'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
+            'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
+        ]);
+
+        if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
+            return back()->withInput()->withErrors([
+                'status' => 'SPJ tidak dapat diajukan jika belum menekan Print sampai tercetak. Silakan cetak lembar checklist berkas terlebih dahulu.',
+            ]);
+        }
+
+        $peruntukan = $request->input('peruntukan', 'teknis');
+
+        if ($peruntukan === 'umum') {
+            $user = User::where('role', 'umum')->first() ?? Auth::user();
+            $seksi = 'Subbag Umum';
+        } else {
+            $seksi = $request->input('seksi', 'Sosial');
+            $user = User::where('role', 'teknis')
+                ->where(function ($q) use ($seksi) {
+                    $q->where('seksi', $seksi)
+                        ->orWhere('name', 'like', '%'.$seksi.'%');
+                })->first() ?? (User::where('role', 'teknis')->first() ?? Auth::user());
+        }
+
+        $berkasData = [];
+        if ($request->has('nama_dokumen') && is_array($request->nama_dokumen)) {
+            $berkasCheckboxes = $request->input('berkas', []);
+            $assignees = $request->input('assignee_dokumen', []);
+
+            foreach ($request->nama_dokumen as $idx => $namaDok) {
+                $assignee = $assignees[$idx] ?? 'SM';
+                $isDisiapkan = isset($berkasCheckboxes[$idx]) && ($berkasCheckboxes[$idx] == 1 || $berkasCheckboxes[$idx] === '1');
+
+                $berkasData[] = [
+                    'nama' => $namaDok,
+                    'disiapkan' => $isDisiapkan,
+                    'assignee' => $assignee,
+                    'checked_by' => $isDisiapkan ? 'admin' : null,
+                ];
+            }
+        }
+
+        $nomorSpj = $request->nomor_spj ?: Spj::generateNomorSpj();
+
+        $spj = Spj::create([
+            'nomor_spj' => $nomorSpj,
+            'kegiatan' => $request->kegiatan,
+            'tanggal' => $request->tanggal,
+            'tanggal_selesai' => $request->tanggal_selesai ?: null,
+            'nilai' => $request->nilai,
+            'seksi' => $seksi,
+            'user_id' => $user->id,
+            'keterangan' => $request->keterangan,
+            'no_wa' => $request->no_wa ?? $user->no_wa,
+            'status' => $request->status,
+            'diajukan_at' => $request->status === 'diajukan' ? now() : null,
+            'dokumen_file' => json_encode($berkasData),
+        ]);
+
+        SpjHistory::create([
+            'spj_id' => $spj->id,
+            'user_id' => Auth::id(),
+            'aksi' => $request->status === 'diajukan' ? 'Pengajuan SPJ oleh Administrator' : 'Draf SPJ dibuat oleh Administrator',
+            'status_lama' => null,
+            'status_baru' => $request->status,
+            'keterangan' => 'Pengajuan SPJ dibuat oleh Administrator untuk '.$seksi.($request->status === 'diajukan' ? ' dan langsung diajukan ke alur SPJ.' : ' sebagai draft.'),
+        ]);
+
+        return redirect()->route('admin.spj.index')->with('success', 'Pengajuan SPJ (No: '.$spj->nomor_spj.') berhasil dibuat!');
     }
 
     /**

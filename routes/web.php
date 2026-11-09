@@ -40,8 +40,10 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Daftar SPJ (Admin hanya memonitor, mengedit & menghapus; pengajuan dilakukan oleh Teknis & Umum)
+    // Daftar SPJ (Admin dapat memonitor, membuat, mengedit & menghapus SPJ)
     Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');
+    Route::get('/spj/create', [SpjController::class, 'create'])->name('spj.create');
+    Route::post('/spj', [SpjController::class, 'store'])->name('spj.store');
     Route::get('/spj/{spj}', [SpjController::class, 'show'])->name('spj.show');
     Route::get('/spj/{spj}/edit', [SpjController::class, 'edit'])->name('spj.edit');
     Route::put('/spj/{spj}', [SpjController::class, 'update'])->name('spj.update');

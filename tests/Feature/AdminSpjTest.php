@@ -49,18 +49,36 @@ class AdminSpjTest extends TestCase
         $response->assertSee('Verifikasi Berkas');
     }
 
-    public function test_admin_cannot_create_spj(): void
+    public function test_admin_can_create_spj_with_peruntukan(): void
     {
         $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
 
         $response = $this->actingAs($admin)->get('/admin/spj/create');
-        $response->assertStatus(404);
+        $response->assertStatus(200);
+        $response->assertSee('Peruntukan Pengajuan SPJ');
+        $response->assertSee('SPJ Tim Teknis');
+        $response->assertSee('SPJ Subbagian Umum');
 
         $postResponse = $this->actingAs($admin)->post('/admin/spj', [
-            'nomor_spj' => 'SPJ-ADMIN-NEW-001',
+            'peruntukan' => 'teknis',
+            'seksi' => 'Sosial',
+            'nama_belanja' => 'Belanja Bahan (521211)',
+            'jenis_belanja' => 'Belanja Konsumsi',
             'kegiatan' => 'Sosialisasi Sensus Pertanian 2026',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => '2.500.000',
+            'status' => 'draft',
+            'nama_dokumen' => ['0' => 'KAK', '1' => 'FP (dari BOS)'],
+            'assignee_dokumen' => ['0' => 'SM', '1' => 'SM'],
+            'berkas' => ['0' => '1', '1' => '1'],
         ]);
-        $postResponse->assertStatus(405);
+        $postResponse->assertRedirect(route('admin.spj.index'));
+
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Sosialisasi Sensus Pertanian 2026',
+            'seksi' => 'Sosial',
+            'nilai' => 2500000,
+        ]);
     }
 
     public function test_admin_updating_spj_records_spj_history(): void

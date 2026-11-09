@@ -42,7 +42,7 @@ class SpjController extends Controller
     public function create()
     {
         $nomorSpjOtomatis = Spj::generateNomorSpj();
-        $spjData = SyaratDokumenSpj::getSpjData();
+        $spjData = SyaratDokumenSpj::getSpjData('umum');
 
         return view('umum.spj.create', compact('nomorSpjOtomatis', 'spjData'));
     }

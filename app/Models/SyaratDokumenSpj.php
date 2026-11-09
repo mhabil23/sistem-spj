@@ -16,6 +16,7 @@ class SyaratDokumenSpj extends Model
         'jenis_belanja',
         'nama_dokumen',
         'assignee',
+        'peruntukan',
         'urutan',
     ];
 
@@ -23,18 +24,26 @@ class SyaratDokumenSpj extends Model
      * Dapatkan struktur data kategori dan dokumen lengkap untuk form pengajuan SPJ.
      * Mengambil dari database, atau fallback ke default jika database kosong.
      *
-     * @return array<string, array<string, array<int, array{name: string, assignee: string, id?: int}>>>
+     * @param  string|null  $peruntukan  'teknis', 'umum', atau null (semua)
+     * @return array<string, array<string, array<int, array{name: string, assignee: string, peruntukan?: string, id?: int}>>>
      */
-    public static function getSpjData(): array
+    public static function getSpjData(?string $peruntukan = null): array
     {
-        $records = self::orderBy('nama_belanja')
+        $query = self::orderBy('nama_belanja')
             ->orderBy('jenis_belanja')
             ->orderBy('urutan')
-            ->orderBy('id')
-            ->get();
+            ->orderBy('id');
+
+        if ($peruntukan === 'teknis') {
+            $query->whereIn('peruntukan', ['teknis', 'semua']);
+        } elseif ($peruntukan === 'umum') {
+            $query->whereIn('peruntukan', ['umum', 'semua']);
+        }
+
+        $records = $query->get();
 
         if ($records->isEmpty()) {
-            return self::getDefaultSpjData();
+            return self::getDefaultSpjData($peruntukan);
         }
 
         $result = [];
@@ -42,6 +51,7 @@ class SyaratDokumenSpj extends Model
             $result[$record->nama_belanja][$record->jenis_belanja][] = [
                 'name' => $record->nama_dokumen,
                 'assignee' => $record->assignee ?: 'SM',
+                'peruntukan' => $record->peruntukan ?: 'semua',
                 'id' => $record->id,
             ];
         }
@@ -54,9 +64,66 @@ class SyaratDokumenSpj extends Model
      *
      * @return array<string, array<string, array<int, array{name: string, assignee: string}>>>
      */
-    public static function getDefaultSpjData(): array
+    public static function getDefaultSpjData(?string $peruntukan = null): array
     {
-        return [
+        $data = [
+            'Belanja Gaji PNS (5111)' => [
+                'Belanja Gaji PNS' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Gaji Induk', 'assignee' => 'SM'],
+                    ['name' => 'Rekapitulasi Daftar Gaji', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Perubahan Gaji (jika ada)', 'assignee' => 'SM'],
+                ],
+            ],
+            'Belanja Gaji PPPK (5116)' => [
+                'Belanja Gaji PPPK' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Gaji Induk', 'assignee' => 'SM'],
+                    ['name' => 'Rekapitulasi Daftar Gaji', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Perubahan Gaji (jika ada)', 'assignee' => 'SM'],
+                ],
+            ],
+            'Belanja Tunjangan Kinerja PNS (512411)' => [
+                'Belanja Tunjangan Kinerja PNS' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Rekapitulasi', 'assignee' => 'SM'],
+                    ['name' => 'SPTJM', 'assignee' => 'SM'],
+                ],
+            ],
+            'Belanja Tunjangan Kinerja PPPK (512414)' => [
+                'Belanja Tunjangan Kinerja PPPK' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Rekapitulasi', 'assignee' => 'SM'],
+                    ['name' => 'SPTJM', 'assignee' => 'SM'],
+                ],
+            ],
+            'Belanja Uang Makan PNS (511129)' => [
+                'Belanja Uang Makan PNS' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Rekapitulasi', 'assignee' => 'SM'],
+                ],
+            ],
+            'Belanja Uang Makan PPPK (511628)' => [
+                'Belanja Uang Makan PPPK' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Rekapitulasi', 'assignee' => 'SM'],
+                ],
+            ],
+            'Belanja Lembur (512211)' => [
+                'Belanja Lembur' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Surat Perintah Lembur', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Hadir Lembur', 'assignee' => 'SM'],
+                    ['name' => 'Daftar Perhitungan Uang Lembur', 'assignee' => 'SM'],
+                ],
+            ],
             'Belanja Bahan (521211)' => [
                 'Belanja Konsumsi' => [
                     ['name' => 'KAK', 'assignee' => 'SM'],
@@ -294,5 +361,22 @@ class SyaratDokumenSpj extends Model
                 ],
             ],
         ];
+
+        if ($peruntukan === 'teknis') {
+            $belanjaPegawaiKeys = [
+                'Belanja Gaji PNS (5111)',
+                'Belanja Gaji PPPK (5116)',
+                'Belanja Tunjangan Kinerja PNS (512411)',
+                'Belanja Tunjangan Kinerja PPPK (512414)',
+                'Belanja Uang Makan PNS (511129)',
+                'Belanja Uang Makan PPPK (511628)',
+                'Belanja Lembur (512211)',
+            ];
+            foreach ($belanjaPegawaiKeys as $key) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
     }
 }

@@ -103,22 +103,53 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             
 
 
+            <!-- PERUNTUKAN SPJ (TEKNIS / UMUM) -->
+            <div style="padding: 1.25rem 1.5rem; background: #ffffff; border-radius: var(--radius-md); border: 1.5px solid #e2e8f0; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                    <div>
+                        <label class="spj-label" style="font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.15rem;">
+                            Peruntukan Pengajuan SPJ <span style="color: #ef4444;">*</span>
+                        </label>
+                        <span style="font-size: 0.8rem; color: #64748b;">Pilih jenis alur pengajuan: untuk Tim Teknis (kegiatan sensus/survei) atau Subbagian Umum (belanja pegawai & operasional kantor).</span>
+                    </div>
+                </div>
+
+                <div class="spj-radio-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <label class="spj-radio-card" id="card_peruntukan_teknis" style="cursor: pointer; border: 2px solid {{ old('peruntukan', 'teknis') === 'teknis' ? '#0284c7' : 'var(--border)' }}; background: {{ old('peruntukan', 'teknis') === 'teknis' ? '#f0f9ff' : '#ffffff' }}; padding: 1rem; border-radius: 8px; transition: all 0.2s ease;">
+                        <input type="radio" name="peruntukan" value="teknis" {{ old('peruntukan', 'teknis') === 'teknis' ? 'checked' : '' }} onchange="handlePeruntukanChange(this.value)">
+                        <div class="spj-radio-content" style="margin-left: 0.5rem;">
+                            <strong style="color: #0369a1; font-size: 0.95rem;">SPJ Tim Teknis</strong>
+                            <span style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">Kegiatan sensus, survei lapangan, pelatihan & belanja seksi teknis</span>
+                        </div>
+                    </label>
+
+                    <label class="spj-radio-card" id="card_peruntukan_umum" style="cursor: pointer; border: 2px solid {{ old('peruntukan') === 'umum' ? '#0284c7' : 'var(--border)' }}; background: {{ old('peruntukan') === 'umum' ? '#f0f9ff' : '#ffffff' }}; padding: 1rem; border-radius: 8px; transition: all 0.2s ease;">
+                        <input type="radio" name="peruntukan" value="umum" {{ old('peruntukan') === 'umum' ? 'checked' : '' }} onchange="handlePeruntukanChange(this.value)">
+                        <div class="spj-radio-content" style="margin-left: 0.5rem;">
+                            <strong style="color: #0f172a; font-size: 0.95rem;">SPJ Subbagian Umum</strong>
+                            <span style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">Belanja Pegawai (Gaji, Tukin, Uang Makan, Lembur) & keperluan umum kantor</span>
+                        </div>
+                    </label>
+                </div>
+                @error('peruntukan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+            </div>
+
             <!-- DYNAMIC DROPDOWNS START -->
             <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0f172a;">Kategori & Kelengkapan Berkas</h3>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0f172a;">Kategori &amp; Kelengkapan Berkas</h3>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                     <div>
-                        <label class="spj-label">Nama Belanja</label>
+                        <label class="spj-label" for="nama_belanja">Nama Belanja (Kategori Akun) <span style="color: #ef4444;">*</span></label>
                         <select id="nama_belanja" name="nama_belanja" class="spj-input" required onchange="handleNamaBelanjaChange()">
-                            <option value="" disabled selected>Pilih Nama Belanja...</option>
+                            <option value="" disabled selected>-- Pilih Nama Belanja --</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="spj-label">Jenis Belanja</label>
+                        <label class="spj-label" for="jenis_belanja">Jenis Belanja <span style="color: #ef4444;">*</span></label>
                         <select id="jenis_belanja" name="jenis_belanja" class="spj-input" required disabled onchange="handleJenisBelanjaChange()">
-                            <option value="" disabled selected>Pilih Jenis Belanja...</option>
+                            <option value="" disabled selected>-- Pilih Jenis Belanja --</option>
                         </select>
                     </div>
                 </div>
@@ -157,51 +188,56 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     @error('nomor_spj') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
                 <div>
-                    <label class="spj-label">Nilai (Rp)</label>
-                    <input type="number" name="nilai" id="nilai_input" class="spj-input" value="{{ old('nilai') }}" placeholder="Contoh: 1500000" min="0" step="0.01" required>
+                    <label class="spj-label" for="nilai_display">Nilai (Rp) <span style="color: #ef4444;">*</span></label>
+                    <div class="spj-input-prefix-group">
+                        <span class="spj-input-prefix">Rp</span>
+                        <input type="text" inputmode="numeric" id="nilai_display" class="spj-input spj-input-with-prefix @error('nilai') has-error @enderror" value="{{ old('nilai') }}" placeholder="Contoh: 1.500.000" autocomplete="off" required>
+                    </div>
+                    <input type="hidden" name="nilai" id="nilai_input" value="{{ old('nilai') }}">
+                    <span class="spj-field-hint" id="nilai_terbilang_hint">Pemisah ribuan (titik) ditambahkan otomatis saat mengetik.</span>
                     @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
                 <div style="grid-column: span 2;">
-                    <label class="spj-label">Uraian Kegiatan</label>
-                    <textarea name="kegiatan" required class="spj-input spj-textarea" placeholder="Contoh: Honor LPTB Bulan September 2026..." id="kegiatan_input">{{ old('kegiatan') }}</textarea>
+                    <label class="spj-label" for="kegiatan_input">Uraian / Nama Kegiatan Belanja <span style="color: #ef4444;">*</span></label>
+                    <textarea name="kegiatan" required class="spj-input spj-textarea" placeholder="Tuliskan uraian kegiatan secara lengkap dan jelas..." id="kegiatan_input">{{ old('kegiatan') }}</textarea>
                     @error('kegiatan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
                 
                 <div>
-                    <label class="spj-label">
+                    <label class="spj-label" for="tanggal_mulai_input">
                         Tanggal Mulai Kegiatan <span style="color: #ef4444;">*</span>
                     </label>
-                    <input type="date" name="tanggal" id="tanggal_mulai_input" required class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal') }}">
+                    <input type="date" name="tanggal" id="tanggal_mulai_input" required class="spj-input @error('tanggal') has-error @enderror" value="{{ old('tanggal', date('Y-m-d')) }}">
                     <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Tanggal dimulainya pelaksanaan kegiatan.</span>
                     @error('tanggal') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 
                 <div>
-                    <label class="spj-label" style="display: flex; justify-content: space-between; align-items: center;">
+                    <label class="spj-label" for="tanggal_selesai_input" style="display: flex; justify-content: space-between; align-items: center;">
                         <span>Tanggal Selesai Kegiatan</span>
                         <span style="font-size: 0.72rem; font-weight: normal; color: #64748b; background: #f1f5f9; padding: 2px 7px; border-radius: 4px;">Opsional</span>
                     </label>
-                    <input type="date" name="tanggal_selesai" id="tanggal_selesai_input" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai') }}">
+                    <input type="date" name="tanggal_selesai" id="tanggal_selesai_input" class="spj-input @error('tanggal_selesai') has-error @enderror" value="{{ old('tanggal_selesai') }}" min="{{ old('tanggal', date('Y-m-d')) }}">
                     <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Kosongkan jika kegiatan hanya berlangsung 1 hari.</span>
                     @error('tanggal_selesai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 
-                <div>
-                    <label class="spj-label">
+                <div id="seksi_field_container" style="display: {{ old('peruntukan', 'teknis') === 'umum' ? 'none' : 'block' }};">
+                    <label class="spj-label" for="seksi_input">
                         Seksi / Tim Teknis <span style="color: #ef4444;">*</span>
                     </label>
                     @php
                         $currentSeksi = old('seksi', 'Sosial');
-                        $seksiList = \App\Models\User::getAvailableSeksi();
+                        $seksiList = $availableSeksi ?? \App\Models\User::getAvailableSeksi();
                         if ($currentSeksi && !in_array($currentSeksi, $seksiList)) {
                             $seksiList[] = $currentSeksi;
                             sort($seksiList);
                         }
                     @endphp
-                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
+                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror">
                         <option value="" disabled {{ old('seksi') ? '' : 'selected' }}>Pilih Seksi...</option>
                         @foreach($seksiList as $opt)
                             <option value="{{ $opt }}" {{ $currentSeksi === $opt ? 'selected' : '' }}>
@@ -214,8 +250,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                 </div>
 
                 <div>
-                    <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
-                    <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa') }}" placeholder="Contoh: 081234567890">
+                    <label class="spj-label" for="no_wa_input">Nomor WhatsApp Pengaju / PIC</label>
+                    <input type="text" name="no_wa" id="no_wa_input" class="spj-input" value="{{ old('no_wa') }}" placeholder="Contoh: 081234567890">
                     <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp PIC agar Bagian Umum & Bendahara dapat menghubungi langsung.</span>
                     @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
@@ -289,244 +325,78 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
 @push('scripts')
 <script>
     // Data Kategori SPJ
-    const spjData = {
-        "Belanja Bahan (521211)": {
-            "Belanja Konsumsi": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Undangan", assignee: "SM"},
-                {name: "Daftar Hadir", assignee: "SM"},
-                {name: "Notula", assignee: "SM"},
-                {name: "Bukti pembelian (nota)", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "PPh 22 (jika diatas 2 juta)", assignee: "Bendahara"}
-            ],
-            "Belanja paket data komunikasi": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti pembelian (nota)", assignee: "SM"},
-                {name: "Daftar nama dan nomor hp penerima paket data/pulsa", assignee: "SM"},
-                {name: "Screenshoot bukti transfer paket data/pulsa", assignee: "SM"},
-                {name: "PPh 22 1.5% (jika pembelian diatas 2 juta)", assignee: "Bendahara"}
-            ],
-            "Perlengkapan pelatihan": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti pembelian (nota)", assignee: "SM"},
-                {name: "Daftar Alokasi (tanda terima barang diserahkan)", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "SM"},
-                {name: "PPn (untuk transaksi diatas 2 juta)", assignee: "SM"},
-                {name: "PPh 22 1.5% (jika pembelian diatas 2 juta)", assignee: "Bendahara"}
-            ]
-        },
-        "Belanja barang persediaan konsumsi (521811)": {
-            "Belanja ATK CS / percetakan dokumen": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti pembelian (< 10 juta) / kwitansi (> 50 juta)", assignee: "SM"},
-                {name: "BAST dilengkapi dengan dokumentasi barang", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "SM"},
-                {name: "PPn (untuk transaksi diatas 2 juta)", assignee: "SM"},
-                {name: "PPh 22 1.5% (jika pembelian diatas 2 juta)", assignee: "Bendahara"}
-            ]
-        },
-        "Belanja barang non operasional lainnya (521219)": {
-            "Belanja asuransi petugas": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti pembelian (invoice)", assignee: "SM"},
-                {name: "Premi", assignee: "SM"},
-                {name: "Polis / SPK", assignee: "SM"},
-                {name: "Kartu Tanda Peserta", assignee: "SM"}
-            ],
-            "Belanja pengiriman dokumen": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Invoice/Resi pengiriman/Surat Tanda Terima Barang (STT)", assignee: "SM"},
-                {name: "Bukti Pembelian/Pembayaran", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "SM"},
-                {name: "SSP PPn Pengiriman 1,1%", assignee: "Bendahara"},
-                {name: "SSP PPh 23 2%", assignee: "Bendahara"}
-            ]
-        },
-        "Belanja jasa Sewa (522411)": {
-            "Dekorasi stan pameran": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti Pembelian/Pembayaran", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "Fotokopi NPWP dan fotokopi rekening koran (jika diperlukan)", assignee: "SM"},
-                {name: "Invoice", assignee: "SM"},
-                {name: "Fotocopy SIM/KTP dan STNK (kendaraan perorangan)", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "Bendahara"},
-                {name: "SSP PPN", assignee: "Bendahara"},
-                {name: "SSP PPh Pasal 4 ayat 2 Final 10%", assignee: "Bendahara"},
-                {name: "SSP PPh pasal 23 2%", assignee: "Bendahara"}
-            ],
-            "Sewa stan pameran": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti Pembelian/Pembayaran", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "Fotokopi NPWP dan fotokopi rekening koran (jika diperlukan)", assignee: "SM"},
-                {name: "Invoice", assignee: "SM"},
-                {name: "Fotocopy SIM/KTP dan STNK", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "Bendahara"},
-                {name: "SSP PPN", assignee: "Bendahara"},
-                {name: "SSP PPh Pasal 4 ayat 2 Final 10%", assignee: "Bendahara"},
-                {name: "SSP PPh pasal 23 2%", assignee: "Bendahara"}
-            ]
-        },
-        "Belanja jasa Profesi (522151)": {
-            "Honor Moderator": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "SK KPA (belanja jasa profesi)", assignee: "SM"},
-                {name: "Undangan moderator", assignee: "SM"},
-                {name: "Undangan peserta", assignee: "SM"},
-                {name: "Jadwal kegiatan", assignee: "SM"},
-                {name: "Daftar hadir moderator", assignee: "SM"},
-                {name: "CV moderator", assignee: "SM"},
-                {name: "Kuitansi", assignee: "SM"},
-                {name: "Salinan/fotokopi NPWP dan nomor rekening", assignee: "SM"},
-                {name: "SSP PPh Pasal 21", assignee: "Bendahara"}
-            ],
-            "Honor Narasumber": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "SK KPA (belanja jasa profesi)", assignee: "SM"},
-                {name: "Undangan moderator", assignee: "SM"},
-                {name: "Undangan peserta", assignee: "SM"},
-                {name: "Jadwal kegiatan", assignee: "SM"},
-                {name: "Daftar hadir moderator", assignee: "SM"},
-                {name: "CV moderator", assignee: "SM"},
-                {name: "Bahan paparan narasumber", assignee: "SM"},
-                {name: "Kuitansi", assignee: "SM"},
-                {name: "Salinan/fotokopi NPWP dan nomor rekening", assignee: "SM"},
-                {name: "SSP PPh Pasal 21", assignee: "Bendahara"}
-            ]
-        },
-        "Belanja jasa lainnya (522191)": {
-            "Penayangan iklan layanan masyarakat": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Bukti Pembelian/Pembayaran", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "Laporan pelaksanaan kegiatan disertai dokumentasi", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "Bendahara"},
-                {name: "SSP PPN / SSP PPh 23", assignee: "Bendahara"}
-            ],
-            "Pelaksanaan pencanangan kegiatan": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Undangan dan daftar Hadir", assignee: "SM"},
-                {name: "Bukti Pembelian/Pembayaran", assignee: "SM"},
-                {name: "BAST", assignee: "SM"},
-                {name: "Laporan pelaksanaan kegiatan disertai dokumentasi", assignee: "SM"},
-                {name: "Faktur Pajak", assignee: "Bendahara"},
-                {name: "SSP PPN / SSP PPh 23", assignee: "Bendahara"}
-            ]
-        },
-        "Honor output kegiatan (512213)": {
-            "Honor Tim Pelaksana / Pokja kegiatan": [
-                {name: "SK KPA/SK KBPS tentang Pokja", assignee: "SM"},
-                {name: "Laporan tim/output pekerjaan", assignee: "SM"},
-                {name: "Daftar rekap kuitansi", assignee: "SM"},
-                {name: "SSP PPh Pasal 21", assignee: "Bendahara"}
-            ],
-            "Honor Pengajar": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "SK KPA yang mencakup nama, tugas, rate (SBKS)", assignee: "SM"},
-                {name: "Jadwal kegiatan", assignee: "SM"},
-                {name: "Daftar hadir (panitia, pengajar, dan peserta)", assignee: "SM"},
-                {name: "Daftar rekap kuitansi", assignee: "SM"},
-                {name: "Laporan pengajar", assignee: "SM"},
-                {name: "SSP PPh Pasal 21", assignee: "Bendahara"}
-            ],
-            "Honor Petugas Mitra (Non PNS atau PNS Non BPS)": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "SK KPA yang mencakup nama, tugas, rate (SBKS)", assignee: "SM"},
-                {name: "Surat kontrak/surat perjanjian kerja", assignee: "SM"},
-                {name: "Daftar rekap kuitansi", assignee: "SM"},
-                {name: "BAPP/BAST", assignee: "SM"},
-                {name: "SSP PPh Pasal 21", assignee: "Bendahara"}
-            ],
-            "Honor Petugas (PNS BPS)": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "SK KPA yang mencakup nama, tugas, rate (SBKS)", assignee: "SM"},
-                {name: "Daftar rekap kuitansi", assignee: "SM"},
-                {name: "SSP PPh Pasal 21", assignee: "Bendahara"}
-            ]
-        },
-        "Belanja Perjalanan Dinas Biasa (524111)": {
-            "Perjalanan Dinas Keluar Kota": [
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Surat Tugas", assignee: "SM"},
-                {name: "Surat Perintah Perjalanan Dinas lengkap dengan visum", assignee: "SM"},
-                {name: "Rincian Biaya Perjalanan dinas biasa atau DOP", assignee: "PPK"},
-                {name: "Tiket/kwitansi kendaraan", assignee: "SM"},
-                {name: "Kuitansi Pembayaran Bukti Penginapan", assignee: "SM"},
-                {name: "Surat pernyataan tidak menggunakan kendaraan dinas", assignee: "SM"},
-                {name: "Laporan perjalanan dinas dan dokumentasi kegiatan (GPS)", assignee: "SM"},
-                {name: "Kuitansi perjalanan dinas", assignee: "PPK"}
-            ]
-        },
-        "Belanja Perjalanan Dinas Dalam Kota (524113)": {
-            "Perjalanan Dinas Dalam Kota sampai dengan 8 jam": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Surat Tugas", assignee: "SM"},
-                {name: "Visum yang ditandatangani pejabat di tempat tujuan", assignee: "SM"},
-                {name: "Kwitansi Transpor/Daftar Biaya Transport lokal", assignee: "PPK"},
-                {name: "Daftar Pengeluaran riil untuk transpor tanpa bukti", assignee: "PPK"},
-                {name: "Surat pernyataan tidak menggunakan kendaraan dinas", assignee: "SM"}
-            ],
-            "Perjalanan Dinas Dalam Kota lebih dari 8 jam": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Surat Tugas", assignee: "SM"},
-                {name: "SPPD yang ditandatangani pejabat tempat tujuan", assignee: "SM"},
-                {name: "Visum yang ditandatangani responden pengawasan", assignee: "SM"},
-                {name: "Kuitansi transpor", assignee: "PPK"},
-                {name: "Daftar Pengeluaran riil untuk transpor tanpa bukti", assignee: "PPK"},
-                {name: "Rincian Biaya Perjalanan Dinas", assignee: "PPK"},
-                {name: "Jadwal Kegiatan (lebih dari 8 jam)", assignee: "SM"},
-                {name: "Surat pernyataan tidak menggunakan kendaraan dinas", assignee: "SM"}
-            ]
-        },
-        "Belanja Perjalanan Dinas Paket Meeting Dalam Kota (521114)": {
-            "Penyelenggaraan paket meeting dalam kota": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Surat Undangan", assignee: "SM"},
-                {name: "Surat Pernyataan Penanggung Jawab Kegiatan", assignee: "SM"},
-                {name: "Surat Tugas", assignee: "SM"},
-                {name: "Surat Perjalanan Dinas (SPD) kolektif (cap hotel)", assignee: "SM"},
-                {name: "Daftar Hadir", assignee: "SM"},
-                {name: "Jadwal Kegiatan", assignee: "SM"},
-                {name: "Notulensi dan Dokumentasi rapat/laporan", assignee: "SM"},
-                {name: "List Kamar Hotel yang dilegalisasi (fullboard)", assignee: "SM"},
-                {name: "Tagihan Hotel", assignee: "PPK"},
-                {name: "Kelengkapan berkas pengadaan", assignee: "PPK"}
-            ],
-            "Pembayaran perjalanan dalam rangka paket meeting": [
-                {name: "KAK", assignee: "SM"},
-                {name: "FP (dari BOS)", assignee: "SM"},
-                {name: "Surat Undangan", assignee: "SM"},
-                {name: "Surat Tugas", assignee: "SM"},
-                {name: "Surat Perjalanan Dinas (SPD) kolektif (cap hotel)", assignee: "SM"},
-                {name: "Daftar Hadir", assignee: "SM"},
-                {name: "Surat Pernyataan tidak menggunakan kendaraan dinas", assignee: "SM"},
-                {name: "Notulensi dan Dokumentasi rapat/laporan", assignee: "SM"},
-                {name: "Daftar Rincian Perhitungan Pembayaran Perjalanan Dinas", assignee: "SM"}
-            ]
+    const teknisSpjData = @json($teknisSpjData ?? \App\Models\SyaratDokumenSpj::getSpjData('teknis'));
+    const umumSpjData = @json($umumSpjData ?? \App\Models\SyaratDokumenSpj::getSpjData('umum'));
+    let currentPeruntukan = "{{ old('peruntukan', 'teknis') }}";
+    let spjData = (currentPeruntukan === 'umum') ? umumSpjData : teknisSpjData;
+
+    function handlePeruntukanChange(val) {
+        currentPeruntukan = val;
+        spjData = (val === 'umum') ? umumSpjData : teknisSpjData;
+
+        const cardTeknis = document.getElementById('card_peruntukan_teknis');
+        const cardUmum = document.getElementById('card_peruntukan_umum');
+        const seksiContainer = document.getElementById('seksi_field_container');
+
+        if (val === 'umum') {
+            if (cardUmum) {
+                cardUmum.style.borderColor = '#0284c7';
+                cardUmum.style.backgroundColor = '#f0f9ff';
+            }
+            if (cardTeknis) {
+                cardTeknis.style.borderColor = 'var(--border)';
+                cardTeknis.style.backgroundColor = '#ffffff';
+            }
+            if (seksiContainer) {
+                seksiContainer.style.display = 'none';
+            }
+        } else {
+            if (cardTeknis) {
+                cardTeknis.style.borderColor = '#0284c7';
+                cardTeknis.style.backgroundColor = '#f0f9ff';
+            }
+            if (cardUmum) {
+                cardUmum.style.borderColor = 'var(--border)';
+                cardUmum.style.backgroundColor = '#ffffff';
+            }
+            if (seksiContainer) {
+                seksiContainer.style.display = 'block';
+            }
         }
-    };
+
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        const docContainer = document.getElementById("dokumen_container");
+        const docList = document.getElementById("dokumen_list");
+
+        if (selNamaBelanja) {
+            selNamaBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Nama Belanja --</option>';
+            for (const nama in spjData) {
+                const opt = document.createElement("option");
+                opt.value = nama;
+                opt.textContent = nama;
+                selNamaBelanja.appendChild(opt);
+            }
+        }
+
+        if (selJenisBelanja) {
+            selJenisBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Belanja --</option>';
+            selJenisBelanja.disabled = true;
+        }
+
+        if (docContainer) {
+            docContainer.style.display = 'none';
+        }
+        if (docList) {
+            docList.innerHTML = '';
+        }
+
+        sessionStorage.removeItem('admin_spj_form_nama_belanja');
+        sessionStorage.removeItem('admin_spj_form_jenis_belanja');
+        sessionStorage.removeItem('admin_spj_form_berkas');
+
+        resetPrintStatus();
+    }
 
     const oldNamaBelanja = {!! json_encode(old('nama_belanja', '')) !!};
     const oldJenisBelanja = {!! json_encode(old('jenis_belanja', '')) !!};
@@ -578,9 +448,10 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     isChecked = savedCheckboxes[idx] == 1 || savedCheckboxes[idx] === true || savedCheckboxes[idx] === '1';
                 }
 
-                // If it is supposed to be uploaded by SM/Panitia (Teknis)
-                if(doc.assignee.includes('SM') || doc.assignee.includes('Panitia')) {
-                    badgeHtml = `<span class="badge-assignee">Wajib Disiapkan Teknis</span>`;
+                // If it is supposed to be uploaded by SM/Panitia/Pengaju
+                if(doc.assignee.includes('SM') || doc.assignee.includes('Panitia') || doc.assignee.includes('Pengaju')) {
+                    const badgeText = currentPeruntukan === 'umum' ? 'Wajib Disiapkan Subbag Umum' : 'Wajib Disiapkan Teknis';
+                    badgeHtml = `<span class="badge-assignee">${badgeText}</span>`;
                     uploadHtml = `
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                         <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
@@ -718,9 +589,124 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         return dateStr;
     }
 
+    function initCurrencyMask() {
+        const display = document.getElementById('nilai_display');
+        const hidden = document.getElementById('nilai_input');
+        const hint = document.getElementById('nilai_terbilang_hint');
+        if (!display || !hidden) return;
+
+        function terbilangAngka(n) {
+            if (!n || isNaN(n) || n <= 0) return '';
+            const angka = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
+            n = Math.floor(n);
+            if (n < 12) return angka[n];
+            if (n < 20) return terbilangAngka(n - 10) + ' Belas';
+            if (n < 100) return terbilangAngka(Math.floor(n / 10)) + ' Puluh ' + terbilangAngka(n % 10);
+            if (n < 200) return 'Seratus ' + terbilangAngka(n - 100);
+            if (n < 1000) return terbilangAngka(Math.floor(n / 100)) + ' Ratus ' + terbilangAngka(n % 100);
+            if (n < 2000) return 'Seribu ' + terbilangAngka(n - 1000);
+            if (n < 1000000) return terbilangAngka(Math.floor(n / 1000)) + ' Ribu ' + terbilangAngka(n % 1000);
+            if (n < 1000000000) return terbilangAngka(Math.floor(n / 1000000)) + ' Juta ' + terbilangAngka(n % 1000000);
+            if (n < 1000000000000) return terbilangAngka(Math.floor(n / 1000000000)) + ' Miliar ' + terbilangAngka(n % 1000000000);
+            return terbilangAngka(Math.floor(n / 1000000000000)) + ' Triliun ' + terbilangAngka(n % 1000000000000);
+        }
+
+        function parseAndFormat(inputVal) {
+            if (!inputVal) return { display: '', raw: '', intNum: 0 };
+            let val = String(inputVal).trim();
+            
+            let hasComma = val.includes(',');
+            let parts = val.split(',');
+            let intPart = parts[0].replace(/\D/g, '');
+            let decPart = parts.length > 1 ? parts.slice(1).join('').replace(/\D/g, '').substring(0, 2) : null;
+
+            let formattedInt = intPart ? intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+
+            let displayVal = formattedInt;
+            if (hasComma || decPart !== null) {
+                displayVal += ',' + (decPart !== null ? decPart : '');
+            }
+
+            let rawVal = intPart;
+            if (decPart !== null && decPart.length > 0) {
+                rawVal += '.' + decPart;
+            }
+
+            return { display: displayVal, raw: rawVal, intNum: intPart ? parseInt(intPart, 10) : 0 };
+        }
+
+        function handleInput(e) {
+            const rawVal = display.value;
+            const selStart = display.selectionStart;
+            
+            const beforeCursor = rawVal.slice(0, selStart);
+            const digitsBefore = (beforeCursor.match(/\d/g) || []).length;
+            const hasCommaBefore = beforeCursor.includes(',');
+
+            const res = parseAndFormat(rawVal);
+            display.value = res.display;
+            hidden.value = res.raw;
+
+            // Restore cursor position
+            let newCursor = 0;
+            let count = 0;
+            for (let i = 0; i < display.value.length; i++) {
+                if (display.value[i] === ',') {
+                    if (hasCommaBefore) {
+                        newCursor = i + 1;
+                    }
+                }
+                if (/\d/.test(display.value[i])) {
+                    count++;
+                }
+                if (count >= digitsBefore) {
+                    newCursor = i + 1;
+                    break;
+                }
+            }
+            if (!display.value.includes(',') && digitsBefore === 0) {
+                newCursor = 0;
+            }
+            try {
+                display.setSelectionRange(newCursor, newCursor);
+            } catch(err) {}
+
+            if (hint) {
+                if (res.intNum > 0) {
+                    const kata = terbilangAngka(res.intNum);
+                    hint.innerHTML = `<span style="color: var(--primary, #0284c7); font-weight: 600;">Rp ${res.display}</span>` + 
+                        (kata ? ` &bull; <em style="color: #64748b;">${kata} Rupiah</em>` : '');
+                } else {
+                    hint.textContent = 'Pemisah ribuan (titik) ditambahkan otomatis saat mengetik.';
+                }
+            }
+        }
+
+        display.addEventListener('input', handleInput);
+
+        if (display.value) {
+            const res = parseAndFormat(display.value);
+            display.value = res.display;
+            hidden.value = res.raw;
+            if (hint && res.intNum > 0) {
+                const kata = terbilangAngka(res.intNum);
+                hint.innerHTML = `<span style="color: var(--primary, #0284c7); font-weight: 600;">Rp ${res.display}</span>` + 
+                    (kata ? ` &bull; <em style="color: #64748b;">${kata} Rupiah</em>` : '');
+            }
+        }
+    }
+
     const masterDocDefs = [
         { label: 'KAK', keywords: ['KAK'] },
         { label: 'Form Permintaan', keywords: ['FP', 'Form Permintaan'] },
+        { label: 'Daftar Gaji Induk', keywords: ['Daftar Gaji Induk', 'Gaji Induk'] },
+        { label: 'Rekap Daftar Gaji', keywords: ['Rekapitulasi Daftar Gaji', 'Rekap Gaji'] },
+        { label: 'Perubahan Gaji', keywords: ['Perubahan Gaji', 'Daftar Perubahan'] },
+        { label: 'SPTJM', keywords: ['SPTJM'] },
+        { label: 'Surat Perintah Lembur', keywords: ['Surat Perintah Lembur', 'Perintah Lembur'] },
+        { label: 'Daftar Hadir Lembur', keywords: ['Daftar Hadir Lembur'] },
+        { label: 'Perhitungan Lembur', keywords: ['Perhitungan Uang Lembur', 'Perhitungan Lembur', 'Daftar Perhitungan Uang Lembur', 'Daftar Perhitungan'] },
+        { label: 'Daftar Rekapitulasi', keywords: ['Daftar Rekapitulasi'] },
         { label: 'Surat Tugas', keywords: ['Surat Tugas', 'SPPD', 'Visum'] },
         { label: 'SK / SPK', keywords: ['SK KPA', 'Surat Keputusan', 'Surat kontrak', 'SPK', 'Polis', 'Perjanjian'] },
         { label: 'Undangan', keywords: ['Undangan', 'Surat Undangan'] },
@@ -771,6 +757,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         const nilai = document.querySelector('[name="nilai"]')?.value || '0';
         const noWa = document.querySelector('[name="no_wa"]')?.value.trim() || '—';
         const keterangan = document.querySelector('[name="keterangan"]')?.value.trim() || '—';
+        const seksiVal = document.querySelector('[name="seksi"]')?.value || '';
+        const unitName = (currentPeruntukan === 'umum') ? 'Subbagian Umum' : (seksiVal ? (seksiVal.startsWith('Seksi ') ? seksiVal : 'Seksi ' + seksiVal) : 'Tim Teknis');
         const pengajuName = "{{ Auth::user()->name ?? 'Administrator' }}";
         const logoUrl = "{{ asset('images/logo-bps.png') }}";
         const tanggalCetak = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -933,7 +921,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             + '            <p>Badan Pusat Statistik Kabupaten Kolaka Utara<\/p>\n'
             + '        <\/div>\n'
             + '        <div class="meta-info">\n'
-            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Periode Kegiatan: <strong>' + periodeKegiatanFormatted + '</strong> | Staf Pengaju / PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
+            + '            <div>No. SPJ: <strong>' + nomorSpj + '</strong> | Periode Kegiatan: <strong>' + periodeKegiatanFormatted + '</strong> | Unit: <strong>' + unitName + '</strong> | PIC: <strong>' + pengajuName + '<\/strong> ' + (noWa !== '—' ? '(' + noWa + ')' : '') + '<\/div>\n'
             + '            <div>Belanja: <strong>' + namaBelanja + ' (' + jenisBelanja + ')<\/strong><\/div>\n'
             + '        <\/div>\n'
             + '        <div class="table-responsive">\n'
@@ -1196,6 +1184,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        initCurrencyMask();
         const statusRadios = document.querySelectorAll('input[name="status"]');
         statusRadios.forEach(radio => {
             radio.addEventListener('change', function() {

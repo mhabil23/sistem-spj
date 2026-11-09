@@ -49,23 +49,31 @@ class UmumSpjCreateTest extends TestCase
         ]);
     }
 
-    public function test_admin_cannot_access_create_spj_or_store_spj(): void
+    public function test_admin_can_create_spj_for_umum(): void
     {
         $admin = User::factory()->create(['role' => 'admin']);
 
-        // Rute pengajuan SPJ oleh admin ditiadakan (404 Not Found)
         $createResponse = $this->actingAs($admin)->get('/admin/spj/create');
-        $createResponse->assertStatus(404);
+        $createResponse->assertStatus(200);
 
         $storeResponse = $this->actingAs($admin)->post('/admin/spj', [
-            'kegiatan' => 'Coba Input Admin',
+            'peruntukan' => 'umum',
+            'nama_belanja' => 'Belanja Gaji PNS (5111)',
+            'jenis_belanja' => 'Belanja Gaji PNS',
+            'kegiatan' => 'Belanja Gaji PNS Bulan November 2026',
             'tanggal' => '2026-11-04',
-            'nilai' => 100000,
+            'nilai' => '15.000.000',
             'status' => 'draft',
+            'nama_dokumen' => ['0' => 'KAK', '1' => 'FP (dari BOS)'],
+            'assignee_dokumen' => ['0' => 'SM', '1' => 'SM'],
+            'berkas' => ['0' => '1', '1' => '1'],
         ]);
-        $storeResponse->assertStatus(405);
-        $this->assertDatabaseMissing('spjs', [
-            'kegiatan' => 'Coba Input Admin',
+        $storeResponse->assertRedirect(route('admin.spj.index'));
+
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Belanja Gaji PNS Bulan November 2026',
+            'seksi' => 'Subbag Umum',
+            'nilai' => 15000000,
         ]);
     }
 }
