@@ -54,7 +54,7 @@ $title = 'Detail Pencairan SPJ - Bendahara';
             <div class="bnd-header-meta">
                 <div class="bnd-header-meta-item">
                     <ion-icon name="calendar-outline"></ion-icon>
-                    <span>Diajukan: <strong>{{ $spj->created_at->format('d M Y, H:i') }}</strong></span>
+                    <span>Diajukan: <strong>{{ ($spj->diajukan_at ?? $spj->created_at)->format('d M Y, H:i') }} WITA</strong></span>
                 </div>
                 <div class="bnd-header-meta-item">
                     <ion-icon name="person-outline"></ion-icon>

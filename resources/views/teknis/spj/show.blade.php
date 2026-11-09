@@ -13,7 +13,7 @@ $subtitle = 'Informasi lengkap pengajuan SPJ Anda.';
 <div class="dashboard-heading">
     <div>
         <h2 class="dashboard-heading-title">Detail Pengajuan SPJ</h2>
-        <p class="dashboard-heading-subtitle">Diajukan pada: {{ $spj->created_at->format('d F Y, H:i') }} &bull; No: <strong>{{ $spj->nomor_spj ?: '-' }}</strong></p>
+        <p class="dashboard-heading-subtitle">Diajukan pada: {{ ($spj->diajukan_at ?? $spj->created_at)->format('d F Y, H:i') }} WITA &bull; No: <strong>{{ $spj->nomor_spj ?: '-' }}</strong></p>
     </div>
     <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
         @if(in_array($spj->status, ['draft', 'dikembalikan', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara']))

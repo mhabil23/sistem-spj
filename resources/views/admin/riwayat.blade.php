@@ -858,7 +858,7 @@
                             </div>
                             <div style="font-size: 11.5px; color: var(--dash-slate-400); margin-top: 2px;">
                                 <i class="bi bi-clock-history" style="font-size: 10px; margin-right: 3px;"></i>
-                                {{ $item->created_at ? $item->created_at->format('H:i') : '-' }} WIB
+                                {{ $item->created_at ? $item->created_at->format('H:i') : '-' }} WITA
                             </div>
                         </td>
 

@@ -117,7 +117,7 @@ if ($isRevision) {
             </div>
 
             <p class="verify-header-meta">
-                <span>Diajukan pada: <strong>{{ $spj->created_at->format('d M Y, H:i') }}</strong></span>
+                <span>Diajukan pada: <strong>{{ ($spj->diajukan_at ?? $spj->created_at)->format('d M Y, H:i') }} WITA</strong></span>
                 <span>&bull;</span>
                 <span>Pengaju: <strong>{{ $spj->user->name ?? 'Staf Teknis' }}</strong> ({{ $spj->seksi_label }})</span>
                 @if($spj->nomor_spj)

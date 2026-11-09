@@ -398,7 +398,7 @@
             </h2>
             <p>
                 Dibuat oleh: <strong>{{ $spj->user->name ?? 'Pengguna BPS' }}</strong> 
-                &bull; Tanggal Input: {{ $spj->created_at->format('d F Y, H:i') }}
+                &bull; Tanggal Input: {{ $spj->created_at->format('d F Y, H:i') }} WITA
             </p>
         </div>
 
@@ -649,7 +649,7 @@
                                         </div>
                                         <div class="timeline-user">
                                             <i class="bi bi-person-fill"></i>
-                                            {{ $history->user->name ?? 'Sistem' }} &bull; {{ $history->created_at->format('d/m/Y H:i') }}
+                                            {{ $history->user->name ?? 'Sistem' }} &bull; {{ $history->created_at->format('d/m/Y H:i') }} WITA
                                         </div>
                                     </div>
                                 </div>
