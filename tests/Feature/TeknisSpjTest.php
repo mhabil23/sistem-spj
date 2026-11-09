@@ -709,4 +709,27 @@ class TeknisSpjTest extends TestCase
             'seksi' => 'IPDS',
         ]);
     }
+
+    public function test_teknis_automatically_inherits_seksi_from_user_name_when_not_provided(): void
+    {
+        $teknis = User::factory()->create([
+            'name' => 'Seksi Neraca',
+            'role' => 'teknis',
+            'status' => 'aktif',
+            'seksi' => null,
+        ]);
+
+        $response = $this->actingAs($teknis)->post(route('teknis.spj.store'), [
+            'kegiatan' => 'Penyusunan Publikasi PDRB Seksi Neraca',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => 3500000,
+            'status' => 'draft',
+        ]);
+
+        $response->assertRedirect(route('teknis.spj.index'));
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Penyusunan Publikasi PDRB Seksi Neraca',
+            'seksi' => 'Seksi Neraca',
+        ]);
+    }
 }

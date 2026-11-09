@@ -208,18 +208,11 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
                 <div>
-                    <label class="spj-label">
-                        Seksi / Tim Teknis <span style="color: #ef4444;">*</span>
+                    <label class="spj-label" for="seksi_input">
+                        Seksi / Tim Pengusul
                     </label>
-                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
-                        <option value="" disabled {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') ? '' : 'selected' }}>Pilih Seksi...</option>
-                        <option value="Sosial" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
-                        <option value="Produksi" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
-                        <option value="Distribusi" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
-                        <option value="Neraca" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
-                        <option value="IPDS" {{ old('seksi', $spj->seksi ?? Auth::user()->seksi ?? '') === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
-                    </select>
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Seksi teknis pelaksana kegiatan SPJ.</span>
+                    <input type="text" name="seksi" id="seksi_input" class="spj-input" value="{{ old('seksi', $spj->seksi ?: (Auth::user()->seksi ?: Auth::user()->name)) }}" readonly style="background-color: #f8fafc; font-weight: 600; color: #0f172a; cursor: not-allowed;" title="Seksi otomatis mengikuti akun yang sedang login">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Unit kerja / seksi otomatis sesuai akun Anda.</span>
                     @error('seksi') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 

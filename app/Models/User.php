@@ -45,9 +45,10 @@ class User extends Authenticatable
             'Distribusi' => 'Seksi Distribusi',
             'Neraca' => 'Seksi Neraca',
             'IPDS' => 'Seksi IPDS',
+            'Subbag Umum' => 'Subbagian Umum',
         ];
 
-        return $labels[$this->seksi] ?? ($this->seksi ?: '-');
+        return $labels[$this->seksi] ?? ($this->seksi ?: $this->name);
     }
 
     /**

@@ -209,17 +209,10 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 
                 <div>
                     <label class="spj-label" for="seksi_input">
-                        Seksi / Tim Pengusul <span style="color: #ef4444;">*</span>
+                        Seksi / Tim Pengusul
                     </label>
-                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
-                        <option value="Subbag Umum" {{ old('seksi', 'Subbag Umum') === 'Subbag Umum' ? 'selected' : '' }}>Subbag Umum</option>
-                        <option value="Sosial" {{ old('seksi') === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
-                        <option value="Produksi" {{ old('seksi') === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
-                        <option value="Distribusi" {{ old('seksi') === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
-                        <option value="Neraca" {{ old('seksi') === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
-                        <option value="IPDS" {{ old('seksi') === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
-                    </select>
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Unit kerja pembebanan anggaran SPJ ini.</span>
+                    <input type="text" name="seksi" id="seksi_input" class="spj-input" value="{{ old('seksi', 'Subbag Umum') }}" readonly style="background-color: #f8fafc; font-weight: 600; color: #0f172a; cursor: not-allowed;" title="Seksi otomatis Subbag Umum">
+                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Unit kerja pembebanan anggaran SPJ ini (Subbag Umum).</span>
                     @error('seksi') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
 
