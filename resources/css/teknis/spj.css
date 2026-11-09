@@ -520,6 +520,36 @@
     display: block;
 }
 
+/* Currency Input with Rp Prefix */
+.spj-input-prefix-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.spj-input-prefix {
+    position: absolute;
+    left: 14px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--dash-text-muted, #768f9e);
+    pointer-events: none;
+    user-select: none;
+    z-index: 2;
+}
+
+.spj-input-with-prefix {
+    padding-left: 44px !important;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.02em;
+}
+
+html.dark-theme .spj-input-prefix {
+    color: var(--dash-text-muted, #8ea8b8);
+}
+
 .spj-input-readonly {
     background-color: #f8fafc !important;
     font-weight: 700 !important;

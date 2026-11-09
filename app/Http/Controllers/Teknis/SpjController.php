@@ -43,6 +43,8 @@ class SpjController extends Controller
 
     public function store(Request $request)
     {
+        $this->normalizeNilai($request);
+
         $request->validate([
             'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj',
             'kegiatan' => 'required|string|max:255',
@@ -154,6 +156,8 @@ class SpjController extends Controller
         if (! in_array($spj->status, ['draft', 'revisi_umum', 'revisi_ppk', 'revisi_ppspm', 'revisi_bendahara'])) {
             return redirect()->route('teknis.spj.index')->with('error', 'SPJ tidak dapat diubah karena sudah dalam proses.');
         }
+
+        $this->normalizeNilai($request);
 
         $request->validate([
             'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj,'.$spj->id,
@@ -371,5 +375,33 @@ class SpjController extends Controller
             'totalNilai',
             'user'
         ));
+    }
+
+    /**
+     * Normalisasi format nilai input (rupiah dengan titik/koma) menjadi angka numerik bersih.
+     */
+    protected function normalizeNilai(Request $request): void
+    {
+        if ($request->has('nilai') && $request->nilai !== null) {
+            $raw = (string) $request->input('nilai');
+            $clean = trim(preg_replace('/[^\d,\.]/', '', $raw));
+            if ($clean === '') {
+                return;
+            }
+
+            if (str_contains($clean, ',') && str_contains($clean, '.')) {
+                $clean = str_replace('.', '', $clean);
+                $clean = str_replace(',', '.', $clean);
+            } elseif (str_contains($clean, '.')) {
+                $parts = explode('.', $clean);
+                if (count($parts) > 2 || (count($parts) === 2 && strlen($parts[1]) === 3)) {
+                    $clean = str_replace('.', '', $clean);
+                }
+            } elseif (str_contains($clean, ',')) {
+                $clean = str_replace(',', '.', $clean);
+            }
+
+            $request->merge(['nilai' => $clean]);
+        }
     }
 }

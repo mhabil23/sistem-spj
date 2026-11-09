@@ -356,8 +356,29 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                     @error('nomor_spj') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
                 <div>
-                    <label class="spj-label" for="nilai_input">Nilai Nominal (Rp) <span style="color: #ef4444;">*</span></label>
-                    <input type="number" name="nilai" id="nilai_input" required class="spj-input" min="0" value="{{ old('nilai', intval($spj->nilai)) }}">
+                    <label class="spj-label" for="nilai_display">Nilai Nominal (Rp) <span style="color: #ef4444;">*</span></label>
+                    <div class="spj-input-prefix-group">
+                        <span class="spj-input-prefix">Rp</span>
+                        @php
+                            $initialNilai = old('nilai', $spj->nilai);
+                            $formattedInitialNilai = '';
+                            if ($initialNilai !== null && $initialNilai !== '') {
+                                $cleanInitial = is_numeric($initialNilai) ? (float) $initialNilai : (float) str_replace(',', '.', str_replace('.', '', $initialNilai));
+                                $hasDecimals = floor($cleanInitial) != $cleanInitial;
+                                $formattedInitialNilai = number_format($cleanInitial, $hasDecimals ? 2 : 0, ',', '.');
+                            }
+                        @endphp
+                        <input type="text" 
+                               id="nilai_display" 
+                               class="spj-input spj-input-with-prefix" 
+                               value="{{ $formattedInitialNilai }}" 
+                               placeholder="Contoh: 1.500.000" 
+                               inputmode="numeric" 
+                               autocomplete="off" 
+                               required>
+                        <input type="hidden" name="nilai" id="nilai_input" value="{{ old('nilai', $spj->nilai) }}">
+                    </div>
+                    <span class="spj-field-hint" id="nilai_terbilang_hint">Pemisah ribuan (titik) ditambahkan otomatis saat mengetik.</span>
                     @error('nilai') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -434,11 +455,6 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                         <span><strong>Wajib Print:</strong> Anda memilih opsi <strong>Ajukan Ulang</strong>. Sesuai ketentuan, Anda <u>wajib menekan tombol Print</u> dan mencetak lembar checklist berkas SPJ sebelum pengajuan ulang dapat disimpan.</span>
                     </div>
                 </div>
-                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-                        <span><strong>Wajib Print:</strong> Anda memilih opsi <strong>Ajukan Ulang</strong>. Sesuai ketentuan, Anda <u>wajib menekan tombol Print</u> dan mencetak lembar checklist berkas SPJ sebelum pengajuan ulang dapat disimpan.</span>
-                    </div>
-                </div>
 
                 <input type="hidden" name="is_printed" id="is_printed_input" value="{{ old('is_printed', '0') }}">
             </div>
@@ -478,8 +494,131 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
     }
 
     function formatRupiah(number) {
-        if (!number || isNaN(number)) return 'Rp 0';
-        return 'Rp ' + Number(number).toLocaleString('id-ID');
+        if (number === null || number === undefined || number === '') return 'Rp 0';
+        let num = number;
+        if (typeof num === 'string') {
+            let clean = num.replace(/[^0-9,\.]/g, '');
+            if (clean.includes(',') && clean.includes('.')) {
+                clean = clean.replace(/\./g, '').replace(',', '.');
+            } else if (clean.includes('.')) {
+                let parts = clean.split('.');
+                if (parts.length > 2 || (parts.length === 2 && parts[1].length === 3)) {
+                    clean = clean.replace(/\./g, '');
+                }
+            } else if (clean.includes(',')) {
+                clean = clean.replace(',', '.');
+            }
+            num = parseFloat(clean);
+        }
+        if (isNaN(num)) return 'Rp 0';
+        return 'Rp ' + Number(num).toLocaleString('id-ID');
+    }
+
+    function initCurrencyMask() {
+        const display = document.getElementById('nilai_display');
+        const hidden = document.getElementById('nilai_input');
+        const hint = document.getElementById('nilai_terbilang_hint');
+        if (!display || !hidden) return;
+
+        function terbilangAngka(n) {
+            if (!n || isNaN(n) || n <= 0) return '';
+            const angka = ['', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan', 'Sepuluh', 'Sebelas'];
+            n = Math.floor(n);
+            if (n < 12) return angka[n];
+            if (n < 20) return terbilangAngka(n - 10) + ' Belas';
+            if (n < 100) return terbilangAngka(Math.floor(n / 10)) + ' Puluh ' + terbilangAngka(n % 10);
+            if (n < 200) return 'Seratus ' + terbilangAngka(n - 100);
+            if (n < 1000) return terbilangAngka(Math.floor(n / 100)) + ' Ratus ' + terbilangAngka(n % 100);
+            if (n < 2000) return 'Seribu ' + terbilangAngka(n - 1000);
+            if (n < 1000000) return terbilangAngka(Math.floor(n / 1000)) + ' Ribu ' + terbilangAngka(n % 1000);
+            if (n < 1000000000) return terbilangAngka(Math.floor(n / 1000000)) + ' Juta ' + terbilangAngka(n % 1000000);
+            if (n < 1000000000000) return terbilangAngka(Math.floor(n / 1000000000)) + ' Miliar ' + terbilangAngka(n % 1000000000);
+            return terbilangAngka(Math.floor(n / 1000000000000)) + ' Triliun ' + terbilangAngka(n % 1000000000000);
+        }
+
+        function parseAndFormat(inputVal) {
+            if (!inputVal) return { display: '', raw: '', intNum: 0 };
+            let val = String(inputVal).trim();
+            
+            let hasComma = val.includes(',');
+            let parts = val.split(',');
+            let intPart = parts[0].replace(/\D/g, '');
+            let decPart = parts.length > 1 ? parts.slice(1).join('').replace(/\D/g, '').substring(0, 2) : null;
+
+            let formattedInt = intPart ? intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+
+            let displayVal = formattedInt;
+            if (hasComma || decPart !== null) {
+                displayVal += ',' + (decPart !== null ? decPart : '');
+            }
+
+            let rawVal = intPart;
+            if (decPart !== null && decPart.length > 0) {
+                rawVal += '.' + decPart;
+            }
+
+            return { display: displayVal, raw: rawVal, intNum: intPart ? parseInt(intPart, 10) : 0 };
+        }
+
+        function handleInput(e) {
+            const rawVal = display.value;
+            const selStart = display.selectionStart;
+            
+            const beforeCursor = rawVal.slice(0, selStart);
+            const digitsBefore = (beforeCursor.match(/\d/g) || []).length;
+            const hasCommaBefore = beforeCursor.includes(',');
+
+            const res = parseAndFormat(rawVal);
+            display.value = res.display;
+            hidden.value = res.raw;
+
+            // Restore cursor position
+            let newCursor = 0;
+            let count = 0;
+            for (let i = 0; i < display.value.length; i++) {
+                if (display.value[i] === ',') {
+                    if (hasCommaBefore) {
+                        newCursor = i + 1;
+                    }
+                }
+                if (/\d/.test(display.value[i])) {
+                    count++;
+                }
+                if (count >= digitsBefore) {
+                    newCursor = i + 1;
+                    break;
+                }
+            }
+            if (!display.value.includes(',') && digitsBefore === 0) {
+                newCursor = 0;
+            }
+            try {
+                display.setSelectionRange(newCursor, newCursor);
+            } catch(err) {}
+
+            if (hint) {
+                if (res.intNum > 0) {
+                    const kata = terbilangAngka(res.intNum);
+                    hint.innerHTML = `<span style="color: var(--dash-cyan-text, #0284c7); font-weight: 600;">Rp ${res.display}</span>` + 
+                        (kata ? ` &bull; <em style="color: var(--dash-text-muted, #768f9e);">${kata} Rupiah</em>` : '');
+                } else {
+                    hint.textContent = 'Pemisah ribuan (titik) ditambahkan otomatis saat mengetik.';
+                }
+            }
+        }
+
+        display.addEventListener('input', handleInput);
+
+        if (display.value) {
+            const res = parseAndFormat(display.value);
+            display.value = res.display;
+            hidden.value = res.raw;
+            if (hint && res.intNum > 0) {
+                const kata = terbilangAngka(res.intNum);
+                hint.innerHTML = `<span style="color: var(--dash-cyan-text, #0284c7); font-weight: 600;">Rp ${res.display}</span>` + 
+                    (kata ? ` &bull; <em style="color: var(--dash-text-muted, #768f9e);">${kata} Rupiah</em>` : '');
+            }
+        }
     }
 
     function formatDateIndo(dateStr) {
@@ -963,6 +1102,8 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
     }
 
     document.addEventListener("DOMContentLoaded", function() {
+        initCurrencyMask();
+
         const statusRadios = document.querySelectorAll('input[name="status"]');
         statusRadios.forEach(radio => {
             radio.addEventListener('change', function() {
