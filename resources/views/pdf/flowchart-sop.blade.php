@@ -555,7 +555,7 @@
                 Mengetahui,<br>
                 <strong>Pejabat Pembuat Komitmen (PPK)</strong>
                 <div class="ttd-space"></div>
-                <span class="ttd-name">Hidayatullah</span><br>
+                <span class="ttd-name">Hidayatullah, S.E.</span><br>
                 NIP. 19851029 201101 1 009
             </td>
             <td>

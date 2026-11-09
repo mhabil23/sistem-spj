@@ -979,11 +979,10 @@
             {{-- BLOK TANDA TANGAN CETAK (PRESERVED EXACTLY AS REQUIRED) --}}
             <div class="ttd-container">
                 <div>
-                    <p style="margin: 0;">setor ke PPSPM :</p>
                     <p style="margin: 0;">Lasusua, {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('d F Y') }}</p>
                     <p style="margin: 0;">Pejabat Pembuat Komitmen</p>
                     <br><br><br><br>
-                    <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah</p>
+                    <p style="margin: 0; text-decoration: underline; font-weight: bold;">Hidayatullah, S.E.</p>
                     <p style="margin: 0;">NIP.198510292011011009</p>
                 </div>
             </div>
