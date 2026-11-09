@@ -304,6 +304,41 @@
                     'keywords' => ['Perhitungan Uang Lembur', 'Perhitungan Lembur', 'Daftar Perhitungan Uang Lembur', 'Daftar Perhitungan'],
                     'legacy' => []
                 ],
+                'surat_pesanan' => [
+                    'label' => 'Surat Pesanan',
+                    'keywords' => ['Surat Pesanan', 'bukti pemesanan'],
+                    'legacy' => []
+                ],
+                'ba_pemeriksaan' => [
+                    'label' => 'BA Pemeriksaan',
+                    'keywords' => ['Pemeriksaan Barang', 'Pemeriksaan Pekerjaan', 'Berita Acara Pemeriksaan'],
+                    'legacy' => []
+                ],
+                'spmk' => [
+                    'label' => 'SPMK',
+                    'keywords' => ['Surat Perintah Mulai Kerja', 'SPMK'],
+                    'legacy' => []
+                ],
+                'progres_pekerjaan' => [
+                    'label' => 'Progres Pekerjaan',
+                    'keywords' => ['progres pekerjaan', 'Progres Pekerjaan'],
+                    'legacy' => []
+                ],
+                'dokumen_kebutuhan' => [
+                    'label' => 'Dokumen Kebutuhan',
+                    'keywords' => ['permintaan atau kebutuhan', 'kebutuhan barang'],
+                    'legacy' => []
+                ],
+                'dokumentasi_barang' => [
+                    'label' => 'Dokumentasi Barang',
+                    'keywords' => ['Dokumentasi barang', 'Dokumentasi hasil pekerjaan', 'dokumentasi barang'],
+                    'legacy' => []
+                ],
+                'bukti_pembayaran' => [
+                    'label' => 'Bukti Pembayaran',
+                    'keywords' => ['Bukti transaksi', 'Dokumen pembayaran', 'Bukti pembayaran'],
+                    'legacy' => []
+                ],
                 'surat_tugas' => [
                     'label' => 'Surat Tugas',
                     'keywords' => ['Surat Tugas', 'SPPD', 'Visum'],

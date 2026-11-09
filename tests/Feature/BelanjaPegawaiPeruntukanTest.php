@@ -32,7 +32,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         // Memastikan belanja umum seperti belanja bahan ada
         $response->assertSee('Belanja Bahan (521211)');
 
-        // Memastikan seluruh 7 Belanja Pegawai (51xx) tidak dapat dilihat oleh staf teknis
+        // Memastikan seluruh 7 Belanja Pegawai (51xx) dan Belanja Modal (53) tidak dapat dilihat oleh staf teknis
         $response->assertDontSee('Belanja Gaji PNS (5111)');
         $response->assertDontSee('Belanja Gaji PPPK (5116)');
         $response->assertDontSee('Belanja Tunjangan Kinerja PNS (512411)');
@@ -40,6 +40,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $response->assertDontSee('Belanja Uang Makan PNS (511129)');
         $response->assertDontSee('Belanja Uang Makan PPPK (511628)');
         $response->assertDontSee('Belanja Lembur (512211)');
+        $response->assertDontSee('Belanja Modal (53)');
     }
 
     public function test_umum_can_see_belanja_pegawai_kode_51(): void
@@ -53,7 +54,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $response = $this->actingAs($umum)->get('/umum/spj/create');
         $response->assertStatus(200);
 
-        // Memastikan Belanja Pegawai (51xx) tersedia untuk Subbagian Umum
+        // Memastikan Belanja Pegawai (51xx) dan Belanja Modal (53) tersedia untuk Subbagian Umum
         $response->assertSee('Belanja Gaji PNS (5111)');
         $response->assertSee('Belanja Gaji PPPK (5116)');
         $response->assertSee('Belanja Tunjangan Kinerja PNS (512411)');
@@ -61,6 +62,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $response->assertSee('Belanja Uang Makan PNS (511129)');
         $response->assertSee('Belanja Uang Makan PPPK (511628)');
         $response->assertSee('Belanja Lembur (512211)');
+        $response->assertSee('Belanja Modal (53)');
     }
 
     public function test_syarat_dokumen_spj_model_filters_peruntukan_correctly(): void
@@ -68,11 +70,13 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $teknisData = SyaratDokumenSpj::getSpjData('teknis');
         $this->assertArrayNotHasKey('Belanja Gaji PNS (5111)', $teknisData);
         $this->assertArrayNotHasKey('Belanja Lembur (512211)', $teknisData);
+        $this->assertArrayNotHasKey('Belanja Modal (53)', $teknisData);
         $this->assertArrayHasKey('Belanja Bahan (521211)', $teknisData);
 
         $umumData = SyaratDokumenSpj::getSpjData('umum');
         $this->assertArrayHasKey('Belanja Gaji PNS (5111)', $umumData);
         $this->assertArrayHasKey('Belanja Lembur (512211)', $umumData);
+        $this->assertArrayHasKey('Belanja Modal (53)', $umumData);
         $this->assertArrayHasKey('Belanja Bahan (521211)', $umumData);
     }
 
@@ -125,6 +129,43 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
             'kegiatan' => 'Lembur Penyusunan LAKIP BPS Kolut',
             'seksi' => 'Subbag Umum',
             'nilai' => 4250000,
+            'status' => 'diajukan',
+        ]);
+    }
+
+    public function test_umum_can_submit_belanja_modal_53(): void
+    {
+        $umum = User::factory()->create([
+            'role' => 'umum',
+            'status' => 'aktif',
+            'seksi' => 'Subbag Umum',
+        ]);
+
+        $response = $this->actingAs($umum)->post('/umum/spj', [
+            'nama_belanja' => 'Belanja Modal (53)',
+            'jenis_belanja' => 'Pengadaan Langsung melalui Penyedia',
+            'kegiatan' => 'Pengadaan Komputer PC All-in-One Subbag Umum',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => '18.500.000',
+            'status' => 'diajukan',
+            'is_printed' => '1',
+            'nama_dokumen' => [
+                '0' => 'KAK',
+                '1' => 'FP (dari BOS)',
+                '2' => 'Surat Pesanan atau Surat Perjanjian',
+                '3' => 'Berita Acara Pemeriksaan Barang/Pekerjaan',
+                '4' => 'Berita Acara Serah Terima (BAST)',
+            ],
+            'assignee_dokumen' => ['0' => 'SM', '1' => 'SM', '2' => 'SM', '3' => 'SM', '4' => 'SM'],
+            'berkas' => ['0' => '1', '1' => '1', '2' => '1', '3' => '1', '4' => '1'],
+        ]);
+
+        $response->assertRedirect(route('umum.spj.index'));
+
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Pengadaan Komputer PC All-in-One Subbag Umum',
+            'seksi' => 'Subbag Umum',
+            'nilai' => 18500000,
             'status' => 'diajukan',
         ]);
     }

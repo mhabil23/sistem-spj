@@ -147,6 +147,30 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             animation: printShake 0.45s ease-in-out;
         }
 
+        .dashboard-heading {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: flex-end !important;
+            margin-bottom: 1.75rem !important;
+            padding-top: 0.5rem !important;
+            gap: 1rem !important;
+            flex-wrap: wrap !important;
+        }
+        .dashboard-heading-title {
+            font-size: 1.55rem !important;
+            font-weight: 800 !important;
+            color: var(--dash-text-dark, #0f172a) !important;
+            margin-bottom: 0.25rem !important;
+            letter-spacing: -0.02em !important;
+            line-height: 1.25 !important;
+        }
+        .dashboard-heading-subtitle {
+            font-size: 0.9rem !important;
+            color: var(--dash-text-muted, #64748b) !important;
+            margin: 0 !important;
+            line-height: 1.4 !important;
+        }
+
         .btn-dash-back {
             display: inline-flex;
             align-items: center;
@@ -161,12 +185,25 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             text-decoration: none;
             transition: all 0.2s ease;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+            white-space: nowrap;
         }
         .btn-dash-back:hover {
             background: var(--dash-table-header-bg, #f8fafb);
             border-color: #cbdde8;
             transform: translateY(-1px);
             color: #0284c7;
+        }
+
+        @media (max-width: 640px) {
+            .dashboard-heading {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 0.75rem !important;
+            }
+            .btn-dash-back {
+                width: 100% !important;
+                justify-content: center !important;
+            }
         }
 
         /* Dark Theme Specific Overrides */
@@ -829,6 +866,13 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
         { label: 'Daftar Hadir Lembur', keywords: ['Daftar Hadir Lembur'] },
         { label: 'Perhitungan Lembur', keywords: ['Perhitungan Uang Lembur', 'Perhitungan Lembur', 'Daftar Perhitungan Uang Lembur', 'Daftar Perhitungan'] },
         { label: 'Daftar Rekapitulasi', keywords: ['Daftar Rekapitulasi'] },
+        { label: 'Surat Pesanan', keywords: ['Surat Pesanan', 'bukti pemesanan'] },
+        { label: 'BA Pemeriksaan', keywords: ['Pemeriksaan Barang', 'Pemeriksaan Pekerjaan', 'Berita Acara Pemeriksaan'] },
+        { label: 'SPMK', keywords: ['Surat Perintah Mulai Kerja', 'SPMK'] },
+        { label: 'Progres Pekerjaan', keywords: ['progres pekerjaan', 'Progres Pekerjaan'] },
+        { label: 'Dokumen Kebutuhan', keywords: ['permintaan atau kebutuhan', 'kebutuhan barang'] },
+        { label: 'Dokumentasi Barang', keywords: ['Dokumentasi barang', 'Dokumentasi hasil pekerjaan', 'dokumentasi barang'] },
+        { label: 'Bukti Pembayaran', keywords: ['Bukti transaksi', 'Dokumen pembayaran', 'Bukti pembayaran'] },
         { label: 'Surat Tugas', keywords: ['Surat Tugas', 'SPPD', 'Visum'] },
         { label: 'SK / SPK', keywords: ['SK KPA', 'Surat Keputusan', 'Surat kontrak', 'SPK', 'Polis', 'Perjanjian'] },
         { label: 'Undangan', keywords: ['Undangan', 'Surat Undangan'] },

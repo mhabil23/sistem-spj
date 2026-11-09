@@ -14,7 +14,7 @@ class SyaratDokumenSpjSeeder extends Seeder
     {
         $defaultData = SyaratDokumenSpj::getDefaultSpjData();
 
-        $belanjaPegawaiKeys = [
+        $umumOnlyKeys = [
             'Belanja Gaji PNS (5111)',
             'Belanja Gaji PPPK (5116)',
             'Belanja Tunjangan Kinerja PNS (512411)',
@@ -22,10 +22,11 @@ class SyaratDokumenSpjSeeder extends Seeder
             'Belanja Uang Makan PNS (511129)',
             'Belanja Uang Makan PPPK (511628)',
             'Belanja Lembur (512211)',
+            'Belanja Modal (53)',
         ];
 
         foreach ($defaultData as $namaBelanja => $jenisBelanjaList) {
-            $peruntukan = in_array($namaBelanja, $belanjaPegawaiKeys) ? 'umum' : 'semua';
+            $peruntukan = in_array($namaBelanja, $umumOnlyKeys) ? 'umum' : 'semua';
             foreach ($jenisBelanjaList as $jenisBelanja => $dokumenList) {
                 foreach ($dokumenList as $urutan => $doc) {
                     SyaratDokumenSpj::firstOrCreate(

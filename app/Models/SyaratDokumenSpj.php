@@ -124,6 +124,53 @@ class SyaratDokumenSpj extends Model
                     ['name' => 'Daftar Perhitungan Uang Lembur', 'assignee' => 'SM'],
                 ],
             ],
+            'Belanja Modal (53)' => [
+                'Pembelian Langsung dengan Kartu Kredit Pemerintah atau Marketplace' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Surat Pesanan atau bukti pemesanan', 'assignee' => 'SM'],
+                    ['name' => 'Invoice atau faktur dari penyedia', 'assignee' => 'SM'],
+                    ['name' => 'Bukti transaksi/pembayaran', 'assignee' => 'SM'],
+                    ['name' => 'Berita Acara Serah Terima (BAST)', 'assignee' => 'SM'],
+                    ['name' => 'Berita Acara Pemeriksaan Barang', 'assignee' => 'SM'],
+                    ['name' => 'Faktur pajak atau dokumen perpajakan, jika ada', 'assignee' => 'SM'],
+                    ['name' => 'Dokumentasi barang', 'assignee' => 'SM'],
+                ],
+                'Pengadaan Langsung melalui Penyedia' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Dokumen permintaan atau kebutuhan barang', 'assignee' => 'SM'],
+                    ['name' => 'Surat Pesanan atau Surat Perjanjian', 'assignee' => 'SM'],
+                    ['name' => 'Invoice atau kuitansi', 'assignee' => 'SM'],
+                    ['name' => 'Berita Acara Pemeriksaan Barang/Pekerjaan', 'assignee' => 'SM'],
+                    ['name' => 'Berita Acara Serah Terima (BAST)', 'assignee' => 'SM'],
+                    ['name' => 'Faktur pajak dan/atau bukti potong pajak', 'assignee' => 'SM'],
+                    ['name' => 'Dokumentasi barang atau pekerjaan', 'assignee' => 'SM'],
+                    ['name' => 'Dokumen pembayaran', 'assignee' => 'SM'],
+                ],
+                'Pengadaan melalui Kontrak' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Kontrak atau Surat Perjanjian', 'assignee' => 'SM'],
+                    ['name' => 'Surat Perintah Mulai Kerja', 'assignee' => 'SM'],
+                    ['name' => 'Dokumen progres pekerjaan', 'assignee' => 'SM'],
+                    ['name' => 'Berita Acara Pemeriksaan Pekerjaan', 'assignee' => 'SM'],
+                    ['name' => 'Berita Acara Serah Terima', 'assignee' => 'SM'],
+                    ['name' => 'Invoice atau tagihan penyedia', 'assignee' => 'SM'],
+                    ['name' => 'Faktur pajak dan dokumen perpajakan', 'assignee' => 'SM'],
+                    ['name' => 'Dokumentasi hasil pekerjaan', 'assignee' => 'SM'],
+                ],
+                'Pembelian Langsung oleh Bendahara Pengeluaran' => [
+                    ['name' => 'KAK', 'assignee' => 'SM'],
+                    ['name' => 'FP (dari BOS)', 'assignee' => 'SM'],
+                    ['name' => 'Bukti pembelian atau kuitansi', 'assignee' => 'SM'],
+                    ['name' => 'Faktur atau invoice', 'assignee' => 'SM'],
+                    ['name' => 'Bukti pembayaran', 'assignee' => 'SM'],
+                    ['name' => 'BAST atau bukti penerimaan barang', 'assignee' => 'SM'],
+                    ['name' => 'Dokumen pajak, jika ada', 'assignee' => 'SM'],
+                    ['name' => 'Dokumentasi barang', 'assignee' => 'SM'],
+                ],
+            ],
             'Belanja Bahan (521211)' => [
                 'Belanja Konsumsi' => [
                     ['name' => 'KAK', 'assignee' => 'SM'],
@@ -363,7 +410,7 @@ class SyaratDokumenSpj extends Model
         ];
 
         if ($peruntukan === 'teknis') {
-            $belanjaPegawaiKeys = [
+            $umumOnlyKeys = [
                 'Belanja Gaji PNS (5111)',
                 'Belanja Gaji PPPK (5116)',
                 'Belanja Tunjangan Kinerja PNS (512411)',
@@ -371,8 +418,9 @@ class SyaratDokumenSpj extends Model
                 'Belanja Uang Makan PNS (511129)',
                 'Belanja Uang Makan PPPK (511628)',
                 'Belanja Lembur (512211)',
+                'Belanja Modal (53)',
             ];
-            foreach ($belanjaPegawaiKeys as $key) {
+            foreach ($umumOnlyKeys as $key) {
                 unset($data[$key]);
             }
         }

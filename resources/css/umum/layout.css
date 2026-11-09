@@ -373,6 +373,12 @@ body.dashboard-body {
     text-transform: uppercase;
 }
 
+html.dark-theme .topbar-role-badge {
+    background: rgba(2, 132, 199, 0.22);
+    color: #38bdf8;
+    border-color: rgba(56, 189, 248, 0.35);
+}
+
 .topbar-sub-meta {
     display: flex;
     align-items: center;
@@ -549,6 +555,23 @@ body.dashboard-body {
     color: #0369a1;
     transform: translateY(-1px);
     box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
+}
+
+html.dark-theme .topbar-chip-btn {
+    background: #142530;
+    border-color: #1f3747;
+    color: #f0f6fa;
+}
+
+html.dark-theme .topbar-chip-btn ion-icon {
+    color: #38bdf8;
+}
+
+html.dark-theme .topbar-chip-btn:hover {
+    background: #1b3240 !important;
+    border-color: #38bdf8 !important;
+    color: #38bdf8 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
 /* User Mini Profile Chip */
@@ -861,6 +884,35 @@ html.dark-theme .center-toast-error .center-toast-icon {
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
+}
+
+/* ==========================================================================
+   HEADINGS & PAGE TITLES
+   ========================================================================== */
+.dashboard-heading, .page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+    padding-top: 8px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.dashboard-heading-title, .page-heading h2 {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--dash-text-dark);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+}
+
+.dashboard-heading-subtitle, .page-heading p {
+    color: var(--dash-text-muted);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.4;
 }
 
 /* ==========================================================================
