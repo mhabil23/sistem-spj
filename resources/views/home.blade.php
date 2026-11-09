@@ -43,8 +43,8 @@
                 </button>
                 <nav class="nav-links">
                     <a href="#beranda" class="nav-link active">BERANDA</a>
-                    <a href="#monitoring" class="nav-link">MONITORING</a>
                     <a href="#alur" class="nav-link">ALUR SPJ</a>
+                    <a href="#monitoring" class="nav-link">MONITORING</a>
                     <a href="{{ route('panduan-role.preview') }}" target="_blank" class="nav-link">PANDUAN</a>
                     <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">TEMPLATE</a>
                 </nav>
@@ -114,8 +114,8 @@
         </div>
         <div class="mobile-drawer-links">
             <a href="#beranda" onclick="closeMobileNav()">BERANDA</a>
-            <a href="#monitoring" onclick="closeMobileNav()">MONITORING SPJ</a>
             <a href="#alur" onclick="closeMobileNav()">ALUR SPJ</a>
+            <a href="#monitoring" onclick="closeMobileNav()">MONITORING SPJ</a>
             <a href="#templates" onclick="closeMobileNav(); openTemplateModal(event)">TEMPLATE BERKAS</a>
             <div class="mobile-drawer-divider"></div>
             <a href="{{ route('flowchart.preview') }}" target="_blank"><i class="bi bi-diagram-3"></i> FLOWCHART SOP</a>
@@ -820,7 +820,7 @@
                         </button>
                     </div>
 
-                    <div class="filter-tool-pill tool-sort" title="Urutkan Dokumen">
+                    <div class="filter-tool-pill tool-sort" title="Urutan Dokumen">
                         <i class="bi bi-arrow-down-up"></i>
                         <select id="spjSortSelect" onchange="filterSpjList()" aria-label="Urutan Dokumen">
                             <option value="terbaru" selected>Terbaru</option>
@@ -860,6 +860,32 @@
                             Menampilkan <strong id="mFilteredCount">{{ count($spjs ?? []) }}</strong> dari {{ count($spjs ?? []) }} Dokumen
                         </span>
                     </div>
+                </div>
+
+                <!-- Skeleton Shimmer Loading Stack (aktif saat filtering & loading data) -->
+                <div id="spjSkeletonStack" class="skeleton-records-stack" style="display: none;" aria-hidden="true">
+                    @for($i = 0; $i < 4; $i++)
+                    <div class="skeleton-record-card">
+                        <div class="skel-meta-block">
+                            <div class="skel-shimmer-dark skel-pill"></div>
+                            <div class="skel-shimmer-dark skel-date"></div>
+                        </div>
+                        <div class="skel-main-block">
+                            <div class="skel-pengaju-row">
+                                <div class="skel-shimmer-dark skel-avatar"></div>
+                                <div class="skel-shimmer-dark skel-name"></div>
+                            </div>
+                            <div class="skel-shimmer-dark skel-kegiatan"></div>
+                        </div>
+                        <div class="skel-action-block">
+                            <div class="skel-status-group">
+                                <div class="skel-shimmer-dark skel-badge"></div>
+                                <div class="skel-shimmer-dark skel-stage"></div>
+                            </div>
+                            <div class="skel-shimmer-dark skel-chevron"></div>
+                        </div>
+                    </div>
+                    @endfor
                 </div>
 
                 <!-- Floating Cards Stack Container (acting as #spjTableBody for filters/sorting) -->
@@ -1121,8 +1147,8 @@
 
             <div class="footer-links-side">
                 <a href="#beranda">BERANDA</a>
-                <a href="#monitoring">MONITORING</a>
                 <a href="#alur">ALUR SPJ</a>
+                <a href="#monitoring">MONITORING</a>
                 <a href="{{ route('panduan-role.preview') }}" target="_blank">PANDUAN ROLE</a>
                 <a href="{{ route('flowchart.preview') }}" target="_blank">FLOWCHART SOP</a>
             </div>
@@ -1313,6 +1339,25 @@
 
             <!-- Modal Body: Templates Grid -->
             <div class="tpl-modal-body">
+                <!-- Skeleton Shimmer Grid for Templates -->
+                <div id="tplSkeletonGrid" class="skeleton-tpl-grid" style="display: none;" aria-hidden="true">
+                    @for($i = 0; $i < 6; $i++)
+                    <div class="skeleton-tpl-card">
+                        <div class="skel-tpl-top">
+                            <div class="skel-shimmer-light skel-tpl-pill"></div>
+                            <div class="skel-shimmer-light skel-tpl-format"></div>
+                        </div>
+                        <div class="skel-shimmer-light skel-tpl-title"></div>
+                        <div class="skel-shimmer-light skel-tpl-desc"></div>
+                        <div class="skel-shimmer-light skel-tpl-desc-short"></div>
+                        <div class="skel-tpl-footer">
+                            <div class="skel-shimmer-light skel-tpl-meta"></div>
+                            <div class="skel-shimmer-light skel-tpl-btn"></div>
+                        </div>
+                    </div>
+                    @endfor
+                </div>
+
                 <div class="tpl-items-grid" id="tplItemsGrid">
                     @forelse($templates as $tpl)
                     @php
@@ -1641,14 +1686,55 @@
         /* =========================================================
            JAVASCRIPT MODAL TEMPLATE BERKAS SPJ (PUBLIK)
         ========================================================= */
+        let currentCatFilter = 'all';
+        let tplSkeletonTimer = null;
+
+        function showTplSkeleton() {
+            const skeleton = document.getElementById('tplSkeletonGrid');
+            const grid = document.getElementById('tplItemsGrid');
+            const noResults = document.getElementById('tplNoResults');
+            if (skeleton) skeleton.style.display = 'grid';
+            if (grid) grid.style.display = 'none';
+            if (noResults) noResults.style.display = 'none';
+        }
+
+        function hideTplSkeleton(hasResults = true) {
+            const skeleton = document.getElementById('tplSkeletonGrid');
+            const grid = document.getElementById('tplItemsGrid');
+            const noResults = document.getElementById('tplNoResults');
+            if (skeleton) skeleton.style.display = 'none';
+            if (hasResults) {
+                if (grid) {
+                    grid.style.display = 'grid';
+                    grid.classList.remove('skel-loaded-fade');
+                    void grid.offsetWidth;
+                    grid.classList.add('skel-loaded-fade');
+                }
+                if (noResults) noResults.style.display = 'none';
+            } else {
+                if (grid) grid.style.display = 'none';
+                if (noResults) {
+                    noResults.style.display = 'block';
+                    noResults.classList.remove('skel-loaded-fade');
+                    void noResults.offsetWidth;
+                    noResults.classList.add('skel-loaded-fade');
+                }
+            }
+        }
+
         function openTemplateModal(event) {
             if (event) event.preventDefault();
             const backdrop = document.getElementById('tplModalBackdrop');
             if (!backdrop) return;
             backdrop.classList.add('active');
             document.body.style.overflow = 'hidden';
-            const searchBox = document.getElementById('tplSearchBox');
-            if (searchBox) setTimeout(() => searchBox.focus(), 150);
+
+            showTplSkeleton();
+            setTimeout(() => {
+                applyTemplateFilters();
+                const searchBox = document.getElementById('tplSearchBox');
+                if (searchBox) searchBox.focus();
+            }, 220);
         }
 
         function closeTemplateModal() {
@@ -1664,17 +1750,27 @@
             }
         }
 
-        let currentCatFilter = 'all';
-
         function selectTemplateCategory(cat) {
             currentCatFilter = cat;
             document.querySelectorAll('.tpl-chip').forEach(chip => {
                 chip.classList.toggle('active', chip.getAttribute('data-cat') === cat);
             });
-            filterTemplateCards();
+            showTplSkeleton();
+            if (tplSkeletonTimer) clearTimeout(tplSkeletonTimer);
+            tplSkeletonTimer = setTimeout(() => {
+                applyTemplateFilters();
+            }, 180);
         }
 
         function filterTemplateCards() {
+            showTplSkeleton();
+            if (tplSkeletonTimer) clearTimeout(tplSkeletonTimer);
+            tplSkeletonTimer = setTimeout(() => {
+                applyTemplateFilters();
+            }, 180);
+        }
+
+        function applyTemplateFilters() {
             const query = (document.getElementById('tplSearchBox')?.value || '').toLowerCase().trim();
             const clearBtn = document.getElementById('tplClearSearch');
             if (clearBtn) clearBtn.style.display = query ? 'inline-flex' : 'none';
@@ -1700,8 +1796,7 @@
                 }
             });
 
-            const noResults = document.getElementById('tplNoResults');
-            if (noResults) noResults.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
+            hideTplSkeleton(visibleCount > 0 || cards.length === 0);
         }
 
         function clearTemplateSearch() {
@@ -1723,6 +1818,40 @@
            JAVASCRIPT MONITORING & FILTER PENCARIAN SPJ PUBLIK
         ========================================================= */
         let currentStatusFilter = 'semua';
+        let spjSkeletonTimer = null;
+
+        function showSpjSkeleton() {
+            const skeleton = document.getElementById('spjSkeletonStack');
+            const tbody = document.getElementById('spjTableBody');
+            const noResults = document.getElementById('spjNoFilterResults');
+            if (skeleton) skeleton.style.display = 'flex';
+            if (tbody) tbody.style.display = 'none';
+            if (noResults) noResults.style.display = 'none';
+        }
+
+        function hideSpjSkeleton(hasResults = true) {
+            const skeleton = document.getElementById('spjSkeletonStack');
+            const tbody = document.getElementById('spjTableBody');
+            const noResults = document.getElementById('spjNoFilterResults');
+            if (skeleton) skeleton.style.display = 'none';
+            if (hasResults) {
+                if (tbody) {
+                    tbody.style.display = 'flex';
+                    tbody.classList.remove('skel-loaded-fade');
+                    void tbody.offsetWidth;
+                    tbody.classList.add('skel-loaded-fade');
+                }
+                if (noResults) noResults.style.display = 'none';
+            } else {
+                if (tbody) tbody.style.display = 'none';
+                if (noResults) {
+                    noResults.style.display = 'block';
+                    noResults.classList.remove('skel-loaded-fade');
+                    void noResults.offsetWidth;
+                    noResults.classList.add('skel-loaded-fade');
+                }
+            }
+        }
 
         function selectSpjStatus(status) {
             currentStatusFilter = status;
@@ -1753,7 +1882,20 @@
             selectSpjStatus('semua');
         }
 
-        function filterSpjList() {
+        function filterSpjList(immediate = false) {
+            if (immediate) {
+                applySpjFilters();
+                return;
+            }
+
+            showSpjSkeleton();
+            if (spjSkeletonTimer) clearTimeout(spjSkeletonTimer);
+            spjSkeletonTimer = setTimeout(() => {
+                applySpjFilters();
+            }, 240);
+        }
+
+        function applySpjFilters() {
             const tglQuery = (document.getElementById('filterTanggal')?.value || '').trim();
             const clearTglBtn = document.getElementById('clearFilterTanggal');
             if (clearTglBtn) clearTglBtn.style.display = tglQuery ? 'inline-block' : 'none';
@@ -1762,7 +1904,10 @@
             const tbody = document.getElementById('spjTableBody');
             const rows = Array.from(document.querySelectorAll('#spjTableBody .spj-row'));
 
-            if (!tbody || rows.length === 0) return;
+            if (!tbody || rows.length === 0) {
+                hideSpjSkeleton(false);
+                return;
+            }
 
             rows.sort((a, b) => {
                 if (sortVal === 'terbaru') {
@@ -1818,10 +1963,8 @@
             const countLabel = document.getElementById('mFilteredCount');
             if (countLabel) countLabel.textContent = visibleCount.toString();
 
-            const noResults = document.getElementById('spjNoFilterResults');
-            if (noResults) {
-                noResults.style.display = (visibleCount === 0 && rows.length > 0) ? 'block' : 'none';
-            }
+            const hasResults = (visibleCount > 0 || rows.length === 0);
+            hideSpjSkeleton(hasResults);
         }
 
         /* ---------------------------------------------
@@ -1953,6 +2096,17 @@
             if (e.key === 'Escape') {
                 closeTemplateModal();
                 closeTrackModal();
+            }
+        });
+
+        // Efek transisi halus skeleton shimmer saat pertama kali halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            const spjCards = document.querySelectorAll('#spjTableBody .spj-row');
+            if (spjCards.length > 0) {
+                showSpjSkeleton();
+                setTimeout(() => {
+                    applySpjFilters();
+                }, 280);
             }
         });
     </script>
