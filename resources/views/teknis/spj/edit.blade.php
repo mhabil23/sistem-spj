@@ -206,22 +206,13 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
-                <div>
-                    <label class="spj-label" for="seksi_input">
-                        Seksi / Tim Pengusul
-                    </label>
-                    <input type="text" name="seksi" id="seksi_input" class="spj-input" value="{{ old('seksi', $spj->seksi ?: (Auth::user()->seksi ?: Auth::user()->name)) }}" readonly style="background-color: #f8fafc; font-weight: 600; color: #0f172a; cursor: not-allowed;" title="Seksi otomatis mengikuti akun yang sedang login">
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Unit kerja / seksi otomatis sesuai akun Anda.</span>
-                    @error('seksi') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
-                </div>
+            <input type="hidden" name="seksi" id="seksi_input" value="{{ old('seksi', $spj->seksi ?: (Auth::user()->seksi ?: Auth::user()->name)) }}">
 
-                <div>
-                    <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
-                    <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa', $spj->no_wa ?? Auth::user()->no_wa ?? '') }}" placeholder="Contoh: 081234567890">
-                    <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp Anda agar Bagian Umum & Bendahara dapat menghubungi Anda langsung.</span>
-                    @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
-                </div>
+            <div class="spj-form-group">
+                <label class="spj-label">Nomor WhatsApp Pengaju / PIC</label>
+                <input type="text" name="no_wa" class="spj-input" value="{{ old('no_wa', $spj->no_wa ?? Auth::user()->no_wa ?? '') }}" placeholder="Contoh: 081234567890">
+                <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Nomor WhatsApp Anda agar Bagian Umum & Bendahara dapat menghubungi Anda langsung.</span>
+                @error('no_wa') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
             </div>
 
             <div class="spj-form-group">
