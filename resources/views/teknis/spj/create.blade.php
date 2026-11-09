@@ -745,14 +745,6 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             + '            <\/div>\n'
             + '        <\/div>\n'
             + '    <\/div>\n'
-            + '    <script>\n'
-            + '        window.addEventListener("load", function() {\n'
-            + '            setTimeout(function() {\n'
-            + '                window.focus();\n'
-            + '                window.print();\n'
-            + '            }, 350);\n'
-            + '        });\n'
-            + '    <\/script>\n'
             + '<\/body>\n'
             + '<\/html>';
 
@@ -816,6 +808,13 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         try {
             printWin.addEventListener('afterprint', markAsPrinted, { once: true });
         } catch(e) {}
+
+        setTimeout(function() {
+            try {
+                printWin.focus();
+                printWin.print();
+            } catch(e) {}
+        }, 350);
     }
 
     let isPrinted = {{ old('is_printed', '0') == '1' ? 'true' : 'false' }};
