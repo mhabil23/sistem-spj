@@ -185,4 +185,24 @@ class RoleProfilTest extends TestCase
         $response->assertSessionHasErrors(['email']);
         $this->assertSame('user@bps.go.id', $user->fresh()->email);
     }
+
+    public function test_teknis_cannot_change_seksi_via_profile(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'teknis',
+            'name' => 'Seksi Neraca',
+            'seksi' => 'Neraca',
+            'email' => 'neraca@bps.go.id',
+            'status' => 'aktif',
+        ]);
+
+        $response = $this->actingAs($user)->put(route('teknis.profil.update'), [
+            'name' => 'Seksi Neraca Baru',
+            'email' => 'neraca@bps.go.id',
+            'seksi' => 'Sosial',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame('Neraca', $user->fresh()->seksi);
+    }
 }
