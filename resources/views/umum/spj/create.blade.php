@@ -761,10 +761,60 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
             <form action="{{ route('umum.spj.store') }}" method="POST" id="formPengajuanSpj">
                 @csrf
 
-                <!-- STEP 1: IDENTITAS KEGIATAN & ANGGARAN -->
+                <!-- STEP 1: KATEGORI BELANJA & KELENGKAPAN BERKAS FISIK -->
                 <div class="spj-form-section">
                     <div class="spj-section-header">
                         <span class="spj-step-badge">1</span>
+                        <div>
+                            <h4 class="spj-section-title">Kategori Belanja &amp; Kelengkapan Berkas Fisik</h4>
+                            <p class="spj-section-subtitle">Tentukan kategori belanja untuk memuat daftar kelengkapan berkas fisik yang dipersyaratkan.</p>
+                        </div>
+                    </div>
+
+                    <div class="spj-category-box">
+                        <div class="spj-form-grid" style="margin-bottom: 1.25rem;">
+                            <div>
+                                <label class="spj-label" for="nama_belanja">Nama Belanja (Kategori Akun) <span class="required-star">*</span></label>
+                                <select id="nama_belanja" name="nama_belanja" class="spj-select" required onchange="handleNamaBelanjaChange()">
+                                    <option value="">-- Pilih Nama Belanja --</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="spj-label" for="jenis_belanja">Jenis Belanja <span class="required-star">*</span></label>
+                                <select id="jenis_belanja" name="jenis_belanja" class="spj-select" required disabled onchange="handleJenisBelanjaChange()">
+                                    <option value="">-- Pilih Jenis Belanja --</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- DOKUMEN CHECKLIST CONTAINER -->
+                        <div id="dokumen_container" style="display: none;">
+                            <div class="checklist-header-row">
+                                <div>
+                                    <span class="checklist-header-title">Dokumen Persyaratan Fisik Wajib</span>
+                                    <p class="checklist-header-subtitle">Centang berkas fisik yang sudah disiapkan untuk diserahkan ke verifikator.</p>
+                                </div>
+                                <div class="checklist-action-btns">
+                                    <button type="button" onclick="checkAllBerkas(true)" class="btn-check-toggle" title="Centang seluruh berkas fisik">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        Centang Semua
+                                    </button>
+                                    <button type="button" onclick="checkAllBerkas(false)" class="btn-check-toggle secondary" title="Kosongkan seluruh centang berkas">
+                                        Batal Semua
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="dokumen_list" class="checklist-items-wrapper"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 2: IDENTITAS KEGIATAN & ANGGARAN -->
+                <div class="spj-form-section">
+                    <div class="spj-section-header">
+                        <span class="spj-step-badge">2</span>
                         <div>
                             <h4 class="spj-section-title">Identitas Kegiatan &amp; Anggaran</h4>
                             <p class="spj-section-subtitle">Informasi umum mengenai rincian belanja dan alokasi anggaran SPJ.</p>
@@ -850,56 +900,6 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
                             </div>
                             <textarea name="keterangan" id="keterangan_input" class="spj-textarea @error('keterangan') has-error @enderror" rows="2" placeholder="Catatan internal tambahan untuk verifikator atau bendahara (opsional)...">{{ old('keterangan') }}</textarea>
                             @error('keterangan') <span class="spj-error-msg">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
-                </div>
-
-                <!-- STEP 2: KATEGORI BELANJA & KELENGKAPAN BERKAS FISIK -->
-                <div class="spj-form-section">
-                    <div class="spj-section-header">
-                        <span class="spj-step-badge">2</span>
-                        <div>
-                            <h4 class="spj-section-title">Kategori Belanja &amp; Kelengkapan Berkas Fisik</h4>
-                            <p class="spj-section-subtitle">Tentukan kategori belanja untuk memuat daftar kelengkapan berkas fisik yang dipersyaratkan.</p>
-                        </div>
-                    </div>
-
-                    <div class="spj-category-box">
-                        <div class="spj-form-grid" style="margin-bottom: 1.25rem;">
-                            <div>
-                                <label class="spj-label" for="nama_belanja">Nama Belanja (Kategori Akun) <span class="required-star">*</span></label>
-                                <select id="nama_belanja" name="nama_belanja" class="spj-select" required onchange="handleNamaBelanjaChange()">
-                                    <option value="">-- Pilih Nama Belanja --</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="spj-label" for="jenis_belanja">Jenis Belanja <span class="required-star">*</span></label>
-                                <select id="jenis_belanja" name="jenis_belanja" class="spj-select" required disabled onchange="handleJenisBelanjaChange()">
-                                    <option value="">-- Pilih Jenis Belanja --</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <!-- DOKUMEN CHECKLIST CONTAINER -->
-                        <div id="dokumen_container" style="display: none;">
-                            <div class="checklist-header-row">
-                                <div>
-                                    <span class="checklist-header-title">Dokumen Persyaratan Fisik Wajib</span>
-                                    <p class="checklist-header-subtitle">Centang berkas fisik yang sudah disiapkan untuk diserahkan ke verifikator.</p>
-                                </div>
-                                <div class="checklist-action-btns">
-                                    <button type="button" onclick="checkAllBerkas(true)" class="btn-check-toggle" title="Centang seluruh berkas fisik">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                                        Centang Semua
-                                    </button>
-                                    <button type="button" onclick="checkAllBerkas(false)" class="btn-check-toggle secondary" title="Kosongkan seluruh centang berkas">
-                                        Batal Semua
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="dokumen_list" class="checklist-items-wrapper"></div>
                         </div>
                     </div>
                 </div>
@@ -1138,18 +1138,18 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Bagian Umum.';
         const namaBelanjaVal = document.getElementById("nama_belanja")?.value?.trim();
         const jenisBelanjaVal = document.getElementById("jenis_belanja")?.value?.trim();
 
+        if (!namaBelanjaVal) missingFields.push("Nama Belanja (Kategori Akun)");
+        if (!jenisBelanjaVal) missingFields.push("Jenis Belanja");
         if (!uraianVal) missingFields.push("Uraian / Nama Kegiatan Belanja");
         if (!nilaiVal) missingFields.push("Nilai Anggaran / Nominal (Rp)");
         if (!tglVal) missingFields.push("Tanggal Mulai Pelaksanaan");
-        if (!namaBelanjaVal) missingFields.push("Nama Belanja (Kategori Akun)");
-        if (!jenisBelanjaVal) missingFields.push("Jenis Belanja");
 
         if (missingFields.length > 0) {
             alert("Harap lengkapi isian berikut sebelum mencetak lembar checklist:\n\n• " + missingFields.join("\n• "));
-            if (!uraianVal) { form.querySelector('[name="kegiatan"]')?.focus(); }
-            else if (!nilaiVal) { form.querySelector('[name="nilai"]')?.focus(); }
-            else if (!namaBelanjaVal) { document.getElementById("nama_belanja")?.focus(); }
+            if (!namaBelanjaVal) { document.getElementById("nama_belanja")?.focus(); }
             else if (!jenisBelanjaVal) { document.getElementById("jenis_belanja")?.focus(); }
+            else if (!uraianVal) { form.querySelector('[name="kegiatan"]')?.focus(); }
+            else if (!nilaiVal) { form.querySelector('[name="nilai"]')?.focus(); }
             return;
         }
 
