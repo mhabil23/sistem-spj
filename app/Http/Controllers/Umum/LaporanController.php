@@ -146,7 +146,7 @@ class LaporanController extends Controller
             if ($status === 'revisi') {
                 $query->where('status', 'like', 'revisi%');
             } elseif ($status === 'diproses') {
-                $query->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm']);
+                $query->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']);
             } else {
                 $query->where('status', $status);
             }
@@ -175,7 +175,7 @@ class LaporanController extends Controller
             'totalNilai' => (float) $spjs->sum('nilai'),
             'totalSelesai' => $spjs->where('status', 'selesai')->count(),
             'totalNilaiSelesai' => (float) $spjs->where('status', 'selesai')->sum('nilai'),
-            'totalDiproses' => $spjs->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm'])->count(),
+            'totalDiproses' => $spjs->whereIn('status', ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls'])->count(),
             'totalRevisi' => $spjs->filter(fn ($item) => str_contains($item->status, 'revisi'))->count(),
         ];
 

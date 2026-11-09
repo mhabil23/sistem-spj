@@ -313,11 +313,48 @@ class Spj extends Model
     }
 
     /**
+     * Cek apakah SPJ ini memiliki riwayat revisi (pernah atau sedang direvisi).
+     */
+    public function getWasRevisiAttribute(): bool
+    {
+        if (! empty($this->catatan_revisi)) {
+            return true;
+        }
+
+        if ($this->relationLoaded('histories')) {
+            return $this->histories->contains(function ($h) {
+                return str_starts_with((string) $h->status_baru, 'revisi_')
+                    || str_starts_with((string) $h->status_lama, 'revisi_')
+                    || $h->status_baru === 'dikembalikan'
+                    || $h->status_lama === 'dikembalikan';
+            });
+        }
+
+        return $this->histories()->where(function ($q) {
+            $q->where('status_baru', 'like', 'revisi_%')
+                ->orWhere('status_lama', 'like', 'revisi_%')
+                ->orWhere('status_baru', 'dikembalikan')
+                ->orWhere('status_lama', 'dikembalikan');
+        })->exists();
+    }
+
+    /**
      * Label representasi status untuk UI dan badge.
      */
     public function getStatusLabelAttribute(): string
     {
         if ($this->status === 'diajukan') {
+            if ($this->was_revisi) {
+                if (! $this->berkas_fisik_diterima_at) {
+                    return 'Perbaikan Diajukan (Bawa Berkas ke Umum)';
+                }
+                if (! $this->pemeriksaan_dimulai_at) {
+                    return 'Fisik Perbaikan Diterima (Siap Cek)';
+                }
+
+                return 'Perbaikan Sedang Diperiksa';
+            }
+
             if (! $this->berkas_fisik_diterima_at) {
                 return 'Diajukan (Bawa Berkas Fisik ke Umum)';
             }
@@ -442,6 +479,33 @@ class Spj extends Model
         }
 
         // Status diajukan
+        if ($this->was_revisi) {
+            if ($this->pemeriksaan_dimulai_at) {
+                return [
+                    'class' => 'badge-proses',
+                    'label' => 'Perbaikan Sedang Diperiksa Umum',
+                    'icon' => 'bi bi-search',
+                    'group' => 'proses',
+                ];
+            }
+
+            if ($this->berkas_fisik_diterima_at) {
+                return [
+                    'class' => 'badge-diajukan',
+                    'label' => 'Fisik Perbaikan Diterima',
+                    'icon' => 'bi bi-inbox-fill',
+                    'group' => 'diajukan',
+                ];
+            }
+
+            return [
+                'class' => 'badge-proses',
+                'label' => 'Perbaikan Diajukan (Bawa Berkas ke Umum)',
+                'icon' => 'bi bi-arrow-repeat',
+                'group' => 'diajukan',
+            ];
+        }
+
         if ($this->pemeriksaan_dimulai_at) {
             return [
                 'class' => 'badge-proses',

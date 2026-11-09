@@ -272,4 +272,82 @@ class UmumSpjTest extends TestCase
         $this->assertEquals('Budi Teknis', $topPengaju[1]['name']);
         $this->assertEquals('1 SPJ', $topPengaju[1]['count']);
     }
+
+    public function test_user_umum_riwayat_displays_all_submitted_spjs_including_revisi_and_diajukan(): void
+    {
+        $spjRevisi = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Kegiatan SPJ Sedang Revisi',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'revisi_umum',
+            'catatan_revisi' => 'Nota belanja belum dilampirkan',
+            'diajukan_at' => now(),
+        ]);
+
+        $spjDiajukan = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Kegiatan SPJ Baru Diajukan',
+            'tanggal' => now(),
+            'nilai' => 2000000,
+            'status' => 'diajukan',
+            'diajukan_at' => now(),
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->get(route('umum.riwayat.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Kegiatan SPJ Sedang Revisi');
+        $response->assertSee('Perlu Revisi (UMUM)');
+        $response->assertSee('Nota belanja belum dilampirkan');
+        $response->assertSee('Kegiatan SPJ Baru Diajukan');
+    }
+
+    public function test_user_umum_riwayat_updates_status_when_repaired_and_resubmitted(): void
+    {
+        $spj = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'nomor_spj' => '00199992026',
+            'kegiatan' => 'Kegiatan Perbaikan Berkas Teknis',
+            'tanggal' => now()->toDateString(),
+            'nilai' => 2500000,
+            'status' => 'revisi_umum',
+            'catatan_revisi' => 'Kuitansi belum bermaterai',
+            'diajukan_at' => now()->subDay(),
+        ]);
+
+        // Simulasikan Staf Teknis memperbaiki data dan mengajukan ulang
+        $responseSubmit = $this->actingAs($this->userTeknis)->put(route('teknis.spj.update', $spj->id), [
+            'nomor_spj' => $spj->nomor_spj,
+            'kegiatan' => 'Kegiatan Perbaikan Berkas Teknis',
+            'tanggal' => now()->toDateString(),
+            'nilai' => '2500000',
+            'status' => 'diajukan',
+            'is_printed' => '1',
+            'nama_dokumen' => ['Kuitansi Bermaterai'],
+            'assignee_dokumen' => ['SM'],
+            'berkas' => ['0' => 'on'],
+        ]);
+
+        $responseSubmit->assertRedirect(route('teknis.spj.index'));
+
+        $this->assertDatabaseHas('spjs', [
+            'id' => $spj->id,
+            'status' => 'diajukan',
+        ]);
+
+        $this->assertDatabaseHas('spj_histories', [
+            'spj_id' => $spj->id,
+            'aksi' => 'Pengajuan Ulang (Perbaikan Berkas Selesai)',
+            'status_lama' => 'revisi_umum',
+            'status_baru' => 'diajukan',
+        ]);
+
+        // Buka riwayat pemeriksaan Umum
+        $responseRiwayat = $this->actingAs($this->userUmum)->get(route('umum.riwayat.index'));
+        $responseRiwayat->assertStatus(200);
+        $responseRiwayat->assertSee('Kegiatan Perbaikan Berkas Teknis');
+        $responseRiwayat->assertSee('Perbaikan Diajukan (Menunggu Cek)');
+        $responseRiwayat->assertSee('Telah Diperbaiki Pengaju');
+    }
 }

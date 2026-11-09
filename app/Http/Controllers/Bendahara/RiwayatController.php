@@ -12,7 +12,7 @@ class RiwayatController extends Controller
     public function index(Request $request)
     {
         $baseQuery = Spj::with('user')
-            ->whereIn('status', ['revisi_bendahara', 'disetujui_ppspm', 'menunggu_otp_kpa', 'selesai']);
+            ->whereIn('status', ['revisi_bendahara', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls', 'selesai']);
 
         $totalRiwayat = (clone $baseQuery)->count();
         $totalDanaCair = (clone $baseQuery)->where('status', 'selesai')->sum('nilai');

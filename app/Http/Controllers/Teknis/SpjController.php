@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Teknis;
 
 use App\Http\Controllers\Controller;
 use App\Models\Spj;
+use App\Models\SpjHistory;
 use App\Models\SyaratDokumenSpj;
 use App\Services\WhatsAppService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -109,6 +110,14 @@ class SpjController extends Controller
         ]);
 
         if ($request->status === 'diajukan') {
+            SpjHistory::create([
+                'spj_id' => $spj->id,
+                'user_id' => Auth::id(),
+                'aksi' => 'Pengajuan Dokumen SPJ',
+                'status_lama' => 'draft',
+                'status_baru' => 'diajukan',
+                'keterangan' => 'Dokumen SPJ diajukan oleh staf teknis untuk verifikasi kelengkapan berkas fisik.',
+            ]);
             WhatsAppService::notifySubmitted($spj);
         }
 
@@ -221,7 +230,10 @@ class SpjController extends Controller
 
         $nomorSpj = $request->filled('nomor_spj') ? $request->nomor_spj : ($spj->nomor_spj ?: Spj::generateNomorSpj());
 
+        $statusLama = $spj->status;
         $wasDraftOrRevisi = $spj->status !== 'diajukan';
+        $isRevisi = str_starts_with((string) $statusLama, 'revisi_') || $statusLama === 'dikembalikan';
+
         $spj->update([
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
@@ -234,14 +246,38 @@ class SpjController extends Controller
             'status' => $request->status,
             'dokumen_file' => count($dokumenKelengkapan) > 0 ? json_encode($dokumenKelengkapan) : null,
             'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
+            'berkas_fisik_diterima_at' => $isRevisi && $request->status === 'diajukan' ? null : $spj->berkas_fisik_diterima_at,
+            'pemeriksaan_dimulai_at' => $isRevisi && $request->status === 'diajukan' ? null : $spj->pemeriksaan_dimulai_at,
         ]);
 
         if ($request->status === 'diajukan' && $wasDraftOrRevisi) {
+            if ($isRevisi) {
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id(),
+                    'aksi' => 'Pengajuan Ulang (Perbaikan Berkas Selesai)',
+                    'status_lama' => $statusLama,
+                    'status_baru' => 'diajukan',
+                    'keterangan' => 'Staf teknis telah memperbaiki berkas SPJ sesuai catatan revisi dan mengajukan ulang ke verifikator.',
+                ]);
+            } else {
+                SpjHistory::create([
+                    'spj_id' => $spj->id,
+                    'user_id' => Auth::id(),
+                    'aksi' => 'Pengajuan Dokumen SPJ',
+                    'status_lama' => 'draft',
+                    'status_baru' => 'diajukan',
+                    'keterangan' => 'Dokumen SPJ diajukan oleh staf teknis untuk verifikasi kelengkapan berkas fisik.',
+                ]);
+            }
+
             WhatsAppService::notifySubmitted($spj);
         }
 
         $msg = $request->status === 'diajukan'
-            ? 'SPJ berhasil diajukan. Harap segera serahkan berkas fisik SPJ ke Subbagian Umum untuk verifikasi.'
+            ? ($isRevisi
+                ? 'SPJ perbaikan berhasil diajukan kembali ke Subbagian Umum. Silakan serahkan berkas fisik yang telah diperbaiki.'
+                : 'SPJ berhasil diajukan. Harap segera serahkan berkas fisik SPJ ke Subbagian Umum untuk verifikasi.')
             : 'Draft SPJ berhasil diperbarui.';
 
         return redirect()->route('teknis.spj.index')->with('success', $msg);

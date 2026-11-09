@@ -1227,6 +1227,28 @@ html.dark-theme .dash-badge-selesai {
     border-color: rgba(34, 197, 94, 0.35) !important;
 }
 
+.dash-badge-perbaikan {
+    background: #ecfeff;
+    color: #0e7490;
+    border: 1px solid #a5f3fc;
+}
+html.dark-theme .dash-badge-perbaikan {
+    background: rgba(6, 182, 212, 0.18) !important;
+    color: #22d3ee !important;
+    border-color: rgba(6, 182, 212, 0.35) !important;
+}
+
+.dash-badge-purple {
+    background: #faf5ff;
+    color: #7e22ce;
+    border: 1px solid #e9d5ff;
+}
+html.dark-theme .dash-badge-purple {
+    background: rgba(168, 85, 247, 0.18) !important;
+    color: #c084fc !important;
+    border-color: rgba(168, 85, 247, 0.35) !important;
+}
+
 /* Action buttons */
 .btn-table-view {
     display: inline-flex;
