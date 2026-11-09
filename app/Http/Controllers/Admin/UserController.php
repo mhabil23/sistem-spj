@@ -18,18 +18,24 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('admin.pengguna-create');
+        $availableSeksi = User::getAvailableSeksi();
+
+        return view('admin.pengguna-create', compact('availableSeksi'));
     }
 
     public function store(Request $request)
     {
+        if ($request->seksi === '__NEW__' && $request->filled('seksi_custom')) {
+            $request->merge(['seksi' => trim($request->seksi_custom)]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'no_wa' => 'nullable|string|max:25',
             'password' => 'required|min:8',
             'role' => 'required|in:admin,teknis,umum,ppk,ppspm,bendahara',
-            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
+            'seksi' => 'nullable|string|max:100',
             'status' => 'required|in:aktif,nonaktif',
         ]);
 
@@ -51,18 +57,24 @@ class UserController extends Controller
     // Form edit pengguna
     public function edit(User $user)
     {
-        return view('admin.pengguna-edit', compact('user'));
+        $availableSeksi = User::getAvailableSeksi();
+
+        return view('admin.pengguna-edit', compact('user', 'availableSeksi'));
     }
 
     // Update pengguna
     public function update(Request $request, User $user)
     {
+        if ($request->seksi === '__NEW__' && $request->filled('seksi_custom')) {
+            $request->merge(['seksi' => trim($request->seksi_custom)]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'no_wa' => 'nullable|string|max:25',
             'role' => 'required|in:admin,teknis,umum,ppk,ppspm,bendahara',
-            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
+            'seksi' => 'nullable|string|max:100',
             'status' => 'required|in:aktif,nonaktif',
             'password' => 'nullable|min:8|confirmed',
         ]);

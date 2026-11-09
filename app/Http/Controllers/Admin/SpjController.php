@@ -92,7 +92,7 @@ class SpjController extends Controller
             'tanggal' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
             'nilai' => 'required|numeric|min:0',
-            'seksi' => 'nullable|string|in:Sosial,Produksi,Distribusi,Neraca,IPDS',
+            'seksi' => 'nullable|string|max:100',
             'keterangan' => 'nullable|string',
             'no_wa' => 'nullable|string|max:25',
             'status' => 'required|in:draft,diajukan,diproses,selesai,dikembalikan',

@@ -193,13 +193,21 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     <label class="spj-label">
                         Seksi / Tim Teknis <span style="color: #ef4444;">*</span>
                     </label>
+                    @php
+                        $currentSeksi = old('seksi', 'Sosial');
+                        $seksiList = \App\Models\User::getAvailableSeksi();
+                        if ($currentSeksi && !in_array($currentSeksi, $seksiList)) {
+                            $seksiList[] = $currentSeksi;
+                            sort($seksiList);
+                        }
+                    @endphp
                     <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
                         <option value="" disabled {{ old('seksi') ? '' : 'selected' }}>Pilih Seksi...</option>
-                        <option value="Sosial" {{ old('seksi', 'Sosial') === 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
-                        <option value="Produksi" {{ old('seksi') === 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
-                        <option value="Distribusi" {{ old('seksi') === 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
-                        <option value="Neraca" {{ old('seksi') === 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
-                        <option value="IPDS" {{ old('seksi') === 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                        @foreach($seksiList as $opt)
+                            <option value="{{ $opt }}" {{ $currentSeksi === $opt ? 'selected' : '' }}>
+                                {{ str_starts_with($opt, 'Seksi ') ? $opt : 'Seksi ' . $opt }}
+                            </option>
+                        @endforeach
                     </select>
                     <span style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Seksi teknis pelaksana kegiatan SPJ.</span>
                     @error('seksi') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror

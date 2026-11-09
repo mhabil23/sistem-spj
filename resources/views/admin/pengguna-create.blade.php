@@ -404,45 +404,96 @@
                     <label for="seksi" class="form-label">
                         <i class="bi bi-diagram-3"></i> Seksi / Fungsi Teknis (Khusus Staf Teknis)
                     </label>
-                    <select id="seksi" name="seksi" class="form-select">
+                    @php
+                        $currentSeksi = old('seksi');
+                        $seksiList = $availableSeksi ?? \App\Models\User::getAvailableSeksi();
+                        if ($currentSeksi && !in_array($currentSeksi, $seksiList) && $currentSeksi !== '__NEW__') {
+                            $seksiList[] = $currentSeksi;
+                            sort($seksiList);
+                        }
+                    @endphp
+                    <select id="seksi" name="seksi" class="form-select" onchange="toggleCustomSeksiInput(this)">
                         <option value="">-- Pilih Seksi / Fungsi --</option>
-                        <option value="Sosial" {{ old('seksi') == 'Sosial' ? 'selected' : '' }}>Seksi Sosial</option>
-                        <option value="Produksi" {{ old('seksi') == 'Produksi' ? 'selected' : '' }}>Seksi Produksi</option>
-                        <option value="Distribusi" {{ old('seksi') == 'Distribusi' ? 'selected' : '' }}>Seksi Distribusi</option>
-                        <option value="Neraca" {{ old('seksi') == 'Neraca' ? 'selected' : '' }}>Seksi Neraca</option>
-                        <option value="IPDS" {{ old('seksi') == 'IPDS' ? 'selected' : '' }}>Seksi IPDS</option>
+                        @foreach($seksiList as $opt)
+                            <option value="{{ $opt }}" {{ $currentSeksi == $opt ? 'selected' : '' }}>
+                                {{ str_starts_with($opt, 'Seksi ') ? $opt : 'Seksi ' . $opt }}
+                            </option>
+                        @endforeach
+                        <option value="__NEW__" style="font-weight: 700; color: #0284c7;" {{ old('seksi') === '__NEW__' ? 'selected' : '' }}>
+                            + Tulis Seksi Baru...
+                        </option>
                     </select>
+
+                    <div id="custom_seksi_container" style="display: {{ old('seksi') === '__NEW__' ? 'block' : 'none' }}; margin-top: 8px;">
+                        <input
+                            type="text"
+                            id="seksi_custom"
+                            name="seksi_custom"
+                            class="form-input"
+                            value="{{ old('seksi_custom') }}"
+                            placeholder="Ketik nama seksi baru (contoh: Diseminasi, Pengolahan, dll)..."
+                            style="border-color: #0284c7; background-color: #f0f9ff;">
+                        <span style="font-size: 11px; color: #64748b; margin-top: 4px; display: block;">
+                            <i class="bi bi-info-circle"></i> Nama seksi baru akan otomatis disimpan dan muncul di pilihan untuk akun lainnya.
+                        </span>
+                    </div>
+
                     @error('seksi')
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
-
-                {{-- STATUS --}}
-                <div class="form-group">
-                    <label for="status" class="form-label">
-                        <i class="bi bi-toggle-on"></i> Status Keaktifan <span style="color: #dc2626;">*</span>
-                    </label>
-                    <select id="status" name="status" class="form-select" required>
-                        <option value="aktif" {{ old('status', 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif (Dapat Login ke Sistem)</option>
-                        <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif (Akses Sementara Dibatasi)</option>
-                    </select>
-                    @error('status')
-                        <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
-                    @enderror
-                </div>
             </div>
 
-            {{-- FORM ACTIONS --}}
-            <div class="form-actions">
-                <a href="{{ route('admin.pengguna.index') }}" class="btn-cancel">
-                    <i class="bi bi-x-circle"></i> Batal
-                </a>
-                <button type="submit" class="btn-submit">
-                    <i class="bi bi-check2-circle"></i> Simpan Pengguna
-                </button>
+            {{-- STATUS --}}
+            <div class="form-group">
+                <label for="status" class="form-label">
+                    <i class="bi bi-toggle-on"></i> Status Keaktifan <span style="color: #dc2626;">*</span>
+                </label>
+                <select id="status" name="status" class="form-select" required>
+                    <option value="aktif" {{ old('status', 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif (Dapat Login ke Sistem)</option>
+                    <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif (Akses Sementara Dibatasi)</option>
+                </select>
+                @error('status')
+                    <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
+                @enderror
             </div>
-        </form>
-    </div>
+        </div>
+
+        {{-- FORM ACTIONS --}}
+        <div class="form-actions">
+            <a href="{{ route('admin.pengguna.index') }}" class="btn-cancel">
+                <i class="bi bi-x-circle"></i> Batal
+            </a>
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-check2-circle"></i> Simpan Pengguna
+            </button>
+        </div>
+    </form>
+</div>
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    function toggleCustomSeksiInput(selectEl) {
+        const container = document.getElementById('custom_seksi_container');
+        const customInput = document.getElementById('seksi_custom');
+        if (!container) return;
+
+        if (selectEl.value === '__NEW__') {
+            container.style.display = 'block';
+            if (customInput) {
+                customInput.focus();
+                customInput.required = true;
+            }
+        } else {
+            container.style.display = 'none';
+            if (customInput) {
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+    }
+</script>
+@endpush

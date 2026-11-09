@@ -37,8 +37,45 @@ class User extends Authenticatable
         return $this->hasMany(Spj::class);
     }
 
+    /**
+     * Dapatkan daftar seluruh seksi yang tersedia secara dinamis.
+     *
+     * @return array<int, string>
+     */
+    public static function getAvailableSeksi(): array
+    {
+        $default = ['Sosial', 'Produksi', 'Distribusi', 'Neraca', 'IPDS'];
+        $fromUsers = static::whereNotNull('seksi')
+            ->where('seksi', '!=', '')
+            ->distinct()
+            ->pluck('seksi')
+            ->toArray();
+
+        $fromSpj = Spj::whereNotNull('seksi')
+            ->where('seksi', '!=', '')
+            ->distinct()
+            ->pluck('seksi')
+            ->toArray();
+
+        $all = array_values(array_unique(array_filter(array_merge($default, $fromUsers, $fromSpj))));
+
+        $clean = array_map(function ($s) {
+            return preg_replace('/^Seksi\s+/i', '', trim($s));
+        }, $all);
+
+        $clean = array_values(array_unique(array_filter($clean)));
+        sort($clean);
+
+        return $clean;
+    }
+
     public function getSeksiLabelAttribute(): string
     {
+        $val = $this->seksi ?: $this->name;
+        if (! $val) {
+            return 'Staf Teknis';
+        }
+
         $labels = [
             'Sosial' => 'Seksi Sosial',
             'Produksi' => 'Seksi Produksi',
@@ -48,7 +85,15 @@ class User extends Authenticatable
             'Subbag Umum' => 'Subbagian Umum',
         ];
 
-        return $labels[$this->seksi] ?? ($this->seksi ?: $this->name);
+        if (isset($labels[$val])) {
+            return $labels[$val];
+        }
+
+        if (str_starts_with($val, 'Seksi ') || str_starts_with($val, 'Subbag ') || str_starts_with($val, 'Subbagian ')) {
+            return $val;
+        }
+
+        return 'Seksi '.$val;
     }
 
     /**

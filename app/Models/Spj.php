@@ -100,17 +100,29 @@ class Spj extends Model
 
     public function getSeksiLabelAttribute(): string
     {
+        $val = $this->seksi ?: ($this->user?->seksi ?: null);
+        if (! $val) {
+            return 'Seksi Teknis';
+        }
+
         $labels = [
             'Sosial' => 'Seksi Sosial',
             'Produksi' => 'Seksi Produksi',
             'Distribusi' => 'Seksi Distribusi',
             'Neraca' => 'Seksi Neraca',
             'IPDS' => 'Seksi IPDS',
+            'Subbag Umum' => 'Subbagian Umum',
         ];
 
-        $val = $this->seksi ?: ($this->user?->seksi ?: null);
+        if (isset($labels[$val])) {
+            return $labels[$val];
+        }
 
-        return $labels[$val] ?? ($val ?: 'Seksi Teknis');
+        if (str_starts_with($val, 'Seksi ') || str_starts_with($val, 'Subbag ') || str_starts_with($val, 'Subbagian ')) {
+            return $val;
+        }
+
+        return 'Seksi '.$val;
     }
 
     /**
