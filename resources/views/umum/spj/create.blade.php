@@ -147,6 +147,70 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             animation: printShake 0.45s ease-in-out;
         }
 
+        /* Akun Belanja Grouping & Filter Chips */
+        .akun-filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .akun-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 9999px;
+            border: 1px solid var(--dash-border, #cbdde8);
+            background: var(--dash-card-bg, #ffffff);
+            color: var(--dash-text-muted, #64748b);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .akun-chip:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+            background: #f0f9ff;
+        }
+        .akun-chip.active {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 2px 5px rgba(2, 132, 199, 0.25);
+        }
+        .akun-chip .akun-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .akun-chip .dot-51 { background: #3b82f6; }
+        .akun-chip .dot-52 { background: #10b981; }
+        .akun-chip .dot-53 { background: #a855f7; }
+        .akun-chip.active .akun-dot { background: #ffffff; }
+
+        @media (max-width: 768px) {
+            .akun-filter-placeholder { display: none; }
+        }
+
+        html.dark-theme .akun-chip {
+            background: #142530;
+            border-color: #1f3747;
+            color: #8ea8b8;
+        }
+        html.dark-theme .akun-chip:hover {
+            border-color: #38bdf8;
+            color: #38bdf8;
+            background: #0f1c25;
+        }
+        html.dark-theme .akun-chip.active {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #0284c7 !important;
+        }
+
         .dashboard-heading {
             display: flex !important;
             justify-content: space-between !important;
@@ -359,17 +423,33 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
                     <div>
-                        <label class="spj-label" for="nama_belanja">Nama Belanja</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 4px;">
+                            <label class="spj-label" for="nama_belanja" style="margin-bottom: 0;">Nama Belanja (Kategori Akun) <span style="color: #ef4444;">*</span></label>
+                            <span id="badge_akun_terpilih" class="spj-badge-auto" style="display: none; font-size: 11px;"></span>
+                        </div>
+                        <!-- Filter Chips Kelompok Akun Belanja -->
+                        <div class="akun-filter-group" id="akun_filter_group">
+                            <button type="button" class="akun-chip active" data-akun="all" onclick="setAkunFilter('all')">Semua Akun</button>
+                            <button type="button" class="akun-chip" data-akun="51" onclick="setAkunFilter('51')"><span class="akun-dot dot-51"></span>Akun 51 (Pegawai)</button>
+                            <button type="button" class="akun-chip" data-akun="52" onclick="setAkunFilter('52')"><span class="akun-dot dot-52"></span>Akun 52 (Barang &amp; Jasa)</button>
+                            <button type="button" class="akun-chip" data-akun="53" onclick="setAkunFilter('53')"><span class="akun-dot dot-53"></span>Akun 53 (Modal)</button>
+                        </div>
                         <select id="nama_belanja" name="nama_belanja" class="spj-input" required onchange="handleNamaBelanjaChange()">
                             <option value="" disabled selected>Pilih Nama Belanja...</option>
                         </select>
+                        <span class="spj-field-hint">Dikelompokkan berdasarkan Bagan Akun Standar (Akun 51, 52, 53).</span>
                     </div>
 
                     <div>
-                        <label class="spj-label" for="jenis_belanja">Jenis Belanja</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <label class="spj-label" for="jenis_belanja" style="margin-bottom: 0;">Jenis Belanja <span style="color: #ef4444;">*</span></label>
+                            <span id="jenis_count_hint" style="font-size: 11px; color: var(--dash-text-muted); font-weight: 600;"></span>
+                        </div>
+                        <div style="height: 31px; margin-bottom: 8px;" class="akun-filter-placeholder"></div>
                         <select id="jenis_belanja" name="jenis_belanja" class="spj-input" required disabled onchange="handleJenisBelanjaChange()">
                             <option value="" disabled selected>Pilih Jenis Belanja...</option>
                         </select>
+                        <span class="spj-field-hint">Spesifikasi jenis pengeluaran atau rincian kegiatan belanja.</span>
                     </div>
                 </div>
 
@@ -631,20 +711,129 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
         }
     }
 
+    function getAkunCategory(nama) {
+        if (/\(51\d*\)/.test(nama) || /gaji|tunjangan|uang makan|lembur|honor output/i.test(nama)) {
+            return {
+                kode: '51',
+                label: 'Akun 51 - Belanja Pegawai'
+            };
+        }
+        if (/\(53\d*\)/.test(nama) || /modal/i.test(nama)) {
+            return {
+                kode: '53',
+                label: 'Akun 53 - Belanja Modal'
+            };
+        }
+        return {
+            kode: '52',
+            label: 'Akun 52 - Belanja Barang & Jasa'
+        };
+    }
+
+    let currentAkunFilter = 'all';
+
+    function setAkunFilter(kode) {
+        currentAkunFilter = kode;
+        document.querySelectorAll('.akun-chip').forEach(chip => {
+            if (chip.getAttribute('data-akun') === kode) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const currentVal = selNamaBelanja ? selNamaBelanja.value : '';
+        populateNamaBelanjaOptions(currentVal);
+    }
+
+    function populateNamaBelanjaOptions(targetSelectedVal = '') {
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        if (!selNamaBelanja) return;
+
+        selNamaBelanja.innerHTML = '<option value="" disabled selected>Pilih Nama Belanja...</option>';
+
+        const groups = {
+            '51': { label: 'Akun 51 - Belanja Pegawai', items: [] },
+            '52': { label: 'Akun 52 - Belanja Barang & Jasa', items: [] },
+            '53': { label: 'Akun 53 - Belanja Modal', items: [] }
+        };
+
+        for (const nama in spjData) {
+            const cat = getAkunCategory(nama);
+            if (groups[cat.kode]) {
+                groups[cat.kode].items.push(nama);
+            }
+        }
+
+        // Hide filter buttons if there are no items for that account
+        ['51', '52', '53'].forEach(k => {
+            const chip = document.querySelector(`.akun-chip[data-akun="${k}"]`);
+            if (chip) {
+                chip.style.display = groups[k].items.length > 0 ? 'inline-flex' : 'none';
+            }
+        });
+
+        const order = ['51', '52', '53'];
+        let foundSelected = false;
+
+        order.forEach(k => {
+            if (currentAkunFilter !== 'all' && currentAkunFilter !== k) {
+                return;
+            }
+            const group = groups[k];
+            if (group.items.length === 0) return;
+
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = group.label;
+
+            group.items.sort().forEach(nama => {
+                const opt = document.createElement('option');
+                opt.value = nama;
+                opt.textContent = nama;
+                if (nama === targetSelectedVal) {
+                    opt.selected = true;
+                    foundSelected = true;
+                }
+                optgroup.appendChild(opt);
+            });
+
+            selNamaBelanja.appendChild(optgroup);
+        });
+
+        if (foundSelected && targetSelectedVal) {
+            selNamaBelanja.value = targetSelectedVal;
+        }
+
+        updateAkunBadge(selNamaBelanja.value);
+    }
+
+    function updateAkunBadge(nama) {
+        const badge = document.getElementById('badge_akun_terpilih');
+        if (!badge) return;
+        if (!nama) {
+            badge.style.display = 'none';
+            return;
+        }
+        const cat = getAkunCategory(nama);
+        badge.textContent = cat.label;
+        badge.style.display = 'inline-block';
+        if (cat.kode === '51') {
+            badge.style.backgroundColor = '#dbeafe';
+            badge.style.color = '#1e40af';
+        } else if (cat.kode === '52') {
+            badge.style.backgroundColor = '#d1fae5';
+            badge.style.color = '#065f46';
+        } else if (cat.kode === '53') {
+            badge.style.backgroundColor = '#f3e8ff';
+            badge.style.color = '#6b21a8';
+        }
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
         const selNamaBelanja = document.getElementById("nama_belanja");
         const selJenisBelanja = document.getElementById("jenis_belanja");
         
-        // Populate first dropdown
-        if (selNamaBelanja) {
-            for (const nama in spjData) {
-                const opt = document.createElement("option");
-                opt.value = nama;
-                opt.textContent = nama;
-                selNamaBelanja.appendChild(opt);
-            }
-        }
-
         // Pulihkan pilihan form yang sudah dipilih agar tidak reset
         const activeNama = oldNamaBelanja || sessionStorage.getItem('umum_spj_form_nama_belanja') || '';
         const activeJenis = oldJenisBelanja || sessionStorage.getItem('umum_spj_form_jenis_belanja') || '';
@@ -652,12 +841,20 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             ? oldBerkas
             : JSON.parse(sessionStorage.getItem('umum_spj_form_berkas') || '{}');
 
+        // Populate grouped options
+        populateNamaBelanjaOptions(activeNama);
+
         if (activeNama && spjData[activeNama] && selNamaBelanja) {
             selNamaBelanja.value = activeNama;
+            updateAkunBadge(activeNama);
 
             if (selJenisBelanja) {
                 selJenisBelanja.innerHTML = '<option value="" disabled>Pilih Jenis Belanja...</option>';
                 selJenisBelanja.disabled = false;
+                const jenisKeys = Object.keys(spjData[activeNama]);
+                const hintEl = document.getElementById("jenis_count_hint");
+                if (hintEl) hintEl.textContent = `(${jenisKeys.length} pilihan)`;
+
                 for (const jenis in spjData[activeNama]) {
                     const opt = document.createElement("option");
                     opt.value = jenis;
@@ -680,7 +877,10 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
         const nama = document.getElementById("nama_belanja").value;
         const selJenisBelanja = document.getElementById("jenis_belanja");
         const docContainer = document.getElementById("dokumen_container");
+        const hintEl = document.getElementById("jenis_count_hint");
         
+        updateAkunBadge(nama);
+
         sessionStorage.setItem('umum_spj_form_nama_belanja', nama);
         sessionStorage.removeItem('umum_spj_form_jenis_belanja');
         sessionStorage.removeItem('umum_spj_form_berkas');
@@ -691,6 +891,9 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 
         if (nama && spjData[nama]) {
             selJenisBelanja.disabled = false;
+            const jenisKeys = Object.keys(spjData[nama]);
+            if (hintEl) hintEl.textContent = `(${jenisKeys.length} pilihan)`;
+
             for (const jenis in spjData[nama]) {
                 const opt = document.createElement("option");
                 opt.value = jenis;
@@ -699,6 +902,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             }
         } else {
             selJenisBelanja.disabled = true;
+            if (hintEl) hintEl.textContent = '';
         }
     }
 
@@ -708,6 +912,8 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
         const jenis = document.getElementById("jenis_belanja").value;
 
         sessionStorage.setItem('umum_spj_form_jenis_belanja', jenis);
+        renderDokumenList(nama, jenis);
+    }
         renderDokumenList(nama, jenis);
     }
 

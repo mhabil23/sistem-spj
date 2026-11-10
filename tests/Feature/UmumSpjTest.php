@@ -350,4 +350,101 @@ class UmumSpjTest extends TestCase
         $responseRiwayat->assertSee('Perbaikan Diajukan (Menunggu Cek)');
         $responseRiwayat->assertSee('Telah Diperbaiki Pengaju');
     }
+
+    public function test_user_umum_can_view_my_spj_index(): void
+    {
+        // SPJ yang dibuat oleh user Umum sendiri
+        $mySpj = Spj::create([
+            'user_id' => $this->userUmum->id,
+            'kegiatan' => 'Belanja Gaji PNS Subbagian Umum Periode Maret',
+            'tanggal' => now(),
+            'nilai' => 12500000,
+            'status' => 'draft',
+            'seksi' => 'Subbagian Umum',
+        ]);
+
+        // SPJ yang dibuat oleh user Teknis
+        $otherSpj = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'kegiatan' => 'Belanja Kegiatan Lapangan Sakernas',
+            'tanggal' => now(),
+            'nilai' => 4500000,
+            'status' => 'diajukan',
+            'seksi' => 'Seksi Sosial',
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->get(route('umum.spj-saya.index'));
+        $response->assertStatus(200);
+        $response->assertSee('Belanja Gaji PNS Subbagian Umum Periode Maret');
+        $response->assertSee('SPJ Saya (Pengajuan Mandiri Umum)');
+        // Memastikan SPJ milik orang lain tidak tercantum di SPJ Saya
+        $response->assertDontSee('Belanja Kegiatan Lapangan Sakernas');
+    }
+
+    public function test_user_umum_can_edit_and_update_own_draft_spj(): void
+    {
+        $mySpj = Spj::create([
+            'user_id' => $this->userUmum->id,
+            'nomor_spj' => '00987652026',
+            'kegiatan' => 'Belanja Modal Pengadaan AC Ruang Server',
+            'tanggal' => now()->toDateString(),
+            'nilai' => 8000000,
+            'status' => 'draft',
+            'seksi' => 'Subbagian Umum',
+        ]);
+
+        $responseEdit = $this->actingAs($this->userUmum)->get(route('umum.spj-saya.edit', $mySpj->id));
+        $responseEdit->assertStatus(200);
+        $responseEdit->assertSee('Belanja Modal Pengadaan AC Ruang Server');
+
+        $responseUpdate = $this->actingAs($this->userUmum)->put(route('umum.spj-saya.update', $mySpj->id), [
+            'nomor_spj' => $mySpj->nomor_spj,
+            'kegiatan' => 'Belanja Modal Pengadaan AC Ruang Server Updated',
+            'tanggal' => now()->toDateString(),
+            'nilai' => '8500000',
+            'status' => 'draft',
+            'is_printed' => '0',
+            'seksi' => 'Subbagian Umum',
+        ]);
+
+        $responseUpdate->assertRedirect(route('umum.spj-saya.index'));
+        $this->assertDatabaseHas('spjs', [
+            'id' => $mySpj->id,
+            'kegiatan' => 'Belanja Modal Pengadaan AC Ruang Server Updated',
+            'nilai' => 8500000,
+        ]);
+    }
+
+    public function test_user_umum_cannot_edit_other_user_spj_via_spj_saya(): void
+    {
+        $otherSpj = Spj::create([
+            'user_id' => $this->userTeknis->id,
+            'nomor_spj' => '00987652027',
+            'kegiatan' => 'Kegiatan Teknis Neraca',
+            'tanggal' => now()->toDateString(),
+            'nilai' => 3000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->get(route('umum.spj-saya.edit', $otherSpj->id));
+        $response->assertStatus(404);
+    }
+
+    public function test_user_umum_can_delete_own_draft_spj(): void
+    {
+        $draftSpj = Spj::create([
+            'user_id' => $this->userUmum->id,
+            'kegiatan' => 'Draf Belanja Dibatalkan',
+            'tanggal' => now(),
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->delete(route('umum.spj-saya.destroy', $draftSpj->id));
+        $response->assertRedirect(route('umum.spj-saya.index'));
+
+        $this->assertDatabaseMissing('spjs', [
+            'id' => $draftSpj->id,
+        ]);
+    }
 }

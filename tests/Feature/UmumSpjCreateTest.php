@@ -40,7 +40,7 @@ class UmumSpjCreateTest extends TestCase
 
         $response = $this->actingAs($umum)->post(route('umum.spj.store'), $payload);
 
-        $response->assertRedirect(route('umum.spj.index'));
+        $response->assertRedirect(route('umum.spj-saya.index'));
         $this->assertDatabaseHas('spjs', [
             'nomor_spj' => 'SPJ-UMUM-2026-001',
             'user_id' => $umum->id,

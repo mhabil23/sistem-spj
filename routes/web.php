@@ -125,6 +125,13 @@ Route::middleware(['auth', 'role:umum'])->prefix('umum')->name('umum.')->group(f
     Route::get('/spj', [UmumSpjController::class, 'index'])->name('spj.index');
     Route::get('/spj/create', [UmumSpjController::class, 'create'])->name('spj.create');
     Route::post('/spj', [UmumSpjController::class, 'store'])->name('spj.store');
+
+    // Menu SPJ Saya (Pengajuan Sendiri Subbag Umum)
+    Route::get('/spj-saya', [UmumSpjController::class, 'mySpj'])->name('spj-saya.index');
+    Route::get('/spj-saya/{id}/edit', [UmumSpjController::class, 'editMySpj'])->name('spj-saya.edit');
+    Route::put('/spj-saya/{id}', [UmumSpjController::class, 'updateMySpj'])->name('spj-saya.update');
+    Route::delete('/spj-saya/{id}', [UmumSpjController::class, 'destroyMySpj'])->name('spj-saya.destroy');
+
     Route::get('/spj/{id}', [UmumSpjController::class, 'show'])->name('spj.show');
     Route::delete('/spj/{id}', [UmumSpjController::class, 'destroy'])->name('spj.destroy');
     Route::get('/spj/{id}/print', [UmumSpjController::class, 'print'])->name('spj.print');

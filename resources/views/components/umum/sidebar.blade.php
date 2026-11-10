@@ -21,11 +21,19 @@
         </a>
 
         <!-- Kotak Masuk SPJ -->
-        <a href="{{ route('umum.spj.index') }}" class="nav-item {{ request()->routeIs('umum.spj.index', 'umum.spj.show') ? 'active' : '' }}">
+        <a href="{{ route('umum.spj.index') }}" class="nav-item {{ request()->routeIs('umum.spj.index', 'umum.spj.show') && !request()->routeIs('umum.spj-saya.*') ? 'active' : '' }}">
             <span class="nav-icon-wrap">
                 <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
             </span>
             <span class="nav-label">Kotak Masuk SPJ</span>
+        </a>
+
+        <!-- SPJ Saya (Pengajuan Mandiri Umum) -->
+        <a href="{{ route('umum.spj-saya.index') }}" class="nav-item {{ request()->routeIs('umum.spj-saya.*') ? 'active' : '' }}">
+            <span class="nav-icon-wrap">
+                <ion-icon name="folder-open-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">SPJ Saya</span>
         </a>
 
         <!-- Pengajuan SPJ -->

@@ -498,7 +498,6 @@
                     <span class="section-micro-label">TRANSPARANSI BIROKRASI BPS</span>
                     <h2 class="showcase-title">
                         Pantau Posisi Berkas Kapan Saja <br>
-                        <span class="hero-brand-text">Tanpa Harus Login.</span>
                     </h2>
                     <p class="showcase-desc">
                         Seluruh tahapan penyelesaian tagihan dapat dipantau langsung oleh staf teknis, pimpinan, maupun mitra kerja. Sistem menjamin keterbukaan informasi anggaran demi mewujudkan tata kelola BPS yang akuntabel, efisien, dan melayani.
@@ -508,10 +507,7 @@
                             <i class="bi bi-search"></i>
                             <span>CARI DOKUMEN SPJ</span>
                         </a>
-                        <a href="{{ route('panduan-role.preview') }}" target="_blank" class="btn-formal-outline">
-                            <i class="bi bi-file-earmark-pdf"></i>
-                            <span>PANDUAN ROLE</span>
-                        </a>
+                  
                     </div>
                 </div>
 

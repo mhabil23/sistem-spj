@@ -160,7 +160,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
             'berkas' => ['0' => '1', '1' => '1', '2' => '1', '3' => '1', '4' => '1'],
         ]);
 
-        $response->assertRedirect(route('umum.spj.index'));
+        $response->assertRedirect(route('umum.spj-saya.index'));
 
         $this->assertDatabaseHas('spjs', [
             'kegiatan' => 'Pengadaan Komputer PC All-in-One Subbag Umum',
