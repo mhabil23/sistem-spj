@@ -12,7 +12,7 @@ class DashboardController extends Controller
     {
         $totalAntrean = Spj::where('status', 'diajukan')->whereNotNull('berkas_fisik_diterima_at')->count();
         $totalMenungguFisik = Spj::where('status', 'diajukan')->whereNull('berkas_fisik_diterima_at')->count();
-        $totalSelesai = Spj::whereIn('status', ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai'])->count();
+        $totalSelesai = Spj::whereIn('status', ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls', 'selesai'])->count();
         $totalRevisi = Spj::where('status', 'revisi_umum')->count();
         $totalSpj = Spj::count();
         $totalUsers = User::where('role', 'teknis')->count();

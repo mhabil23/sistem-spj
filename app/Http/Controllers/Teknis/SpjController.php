@@ -297,7 +297,7 @@ class SpjController extends Controller
         if ($request->filled('status')) {
             $status = $request->status;
             if ($status === 'diproses') {
-                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa']);
+                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']);
             } elseif ($status === 'dikembalikan') {
                 $query->where(function ($q) {
                     $q->where('status', 'like', 'revisi_%')
@@ -376,7 +376,7 @@ class SpjController extends Controller
         if ($request->filled('status')) {
             $status = $request->status;
             if ($status === 'diproses') {
-                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa']);
+                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']);
             } elseif ($status === 'dikembalikan') {
                 $query->where(function ($q) {
                     $q->where('status', 'like', 'revisi_%')

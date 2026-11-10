@@ -120,6 +120,8 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                                     Bendahara
                                 @elseif($spj->status == 'menunggu_otp_kpa')
                                     KPA (OTP QLOLA)
+                                @elseif($spj->status == 'proses_ls')
+                                    Bank LS (Bendahara)
                                 @elseif($spj->status == 'selesai')
                                     Arsip
                                 @else
@@ -172,7 +174,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
         <div class="spj-panel-body" style="padding: 20px;">
             @php
                 $needAttention = $recentSpjs->filter(function($spj) {
-                    return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa']);
+                    return str_contains($spj->status, 'revisi') || in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']);
                 });
             @endphp
 
@@ -196,6 +198,16 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                         <div style="flex: 1;">
                             <strong style="display: block; font-size: 13px; color: #1e40af; margin-bottom: 4px;">{{ Str::limit($spj->kegiatan, 45) }}</strong>
                             <p style="font-size: 12px; color: #1e3a8a; margin: 0; line-height: 1.4;">Tahap: MENUNGGU OTP QLOLA KPA (Otorisasi Pembayaran).</p>
+                        </div>
+                    </div>
+                @elseif($spj->status === 'proses_ls')
+                    <div style="display: flex; gap: 14px; padding: 14px; background: #faf5ff; border-radius: 12px; margin-bottom: 12px; border-left: 4px solid #8b5cf6; border: 1px solid #e9d5ff;">
+                        <div style="color: #8b5cf6; font-size: 20px;">
+                            <ion-icon name="card-outline"></ion-icon>
+                        </div>
+                        <div style="flex: 1;">
+                            <strong style="display: block; font-size: 13px; color: #6b21a8; margin-bottom: 4px;">{{ Str::limit($spj->kegiatan, 45) }}</strong>
+                            <p style="font-size: 12px; color: #581c87; margin: 0; line-height: 1.4;">Tahap: MENUNGGU TRANSFER BANK LANGSUNG (LS).</p>
                         </div>
                     </div>
                 @elseif(in_array($spj->status, ['diajukan', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm']))
