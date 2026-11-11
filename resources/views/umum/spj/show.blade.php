@@ -133,7 +133,7 @@ if ($isRevision) {
                 <span>WhatsApp Pengaju</span>
             </button>
 
-            <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="btn-print-header" title="Cetak Lembar Kendali / Checklist SOP">
+            <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="btn-print-header" title="Cetak Laporan Rekapitulasi Checklist SPJ (Buka di Tab Baru)">
                 <ion-icon name="print-outline" style="font-size: 18px;"></ion-icon>
                 <span>Cetak Lembar Checklist</span>
             </a>

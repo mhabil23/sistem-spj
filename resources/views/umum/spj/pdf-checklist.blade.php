@@ -2,11 +2,11 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Lembar Kendali & Checklist Verifikasi SPJ - #{{ $spj->id }}</title>
+    <title>Laporan Rekapitulasi SPJ - {{ $spj->nomor_spj ?: 'SPJ #'.$spj->id }}</title>
     <style>
         @page {
-            margin: 12mm 15mm;
-            size: A4 portrait;
+            size: A4 landscape;
+            margin: 8mm 10mm;
         }
 
         * {
@@ -16,395 +16,447 @@
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 8.5pt;
-            line-height: 1.35;
-            color: #1e293b;
+            font-family: 'DejaVu Sans', Arial, "Helvetica Neue", Helvetica, sans-serif;
             background: #ffffff;
+            color: #111827;
+            font-size: 8pt;
+            line-height: 1.35;
         }
 
-        /* HEADER KOP BPS */
-        .kop-table {
-            width: 100%;
-            border-collapse: collapse;
-            border-bottom: 2.5px solid #1e4253;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-        }
-
-        .kop-table td {
-            vertical-align: middle;
-        }
-
-        .kop-logo {
-            width: 135px;
-        }
-
-        .kop-text {
-            text-align: right;
-        }
-
-        .kop-text h1 {
-            font-size: 11pt;
-            font-weight: bold;
-            color: #1e4253;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
-        }
-
-        .kop-text h2 {
-            font-size: 9pt;
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 1px;
-        }
-
-        .kop-text p {
-            font-size: 7pt;
-            color: #64748b;
-        }
-
-        /* TITLE BANNER */
-        .doc-title-box {
-            background-color: #1e4253;
+        /* TOOLBAR KHUSUS BROWSER JIKA DIBUKA FORMAT HTML */
+        .no-print {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #0f172a;
             color: #ffffff;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 99999;
+            margin-bottom: 16px;
+            font-family: Arial, sans-serif;
+        }
+
+        .btn-print-toolbar {
+            background: #0284c7;
+            color: #ffffff;
+            border: none;
+            padding: 7px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-close-toolbar {
+            background: #475569;
+            color: #ffffff;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { padding: 0 !important; }
+        }
+
+        /* HEADER KOP LAPORAN */
+        .header-section {
             text-align: center;
-            padding: 7px 12px;
-            border-radius: 4px;
             margin-bottom: 12px;
         }
 
-        .doc-title-box h3 {
-            font-size: 10pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin: 0;
-        }
-
-        .doc-title-box p {
-            font-size: 7.5pt;
-            margin-top: 2px;
-            opacity: 0.9;
-        }
-
-        /* INFO META TABLE */
-        .info-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 14px;
-            background: #f8fafc;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-        }
-
-        .info-table td {
-            padding: 5px 8px;
-            font-size: 8pt;
-            vertical-align: top;
-        }
-
-        .info-label {
-            width: 140px;
-            font-weight: bold;
-            color: #334155;
-        }
-
-        .info-sep {
-            width: 10px;
-            text-align: center;
-        }
-
-        .info-val {
-            color: #0f172a;
-        }
-
-        /* CHECKLIST TABLE */
-        .section-heading {
-            font-size: 8.5pt;
-            font-weight: bold;
-            color: #1e4253;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-            letter-spacing: 0.3px;
-        }
-
-        .checklist-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 14px;
-        }
-
-        .checklist-table th,
-        .checklist-table td {
-            border: 1px solid #94a3b8;
-            padding: 5px 6px;
-            font-size: 7.5pt;
-            line-height: 1.3;
-        }
-
-        .checklist-table th {
-            background-color: #e2edf5;
-            color: #1e4253;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .box-check {
-            width: 14px;
-            height: 14px;
-            border: 1px solid #475569;
-            margin: auto;
-            text-align: center;
-            line-height: 14px;
-            font-weight: bold;
-            font-size: 9pt;
-        }
-
-        .box-check.checked {
-            background-color: #dcfce7;
-            color: #15803d;
-            border-color: #16a34a;
-        }
-
-        /* KESIMPULAN & CATATAN */
-        .catatan-box {
-            border: 1px solid #94a3b8;
-            border-radius: 4px;
-            padding: 8px 10px;
-            margin-bottom: 14px;
-            background: #fafafa;
-            min-height: 52px;
-        }
-
-        .catatan-title {
-            font-weight: bold;
-            font-size: 8pt;
-            color: #1e4253;
+        .header-logo {
+            height: 48px;
             margin-bottom: 4px;
         }
 
-        .catatan-content {
-            font-size: 7.5pt;
-            color: #334155;
-            line-height: 1.4;
+        .header-title {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #0f172a;
+            margin: 2px 0;
         }
 
-        .rekomendasi-row {
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 1px dashed #cbd5e1;
+        .header-subtitle {
+            font-size: 9.5pt;
+            color: #374151;
+            margin: 0;
+        }
+
+        /* META BAR */
+        .meta-table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 8pt;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #cbd5e1;
+            padding-bottom: 4px;
         }
 
-        /* TANDA TANGAN SECTION */
+        .meta-table td {
+            padding: 3px 2px;
+            vertical-align: middle;
+        }
+
+        /* TABLE CETAK REKAPITULASI */
+        .cetak-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7pt;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .cetak-table th, .cetak-table td {
+            border: 1px solid #334155;
+            padding: 4px 3px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        .cetak-table th {
+            background-color: #f1f5f9;
+            color: #0f172a;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .cetak-table tbody tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+
+        .check-mark {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #0f172a;
+        }
+
+        /* TANDA TANGAN */
         .ttd-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-top: 18px;
             page-break-inside: avoid;
         }
 
         .ttd-table td {
-            width: 50%;
+            border: none;
             vertical-align: top;
-            text-align: center;
-            font-size: 8pt;
+        }
+
+        .ttd-box {
+            width: 250px;
+            font-size: 8.5pt;
+            line-height: 1.35;
+            text-align: left;
         }
 
         .ttd-space {
-            height: 50px;
+            height: 44px;
         }
 
         .ttd-name {
             font-weight: bold;
             text-decoration: underline;
-        }
-
-        .ttd-nip {
-            font-size: 7pt;
-            color: #64748b;
-            margin-top: 2px;
+            color: #0f172a;
         }
     </style>
 </head>
 <body>
 
-    <!-- ======================================================== -->
-    <!-- KOP SURAT BPS KABUPATEN KOLAKA UTARA                     -->
-    <!-- ======================================================== -->
-    <table class="kop-table">
-        <tr>
-            <td style="width: 45%;">
-                @php
-                    $logoPath = public_path('images/logo-bps.png');
-                    $logoSrc = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : '';
-                @endphp
-                @if($logoSrc)
-                    <img src="{{ $logoSrc }}" class="kop-logo" alt="Logo BPS">
-                @else
-                    <strong style="font-size: 11pt; color: #1e4253;">BADAN PUSAT STATISTIK</strong>
-                @endif
-            </td>
-            <td class="kop-text" style="width: 55%;">
-                <h1>Badan Pusat Statistik</h1>
-                <h2>Kabupaten Kolaka Utara</h2>
-                <p>Jl. Trans Sulawesi Kompleks Perkantoran Pemda Kolaka Utara, Lasusua</p>
-                <p>Email: bps7408@bps.go.id | Website: kolakautarakab.bps.go.id</p>
-            </td>
-        </tr>
-    </table>
-
-    <!-- ======================================================== -->
-    <!-- JUDUL DOKUMEN                                            -->
-    <!-- ======================================================== -->
-    <div class="doc-title-box">
-        <h3>LEMBAR KENDALI & CHECKLIST VERIFIKASI DOKUMEN SPJ</h3>
-        <p>SUBBAGIAN UMUM / MEJA VERIFIKATOR PENYELESAIAN TAGIHAN</p>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- INFORMASI SPJ                                            -->
-    <!-- ======================================================== -->
-    <table class="info-table">
-        <tr>
-            <td class="info-label">No. Registrasi / SPJ</td>
-            <td class="info-sep">:</td>
-            <td class="info-val"><strong>{{ $spj->nomor_spj ?: 'SPJ/BPS7408/' . str_pad($spj->id, 4, '0', STR_PAD_LEFT) }}</strong></td>
-            <td class="info-label">Tanggal Pengajuan</td>
-            <td class="info-sep">:</td>
-            <td class="info-val">{{ ($spj->diajukan_at ? \Carbon\Carbon::parse($spj->diajukan_at) : $spj->created_at)->format('d F Y, H:i') }} WITA</td>
-        </tr>
-        <tr>
-            <td class="info-label">Staf Pengaju (PIC)</td>
-            <td class="info-sep">:</td>
-            <td class="info-val">{{ $spj->user->name ?? 'Staf Teknis' }} ({{ $spj->seksi_label }})</td>
-            <td class="info-label">Nomor WhatsApp PIC</td>
-            <td class="info-sep">:</td>
-            <td class="info-val">{{ $spj->no_wa ?: ($spj->user->no_wa ?? '-') }}</td>
-        </tr>
-        <tr>
-            <td class="info-label">Nama Kegiatan</td>
-            <td class="info-sep">:</td>
-            <td class="info-val" colspan="4"><strong>{{ $spj->kegiatan }}</strong></td>
-        </tr>
-        <tr>
-            <td class="info-label">Nilai Tagihan SPJ</td>
-            <td class="info-sep">:</td>
-            <td class="info-val" colspan="4">
-                <strong style="color: #047857; font-size: 9.5pt;">Rp {{ number_format($spj->nilai, 0, ',', '.') }}</strong>
-            </td>
-        </tr>
-    </table>
-
-    <!-- ======================================================== -->
-    <!-- TABEL CHECKLIST VERIFIKASI DOKUMEN                       -->
-    <!-- ======================================================== -->
-    <div class="section-heading">I. DAFTAR PEMERIKSAAN KELENGKAPAN BERKAS (SOP)</div>
+    @if(request('format') === 'html')
+        <div class="no-print">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <strong style="font-size: 13px;">📄 Pratinjau Lembar Checklist Berkas Fisik SPJ</strong>
+                <span style="background: rgba(255,255,255,0.15); padding: 2px 8px; border-radius: 4px; font-size: 11px;">Tab Baru</span>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" onclick="window.print()" class="btn-print-toolbar">🖨️ Cetak Lembar Checklist</button>
+                <button type="button" onclick="window.close()" class="btn-close-toolbar">✕ Tutup Tab</button>
+            </div>
+        </div>
+    @endif
 
     @php
-        $decodedDocs = $spj->dokumen_list;
-        if (empty($decodedDocs) && !empty($spj->dokumen_file) && str_starts_with(trim($spj->dokumen_file), '[')) {
-            $decodedDocs = json_decode($spj->dokumen_file, true) ?: [];
+        $logoPath = public_path('images/logo-bps.png');
+        $logoSrc = file_exists($logoPath) ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath)) : asset('images/logo-bps.png');
+
+        $docs = $spj->dokumen_list;
+        if (empty($docs) && !empty($spj->dokumen_file) && str_starts_with(trim($spj->dokumen_file), '[')) {
+            $docs = json_decode($spj->dokumen_file, true) ?: [];
         }
 
-        // Default standard 10 SOP list jika belum ada di json
-        $defaultSopItems = [
-            ['nama' => 'Kerangka Acuan Kerja (KAK) / Rencana Anggaran Biaya', 'disiapkan' => true],
-            ['nama' => 'Formulir Permintaan Belanja (FP dari BOS / Sistem)', 'disiapkan' => true],
-            ['nama' => 'Kuitansi asli bermaterai cukup (sesuai ketentuan nilai belanja > Rp5 Juta)', 'disiapkan' => true],
-            ['nama' => 'Nota / Faktur / Invoice asli bertanda tangan rekanan & berstempel basah', 'disiapkan' => true],
-            ['nama' => 'Berita Acara Serah Terima (BAST) Pekerjaan / Bukti Pembelian', 'disiapkan' => true],
-            ['nama' => 'Surat Tugas & Daftar Hadir Peserta / Petugas / Visum', 'disiapkan' => true],
-            ['nama' => 'Laporan pelaksanaan kegiatan disertai foto dokumentasi kegiatan (GPS)', 'disiapkan' => true],
-            ['nama' => 'Surat Keputusan (SK) Tim / Pokja (jika relevan honor kegiatan)', 'disiapkan' => false],
-            ['nama' => 'Perhitungan & Bukti Potong Pajak (PPh Pasal 21 / 22 / 23 / PPN)', 'disiapkan' => false],
-            ['nama' => 'Kesesuaian jumlah nominal kuitansi dengan alokasi DIPA / Pagu', 'disiapkan' => true],
-        ];
+        // Pemetaan label ringkas agar pas pada tabel landscape
+        $cleanLabel = function($name) {
+            $map = [
+                'KAK' => 'KAK',
+                'FP' => 'Form Permintaan',
+                'Form Permintaan' => 'Form Permintaan',
+                'kebutuhan barang' => 'Dokumen Kebutuhan',
+                'Dokumen permintaan' => 'Dokumen Kebutuhan',
+                'Surat Pesanan' => 'Surat Pesanan',
+                'bukti pemesanan' => 'Surat Pesanan',
+                'Surat Perjanjian' => 'Surat Perjanjian',
+                'Surat Tugas' => 'Surat Tugas',
+                'SPPD' => 'Surat Tugas',
+                'Visum' => 'Surat Tugas',
+                'SK KPA' => 'SK / SPK',
+                'Surat Keputusan' => 'SK / SPK',
+                'SPK' => 'SK / SPK',
+                'Kontrak' => 'Kontrak',
+                'SPMK' => 'SPMK',
+                'Surat Perintah Mulai Kerja' => 'SPMK',
+                'progres pekerjaan' => 'Progres Pekerjaan',
+                'Undangan' => 'Undangan',
+                'Daftar Hadir Lembur' => 'Hadir Lembur',
+                'Perintah Lembur' => 'Surat Lembur',
+                'Perhitungan Uang Lembur' => 'Hitung Lembur',
+                'Perhitungan Lembur' => 'Hitung Lembur',
+                'Daftar Hadir' => 'Daftar Hadir',
+                'Daftar Penerima' => 'Daftar Penerima',
+                'Daftar Gaji' => 'Daftar Gaji',
+                'Rekapitulasi' => 'Rekapitulasi',
+                'SPTJM' => 'SPTJM',
+                'Notula' => 'Notula / Laporan',
+                'Laporan' => 'Notula / Laporan',
+                'Bukti pembelian' => 'Bukti Beli / Nota',
+                'nota' => 'Bukti Beli / Nota',
+                'kwitansi' => 'Bukti Beli / Nota',
+                'Kuitansi' => 'Bukti Beli / Nota',
+                'invoice' => 'Invoice / Faktur',
+                'Invoice' => 'Invoice / Faktur',
+                'Pemeriksaan Barang' => 'BA Pemeriksaan',
+                'Pemeriksaan Pekerjaan' => 'BA Pemeriksaan',
+                'Berita Acara Pemeriksaan' => 'BA Pemeriksaan',
+                'BAST' => 'BAST',
+                'Berita Acara Serah Terima' => 'BAST',
+                'Faktur Pajak' => 'Bukti Pajak',
+                'SSP' => 'Bukti Pajak',
+                'PPh' => 'Bukti Pajak',
+                'PPn' => 'Bukti Pajak',
+                'Dokumentasi' => 'Dokumentasi',
+                'Bukti transaksi' => 'Bukti Pembayaran',
+                'Dokumen pembayaran' => 'Bukti Pembayaran',
+                'Bukti pembayaran' => 'Bukti Pembayaran',
+                'Screenshoot bukti transfer' => 'Bukti Transfer',
+                'Kesesuaian MRK' => 'Kesesuaian MRK',
+                'CMS' => 'CMS',
+                'SBKS' => 'Cek SBKS'
+            ];
 
-        $itemsToShow = count($decodedDocs) > 0 ? $decodedDocs : $defaultSopItems;
+            foreach ($map as $key => $lbl) {
+                if (stripos($name, $key) !== false) {
+                    return $lbl;
+                }
+            }
+
+            return strlen($name) > 22 ? substr($name, 0, 20) . '...' : $name;
+        };
+
+        // Kumpulkan kolom dokumen dinamis
+        $docColumns = [];
+        $seen = [];
+        if (!empty($docs)) {
+            foreach ($docs as $d) {
+                $rawName = $d['nama'] ?? 'Dokumen';
+                $lbl = $cleanLabel($rawName);
+                if (isset($seen[$lbl])) {
+                    $seen[$lbl]++;
+                    $lbl = $lbl . ' (' . $seen[$lbl] . ')';
+                } else {
+                    $seen[$lbl] = 1;
+                }
+                $docColumns[] = [
+                    'label' => $lbl,
+                    'full' => $rawName,
+                    'checked' => !empty($d['disiapkan'])
+                ];
+            }
+        } else {
+            // Standar jika SPJ draf lama belum mengisi kelengkapan dokumen
+            $defaultItems = ['KAK', 'Form Permintaan', 'Surat Tugas', 'Bukti Beli / Nota', 'BAST'];
+            foreach ($defaultItems as $item) {
+                $docColumns[] = ['label' => $item, 'full' => $item, 'checked' => true];
+            }
+        }
+
+        $totalDocCols = count($docColumns);
+        $totalKelengkapanColspan = $totalDocCols + 4;
+
+        // Deteksi Cerdas Nama Belanja & Jenis Belanja
+        $docNames = array_map(fn($d) => strtolower($d['nama'] ?? ''), $docs);
+        $allDocText = implode(' ', $docNames);
+        $kegiatanLower = strtolower($spj->kegiatan);
+
+        $namaBelanja = 'Belanja Operasional';
+        $jenisBelanja = $spj->seksi_label ?? ($spj->seksi ?: 'Kegiatan BPS');
+
+        if (str_contains($kegiatanLower, 'gaji pns') || (str_contains($allDocText, 'gaji induk') && !str_contains($kegiatanLower, 'pppk'))) {
+            $namaBelanja = 'Belanja Gaji PNS (5111)';
+            $jenisBelanja = 'Belanja Gaji PNS';
+        } elseif (str_contains($kegiatanLower, 'gaji pppk') || (str_contains($allDocText, 'gaji induk') && str_contains($kegiatanLower, 'pppk'))) {
+            $namaBelanja = 'Belanja Gaji PPPK (5116)';
+            $jenisBelanja = 'Belanja Gaji PPPK';
+        } elseif (str_contains($kegiatanLower, 'tukin') || str_contains($kegiatanLower, 'tunjangan kinerja') || str_contains($allDocText, 'sptjm')) {
+            if (str_contains($kegiatanLower, 'pppk')) {
+                $namaBelanja = 'Belanja Tunjangan Kinerja PPPK (512414)';
+                $jenisBelanja = 'Belanja Tunjangan Kinerja PPPK';
+            } else {
+                $namaBelanja = 'Belanja Tunjangan Kinerja PNS (512411)';
+                $jenisBelanja = 'Belanja Tunjangan Kinerja PNS';
+            }
+        } elseif (str_contains($kegiatanLower, 'uang makan')) {
+            if (str_contains($kegiatanLower, 'pppk')) {
+                $namaBelanja = 'Belanja Uang Makan PPPK (511628)';
+                $jenisBelanja = 'Belanja Uang Makan PPPK';
+            } else {
+                $namaBelanja = 'Belanja Uang Makan PNS (511129)';
+                $jenisBelanja = 'Belanja Uang Makan PNS';
+            }
+        } elseif (str_contains($kegiatanLower, 'lembur') || str_contains($allDocText, 'hadir lembur') || str_contains($allDocText, 'perhitungan uang lembur')) {
+            $namaBelanja = 'Belanja Lembur (512211)';
+            $jenisBelanja = 'Belanja Lembur';
+        } elseif (str_contains($kegiatanLower, 'modal') || str_contains($kegiatanLower, 'pengadaan') || str_contains($allDocText, 'pemeriksaan barang') || str_contains($allDocText, 'permintaan atau kebutuhan barang')) {
+            $namaBelanja = 'Belanja Modal (53)';
+            if (str_contains($allDocText, 'kartu kredit') || str_contains($allDocText, 'marketplace')) {
+                $jenisBelanja = 'Pembelian Langsung dengan Kartu Kredit Pemerintah atau Marketplace';
+            } elseif (str_contains($allDocText, 'surat perintah mulai kerja') || str_contains($allDocText, 'progres pekerjaan')) {
+                $jenisBelanja = 'Pengadaan melalui Kontrak';
+            } elseif (str_contains($allDocText, 'pembelian langsung oleh bendahara')) {
+                $jenisBelanja = 'Pembelian Langsung oleh Bendahara Pengeluaran';
+            } else {
+                $jenisBelanja = 'Pengadaan Langsung melalui Penyedia';
+            }
+        } elseif (str_contains($kegiatanLower, 'perjalanan') || str_contains($allDocText, 'surat tugas') || str_contains($allDocText, 'visum') || str_contains($allDocText, 'sppd')) {
+            $namaBelanja = 'Belanja Perjalanan Dinas Biasa (524111)';
+            $jenisBelanja = 'Perjalanan Dinas Biasa';
+        } elseif (str_contains($kegiatanLower, 'konsumsi') || str_contains($allDocText, 'konsumsi') || (str_contains($allDocText, 'daftar hadir') && str_contains($allDocText, 'notula'))) {
+            $namaBelanja = 'Belanja Bahan (521211)';
+            $jenisBelanja = 'Belanja Konsumsi';
+        } elseif (str_contains($kegiatanLower, 'paket data') || str_contains($allDocText, 'paket data')) {
+            $namaBelanja = 'Belanja Bahan (521211)';
+            $jenisBelanja = 'Belanja Paket Data Komunikasi';
+        } elseif (str_contains($kegiatanLower, 'honor') || str_contains($allDocText, '512213')) {
+            $namaBelanja = 'Honor Output Kegiatan (512213)';
+            $jenisBelanja = 'Honor Output Kegiatan';
+        }
+
+        $tanggalPenginputan = $spj->created_at ? $spj->created_at->translatedFormat('d F Y') : now()->translatedFormat('d F Y');
+        $tglMasukUmum = $spj->disetujui_umum_at ? \Carbon\Carbon::parse($spj->disetujui_umum_at)->translatedFormat('d F Y') : '-';
+        $tglPeriksaPpk = $spj->disetujui_ppk_at ? \Carbon\Carbon::parse($spj->disetujui_ppk_at)->translatedFormat('d F Y') : '-';
     @endphp
 
-    <table class="checklist-table">
+    <!-- HEADER / KOP LAPORAN REKAPITULASI -->
+    <div class="header-section">
+        @if($logoSrc)
+            <img src="{{ $logoSrc }}" alt="Logo BPS" class="header-logo">
+        @endif
+        <h2 class="header-title">LAPORAN REKAPITULASI SPJ</h2>
+        <p class="header-subtitle">Badan Pusat Statistik Kabupaten Kolaka Utara</p>
+    </div>
+
+    <!-- META BAR INFORMASI SPJ -->
+    <table class="meta-table">
+        <tr>
+            <td style="text-align: left;">
+                No. SPJ: <strong>{{ $spj->nomor_spj ?: '—' }}</strong> |
+                Periode Kegiatan: <strong>{{ $spj->periode_kegiatan_ringkas }}</strong> |
+                Staf Pengaju / PIC: <strong>{{ $spj->user->name ?? 'Pengguna BPS' }}</strong> {{ $spj->no_wa ? '(' . $spj->no_wa . ')' : '' }}
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+                Belanja: <strong>{{ $namaBelanja }} ({{ $jenisBelanja }})</strong>
+            </td>
+        </tr>
+    </table>
+
+    <!-- TABEL CETAK LAPORAN REKAPITULASI CHECKLIST FISIK SPJ -->
+    <table class="cetak-table">
         <thead>
             <tr>
-                <th style="width: 25px;">No.</th>
-                <th>Rincian Dokumen / Item Pemeriksaan SOP</th>
-                <th style="width: 70px;">Ada & Sesuai</th>
-                <th style="width: 70px;">Tidak Ada</th>
-                <th style="width: 140px;">Keterangan / Catatan</th>
+                <th rowspan="2" style="width: 25px;">No</th>
+                <th rowspan="2" style="min-width: 160px; max-width: 260px;">Nama Kegiatan</th>
+                <th rowspan="2" style="width: 85px; white-space: nowrap;">Jumlah Anggaran</th>
+                <th rowspan="2" style="width: 75px;">Tanggal Penginputan SPJ</th>
+                <th colspan="{{ $totalKelengkapanColspan }}">Kelengkapan Administrasi</th>
+                <th rowspan="2" style="width: 75px;">Keterangan</th>
+            </tr>
+            <tr>
+                @foreach($docColumns as $col)
+                    <th style="min-width: 32px; font-size: 6.5pt;">{{ $col['label'] }}</th>
+                @endforeach
+                <th style="width: 55px; font-size: 6.5pt;">Tgl Masuk SPJ</th>
+                <th style="width: 55px; font-size: 6.5pt;">Tgl Periksa PPK</th>
+                <th style="width: 40px; font-size: 6.5pt;">Paraf PPSPM</th>
+                <th style="width: 40px; font-size: 6.5pt;">Paraf Bendahara</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($itemsToShow as $idx => $item)
-                @php
-                    $isReady = !empty($item['disiapkan']);
-                @endphp
-                <tr>
-                    <td style="text-align: center;">{{ $idx + 1 }}</td>
-                    <td>{{ $item['nama'] ?? 'Dokumen' }}</td>
-                    <td style="text-align: center;">
-                        <div class="box-check {{ $isReady ? 'checked' : '' }}">
-                            {{ $isReady ? '✔' : '' }}
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div class="box-check {{ !$isReady ? 'checked' : '' }}">
-                            {{ !$isReady ? '✔' : '' }}
-                        </div>
-                    </td>
-                    <td style="font-size: 7pt; color: #475569;">
-                        @if($isReady)
-                            Lengkap fisik
+            <tr>
+                <td style="font-weight: bold;">1</td>
+                <td style="text-align: left; padding: 4px 6px; font-size: 7.5pt;">
+                    {{ $spj->kegiatan }}
+                </td>
+                <td style="text-align: right; white-space: nowrap; font-weight: bold; padding: 4px 5px;">
+                    Rp. {{ number_format($spj->nilai, 0, ',', '.') }}
+                </td>
+                <td style="white-space: nowrap;">
+                    {{ $tanggalPenginputan }}
+                </td>
+                @foreach($docColumns as $col)
+                    <td>
+                        @if($col['checked'])
+                            <span class="check-mark">&radic;</span>
                         @else
-                            Bagian Bendahara / PPK
+                            <span style="color: #94a3b8;">-</span>
                         @endif
                     </td>
-                </tr>
-            @endforeach
+                @endforeach
+                <td style="white-space: nowrap; font-size: 6.5pt;">
+                    {{ $tglMasukUmum }}
+                </td>
+                <td style="white-space: nowrap; font-size: 6.5pt;">
+                    {{ $tglPeriksaPpk }}
+                </td>
+                <td></td>
+                <td></td>
+                <td style="text-align: left; font-size: 6.5pt; padding: 3px 4px;">
+                    {{ $spj->keterangan ?: '-' }}
+                </td>
+            </tr>
         </tbody>
+        <tfoot>
+            <tr style="font-weight: bold; background-color: #f8fafc;">
+                <td colspan="2" style="text-align: right; padding-right: 12px; font-weight: bold;">TOTAL</td>
+                <td style="text-align: right; white-space: nowrap; font-weight: bold; padding: 4px 5px;">
+                    Rp. {{ number_format($spj->nilai, 0, ',', '.') }}
+                </td>
+                <td colspan="{{ $totalKelengkapanColspan + 2 }}"></td>
+            </tr>
+        </tfoot>
     </table>
 
-    <!-- ======================================================== -->
-    <!-- KESIMPULAN & CATATAN PEMERIKSA                           -->
-    <!-- ======================================================== -->
-    <div class="section-heading">II. CATATAN & KESIMPULAN HASIL VERIFIKASI</div>
-    <div class="catatan-box">
-        <div class="catatan-title">Catatan Verifikator Subbagian Umum:</div>
-        <div class="catatan-content">
-            {{ $spj->catatan_internal ?: ($spj->catatan_revisi ?: 'Dokumen telah diperiksa dan disesuaikan dengan ketentuan Standar Operasional Prosedur (SOP) penyelesaian tagihan SPJ di BPS Kabupaten Kolaka Utara.') }}
-        </div>
-        <div class="rekomendasi-row">
-            <strong>Kesimpulan:</strong> &nbsp;
-            @if(in_array($spj->status, ['disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'selesai']))
-                [ <strong>✔</strong> ] <strong>MEMENUHI SYARAT (Lengkap & Benar, Diteruskan ke PPK)</strong> &nbsp;&nbsp;&nbsp;&nbsp; [ &nbsp; ] PERLU REVISI
-            @elseif(str_contains($spj->status, 'revisi'))
-                [ &nbsp; ] MEMENUHI SYARAT &nbsp;&nbsp;&nbsp;&nbsp; [ <strong>✔</strong> ] <strong>PERLU PERBAIKAN / DIKEMBALIKAN KE TEKNIS</strong>
-            @else
-                [ <strong>✔</strong> ] Dalam Proses Verifikasi Subbagian Umum
-            @endif
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- TANDA TANGAN SECTION                                     -->
-    <!-- ======================================================== -->
+    <!-- TANDA TANGAN PEJABAT PEMBUAT KOMITMEN -->
     <table class="ttd-table">
         <tr>
-            <td>
-                <p>Mengetahui,</p>
-                <p><strong>Pejabat Pembuat Komitmen (PPK)</strong></p>
-                <div class="ttd-space"></div>
-                <p class="ttd-name">( ............................................................ )</p>
-                <p class="ttd-nip">NIP. ......................................................</p>
-            </td>
-            <td>
-                <p>Lasusua, {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
-                <p><strong>Petugas Verifikasi Subbag Umum</strong></p>
-                <div class="ttd-space"></div>
-                <p class="ttd-name">( {{ auth()->user()->name ?? 'Petugas Verifikasi Umum' }} )</p>
-                <p class="ttd-nip">NIP. {{ auth()->user()->nip ?? '......................................................' }}</p>
+            <td style="width: 70%;"></td>
+            <td style="width: 30%;">
+                <div class="ttd-box">
+                    <p style="margin: 0;">Lasusua, {{ now()->translatedFormat('d F Y') }}</p>
+                    <p style="margin: 2px 0 0 0; font-weight: 600;">Pejabat Pembuat Komitmen</p>
+                    <div class="ttd-space"></div>
+                    <p class="ttd-name">Hidayatullah, S.E.</p>
+                    <p style="margin: 1px 0 0 0; font-size: 7.5pt; color: #374151;">NIP. 198510292011011009</p>
+                </div>
             </td>
         </tr>
     </table>

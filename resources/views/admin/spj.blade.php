@@ -468,6 +468,12 @@
         font-size: 14px;
     }
 
+    .btn-action-cell.print:hover {
+        background: #f0f9ff;
+        color: #0284c7;
+        border-color: #bae6fd;
+    }
+
     .btn-action-cell.view:hover {
         background: var(--bps-blue-light);
         color: var(--bps-blue);
@@ -766,6 +772,10 @@
                         {{-- AKSI --}}
                         <td style="text-align: center;">
                             <div class="action-group" style="justify-content: center;">
+                                <a href="{{ route('admin.spj.print', $spj->id) }}" target="_blank" class="btn-action-cell print" title="Cetak Laporan Rekapitulasi SPJ (Tab Baru)">
+                                    <i class="bi bi-printer"></i>
+                                </a>
+
                                 <a href="{{ route('admin.spj.show', $spj->id) }}" class="btn-action-cell view" title="Lihat Detail SPJ">
                                     <i class="bi bi-eye"></i>
                                 </a>

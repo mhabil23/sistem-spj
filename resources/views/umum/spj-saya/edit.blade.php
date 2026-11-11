@@ -952,3 +952,4 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ mandiri Subbagian Umum.';
     });
 </script>
 @endpush
+

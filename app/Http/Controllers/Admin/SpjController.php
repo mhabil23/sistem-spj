@@ -7,6 +7,7 @@ use App\Models\Spj;
 use App\Models\SpjHistory;
 use App\Models\SyaratDokumenSpj;
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -363,6 +364,22 @@ class SpjController extends Controller
             'totalSelesai',
             'totalDikembalikan'
         ));
+    }
+
+    /**
+     * Cetak Lembar Rekapitulasi Checklist SPJ (Berkas Wajib Print) dalam format landscape resmi BPS (Tab Baru).
+     */
+    public function print($id)
+    {
+        $spj = Spj::with('user')->findOrFail($id);
+
+        if (request('format') === 'html') {
+            return view('umum.spj.pdf-checklist', compact('spj'));
+        }
+
+        $pdf = Pdf::loadView('umum.spj.pdf-checklist', compact('spj'))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('Laporan-Rekapitulasi-SPJ-'.$spj->id.'.pdf');
     }
 
     /**

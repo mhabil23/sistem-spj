@@ -44,6 +44,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');
     Route::get('/spj/create', [SpjController::class, 'create'])->name('spj.create');
     Route::post('/spj', [SpjController::class, 'store'])->name('spj.store');
+    Route::get('/spj/{id}/print', [SpjController::class, 'print'])->name('spj.print');
     Route::get('/spj/{spj}', [SpjController::class, 'show'])->name('spj.show');
     Route::get('/spj/{spj}/edit', [SpjController::class, 'edit'])->name('spj.edit');
     Route::put('/spj/{spj}', [SpjController::class, 'update'])->name('spj.update');

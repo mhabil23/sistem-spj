@@ -407,9 +407,9 @@
                 <i class="bi bi-pencil-square"></i> Edit Data
             </a>
 
-            <button type="button" onclick="window.print()" class="btn-action-detail btn-action-secondary">
+            <a href="{{ route('admin.spj.print', $spj->id) }}" target="_blank" class="btn-action-detail btn-action-secondary" title="Cetak Laporan Rekapitulasi SPJ (Tab Baru)">
                 <i class="bi bi-printer"></i> Cetak
-            </button>
+            </a>
 
             <form action="{{ route('admin.spj.destroy', $spj->id) }}" method="POST" style="margin: 0;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data SPJ ini? Tindakan ini tidak dapat dibatalkan.');">
                 @csrf

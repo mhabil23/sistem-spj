@@ -489,6 +489,34 @@ class TeknisSpjTest extends TestCase
         $this->assertStringContainsString('application/pdf', $response->headers->get('Content-Type'));
     }
 
+    public function test_teknis_print_content_matches_laporan_rekapitulasi_berkas_wajib(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-PRINT-REKAP-001',
+            'kegiatan' => 'Belanja Modal Pengadaan Komputer Teknis',
+            'tanggal' => now(),
+            'nilai' => 15000000,
+            'status' => 'diajukan',
+            'dokumen_file' => json_encode([
+                ['nama' => 'KAK', 'disiapkan' => true],
+                ['nama' => 'Form Permintaan', 'disiapkan' => true],
+                ['nama' => 'Berita Acara Serah Terima (BAST)', 'disiapkan' => true],
+            ]),
+        ]);
+
+        $responseHtml = $this->actingAs($teknis)->get(route('teknis.spj.print', ['id' => $spj->id, 'format' => 'html']));
+        $responseHtml->assertStatus(200);
+        $responseHtml->assertSee('LAPORAN REKAPITULASI SPJ');
+        $responseHtml->assertSee('Badan Pusat Statistik Kabupaten Kolaka Utara');
+        $responseHtml->assertSee('Kelengkapan Administrasi');
+        $responseHtml->assertSee('Hidayatullah, S.E.');
+        $responseHtml->assertSee('Pejabat Pembuat Komitmen');
+        $responseHtml->assertDontSee('LEMBAR KENDALI & CHECKLIST VERIFIKASI DOKUMEN SPJ');
+    }
+
     public function test_teknis_cannot_print_other_users_spj_checklist(): void
     {
         $teknisA = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);

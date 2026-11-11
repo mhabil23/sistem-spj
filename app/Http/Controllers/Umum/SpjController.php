@@ -532,13 +532,20 @@ class SpjController extends Controller
             ->with('trigger_wa', $triggerWa);
     }
 
+    /**
+     * Cetak Lembar Rekapitulasi Checklist SPJ (Berkas Wajib Print) dalam format landscape resmi BPS (Tab Baru).
+     */
     public function print($id)
     {
         $spj = Spj::with('user')->findOrFail($id);
 
-        $pdf = Pdf::loadView('umum.spj.pdf-checklist', compact('spj'));
+        if (request('format') === 'html') {
+            return view('umum.spj.pdf-checklist', compact('spj'));
+        }
 
-        return $pdf->stream('Checklist-Verifikasi-SPJ-'.$spj->id.'.pdf');
+        $pdf = Pdf::loadView('umum.spj.pdf-checklist', compact('spj'))->setPaper('a4', 'landscape');
+
+        return $pdf->stream('Laporan-Rekapitulasi-SPJ-'.$spj->id.'.pdf');
     }
 
     public function destroy($id)

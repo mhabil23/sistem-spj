@@ -147,13 +147,22 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                             @endphp
                             <span class="dash-badge {{ $badgeClass }}">{{ $statusText }}</span>
                         </td>
-                        <td style="text-align: center;">
-                            <a href="{{ route('umum.spj.show', $spj->id) }}" 
-                               class="btn-table-view" 
-                               style="background-color: {{ $btnBg }};" 
-                               title="{{ $btnTitle }}">
-                                <ion-icon name="eye-outline"></ion-icon>
-                            </a>
+                        <td style="text-align: center; white-space: nowrap;">
+                            <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+                                <a href="{{ route('umum.spj.print', $spj->id) }}" 
+                                   target="_blank"
+                                   class="btn-table-view" 
+                                   style="background-color: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd;" 
+                                   title="Cetak Laporan Rekapitulasi SPJ (Tab Baru)">
+                                    <ion-icon name="print-outline"></ion-icon>
+                                </a>
+                                <a href="{{ route('umum.spj.show', $spj->id) }}" 
+                                   class="btn-table-view" 
+                                   style="background-color: {{ $btnBg }};" 
+                                   title="{{ $btnTitle }}">
+                                    <ion-icon name="eye-outline"></ion-icon>
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     @empty
