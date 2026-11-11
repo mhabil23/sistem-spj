@@ -32,7 +32,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         // Memastikan belanja umum seperti belanja bahan ada
         $response->assertSee('Belanja Bahan (521211)');
 
-        // Memastikan seluruh 7 Belanja Pegawai (51xx) dan Belanja Modal (53) tidak dapat dilihat oleh staf teknis
+        // Memastikan seluruh Belanja Pegawai (51xx) dan Belanja Modal (53) tidak dapat dilihat oleh staf teknis
         $response->assertDontSee('Belanja Gaji PNS (5111)');
         $response->assertDontSee('Belanja Gaji PPPK (5116)');
         $response->assertDontSee('Belanja Tunjangan Kinerja PNS (512411)');
@@ -40,6 +40,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $response->assertDontSee('Belanja Uang Makan PNS (511129)');
         $response->assertDontSee('Belanja Uang Makan PPPK (511628)');
         $response->assertDontSee('Belanja Lembur (512211)');
+        $response->assertDontSee('Honor output kegiatan (512213)');
         $response->assertDontSee('Belanja Modal (53)');
     }
 
@@ -62,6 +63,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $response->assertSee('Belanja Uang Makan PNS (511129)');
         $response->assertSee('Belanja Uang Makan PPPK (511628)');
         $response->assertSee('Belanja Lembur (512211)');
+        $response->assertSee('Honor output kegiatan (512213)');
         $response->assertSee('Belanja Modal (53)');
     }
 
@@ -70,12 +72,14 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $teknisData = SyaratDokumenSpj::getSpjData('teknis');
         $this->assertArrayNotHasKey('Belanja Gaji PNS (5111)', $teknisData);
         $this->assertArrayNotHasKey('Belanja Lembur (512211)', $teknisData);
+        $this->assertArrayNotHasKey('Honor output kegiatan (512213)', $teknisData);
         $this->assertArrayNotHasKey('Belanja Modal (53)', $teknisData);
         $this->assertArrayHasKey('Belanja Bahan (521211)', $teknisData);
 
         $umumData = SyaratDokumenSpj::getSpjData('umum');
         $this->assertArrayHasKey('Belanja Gaji PNS (5111)', $umumData);
         $this->assertArrayHasKey('Belanja Lembur (512211)', $umumData);
+        $this->assertArrayHasKey('Honor output kegiatan (512213)', $umumData);
         $this->assertArrayHasKey('Belanja Modal (53)', $umumData);
         $this->assertArrayHasKey('Belanja Bahan (521211)', $umumData);
     }
@@ -168,5 +172,36 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
             'nilai' => 18500000,
             'status' => 'diajukan',
         ]);
+    }
+
+    public function test_teknis_cannot_submit_belanja_kode_51_or_53(): void
+    {
+        $teknis = User::factory()->create([
+            'role' => 'teknis',
+            'status' => 'aktif',
+            'seksi' => 'Sosial',
+        ]);
+
+        $responseKode51 = $this->actingAs($teknis)->post('/teknis/spj', [
+            'nama_belanja' => 'Belanja Gaji PNS (5111)',
+            'jenis_belanja' => 'Belanja Gaji PNS',
+            'kegiatan' => 'Pembayaran Gaji Pegawai',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => '25.000.000',
+            'status' => 'draft',
+        ]);
+
+        $responseKode51->assertSessionHasErrors('nama_belanja');
+
+        $responseKode53 = $this->actingAs($teknis)->post('/teknis/spj', [
+            'nama_belanja' => 'Belanja Modal (53)',
+            'jenis_belanja' => 'Pengadaan Langsung melalui Penyedia',
+            'kegiatan' => 'Pembelian Laptop',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => '15.000.000',
+            'status' => 'draft',
+        ]);
+
+        $responseKode53->assertSessionHasErrors('nama_belanja');
     }
 }

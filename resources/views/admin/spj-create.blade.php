@@ -433,15 +433,16 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
         const docContainer = document.getElementById("dokumen_container");
         const docList = document.getElementById("dokumen_list");
 
-        if (selNamaBelanja) {
-            selNamaBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Nama Belanja --</option>';
-            for (const nama in spjData) {
-                const opt = document.createElement("option");
-                opt.value = nama;
-                opt.textContent = nama;
-                selNamaBelanja.appendChild(opt);
+        currentAkunFilter = 'all';
+        document.querySelectorAll('.akun-chip').forEach(chip => {
+            if (chip.getAttribute('data-akun') === 'all') {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
             }
-        }
+        });
+
+        populateNamaBelanjaOptions('');
 
         if (selJenisBelanja) {
             selJenisBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Belanja --</option>';
@@ -585,7 +586,23 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
 
         const selNamaBelanja = document.getElementById("nama_belanja");
         const currentVal = selNamaBelanja ? selNamaBelanja.value : '';
-        populateNamaBelanjaOptions(currentVal);
+
+        let keepVal = false;
+        if (currentVal && spjData[currentVal]) {
+            const cat = getAkunCategory(currentVal);
+            if (kode === 'all' || cat.kode === kode) {
+                keepVal = true;
+            }
+        }
+
+        populateNamaBelanjaOptions(keepVal ? currentVal : '');
+
+        if (!keepVal) {
+            if (selNamaBelanja) {
+                selNamaBelanja.value = '';
+            }
+            handleNamaBelanjaChange();
+        }
     }
 
     function populateNamaBelanjaOptions(targetSelectedVal = '') {

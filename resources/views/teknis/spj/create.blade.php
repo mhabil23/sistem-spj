@@ -365,17 +365,16 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                             <label class="spj-label" for="nama_belanja" style="margin-bottom: 0;">Nama Belanja (Kategori Akun) <span style="color: #ef4444;">*</span></label>
                             <span id="badge_akun_terpilih" class="spj-badge-auto" style="display: none; font-size: 11px;"></span>
                         </div>
-                        <!-- Filter Chips Kelompok Akun Belanja -->
+                        <!-- Kelompok Akun Belanja Khusus Teknis (Akun 52) -->
                         <div class="akun-filter-group" id="akun_filter_group">
-                            <button type="button" class="akun-chip active" data-akun="all" onclick="setAkunFilter('all')">Semua Akun</button>
-                            <button type="button" class="akun-chip" data-akun="51" onclick="setAkunFilter('51')"><span class="akun-dot dot-51"></span>Akun 51 (Pegawai)</button>
-                            <button type="button" class="akun-chip" data-akun="52" onclick="setAkunFilter('52')"><span class="akun-dot dot-52"></span>Akun 52 (Barang &amp; Jasa)</button>
-                            <button type="button" class="akun-chip" data-akun="53" onclick="setAkunFilter('53')"><span class="akun-dot dot-53"></span>Akun 53 (Modal)</button>
+                            <span class="akun-chip active" style="cursor: default;" title="Kewenangan Staf Teknis: Belanja Barang & Jasa (Akun 52)">
+                                <span class="akun-dot dot-52"></span>Akun 52 (Barang &amp; Jasa)
+                            </span>
                         </div>
                         <select id="nama_belanja" name="nama_belanja" class="spj-input" required onchange="handleNamaBelanjaChange()">
                             <option value="" disabled selected>Pilih Nama Belanja...</option>
                         </select>
-                        <span class="spj-field-hint">Dikelompokkan berdasarkan Bagan Akun Standar (Akun 51, 52, 53).</span>
+                        <span class="spj-field-hint">Kewenangan Staf Teknis: Belanja Barang &amp; Jasa (Akun 52). Akun 51 &amp; 53 diajukan oleh Subbag Umum.</span>
                     </div>
 
                     <div>

@@ -60,6 +60,21 @@ class SyaratDokumenSpj extends Model
     }
 
     /**
+     * Tentukan peruntukan belanja berdasarkan kode akun:
+     * - Akun 51 (Belanja Pegawai): Hanya Subbag Umum ('umum')
+     * - Akun 52 (Belanja Barang & Jasa): Teknis dan Umum ('semua')
+     * - Akun 53 (Belanja Modal): Hanya Subbag Umum ('umum')
+     */
+    public static function determinePeruntukanByKode(string $namaBelanja): string
+    {
+        if (preg_match('/\(51\d*\)/', $namaBelanja) || preg_match('/\(53\d*\)/', $namaBelanja)) {
+            return 'umum';
+        }
+
+        return 'semua';
+    }
+
+    /**
      * Data default bawaan sistem SPJ BPS Kolaka Utara.
      *
      * @return array<string, array<string, array<int, array{name: string, assignee: string}>>>
@@ -410,18 +425,10 @@ class SyaratDokumenSpj extends Model
         ];
 
         if ($peruntukan === 'teknis') {
-            $umumOnlyKeys = [
-                'Belanja Gaji PNS (5111)',
-                'Belanja Gaji PPPK (5116)',
-                'Belanja Tunjangan Kinerja PNS (512411)',
-                'Belanja Tunjangan Kinerja PPPK (512414)',
-                'Belanja Uang Makan PNS (511129)',
-                'Belanja Uang Makan PPPK (511628)',
-                'Belanja Lembur (512211)',
-                'Belanja Modal (53)',
-            ];
-            foreach ($umumOnlyKeys as $key) {
-                unset($data[$key]);
+            foreach (array_keys($data) as $key) {
+                if (self::determinePeruntukanByKode($key) === 'umum') {
+                    unset($data[$key]);
+                }
             }
         }
 

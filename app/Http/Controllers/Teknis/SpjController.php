@@ -61,6 +61,15 @@ class SpjController extends Controller
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
         ]);
 
+        if ($request->filled('nama_belanja')) {
+            $peruntukanBelanja = SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja);
+            if ($peruntukanBelanja === 'umum') {
+                return back()->withInput()->withErrors([
+                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51) dan Belanja Modal (53) khusus untuk Subbagian Umum.',
+                ]);
+            }
+        }
+
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
             return back()->withInput()->withErrors([
                 'status' => 'SPJ tidak dapat diajukan jika belum menekan Print sampai tercetak. Silakan cetak lembar checklist berkas terlebih dahulu.',
@@ -182,6 +191,15 @@ class SpjController extends Controller
             'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
         ]);
+
+        if ($request->filled('nama_belanja')) {
+            $peruntukanBelanja = SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja);
+            if ($peruntukanBelanja === 'umum') {
+                return back()->withInput()->withErrors([
+                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51) dan Belanja Modal (53) khusus untuk Subbagian Umum.',
+                ]);
+            }
+        }
 
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
             return back()->withInput()->withErrors([

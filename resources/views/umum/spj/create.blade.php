@@ -744,7 +744,23 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
 
         const selNamaBelanja = document.getElementById("nama_belanja");
         const currentVal = selNamaBelanja ? selNamaBelanja.value : '';
-        populateNamaBelanjaOptions(currentVal);
+
+        let keepVal = false;
+        if (currentVal && spjData[currentVal]) {
+            const cat = getAkunCategory(currentVal);
+            if (kode === 'all' || cat.kode === kode) {
+                keepVal = true;
+            }
+        }
+
+        populateNamaBelanjaOptions(keepVal ? currentVal : '');
+
+        if (!keepVal) {
+            if (selNamaBelanja) {
+                selNamaBelanja.value = '';
+            }
+            handleNamaBelanjaChange();
+        }
     }
 
     function populateNamaBelanjaOptions(targetSelectedVal = '') {
@@ -912,8 +928,6 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
         const jenis = document.getElementById("jenis_belanja").value;
 
         sessionStorage.setItem('umum_spj_form_jenis_belanja', jenis);
-        renderDokumenList(nama, jenis);
-    }
         renderDokumenList(nama, jenis);
     }
 
