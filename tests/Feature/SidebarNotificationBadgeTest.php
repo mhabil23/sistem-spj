@@ -119,5 +119,47 @@ class SidebarNotificationBadgeTest extends TestCase
         $responseWithRevisi = $this->actingAs($teknis)->get(route('teknis.dashboard'));
         $responseWithRevisi->assertStatus(200);
         $responseWithRevisi->assertSee('SPJ perlu perbaikan berkas');
+        $responseWithRevisi->assertSee('SPJ Saya');
+    }
+
+    public function test_bendahara_sidebar_shows_badge_for_antrean_pencairan(): void
+    {
+        $bendahara = User::factory()->create([
+            'role' => 'bendahara',
+            'status' => 'aktif',
+        ]);
+
+        $teknis = User::factory()->create([
+            'role' => 'teknis',
+            'status' => 'aktif',
+            'seksi' => 'Sosial',
+        ]);
+
+        // Belum ada antrean pencairan -> badge tidak muncul
+        $response = $this->actingAs($bendahara)->get(route('bendahara.dashboard'));
+        $response->assertStatus(200);
+        $response->assertDontSee('SPJ masuk dalam antrean pencairan Bendahara');
+
+        // Buat 2 SPJ yang siap dicairkan / proses bank
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BEN-001',
+            'kegiatan' => 'Pencairan 1',
+            'tanggal' => now(),
+            'nilai' => 5000000,
+            'status' => 'disetujui_ppspm',
+        ]);
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BEN-002',
+            'kegiatan' => 'Pencairan 2',
+            'tanggal' => now(),
+            'nilai' => 3000000,
+            'status' => 'menunggu_otp_kpa',
+        ]);
+
+        $responseWithBadge = $this->actingAs($bendahara)->get(route('bendahara.dashboard'));
+        $responseWithBadge->assertStatus(200);
+        $responseWithBadge->assertSee('2 SPJ masuk dalam antrean pencairan Bendahara');
     }
 }

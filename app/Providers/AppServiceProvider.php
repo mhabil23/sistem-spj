@@ -79,5 +79,17 @@ class AppServiceProvider extends ServiceProvider
                 ]);
             }
         });
+
+        // View Composer untuk Badge Notifikasi Sidebar Bendahara
+        View::composer('components.bendahara.sidebar', function ($view) {
+            if (Auth::check()) {
+                // Menghitung SPJ yang masuk dalam antrean pencairan Bendahara
+                $badgeKotakMasukBendahara = Spj::whereIn('status', ['disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls'])->count();
+
+                $view->with([
+                    'badgeKotakMasukBendahara' => $badgeKotakMasukBendahara,
+                ]);
+            }
+        });
     }
 }

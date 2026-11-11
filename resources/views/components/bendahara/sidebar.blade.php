@@ -26,6 +26,9 @@
                 <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
             </span>
             <span class="nav-label">Kotak Masuk SPJ</span>
+            @if(!empty($badgeKotakMasukBendahara) && $badgeKotakMasukBendahara > 0)
+                <span class="nav-badge" title="{{ $badgeKotakMasukBendahara }} SPJ masuk dalam antrean pencairan Bendahara">{{ $badgeKotakMasukBendahara }}</span>
+            @endif
         </a>
 
         <!-- Verifikasi Berkas -->

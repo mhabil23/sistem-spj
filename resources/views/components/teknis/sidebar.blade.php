@@ -20,12 +20,12 @@
             <span class="nav-label">Dashboard</span>
         </a>
 
-        <!-- Kotak Masuk SPJ -->
+        <!-- SPJ Saya -->
         <a href="{{ route('teknis.spj.index') }}" class="nav-item {{ request()->routeIs('teknis.spj.index', 'teknis.spj.show') ? 'active' : '' }}">
             <span class="nav-icon-wrap">
-                <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
+                <ion-icon name="folder-open-outline" class="nav-icon"></ion-icon>
             </span>
-            <span class="nav-label">Kotak Masuk SPJ</span>
+            <span class="nav-label">SPJ Saya</span>
             @if(!empty($badgeRevisiTeknis) && $badgeRevisiTeknis > 0)
                 <span class="nav-badge nav-badge-danger" title="{{ $badgeRevisiTeknis }} SPJ perlu perbaikan berkas">{{ $badgeRevisiTeknis }}</span>
             @elseif(!empty($badgeDiajukanTeknis) && $badgeDiajukanTeknis > 0)
