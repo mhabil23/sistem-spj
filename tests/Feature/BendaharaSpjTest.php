@@ -96,6 +96,10 @@ class BendaharaSpjTest extends TestCase
             'nilai' => 4200000,
             'status' => 'disetujui_ppspm',
             'no_wa' => '081234567890',
+            'dokumen_file' => json_encode([
+                ['nama' => 'Faktur Pajak', 'disiapkan' => true, 'assignee' => 'Bendahara'],
+                ['nama' => 'SSP PPN', 'disiapkan' => true, 'assignee' => 'Bendahara'],
+            ]),
         ]);
 
         $response = $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
@@ -245,6 +249,9 @@ class BendaharaSpjTest extends TestCase
             'nilai' => 6000000,
             'status' => 'disetujui_ppspm',
             'no_wa' => '081234567890',
+            'dokumen_file' => json_encode([
+                ['nama' => 'SSP PPh Pasal 21', 'disiapkan' => true, 'assignee' => 'Bendahara'],
+            ]),
         ]);
 
         $response = $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
@@ -282,6 +289,9 @@ class BendaharaSpjTest extends TestCase
             'nilai' => 8500000,
             'status' => 'disetujui_ppspm',
             'no_wa' => '081234567890',
+            'dokumen_file' => json_encode([
+                ['nama' => 'Faktur Pajak', 'disiapkan' => true, 'assignee' => 'Bendahara'],
+            ]),
         ]);
 
         $response = $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
@@ -375,6 +385,9 @@ class BendaharaSpjTest extends TestCase
             'tanggal' => now(),
             'nilai' => 1000000,
             'status' => 'disetujui_ppspm',
+            'dokumen_file' => json_encode([
+                ['nama' => 'SSP PPh Pasal 21', 'disiapkan' => true, 'assignee' => 'Bendahara'],
+            ]),
         ]);
 
         $spj2 = Spj::create([
@@ -384,6 +397,9 @@ class BendaharaSpjTest extends TestCase
             'tanggal' => now(),
             'nilai' => 2000000,
             'status' => 'disetujui_ppspm',
+            'dokumen_file' => json_encode([
+                ['nama' => 'SSP PPh Pasal 21', 'disiapkan' => true, 'assignee' => 'Bendahara'],
+            ]),
         ]);
 
         $response = $this->actingAs($bendahara)->post(route('bendahara.spj.bulk-verify'), [

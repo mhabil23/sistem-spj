@@ -442,22 +442,51 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
     <div class="bnd-card-body">
         {{-- KONDISI 1: STATUS DISETUJUI PPSPM (PILIH METODE PEMBAYARAN) --}}
         @if($spj->status === 'disetujui_ppspm')
+        @php
+            $isComplete = $spj->areBendaharaObligationsCompleted();
+        @endphp
+
+        <!-- BANNER PERINGATAN KEWAJIBAN BENDAHARA -->
+        <div id="kewajibanWarningBannerBerkas" class="bnd-kewajiban-alert" style="{{ $isComplete ? 'display: none;' : 'display: flex;' }} background: #fffbeb; border: 2px solid #f59e0b; border-radius: 12px; padding: 16px 20px; margin-bottom: 22px; align-items: flex-start; gap: 14px;">
+            <div style="background: #fef3c7; color: #d97706; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;">
+                <ion-icon name="lock-closed"></ion-icon>
+            </div>
+            <div style="flex: 1;">
+                <h4 style="margin: 0 0 4px 0; font-size: 15px; font-weight: 800; color: #92400e;">
+                    Kewajiban Berkas Fisik &amp; Perpajakan Bendahara Belum Lengkap (<span id="warn_ready_count_berkas">{{ $bendaharaSiap }}</span>/{{ $bendaharaTotal }})
+                </h4>
+                <p style="margin: 0; font-size: 13px; color: #b45309; line-height: 1.5;">
+                    Tombol <strong>Menunggu OTP QLOLA KPA</strong> dan <strong>Pembayaran LS</strong> tidak dapat ditekan sebelum Anda mencentang seluruh kewajiban berkas fisik &amp; perpajakan Bendahara pada checklist di atas.
+                </p>
+            </div>
+        </div>
+
+        <div id="kewajibanSuccessBannerBerkas" class="bnd-kewajiban-alert" style="{{ $isComplete ? 'display: flex;' : 'display: none;' }} background: #ecfdf5; border: 1.5px solid #6ee7b7; border-radius: 12px; padding: 14px 18px; margin-bottom: 22px; align-items: center; gap: 12px;">
+            <ion-icon name="checkmark-circle" style="color: #059669; font-size: 24px; flex-shrink: 0;"></ion-icon>
+            <div style="font-size: 13.5px; color: #065f46; font-weight: 600;">
+                Seluruh kewajiban berkas fisik &amp; perpajakan Bendahara telah lengkap dicentang (<span id="succ_ready_count_berkas">{{ $bendaharaSiap }}</span>/{{ $bendaharaTotal }}). Silakan pilih metode pembayaran di bawah.
+            </div>
+        </div>
+
         <form action="{{ route('bendahara.spj.verify', $spj->id) }}" method="POST">
             @csrf
 
             <!-- Sertakan state checkbox bendahara agar tersimpan saat submit pembayaran -->
             @foreach($berkasBendahara as $idx => $doc)
                 <input type="hidden" name="berkas_bendahara[{{ $doc['index'] }}]" value="{{ !empty($doc['disiapkan']) ? '1' : '0' }}" class="hidden-cb-mirror-{{ $loop->index }}">
+                @if(!empty($doc['is_virtual']))
+                    <input type="hidden" name="berkas_virtual[{{ $loop->index }}]" value="{{ $doc['nama'] }}">
+                @endif
             @endforeach
 
             <div class="bnd-execution-grid" style="gap: 20px; margin-bottom: 24px;">
                 
                 <!-- PILIHAN A: MENUNGGU OTP QLOLA KPA -->
-                <div class="bnd-choice-card card-otp" style="border: 2px solid #93c5fd; background: #ffffff;">
-                    <div class="bnd-choice-ribbon" style="background: #2563eb; color: #ffffff;">Metode QLOLA BRI</div>
+                <div class="bnd-choice-card card-otp" id="card_choice_otp_berkas" style="border: 2px solid {{ $isComplete ? '#93c5fd' : '#cbd5e1' }}; background: #ffffff; {{ ! $isComplete ? 'opacity: 0.85;' : '' }}">
+                    <div class="bnd-choice-ribbon" id="ribbon_otp_berkas" style="background: {{ $isComplete ? '#2563eb' : '#94a3b8' }}; color: #ffffff;">Metode QLOLA BRI</div>
                     <div>
                         <div class="bnd-choice-head">
-                            <div class="bnd-choice-icon" style="background: #eff6ff; color: #2563eb;">
+                            <div class="bnd-choice-icon" id="icon_choice_otp_berkas" style="background: {{ $isComplete ? '#eff6ff' : '#f1f5f9' }}; color: {{ $isComplete ? '#2563eb' : '#94a3b8' }};">
                                 <ion-icon name="key-outline"></ion-icon>
                             </div>
                             <h3 class="bnd-choice-title">Transaksi CMS BRI QLOLA</h3>
@@ -467,23 +496,23 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
                         </p>
 
                         <label class="bnd-choice-input-label">Catatan / Referensi Maker QLOLA (Opsional):</label>
-                        <input type="text" name="keterangan_otp" class="bnd-choice-input" placeholder="Contoh: Batch QLOLA #{{ date('Ymd') }}-01 Menunggu KPA">
+                        <input type="text" name="keterangan_otp" id="input_keterangan_otp_berkas" class="bnd-choice-input" placeholder="Contoh: Batch QLOLA #{{ date('Ymd') }}-01 Menunggu KPA" {{ ! $isComplete ? 'disabled' : '' }}>
                     </div>
 
                     <div class="bnd-choice-actions" style="margin-top: 18px;">
-                        <button type="submit" name="action" value="otp_kpa" class="bnd-btn-submit-otp" style="width: 100%; justify-content: center;">
-                            <ion-icon name="key-outline" style="font-size: 18px;"></ion-icon>
-                            <span>Set Status: Menunggu OTP QLOLA KPA</span>
+                        <button type="submit" name="action" value="otp_kpa" id="btnSubmitOtpBerkas" class="bnd-btn-submit-otp" style="width: 100%; justify-content: center; {{ ! $isComplete ? 'opacity: 0.55; cursor: not-allowed; pointer-events: none; background: #94a3b8; border-color: #94a3b8;' : '' }}" {{ ! $isComplete ? 'disabled' : '' }}>
+                            <ion-icon name="{{ $isComplete ? 'key-outline' : 'lock-closed-outline' }}" id="btnSubmitOtpIconBerkas" style="font-size: 18px;"></ion-icon>
+                            <span id="btnSubmitOtpTextBerkas">{{ $isComplete ? 'Set Status: Menunggu OTP QLOLA KPA' : 'Terkunci: Menunggu OTP QLOLA KPA' }}</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- PILIHAN B: PEMBAYARAN LANGSUNG (LS BANK) -->
-                <div class="bnd-choice-card" style="border: 2px solid #fed7aa; background: #ffffff;">
-                    <div class="bnd-choice-ribbon" style="background: #ea580c; color: #ffffff;">Metode LS KPPN / Bank</div>
+                <div class="bnd-choice-card" id="card_choice_ls_berkas" style="border: 2px solid {{ $isComplete ? '#fed7aa' : '#cbd5e1' }}; background: #ffffff; {{ ! $isComplete ? 'opacity: 0.85;' : '' }}">
+                    <div class="bnd-choice-ribbon" id="ribbon_ls_berkas" style="background: {{ $isComplete ? '#ea580c' : '#94a3b8' }}; color: #ffffff;">Metode LS KPPN / Bank</div>
                     <div>
                         <div class="bnd-choice-head">
-                            <div class="bnd-choice-icon" style="background: #fff7ed; color: #ea580c;">
+                            <div class="bnd-choice-icon" id="icon_choice_ls_berkas" style="background: {{ $isComplete ? '#fff7ed' : '#f1f5f9' }}; color: {{ $isComplete ? '#ea580c' : '#94a3b8' }};">
                                 <ion-icon name="business-outline"></ion-icon>
                             </div>
                             <h3 class="bnd-choice-title">Pembayaran Langsung (LS)</h3>
@@ -500,13 +529,13 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
                         @endif
 
                         <label class="bnd-choice-input-label">Nomor SP2D / Catatan LS Bank (Opsional):</label>
-                        <input type="text" name="nomor_sp2d_ls" class="bnd-choice-input" placeholder="Contoh: SP2D-LS-{{ date('Ymd') }}-BPS">
+                        <input type="text" name="nomor_sp2d_ls" id="input_nomor_sp2d_ls_berkas" class="bnd-choice-input" placeholder="Contoh: SP2D-LS-{{ date('Ymd') }}-BPS" {{ ! $isComplete ? 'disabled' : '' }}>
                     </div>
 
                     <div class="bnd-choice-actions" style="margin-top: 18px;">
-                        <button type="submit" name="action" value="bayar_ls" class="bnd-btn" style="width: 100%; justify-content: center; background: #ea580c; color: #ffffff; padding: 12px; font-weight: 700; border-radius: 10px;">
-                            <ion-icon name="paper-plane-outline" style="font-size: 18px;"></ion-icon>
-                            <span>Set Status: Pembayaran LS Diajukan ke Bank</span>
+                        <button type="submit" name="action" value="bayar_ls" id="btnSubmitLsBerkas" class="bnd-btn" style="width: 100%; justify-content: center; background: {{ $isComplete ? '#ea580c' : '#94a3b8' }}; color: #ffffff; padding: 12px; font-weight: 700; border-radius: 10px; {{ ! $isComplete ? 'opacity: 0.55; cursor: not-allowed; pointer-events: none;' : '' }}" {{ ! $isComplete ? 'disabled' : '' }}>
+                            <ion-icon name="{{ $isComplete ? 'paper-plane-outline' : 'lock-closed-outline' }}" id="btnSubmitLsIconBerkas" style="font-size: 18px;"></ion-icon>
+                            <span id="btnSubmitLsTextBerkas">{{ $isComplete ? 'Set Status: Pembayaran LS Diajukan ke Bank' : 'Terkunci: Pembayaran LS Diajukan ke Bank' }}</span>
                         </button>
                     </div>
                 </div>
@@ -630,6 +659,116 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
             desc.innerHTML = '<span style="color: #d97706;">Klik kotak untuk mencentang berkas ini</span>';
             if (hiddenMirror) hiddenMirror.value = '0';
         }
+
+        checkBendaharaCompletionState();
+    }
+
+    function checkBendaharaCompletionState() {
+        const checkboxes = document.querySelectorAll('.bendahara-checkbox');
+        const total = checkboxes.length;
+        let checked = 0;
+        checkboxes.forEach(cb => {
+            if (cb.checked) checked++;
+        });
+
+        const isAllChecked = (checked === total && total > 0);
+
+        const warnBanner = document.getElementById('kewajibanWarningBannerBerkas');
+        const succBanner = document.getElementById('kewajibanSuccessBannerBerkas');
+        const warnCount = document.getElementById('warn_ready_count_berkas');
+        const succCount = document.getElementById('succ_ready_count_berkas');
+
+        if (warnCount) warnCount.innerText = checked;
+        if (succCount) succCount.innerText = checked;
+
+        const btnOtp = document.getElementById('btnSubmitOtpBerkas');
+        const btnLs = document.getElementById('btnSubmitLsBerkas');
+        const btnOtpIcon = document.getElementById('btnSubmitOtpIconBerkas');
+        const btnLsIcon = document.getElementById('btnSubmitLsIconBerkas');
+        const btnOtpText = document.getElementById('btnSubmitOtpTextBerkas');
+        const btnLsText = document.getElementById('btnSubmitLsTextBerkas');
+
+        const inputOtp = document.getElementById('input_keterangan_otp_berkas');
+        const inputLs = document.getElementById('input_nomor_sp2d_ls_berkas');
+
+        const cardOtp = document.getElementById('card_choice_otp_berkas');
+        const cardLs = document.getElementById('card_choice_ls_berkas');
+        const ribbonOtp = document.getElementById('ribbon_otp_berkas');
+        const ribbonLs = document.getElementById('ribbon_ls_berkas');
+        const iconOtp = document.getElementById('icon_choice_otp_berkas');
+        const iconLs = document.getElementById('icon_choice_ls_berkas');
+
+        if (isAllChecked) {
+            if (warnBanner) warnBanner.style.display = 'none';
+            if (succBanner) succBanner.style.display = 'flex';
+
+            if (btnOtp) {
+                btnOtp.disabled = false;
+                btnOtp.style.opacity = '1';
+                btnOtp.style.cursor = 'pointer';
+                btnOtp.style.pointerEvents = 'auto';
+                btnOtp.style.background = '#2563eb';
+                btnOtp.style.borderColor = '#2563eb';
+                if (btnOtpIcon) btnOtpIcon.setAttribute('name', 'key-outline');
+                if (btnOtpText) btnOtpText.innerText = 'Set Status: Menunggu OTP QLOLA KPA';
+            }
+
+            if (btnLs) {
+                btnLs.disabled = false;
+                btnLs.style.opacity = '1';
+                btnLs.style.cursor = 'pointer';
+                btnLs.style.pointerEvents = 'auto';
+                btnLs.style.background = '#ea580c';
+                if (btnLsIcon) btnLsIcon.setAttribute('name', 'paper-plane-outline');
+                if (btnLsText) btnLsText.innerText = 'Set Status: Pembayaran LS Diajukan ke Bank';
+            }
+
+            if (inputOtp) inputOtp.disabled = false;
+            if (inputLs) inputLs.disabled = false;
+
+            if (cardOtp) { cardOtp.style.border = '2px solid #93c5fd'; cardOtp.style.opacity = '1'; }
+            if (ribbonOtp) { ribbonOtp.style.background = '#2563eb'; }
+            if (iconOtp) { iconOtp.style.background = '#eff6ff'; iconOtp.style.color = '#2563eb'; }
+
+            if (cardLs) { cardLs.style.border = '2px solid #fed7aa'; cardLs.style.opacity = '1'; }
+            if (ribbonLs) { ribbonLs.style.background = '#ea580c'; }
+            if (iconLs) { iconLs.style.background = '#fff7ed'; iconLs.style.color = '#ea580c'; }
+        } else {
+            if (warnBanner) warnBanner.style.display = 'flex';
+            if (succBanner) succBanner.style.display = 'none';
+
+            if (btnOtp) {
+                btnOtp.disabled = true;
+                btnOtp.style.opacity = '0.55';
+                btnOtp.style.cursor = 'not-allowed';
+                btnOtp.style.pointerEvents = 'none';
+                btnOtp.style.background = '#94a3b8';
+                btnOtp.style.borderColor = '#94a3b8';
+                if (btnOtpIcon) btnOtpIcon.setAttribute('name', 'lock-closed-outline');
+                if (btnOtpText) btnOtpText.innerText = 'Terkunci: Menunggu OTP QLOLA KPA';
+            }
+
+            if (btnLs) {
+                btnLs.disabled = true;
+                btnLs.style.opacity = '0.55';
+                btnLs.style.cursor = 'not-allowed';
+                btnLs.style.pointerEvents = 'none';
+                btnLs.style.background = '#94a3b8';
+                if (btnLsIcon) btnLsIcon.setAttribute('name', 'lock-closed-outline');
+                if (btnLsText) btnLsText.innerText = 'Terkunci: Pembayaran LS Diajukan ke Bank';
+            }
+
+            if (inputOtp) inputOtp.disabled = true;
+            if (inputLs) inputLs.disabled = true;
+
+            if (cardOtp) { cardOtp.style.border = '2px solid #cbd5e1'; cardOtp.style.opacity = '0.85'; }
+            if (ribbonOtp) { ribbonOtp.style.background = '#94a3b8'; }
+            if (iconOtp) { iconOtp.style.background = '#f1f5f9'; iconOtp.style.color = '#94a3b8'; }
+
+            if (cardLs) { cardLs.style.border = '2px solid #cbd5e1'; cardLs.style.opacity = '0.85'; }
+            if (ribbonLs) { ribbonLs.style.background = '#94a3b8'; }
+            if (iconLs) { iconLs.style.background = '#f1f5f9'; iconLs.style.color = '#94a3b8'; }
+        }
     }
 
     function centangSemuaBendahara(check) {
@@ -638,6 +777,7 @@ $title = 'Verifikasi Berkas SPJ #' . $spj->id . ' - Bendahara';
             cb.checked = check;
             updateCardState(idx);
         });
+        checkBendaharaCompletionState();
     }
 </script>
 @endpush

@@ -218,7 +218,7 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                         @forelse($spjs as $spj)
                         <tr>
                             <td style="text-align: center;">
-                                <input type="checkbox" name="spj_ids[]" value="{{ $spj->id }}" class="spj-checkbox bnd-checkbox">
+                                <input type="checkbox" name="spj_ids[]" value="{{ $spj->id }}" class="spj-checkbox bnd-checkbox" data-complete="{{ $spj->areBendaharaObligationsCompleted() ? '1' : '0' }}" data-nomor="{{ $spj->nomor_spj ?: ('SPJ #'.$spj->id) }}">
                             </td>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
@@ -292,6 +292,15 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
                                         <span class="bnd-badge-dot"></span>
                                         Siap Dicairkan
                                     </span>
+                                    @if($spj->areBendaharaObligationsCompleted())
+                                        <div style="font-size: 11px; color: #059669; font-weight: 700; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                            <ion-icon name="checkmark-circle"></ion-icon> <span>Berkas Lengkap</span>
+                                        </div>
+                                    @else
+                                        <div style="font-size: 11px; color: #d97706; font-weight: 700; margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                            <ion-icon name="alert-circle"></ion-icon> <span>Kewajiban Belum Lengkap</span>
+                                        </div>
+                                    @endif
                                 @elseif($spj->status === 'selesai')
                                     <span class="bnd-badge bnd-badge-mint">
                                         <span class="bnd-badge-dot"></span>
@@ -358,6 +367,15 @@ $title = 'Kotak Masuk & Antrean Pencairan SPJ';
         if (checkboxes.length === 0) {
             alert('Pilih setidaknya satu dokumen SPJ dengan mencentang kotak di tabel.');
             return;
+        }
+
+        if (actionType === 'otp_kpa' || actionType === 'bayar_ls') {
+            const incomplete = Array.from(checkboxes).filter(cb => cb.dataset.complete === '0');
+            if (incomplete.length > 0) {
+                const nomors = incomplete.map(cb => cb.dataset.nomor || ('SPJ #' + cb.value)).join('\n• ');
+                alert('Tidak dapat memproses tindakan massal ini!\n\nSPJ berikut belum mencentang seluruh kewajiban berkas fisik & perpajakan Bendahara:\n• ' + nomors + '\n\nSilakan lengkapi kewajiban berkas Bendahara terlebih dahulu sebelum melanjutkan.');
+                return;
+            }
         }
 
         let actionText = '';

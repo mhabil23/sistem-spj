@@ -96,6 +96,22 @@ class AlurIntegrasiSpjTest extends TestCase
         $responseBendaharaIndex->assertSee($spj->nomor_spj);
         $responseBendaharaIndex->assertSee('Kegiatan Survei Biaya Hidup (SBH) 2026');
 
+        // Bendahara: Centang kewajiban berkas fisik & perpajakan terlebih dahulu
+        $this->actingAs($bendahara)->post(route('bendahara.berkas.update', $spj->id), [
+            'berkas_bendahara' => [
+                'std_0' => '1',
+                'std_1' => '1',
+                'std_2' => '1',
+            ],
+            'berkas_virtual' => [
+                '0' => 'SSP / Bukti Setor Pajak (PPh 21/22/23 atau PPN)',
+                '1' => 'Faktur Pajak / Bukti e-Billing Pajak',
+                '2' => 'Verifikasi Rekening Tujuan & Eksekusi Pembayaran BRI QLOLA',
+            ],
+        ]);
+        $spj->refresh();
+        $this->assertTrue($spj->areBendaharaObligationsCompleted());
+
         // Bendahara: Input ke BRI QLOLA dan update status Menunggu OTP KPA
         $this->actingAs($bendahara)->post(route('bendahara.spj.verify', $spj->id), [
             'action' => 'otp_kpa',

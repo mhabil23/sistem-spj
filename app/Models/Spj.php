@@ -281,27 +281,67 @@ class Spj extends Model
             }
         }
 
-        // Jika belum ada dokumen Bendahara sama sekali, sediakan standar checklist Bendahara
-        if (empty($grouped['bendahara'])) {
-            $standardBendahara = [
-                'SSP / Bukti Setor Pajak (PPh 21/22/23 atau PPN)',
-                'Faktur Pajak / Bukti e-Billing Pajak',
-                'Verifikasi Rekening Tujuan & Eksekusi Pembayaran BRI QLOLA',
-            ];
+        // Dokumen standar kewajiban Bendahara jika tidak ada dokumen Bendahara asli dari pengajuan
+        $standardBendahara = [
+            'SSP / Bukti Setor Pajak (PPh 21/22/23 atau PPN)',
+            'Faktur Pajak / Bukti e-Billing Pajak',
+            'Verifikasi Rekening Tujuan & Eksekusi Pembayaran BRI QLOLA',
+        ];
 
+        $hasCustomBendaharaDoc = false;
+        foreach ($grouped['bendahara'] as $bDoc) {
+            if (! in_array($bDoc['nama'], $standardBendahara, true)) {
+                $hasCustomBendaharaDoc = true;
+                break;
+            }
+        }
+
+        if (! $hasCustomBendaharaDoc) {
+            $existingNames = array_column($grouped['bendahara'], 'nama');
             foreach ($standardBendahara as $idx => $stdName) {
-                $grouped['bendahara'][] = [
-                    'index' => 'std_'.$idx,
-                    'nama' => $stdName,
-                    'disiapkan' => false,
-                    'assignee' => 'Bendahara',
-                    'checked_by' => null,
-                    'is_virtual' => true,
-                ];
+                if (! in_array($stdName, $existingNames, true)) {
+                    $grouped['bendahara'][] = [
+                        'index' => 'std_'.$idx,
+                        'nama' => $stdName,
+                        'disiapkan' => false,
+                        'assignee' => 'Bendahara',
+                        'checked_by' => null,
+                        'is_virtual' => true,
+                    ];
+                }
             }
         }
 
         return $grouped;
+    }
+
+    /**
+     * Cek apakah seluruh kewajiban berkas fisik & perpajakan bagian Bendahara telah dicentang.
+     */
+    public function areBendaharaObligationsCompleted(): bool
+    {
+        $grouped = $this->grouped_dokumen;
+        $bendaharaDocs = $grouped['bendahara'] ?? [];
+
+        if (empty($bendaharaDocs)) {
+            return false;
+        }
+
+        foreach ($bendaharaDocs as $doc) {
+            if (empty($doc['disiapkan'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Accessor untuk mengecek status kelengkapan kewajiban Bendahara.
+     */
+    public function getIsBendaharaCompleteAttribute(): bool
+    {
+        return $this->areBendaharaObligationsCompleted();
     }
 
     /**

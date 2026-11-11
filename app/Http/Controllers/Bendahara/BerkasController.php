@@ -64,21 +64,7 @@ class BerkasController extends Controller
                 $selesaiCount++;
             }
 
-            $grouped = $s->grouped_dokumen;
-            $bendaharaDocs = $grouped['bendahara'] ?? [];
-            $allChecked = true;
-
-            if (empty($bendaharaDocs)) {
-                $allChecked = false;
-            } else {
-                foreach ($bendaharaDocs as $bDoc) {
-                    if (empty($bDoc['disiapkan'])) {
-                        $allChecked = false;
-                        break;
-                    }
-                }
-            }
-
+            $allChecked = $s->areBendaharaObligationsCompleted();
             $s->is_bendahara_complete = $allChecked;
 
             if ($allChecked) {

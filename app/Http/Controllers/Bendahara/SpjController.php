@@ -84,6 +84,16 @@ class SpjController extends Controller
         // Simpan checklist berkas jika dikirim bersamaan
         if ($request->has('berkas_bendahara') || $request->has('berkas_virtual')) {
             app(BerkasController::class)->updateChecklistData($spj, $request);
+            $spj->refresh();
+        }
+
+        // Validasi: Bendahara tidak bisa memencet Menunggu OTP QLOLA KPA atau Pembayaran LS jika belum mencentang kewajibannya
+        if (in_array($request->action, ['otp_kpa', 'bayar_ls'])) {
+            if (! $spj->areBendaharaObligationsCompleted()) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Tidak dapat memproses status ke Menunggu OTP QLOLA KPA atau Pembayaran LS karena seluruh kewajiban berkas fisik & perpajakan Bendahara belum lengkap dicentang.');
+            }
         }
 
         $statusLama = $spj->status;
@@ -201,6 +211,18 @@ class SpjController extends Controller
             ->get();
 
         $action = $request->input('bulk_action') ?? $request->input('action', 'setujui');
+
+        if (in_array($action, ['otp_kpa', 'bayar_ls'])) {
+            $incompleteSpjs = $spjs->filter(fn ($s) => ! $s->areBendaharaObligationsCompleted());
+            if ($incompleteSpjs->isNotEmpty()) {
+                $nomorList = $incompleteSpjs->pluck('nomor_spj')->filter()->implode(', ');
+
+                return redirect()->route('bendahara.spj.index')->with(
+                    'error',
+                    'Gagal memproses massal: Kewajiban berkas fisik & perpajakan Bendahara belum lengkap dicentang pada: '.($nomorList ?: 'berkas terpilih').'. Lengkapi verifikasi berkas Bendahara terlebih dahulu.'
+                );
+            }
+        }
 
         foreach ($spjs as $spj) {
             $statusLama = $spj->status;
