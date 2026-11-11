@@ -180,6 +180,40 @@ class UmumSpjTest extends TestCase
         $this->assertEquals('application/pdf', $response->headers->get('content-type'));
     }
 
+    public function test_user_umum_print_checklist_layout_and_belanja_modal_53(): void
+    {
+        $spj = Spj::create([
+            'user_id' => $this->userUmum->id,
+            'nomor_spj' => '00209112026',
+            'kegiatan' => 'TES 1 UMUM KODE 53',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'status' => 'disetujui_ppspm',
+            'seksi' => 'Subbag Umum',
+            'dokumen_file' => json_encode([
+                ['nama' => 'KAK', 'disiapkan' => true],
+                ['nama' => 'FP (dari BOS)', 'disiapkan' => true],
+                ['nama' => 'Bukti pembelian atau kuitansi', 'disiapkan' => true],
+                ['nama' => 'Faktur atau invoice', 'disiapkan' => true],
+                ['nama' => 'Bukti pembayaran', 'disiapkan' => true],
+                ['nama' => 'BAST atau bukti penerimaan barang', 'disiapkan' => true],
+                ['nama' => 'Dokumen pajak, jika ada', 'disiapkan' => true],
+                ['nama' => 'Dokumentasi barang', 'disiapkan' => true],
+            ]),
+        ]);
+
+        $response = $this->actingAs($this->userUmum)->get(route('umum.spj.print', ['id' => $spj->id, 'format' => 'html']));
+
+        $response->assertStatus(200);
+        $response->assertSee('LAPORAN REKAPITULASI SPJ');
+        $response->assertSee('Belanja Modal (53)');
+        $response->assertSee('Pembelian Langsung oleh Bendahara Pengeluaran');
+        $response->assertSee('table-layout: fixed');
+        $response->assertSee('Dokumen Pajak');
+        $response->assertSee('Hidayatullah, S.E.');
+        $response->assertDontSee('Dokumen pajak, jika ...');
+    }
+
     public function test_user_umum_cannot_delete_spj(): void
     {
         $spj = Spj::create([
