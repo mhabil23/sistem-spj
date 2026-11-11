@@ -60,16 +60,17 @@ class AppServiceProvider extends ServiceProvider
         View::composer('components.teknis.sidebar', function ($view) {
             if (Auth::check()) {
                 $userId = Auth::id();
+                $baseQuery = Spj::where('user_id', $userId);
 
                 // SPJ Staf Teknis yang perlu revisi / perbaikan berkas (urgent)
-                $badgeRevisiTeknis = Spj::where('user_id', $userId)
+                $badgeRevisiTeknis = (clone $baseQuery)
                     ->where(function ($q) {
                         $q->where('status', 'dikembalikan')
                             ->orWhere('status', 'like', 'revisi_%');
                     })->count();
 
                 // SPJ Staf Teknis yang sedang berstatus 'diajukan'
-                $badgeDiajukanTeknis = Spj::where('user_id', $userId)
+                $badgeDiajukanTeknis = (clone $baseQuery)
                     ->where('status', 'diajukan')
                     ->count();
 
