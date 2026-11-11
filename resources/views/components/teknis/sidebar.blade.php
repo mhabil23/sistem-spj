@@ -20,10 +20,23 @@
             <span class="nav-label">Dashboard</span>
         </a>
 
-        <!-- Pengajuan SPJ -->
-        <a href="{{ route('teknis.spj.index') }}" class="nav-item {{ request()->routeIs('teknis.spj.*') ? 'active' : '' }}">
+        <!-- Kotak Masuk SPJ -->
+        <a href="{{ route('teknis.spj.index') }}" class="nav-item {{ request()->routeIs('teknis.spj.index', 'teknis.spj.show') ? 'active' : '' }}">
             <span class="nav-icon-wrap">
-                <ion-icon name="document-text-outline" class="nav-icon"></ion-icon>
+                <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
+            </span>
+            <span class="nav-label">Kotak Masuk SPJ</span>
+            @if(!empty($badgeRevisiTeknis) && $badgeRevisiTeknis > 0)
+                <span class="nav-badge nav-badge-danger" title="{{ $badgeRevisiTeknis }} SPJ perlu perbaikan berkas">{{ $badgeRevisiTeknis }}</span>
+            @elseif(!empty($badgeDiajukanTeknis) && $badgeDiajukanTeknis > 0)
+                <span class="nav-badge" title="{{ $badgeDiajukanTeknis }} SPJ Anda sedang dalam antrean pengajuan">{{ $badgeDiajukanTeknis }}</span>
+            @endif
+        </a>
+
+        <!-- Pengajuan SPJ -->
+        <a href="{{ route('teknis.spj.create') }}" class="nav-item {{ request()->routeIs('teknis.spj.create') ? 'active' : '' }}">
+            <span class="nav-icon-wrap">
+                <ion-icon name="add-circle-outline" class="nav-icon"></ion-icon>
             </span>
             <span class="nav-label">Pengajuan SPJ</span>
         </a>

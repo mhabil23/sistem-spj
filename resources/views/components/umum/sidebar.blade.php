@@ -26,6 +26,9 @@
                 <ion-icon name="file-tray-full-outline" class="nav-icon"></ion-icon>
             </span>
             <span class="nav-label">Kotak Masuk SPJ</span>
+            @if(!empty($badgeKotakMasukUmum) && $badgeKotakMasukUmum > 0)
+                <span class="nav-badge" title="{{ $badgeKotakMasukUmum }} SPJ baru diajukan dan menunggu verifikasi berkas">{{ $badgeKotakMasukUmum }}</span>
+            @endif
         </a>
 
         <!-- SPJ Saya (Pengajuan Mandiri Umum) -->
@@ -34,6 +37,11 @@
                 <ion-icon name="folder-open-outline" class="nav-icon"></ion-icon>
             </span>
             <span class="nav-label">SPJ Saya</span>
+            @if(!empty($badgeRevisiSayaUmum) && $badgeRevisiSayaUmum > 0)
+                <span class="nav-badge nav-badge-danger" title="{{ $badgeRevisiSayaUmum }} SPJ Anda perlu perbaikan">{{ $badgeRevisiSayaUmum }}</span>
+            @elseif(!empty($badgeDiajukanSayaUmum) && $badgeDiajukanSayaUmum > 0)
+                <span class="nav-badge" title="{{ $badgeDiajukanSayaUmum }} SPJ Anda sedang diajukan">{{ $badgeDiajukanSayaUmum }}</span>
+            @endif
         </a>
 
         <!-- Pengajuan SPJ -->

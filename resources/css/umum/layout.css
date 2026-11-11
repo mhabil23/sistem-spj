@@ -284,6 +284,42 @@ body.dashboard-body {
     margin-top: auto;
 }
 
+/* Sidebar Nav Notification Badge */
+.nav-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+    background-color: #0284c7;
+    box-shadow: 0 1px 4px rgba(2, 132, 199, 0.4);
+    flex-shrink: 0;
+    margin-left: 6px;
+    transition: all 0.2s ease;
+}
+
+.nav-badge-danger {
+    background-color: #ef4444;
+    box-shadow: 0 1px 4px rgba(239, 68, 68, 0.45);
+    animation: pulseNavBadge 2.2s infinite ease-in-out;
+}
+
+.nav-badge-amber {
+    background-color: #f59e0b;
+    box-shadow: 0 1px 4px rgba(245, 158, 11, 0.4);
+}
+
+@keyframes pulseNavBadge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
 .nav-logout-btn {
     width: calc(100% - 24px);
     color: var(--dash-sidebar-text);
