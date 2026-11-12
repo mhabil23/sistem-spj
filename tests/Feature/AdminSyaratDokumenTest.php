@@ -107,4 +107,72 @@ class AdminSyaratDokumenTest extends TestCase
             'id' => $doc->id,
         ]);
     }
+
+    public function test_admin_can_create_syarat_dokumen_with_peruntukan_umum_modal(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $payload = [
+            'nama_belanja' => 'Belanja Modal Peralatan dan Mesin (532111)',
+            'jenis_belanja' => 'Pengadaan Laptop dan Komputer PC',
+            'nama_dokumen' => 'Surat Pesanan dan BAST Barang Modal',
+            'assignee' => 'SM',
+            'peruntukan' => 'umum',
+            'urutan' => 1,
+        ];
+
+        $response = $this->actingAs($admin)->post(route('admin.syarat-dokumen.store'), $payload);
+        $response->assertRedirect();
+
+        $this->assertDatabaseHas('syarat_dokumen_spjs', [
+            'nama_belanja' => 'Belanja Modal Peralatan dan Mesin (532111)',
+            'peruntukan' => 'umum',
+        ]);
+
+        // Verifikasi hanya muncul untuk form UMUM, tidak muncul untuk TEKNIS
+        $teknisData = SyaratDokumenSpj::getSpjData('teknis');
+        $this->assertArrayNotHasKey('Belanja Modal Peralatan dan Mesin (532111)', $teknisData);
+
+        $umumData = SyaratDokumenSpj::getSpjData('umum');
+        $this->assertArrayHasKey('Belanja Modal Peralatan dan Mesin (532111)', $umumData);
+    }
+
+    public function test_admin_can_filter_syarat_dokumen_by_peruntukan(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $docUmum = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Belanja Modal Uji Filter (532111)',
+            'jenis_belanja' => 'Pengadaan Mesin Uji',
+            'nama_dokumen' => 'Dokumen Khusus Umum Unik 53',
+            'assignee' => 'SM',
+            'peruntukan' => 'umum',
+            'urutan' => 1,
+        ]);
+
+        $docSemua = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Belanja Barang Uji Filter (521111)',
+            'jenis_belanja' => 'Operasional Uji',
+            'nama_dokumen' => 'Dokumen Bersama Unik 52',
+            'assignee' => 'SM',
+            'peruntukan' => 'semua',
+            'urutan' => 1,
+        ]);
+
+        $responseUmum = $this->actingAs($admin)->get(route('admin.syarat-dokumen.index', [
+            'peruntukan' => 'umum',
+            'search' => 'Uji Filter',
+        ]));
+        $responseUmum->assertStatus(200);
+        $responseUmum->assertSee('Dokumen Khusus Umum Unik 53');
+        $responseUmum->assertDontSee('Dokumen Bersama Unik 52');
+
+        $responseSemua = $this->actingAs($admin)->get(route('admin.syarat-dokumen.index', [
+            'peruntukan' => 'semua',
+            'search' => 'Uji Filter',
+        ]));
+        $responseSemua->assertStatus(200);
+        $responseSemua->assertSee('Dokumen Bersama Unik 52');
+        $responseSemua->assertDontSee('Dokumen Khusus Umum Unik 53');
+    }
 }

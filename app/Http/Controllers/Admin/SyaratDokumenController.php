@@ -29,6 +29,10 @@ class SyaratDokumenController extends Controller
             $query->where('assignee', $request->assignee);
         }
 
+        if ($request->filled('peruntukan')) {
+            $query->where('peruntukan', $request->peruntukan);
+        }
+
         if ($request->filled('search')) {
             $search = '%'.$request->search.'%';
             $query->where(function ($q) use ($search) {
@@ -91,7 +95,7 @@ class SyaratDokumenController extends Controller
         ]);
 
         if (empty($validated['peruntukan'])) {
-            $validated['peruntukan'] = 'semua';
+            $validated['peruntukan'] = SyaratDokumenSpj::determinePeruntukanByKode($validated['nama_belanja']);
         }
 
         if (empty($validated['urutan'])) {
@@ -129,7 +133,7 @@ class SyaratDokumenController extends Controller
         ]);
 
         if (empty($validated['peruntukan'])) {
-            $validated['peruntukan'] = $syaratDokumen->peruntukan ?: 'semua';
+            $validated['peruntukan'] = $syaratDokumen->peruntukan ?: SyaratDokumenSpj::determinePeruntukanByKode($validated['nama_belanja']);
         }
 
         if (empty($validated['urutan'])) {

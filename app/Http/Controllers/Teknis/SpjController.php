@@ -62,10 +62,12 @@ class SpjController extends Controller
         ]);
 
         if ($request->filled('nama_belanja')) {
-            $peruntukanBelanja = SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja);
-            if ($peruntukanBelanja === 'umum') {
+            $isUmum = SyaratDokumenSpj::where('nama_belanja', $request->nama_belanja)->where('peruntukan', 'umum')->exists()
+                || SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja) === 'umum';
+
+            if ($isUmum) {
                 return back()->withInput()->withErrors([
-                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51) dan Belanja Modal (53) khusus untuk Subbagian Umum.',
+                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51), Belanja Modal (53), atau belanja khusus Subbag Umum tidak dapat diajukan oleh Teknis.',
                 ]);
             }
         }
@@ -193,10 +195,12 @@ class SpjController extends Controller
         ]);
 
         if ($request->filled('nama_belanja')) {
-            $peruntukanBelanja = SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja);
-            if ($peruntukanBelanja === 'umum') {
+            $isUmum = SyaratDokumenSpj::where('nama_belanja', $request->nama_belanja)->where('peruntukan', 'umum')->exists()
+                || SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja) === 'umum';
+
+            if ($isUmum) {
                 return back()->withInput()->withErrors([
-                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51) dan Belanja Modal (53) khusus untuk Subbagian Umum.',
+                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51), Belanja Modal (53), atau belanja khusus Subbag Umum tidak dapat diajukan oleh Teknis.',
                 ]);
             }
         }

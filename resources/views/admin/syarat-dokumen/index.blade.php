@@ -159,14 +159,14 @@
 
     .filter-grid-doc {
         display: grid;
-        grid-template-columns: 1.8fr 1.8fr 1.2fr 2fr auto;
+        grid-template-columns: 1.5fr 1.5fr 1.2fr 1.2fr 1.8fr auto;
         gap: 12px;
         align-items: flex-end;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1200px) {
         .filter-grid-doc {
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr;
         }
     }
 
@@ -174,6 +174,35 @@
         .filter-grid-doc {
             grid-template-columns: 1fr;
         }
+    }
+
+    .badge-peruntukan {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 9px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .badge-peruntukan.semua {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge-peruntukan.umum {
+        background: #f5f3ff;
+        color: #6d28d9;
+        border: 1px solid #ddd6fe;
+    }
+
+    .badge-peruntukan.teknis {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
     }
 
     .filter-label-doc {
@@ -577,6 +606,15 @@
                 </select>
             </div>
             <div>
+                <label class="filter-label-doc">Peruntukan</label>
+                <select name="peruntukan" class="form-control-doc" onchange="this.form.submit()">
+                    <option value="">-- Semua Peruntukan --</option>
+                    <option value="semua" {{ request('peruntukan') === 'semua' ? 'selected' : '' }}>Dua-duanya (Teknis &amp; Umum)</option>
+                    <option value="umum" {{ request('peruntukan') === 'umum' ? 'selected' : '' }}>Khusus Subbag Umum</option>
+                    <option value="teknis" {{ request('peruntukan') === 'teknis' ? 'selected' : '' }}>Khusus Staf Teknis</option>
+                </select>
+            </div>
+            <div>
                 <label class="filter-label-doc">Cari Dokumen / Belanja</label>
                 <input type="text" name="search" class="form-control-doc" value="{{ request('search') }}" placeholder="Ketik kata kunci...">
             </div>
@@ -584,7 +622,7 @@
                 <button type="submit" class="btn-add-doc" style="height: 38px; padding: 0 16px;">
                     <i class="bi bi-funnel-fill"></i> Filter
                 </button>
-                @if(request()->hasAny(['nama_belanja', 'jenis_belanja', 'assignee', 'search']))
+                @if(request()->hasAny(['nama_belanja', 'jenis_belanja', 'assignee', 'peruntukan', 'search']))
                     <a href="{{ route('admin.syarat-dokumen.index') }}" class="btn-cancel-modal" style="height: 38px; display: inline-flex; align-items: center; text-decoration: none;">
                         Reset
                     </a>
@@ -609,11 +647,12 @@
                 <thead>
                     <tr>
                         <th style="width: 50px; text-align: center;">No</th>
-                        <th style="width: 250px;">Nama Belanja (Akun)</th>
-                        <th style="width: 250px;">Jenis Belanja</th>
+                        <th style="width: 230px;">Nama Belanja (Akun)</th>
+                        <th style="width: 210px;">Jenis Belanja</th>
                         <th>Nama Dokumen Persyaratan</th>
-                        <th style="width: 170px; text-align: center;">Pihak Penyiap</th>
-                        <th style="width: 70px; text-align: center;">Urutan</th>
+                        <th style="width: 150px; text-align: center;">Peruntukan</th>
+                        <th style="width: 160px; text-align: center;">Pihak Penyiap</th>
+                        <th style="width: 60px; text-align: center;">Urutan</th>
                         <th style="width: 90px; text-align: center;">Aksi</th>
                     </tr>
                 </thead>
@@ -633,6 +672,24 @@
                             <div style="font-weight: 700; color: #0f172a; font-size: 13.5px; line-height: 1.35;">
                                 {{ $doc->nama_dokumen }}
                             </div>
+                        </td>
+                        <td style="text-align: center;">
+                            @php
+                                $peruntukanVal = $doc->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($doc->nama_belanja);
+                            @endphp
+                            @if($peruntukanVal === 'umum')
+                                <span class="badge-peruntukan umum" title="Khusus Form Pengajuan Subbagian Umum (Akun 51 & 53)">
+                                    <i class="bi bi-building"></i> Khusus Umum
+                                </span>
+                            @elseif($peruntukanVal === 'teknis')
+                                <span class="badge-peruntukan teknis" title="Khusus Form Pengajuan Staf Teknis">
+                                    <i class="bi bi-laptop"></i> Khusus Teknis
+                                </span>
+                            @else
+                                <span class="badge-peruntukan semua" title="Dua-duanya: Berlaku untuk Teknis dan Subbag Umum">
+                                    <i class="bi bi-people-fill"></i> Dua-duanya
+                                </span>
+                            @endif
                         </td>
                         <td style="text-align: center;">
                             @if($doc->assignee === 'SM')
@@ -667,7 +724,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 48px 16px; color: var(--dash-slate-500);">
+                        <td colspan="8" style="text-align: center; padding: 48px 16px; color: var(--dash-slate-500);">
                             <i class="bi bi-inbox" style="font-size: 36px; display: block; margin-bottom: 8px; opacity: 0.5;"></i>
                             Tidak ada dokumen persyaratan yang cocok dengan filter.
                         </td>
@@ -720,6 +777,17 @@
                     </select>
                     <input type="text" name="jenis_belanja" id="add_input_jenis_belanja" class="form-control-doc" style="margin-top: 8px;" placeholder="Ketik Jenis Belanja (contoh: Belanja ATK CS / percetakan dokumen)" required>
                     <div class="form-help-modal">Pilih jenis belanja yang sudah terdaftar atau masukkan jenis baru.</div>
+                </div>
+
+                <!-- Peruntukan / Berlaku Untuk Siapa -->
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Peruntukan / Berlaku Untuk Siapa <span style="color: #ef4444;">*</span></label>
+                    <select name="peruntukan" id="add_peruntukan" class="form-control-doc" required>
+                        <option value="semua">Dua-duanya (Teknis &amp; Subbag Umum)</option>
+                        <option value="umum">Khusus Subbag Umum (Contoh: Akun 51 &amp; Akun 53)</option>
+                        <option value="teknis">Khusus Staf Teknis</option>
+                    </select>
+                    <div class="form-help-modal">Pilih siapa yang dapat mengajukan jenis belanja/dokumen ini. Akun 51 (Pegawai) &amp; Akun 53 (Modal) otomatis disarankan khusus Umum, Akun 52 untuk dua-duanya.</div>
                 </div>
 
                 <!-- Nama Dokumen -->
@@ -782,6 +850,17 @@
                     <input type="text" name="nama_dokumen" id="edit_nama_dokumen" class="form-control-doc" required>
                 </div>
 
+                <!-- Peruntukan / Berlaku Untuk Siapa -->
+                <div class="form-group-modal">
+                    <label class="form-label-modal">Peruntukan / Berlaku Untuk Siapa <span style="color: #ef4444;">*</span></label>
+                    <select name="peruntukan" id="edit_peruntukan" class="form-control-doc" required>
+                        <option value="semua">Dua-duanya (Teknis &amp; Subbag Umum)</option>
+                        <option value="umum">Khusus Subbag Umum (Contoh: Akun 51 &amp; Akun 53)</option>
+                        <option value="teknis">Khusus Staf Teknis</option>
+                    </select>
+                    <div class="form-help-modal">Pilih siapa yang dapat mengajukan jenis belanja ini di form SPJ.</div>
+                </div>
+
                 <!-- Pihak Penyiap (Assignee) -->
                 <div class="form-group-modal">
                     <label class="form-label-modal">Pihak yang Menyiapkan / Bertanggung Jawab <span style="color: #ef4444;">*</span></label>
@@ -808,6 +887,17 @@
 
 @push('scripts')
 <script>
+    function detectPeruntukanFromText(text) {
+        if (!text) return null;
+        if (/\(51\d*\)/i.test(text) || /\(53\d*\)/i.test(text) || /\b51\d{4}\b/.test(text) || /\b53\d{4}\b/.test(text)) {
+            return 'umum';
+        }
+        if (/\(52\d*\)/i.test(text) || /\b52\d{4}\b/.test(text)) {
+            return 'semua';
+        }
+        return null;
+    }
+
     function openAddDocModal() {
         document.getElementById('modalAddDoc').style.display = 'flex';
     }
@@ -823,6 +913,10 @@
             inp.focus();
         } else if (val) {
             inp.value = val;
+            const detected = detectPeruntukanFromText(val);
+            if (detected) {
+                document.getElementById('add_peruntukan').value = detected;
+            }
         }
     }
 
@@ -842,6 +936,7 @@
         document.getElementById('edit_nama_belanja').value = doc.nama_belanja || '';
         document.getElementById('edit_jenis_belanja').value = doc.jenis_belanja || '';
         document.getElementById('edit_nama_dokumen').value = doc.nama_dokumen || '';
+        document.getElementById('edit_peruntukan').value = doc.peruntukan || (detectPeruntukanFromText(doc.nama_belanja) || 'semua');
         document.getElementById('edit_assignee').value = doc.assignee || 'SM';
         document.getElementById('edit_urutan').value = doc.urutan || 1;
         document.getElementById('modalEditDoc').style.display = 'flex';
@@ -850,6 +945,29 @@
     function closeEditDocModal() {
         document.getElementById('modalEditDoc').style.display = 'none';
     }
+
+    // Auto-detect peruntukan saat mengetik nama belanja baru
+    document.addEventListener('DOMContentLoaded', function() {
+        const addInput = document.getElementById('add_input_nama_belanja');
+        if (addInput) {
+            addInput.addEventListener('input', function() {
+                const detected = detectPeruntukanFromText(this.value);
+                if (detected) {
+                    document.getElementById('add_peruntukan').value = detected;
+                }
+            });
+        }
+
+        const editInput = document.getElementById('edit_nama_belanja');
+        if (editInput) {
+            editInput.addEventListener('input', function() {
+                const detected = detectPeruntukanFromText(this.value);
+                if (detected) {
+                    document.getElementById('edit_peruntukan').value = detected;
+                }
+            });
+        }
+    });
 
     // Close modal when clicking backdrop
     window.addEventListener('click', function(e) {
