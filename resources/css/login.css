@@ -1091,3 +1091,46 @@ body {
         padding: 9px 12px;
     }
 }
+
+/* ==========================================================
+   PAGE TRANSITION: FADE & SLIDE (MEMUDAR KE KIRI / KANAN)
+   ========================================================== */
+@keyframes loginEnterFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(32px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+body {
+    transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.login-page {
+    animation: loginEnterFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+body.page-transition-exit-left,
+.page-transition-exit-left {
+    opacity: 0 !important;
+    transform: translateX(-32px) !important;
+    pointer-events: none !important;
+}
+
+body.page-transition-exit-right,
+.page-transition-exit-right {
+    opacity: 0 !important;
+    transform: translateX(32px) !important;
+    pointer-events: none !important;
+}
+
+/* Efek tombol submit saat loading transisi */
+.btn-submit-login.loading {
+    opacity: 0.85;
+    pointer-events: none;
+    cursor: wait;
+}

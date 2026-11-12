@@ -24,3 +24,89 @@ html, body {
 button, input, select, textarea, optgroup {
     font-family: inherit;
 }
+
+/* ==========================================================
+   PAGE TRANSITION: FADE & SLIDE (MEMUDAR KE KIRI / KANAN)
+   ========================================================== */
+
+@keyframes pageEnterFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(32px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pageEnterFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-32px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pageFadeInSoft {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Kelas masuk saat halaman baru dibuka */
+.page-enter-right {
+    animation: pageEnterFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.page-enter-left {
+    animation: pageEnterFromLeft 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.page-enter-fade {
+    animation: pageFadeInSoft 0.28s ease both;
+}
+
+/* Transisi keluar: MEMUDAR KE KIRI (Maju: Beranda -> Login -> Dashboard) */
+body.page-transition-exit-left,
+.page-transition-exit-left {
+    opacity: 0 !important;
+    transform: translateX(-32px) !important;
+    transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: none !important;
+}
+
+/* Transisi keluar: MEMUDAR KE KANAN (Mundur: Login -> Beranda) */
+body.page-transition-exit-right,
+.page-transition-exit-right {
+    opacity: 0 !important;
+    transform: translateX(32px) !important;
+    transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: none !important;
+}
+
+/* View Transitions API (Modern Chromium / WebKit) */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: 0.24s cubic-bezier(0.16, 1, 0.3, 1) both pageFadeOutLeft;
+}
+
+::view-transition-new(root) {
+    animation: 0.28s cubic-bezier(0.16, 1, 0.3, 1) both pageEnterFromRight;
+}
+
+@keyframes pageFadeOutLeft {
+    to {
+        opacity: 0;
+        transform: translateX(-32px);
+    }
+}

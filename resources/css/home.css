@@ -4025,3 +4025,36 @@ body.formal-bps-theme {
     border-color: #0284c7;
     color: #0284c7;
 }
+
+/* ==========================================================
+   PAGE TRANSITION: FADE & SLIDE (MEMUDAR KE KIRI / KANAN)
+   ========================================================== */
+@keyframes homeEnterSoft {
+    0% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.formal-bps-theme {
+    animation: homeEnterSoft 0.35s ease both;
+    transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.page-transition-exit-left,
+.page-transition-exit-left {
+    opacity: 0 !important;
+    transform: translateX(-32px) !important;
+    pointer-events: none !important;
+}
+
+body.page-transition-exit-right,
+.page-transition-exit-right {
+    opacity: 0 !important;
+    transform: translateX(32px) !important;
+    pointer-events: none !important;
+}

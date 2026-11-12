@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    @vite(['resources/css/home.css'])
+    @vite(['resources/css/home.css', 'resources/js/app.js'])
 </head>
 
 <body class="formal-bps-theme">
