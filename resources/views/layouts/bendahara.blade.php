@@ -33,6 +33,7 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body class="dashboard-body">
+    @include('components.paint-transition')
     <div class="dashboard-app-wrapper">
         <x-bendahara.sidebar />
         <div class="sidebar-overlay" onclick="toggleSidebar()"></div>

@@ -16,6 +16,7 @@
 </head>
 
 <body class="formal-bps-theme">
+    @include('components.paint-transition')
 
     <!-- 1. TOP ANNOUNCEMENT & UTILITY BAR (RESMI PEMERINTAHAN BPS) -->
     <div class="top-announcement-bar">

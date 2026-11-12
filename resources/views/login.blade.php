@@ -22,6 +22,7 @@
 </head>
 
 <body>
+    @include('components.paint-transition')
 
     <main class="login-page">
 

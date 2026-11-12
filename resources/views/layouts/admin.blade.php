@@ -39,6 +39,7 @@
 </head>
 
 <body>
+    @include('components.paint-transition')
 
     <div class="admin-layout">
 

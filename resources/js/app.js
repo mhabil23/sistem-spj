@@ -1,12 +1,12 @@
 /**
  * SISTEM SPJ BPS - APPLICATION CORE JAVASCRIPT
- * Paint Wipe Smooth Page Transition (Sapuan Cat Halus dari Kanan ke Kiri)
- * Menghadirkan transisi artistik dan tenang saat berpindah antar Beranda, Login, & Dashboard
+ * Paint Wipe Smooth Page Transition (Zero-Flicker & Ultra-Silky)
+ * Menghadirkan transisi sapuan cat yang pelan, tenang, dan mulus tanpa kedip
  */
 
 (function () {
-    // 1. Buat elemen Paint Wipe Curtain secara dinamis jika belum ada di DOM
-    function ensureCurtainElement() {
+    // 1. Dapatkan atau buat elemen Paint Wipe Curtain di DOM
+    function getCurtain() {
         let curtain = document.getElementById('paintWipeCurtain');
         if (!curtain) {
             curtain = document.createElement('div');
@@ -26,39 +26,41 @@
         return curtain;
     }
 
-    // 2. Tangani Reveal (Sapuan cat meluncur keluar ke arah kiri) saat halaman baru selesai dimuat
-    function handleInitialReveal() {
-        if (sessionStorage.getItem('spj_paint_transition') === 'active') {
+    // 2. Tangani Sapuan Cat Keluar ke Kiri (Reveal Halaman Baru)
+    function startPaintReveal() {
+        const isCovered = document.documentElement.classList.contains('paint-wipe-covered');
+        const hasTransitionFlag = sessionStorage.getItem('spj_paint_transition') === 'active';
+
+        if (isCovered || hasTransitionFlag) {
             sessionStorage.removeItem('spj_paint_transition');
-            const curtain = ensureCurtainElement();
+            const curtain = getCurtain();
 
-            // Posisikan curtain langsung menutup layar saat halaman pertama kali render
-            curtain.classList.remove('wiping-out');
+            // Posisikan tirai aktif menutup layar
             curtain.classList.add('active', 'wiping-in');
+            document.documentElement.classList.remove('paint-wipe-covered');
 
-            // Jalankan sapuan keluar ke arah kiri setelah jeda mikro
-            requestAnimationFrame(function () {
+            // Beri jeda tenang sejenak agar transisi tidak terburu-buru, lalu sapukan keluar ke kiri
+            setTimeout(function () {
+                curtain.classList.remove('wiping-in');
+                curtain.classList.add('wiping-out');
+
+                // Biarkan tirai bergeser sepenuhnya ke luar batas layar kiri (-135%)
                 setTimeout(function () {
-                    curtain.classList.remove('wiping-in');
-                    curtain.classList.add('wiping-out');
-
-                    // Nonaktifkan curtain setelah animasi sapuan selesai
-                    setTimeout(function () {
-                        curtain.classList.remove('active', 'wiping-out');
-                    }, 650);
-                }, 80);
-            });
+                    curtain.classList.remove('active', 'wiping-out');
+                }, 900);
+            }, 100);
         }
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', handleInitialReveal);
+        document.addEventListener('DOMContentLoaded', startPaintReveal);
     } else {
-        handleInitialReveal();
+        startPaintReveal();
     }
 
     // Pulihkan layar jika halaman dibuka melalui tombol Back/Forward browser (BFCache)
     window.addEventListener('pageshow', function (event) {
+        document.documentElement.classList.remove('paint-wipe-covered');
         const curtain = document.getElementById('paintWipeCurtain');
         if (curtain) {
             curtain.classList.remove('active', 'wiping-in', 'wiping-out');
@@ -66,11 +68,11 @@
     });
 
     /**
-     * Memicu sapuan cat halus dari kanan ke kiri
+     * Memicu sapuan cat halus dari kanan ke kiri secara pelan dan tenang
      * @param {string} url - Target URL tujuan
      */
     function triggerPaintWipe(url) {
-        const curtain = ensureCurtainElement();
+        const curtain = getCurtain();
         curtain.classList.remove('wiping-out');
         curtain.classList.add('active');
 
@@ -79,18 +81,20 @@
 
         curtain.classList.add('wiping-in');
 
-        // Tandai flag agar halaman berikutnya membuka dengan sapuan keluar ke kiri
-        sessionStorage.setItem('spj_paint_transition', 'active');
+        // Set flag agar halaman tujuan tertutup penuh sejak frame pertama
+        try {
+            sessionStorage.setItem('spj_paint_transition', 'active');
+        } catch (e) {}
 
-        // Berpindah halaman tepat saat layar telah tertutup penuh oleh lapisan cat
+        // Navigasi saat layar sudah tertutup penuh oleh lapisan cat tebal
         setTimeout(function () {
             window.location.href = url;
-        }, 560);
+        }, 800);
     }
 
     // 3. Tangani Klik Navigasi Antar Halaman
     document.addEventListener('click', function (e) {
-        // Abaikan jika ada tombol pengubah aktif (Ctrl, Cmd, Shift, klik tengah mouse)
+        // Abaikan jika modifier key ditekan (Ctrl, Cmd, Shift, klik tengah mouse)
         if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
             return;
         }
@@ -129,14 +133,16 @@
         }
     });
 
-    // 4. Tangani Submit Form Login (Sapuan cat lembut saat masuk ke Dashboard)
+    // 4. Tangani Submit Form Login (Sapuan cat menuju Dashboard)
     document.addEventListener('DOMContentLoaded', function () {
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', function (e) {
                 if (loginForm.checkValidity && loginForm.checkValidity()) {
-                    sessionStorage.setItem('spj_paint_transition', 'active');
-                    const curtain = ensureCurtainElement();
+                    try {
+                        sessionStorage.setItem('spj_paint_transition', 'active');
+                    } catch (err) {}
+                    const curtain = getCurtain();
                     curtain.classList.remove('wiping-out');
                     curtain.classList.add('active');
                     void curtain.offsetWidth;

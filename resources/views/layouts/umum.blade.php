@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    @vite(['resources/css/app.css', 'resources/css/umum/layout.css'])
+    @vite(['resources/css/app.css', 'resources/css/umum/layout.css', 'resources/js/app.js'])
     @stack('styles')
     
     <!-- Ionicons -->
@@ -30,6 +30,7 @@
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body class="dashboard-body">
+    @include('components.paint-transition')
     <div class="dashboard-app-wrapper">
         <x-umum.sidebar />
         <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
