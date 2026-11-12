@@ -24,6 +24,7 @@
 
     {{-- Vite CSS & JS --}}
     @vite([
+    'resources/css/app.css',
     'resources/css/admin/dashboard.css',
     'resources/css/admin/pengguna.css',
     'resources/css/admin/spj.css',
