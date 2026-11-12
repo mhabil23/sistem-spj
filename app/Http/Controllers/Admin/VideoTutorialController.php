@@ -12,180 +12,91 @@ use Illuminate\View\View;
 class VideoTutorialController extends Controller
 {
     /**
-     * Tampilkan daftar video tutorial di panel Admin.
+     * Tampilkan halaman pengelolaan satu Video Tutorial Panduan utama.
      */
-    public function index(Request $request): View
+    public function index(): View
     {
-        $query = VideoTutorial::query();
-
-        if ($request->filled('kategori') && $request->kategori !== 'all') {
-            $query->where('kategori', $request->kategori);
-        }
-
-        if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('is_active', $request->status === '1');
-        }
-
-        if ($request->filled('search')) {
-            $search = '%'.$request->search.'%';
-            $query->where(function ($q) use ($search) {
-                $q->where('judul', 'like', $search)
-                    ->orWhere('deskripsi', 'like', $search);
-            });
-        }
-
-        $tutorials = $query->orderBy('urutan', 'asc')->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
-
-        $stats = [
-            'total' => VideoTutorial::count(),
-            'aktif' => VideoTutorial::where('is_active', true)->count(),
-            'nonaktif' => VideoTutorial::where('is_active', false)->count(),
-            'link' => VideoTutorial::where('tipe_sumber', 'link')->count(),
-            'upload' => VideoTutorial::where('tipe_sumber', 'upload')->count(),
-        ];
+        $video = VideoTutorial::first();
 
         return view('admin.video-tutorial.index', [
             'title' => 'Kelola Video Tutorial Panduan',
-            'tutorials' => $tutorials,
-            'stats' => $stats,
+            'video' => $video,
         ]);
     }
 
     /**
-     * Simpan video tutorial baru.
+     * Simpan atau perbarui video tutorial utama.
      */
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'judul' => ['required', 'string', 'max:255'],
-            'kategori' => ['required', 'string', 'in:semua,teknis,umum,ppk,ppspm,bendahara'],
-            'tipe_sumber' => ['required', 'string', 'in:link,upload'],
+            'tipe_sumber' => ['required', 'string', 'in:upload,link'],
             'url_video' => ['required_if:tipe_sumber,link', 'nullable', 'string', 'max:500'],
-            'file_video' => ['required_if:tipe_sumber,upload', 'nullable', 'file', 'mimes:mp4,webm,ogg,mov,mkv', 'max:102400'],
-            'deskripsi' => ['nullable', 'string', 'max:1000'],
+            'file_video' => ['nullable', 'file', 'mimes:mp4,webm,ogg,mov,mkv', 'max:204800'],
+            'deskripsi' => ['nullable', 'string', 'max:2000'],
             'durasi' => ['nullable', 'string', 'max:20'],
-            'urutan' => ['nullable', 'integer', 'min:1'],
         ], [
             'judul.required' => 'Judul video tutorial wajib diisi.',
-            'kategori.required' => 'Kategori sasaran wajib dipilih.',
-            'url_video.required_if' => 'Link URL video wajib diisi jika sumber dipilih Link Video.',
-            'file_video.required_if' => 'File video wajib diunggah jika sumber dipilih Upload File.',
-            'file_video.mimes' => 'Format file video harus berupa MP4, WebM, OGG, atau MOV.',
-            'file_video.max' => 'Ukuran file video maksimal 100 MB.',
+            'url_video.required_if' => 'Tautan URL video wajib diisi jika memilih sumber Link Video.',
+            'file_video.mimes' => 'Format berkas video harus berupa MP4, WebM, OGG, atau MOV.',
+            'file_video.max' => 'Ukuran file video maksimal 200 MB.',
         ]);
 
-        $filePath = null;
-        if ($request->hasFile('file_video') && $validated['tipe_sumber'] === 'upload') {
-            $filePath = $request->file('file_video')->store('videos/tutorials', 'public');
-        }
+        $video = VideoTutorial::first() ?: new VideoTutorial;
 
-        $youtubeId = null;
-        if ($validated['tipe_sumber'] === 'link' && ! empty($validated['url_video'])) {
-            $youtubeId = VideoTutorial::extractYouTubeId($validated['url_video']);
-        }
-
-        VideoTutorial::create([
-            'judul' => $validated['judul'],
-            'kategori' => $validated['kategori'],
-            'tipe_sumber' => $validated['tipe_sumber'],
-            'url_video' => $validated['tipe_sumber'] === 'link' ? $validated['url_video'] : null,
-            'file_video' => $filePath,
-            'youtube_id' => $youtubeId,
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'durasi' => $validated['durasi'] ?? null,
-            'urutan' => $validated['urutan'] ?? (VideoTutorial::max('urutan') + 1),
-            'is_active' => $request->has('is_active'),
-        ]);
-
-        return redirect()->route('admin.video-tutorial.index')
-            ->with('success', 'Video tutorial baru berhasil ditambahkan.');
-    }
-
-    /**
-     * Perbarui video tutorial yang sudah ada.
-     */
-    public function update(Request $request, VideoTutorial $videoTutorial): RedirectResponse
-    {
-        $validated = $request->validate([
-            'judul' => ['required', 'string', 'max:255'],
-            'kategori' => ['required', 'string', 'in:semua,teknis,umum,ppk,ppspm,bendahara'],
-            'tipe_sumber' => ['required', 'string', 'in:link,upload'],
-            'url_video' => ['required_if:tipe_sumber,link', 'nullable', 'string', 'max:500'],
-            'file_video' => ['nullable', 'file', 'mimes:mp4,webm,ogg,mov,mkv', 'max:102400'],
-            'deskripsi' => ['nullable', 'string', 'max:1000'],
-            'durasi' => ['nullable', 'string', 'max:20'],
-            'urutan' => ['nullable', 'integer', 'min:1'],
-        ], [
-            'judul.required' => 'Judul video tutorial wajib diisi.',
-            'kategori.required' => 'Kategori sasaran wajib dipilih.',
-            'url_video.required_if' => 'Link URL video wajib diisi jika sumber dipilih Link Video.',
-            'file_video.mimes' => 'Format file video harus berupa MP4, WebM, OGG, atau MOV.',
-            'file_video.max' => 'Ukuran file video maksimal 100 MB.',
-        ]);
-
-        $filePath = $videoTutorial->file_video;
-        if ($request->hasFile('file_video') && $validated['tipe_sumber'] === 'upload') {
-            if ($filePath && Storage::disk('public')->exists($filePath)) {
-                Storage::disk('public')->delete($filePath);
+        if ($validated['tipe_sumber'] === 'upload') {
+            if ($request->hasFile('file_video')) {
+                // Hapus file lama jika ada
+                if ($video->file_video && Storage::disk('public')->exists($video->file_video)) {
+                    Storage::disk('public')->delete($video->file_video);
+                }
+                $video->file_video = $request->file('file_video')->store('videos/tutorials', 'public');
+                $video->url_video = null;
+                $video->youtube_id = null;
+            } elseif (! $video->file_video) {
+                return back()->withInput()->withErrors([
+                    'file_video' => 'Silakan pilih dan unggah berkas video (MP4/WebM).',
+                ]);
             }
-            $filePath = $request->file('file_video')->store('videos/tutorials', 'public');
-        }
-
-        $youtubeId = $videoTutorial->youtube_id;
-        if ($validated['tipe_sumber'] === 'link') {
-            if ($filePath && Storage::disk('public')->exists($filePath)) {
-                Storage::disk('public')->delete($filePath);
-                $filePath = null;
-            }
-            $youtubeId = VideoTutorial::extractYouTubeId($validated['url_video']);
         } else {
-            $youtubeId = null;
+            // Tipe sumber link
+            if ($video->file_video && Storage::disk('public')->exists($video->file_video)) {
+                Storage::disk('public')->delete($video->file_video);
+                $video->file_video = null;
+            }
+            $video->url_video = $validated['url_video'];
+            $video->youtube_id = VideoTutorial::extractYouTubeId($validated['url_video']);
         }
 
-        $videoTutorial->update([
-            'judul' => $validated['judul'],
-            'kategori' => $validated['kategori'],
-            'tipe_sumber' => $validated['tipe_sumber'],
-            'url_video' => $validated['tipe_sumber'] === 'link' ? $validated['url_video'] : null,
-            'file_video' => $filePath,
-            'youtube_id' => $youtubeId,
-            'deskripsi' => $validated['deskripsi'] ?? null,
-            'durasi' => $validated['durasi'] ?? null,
-            'urutan' => $validated['urutan'] ?? $videoTutorial->urutan,
-            'is_active' => $request->has('is_active'),
-        ]);
+        $video->judul = $validated['judul'];
+        $video->kategori = 'semua';
+        $video->tipe_sumber = $validated['tipe_sumber'];
+        $video->deskripsi = $validated['deskripsi'] ?? null;
+        $video->durasi = $validated['durasi'] ?? null;
+        $video->urutan = 1;
+        $video->is_active = $request->has('is_active');
+        $video->save();
 
         return redirect()->route('admin.video-tutorial.index')
-            ->with('success', 'Video tutorial berhasil diperbarui.');
+            ->with('success', 'Video tutorial panduan berhasil disimpan dan diperbarui.');
     }
 
     /**
-     * Hapus video tutorial.
+     * Hapus video tutorial yang ada.
      */
-    public function destroy(VideoTutorial $videoTutorial): RedirectResponse
+    public function destroy(): RedirectResponse
     {
-        if ($videoTutorial->file_video && Storage::disk('public')->exists($videoTutorial->file_video)) {
-            Storage::disk('public')->delete($videoTutorial->file_video);
-        }
+        $video = VideoTutorial::first();
 
-        $videoTutorial->delete();
+        if ($video) {
+            if ($video->file_video && Storage::disk('public')->exists($video->file_video)) {
+                Storage::disk('public')->delete($video->file_video);
+            }
+            $video->delete();
+        }
 
         return redirect()->route('admin.video-tutorial.index')
             ->with('success', 'Video tutorial berhasil dihapus.');
-    }
-
-    /**
-     * Beralih status aktif / nonaktif video tutorial.
-     */
-    public function toggle(VideoTutorial $videoTutorial): RedirectResponse
-    {
-        $videoTutorial->update([
-            'is_active' => ! $videoTutorial->is_active,
-        ]);
-
-        $statusText = $videoTutorial->is_active ? 'diaktifkan' : 'dinonaktifkan';
-
-        return redirect()->route('admin.video-tutorial.index')
-            ->with('success', "Status video tutorial berhasil {$statusText}.");
     }
 }

@@ -76,9 +76,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Video Tutorial Panduan
     Route::get('/video-tutorial', [VideoTutorialController::class, 'index'])->name('video-tutorial.index');
     Route::post('/video-tutorial', [VideoTutorialController::class, 'store'])->name('video-tutorial.store');
-    Route::put('/video-tutorial/{videoTutorial}', [VideoTutorialController::class, 'update'])->name('video-tutorial.update');
-    Route::delete('/video-tutorial/{videoTutorial}', [VideoTutorialController::class, 'destroy'])->name('video-tutorial.destroy');
-    Route::patch('/video-tutorial/{videoTutorial}/toggle', [VideoTutorialController::class, 'toggle'])->name('video-tutorial.toggle');
+    Route::delete('/video-tutorial', [VideoTutorialController::class, 'destroy'])->name('video-tutorial.destroy');
 
     // Riwayat
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');

@@ -166,11 +166,8 @@ class HomeController extends Controller
             ]);
         }
 
-        $videoTutorials = VideoTutorial::where('is_active', true)
-            ->orderBy('urutan', 'asc')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $videoTutorial = VideoTutorial::where('is_active', true)->first();
 
-        return view('home', compact('templates', 'spjs', 'stats', 'videoTutorials'));
+        return view('home', compact('templates', 'spjs', 'stats', 'videoTutorial'));
     }
 }
