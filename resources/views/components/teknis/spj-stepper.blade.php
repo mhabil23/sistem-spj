@@ -207,7 +207,15 @@
             </div>
             <div class="teknis-stepper-content">
                 <span class="teknis-step-title">5. Pencairan Dana</span>
-                <span class="teknis-step-sub">Bendahara Pengeluaran</span>
+                @if($spj->status === 'menunggu_otp_kpa')
+                    <span class="teknis-step-sub">Otorisasi KPA</span>
+                @elseif($spj->status === 'proses_ls')
+                    <span class="teknis-step-sub">Kliring Bank LS</span>
+                @elseif($spj->status === 'selesai')
+                    <span class="teknis-step-sub">Pencairan Selesai</span>
+                @else
+                    <span class="teknis-step-sub">Bendahara Pengeluaran</span>
+                @endif
                 @if($spj->status === 'selesai')
                     <span class="teknis-step-time badge-time-success">{{ $spj->diselesaikan_at ? \Carbon\Carbon::parse($spj->diselesaikan_at)->format('d/m/Y') : 'Cair' }}</span>
                 @elseif($spj->status === 'revisi_bendahara')

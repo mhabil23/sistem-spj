@@ -102,6 +102,12 @@ if ($isRevision) {
                     } elseif ($spj->status == 'disetujui_ppspm') {
                         $statusBadgeClass = 'dash-badge-disetujui_ppspm';
                         $statusText = 'Siap Diproses Bendahara (SPM Terbit)';
+                    } elseif ($spj->status == 'menunggu_otp_kpa') {
+                        $statusBadgeClass = 'dash-badge-diajukan';
+                        $statusText = 'Menunggu OTP QLOLA KPA';
+                    } elseif ($spj->status == 'proses_ls') {
+                        $statusBadgeClass = 'dash-badge-disetujui_ppk';
+                        $statusText = 'Pembayaran LS (Kliring Bank)';
                     } elseif ($isRevision) {
                         $statusBadgeClass = 'dash-badge-revisi';
                         $statusText = 'Perlu Revisi (' . strtoupper(str_replace('revisi_', '', $spj->status)) . ')';

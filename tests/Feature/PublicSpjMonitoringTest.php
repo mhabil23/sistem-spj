@@ -223,4 +223,43 @@ class PublicSpjMonitoringTest extends TestCase
         $posisiLama = strpos($content, 'SPJ Lama Status Selesai');
         $this->assertTrue($posisiBaru < $posisiLama);
     }
+
+    /**
+     * Memastikan status menunggu OTP dan pembayaran LS tidak mencantumkan keterangan Bendahara.
+     */
+    public function test_status_menunggu_otp_dan_proses_ls_tidak_mencantumkan_keterangan_bendahara(): void
+    {
+        $user = User::factory()->create(['role' => 'teknis']);
+
+        $spjOtp = Spj::create([
+            'nomor_spj' => '50128102026',
+            'kegiatan' => 'Kegiatan Menunggu OTP KPA Tanpa Keterangan Bendahara',
+            'tanggal' => '2026-11-10',
+            'nilai' => 1500000,
+            'status' => 'menunggu_otp_kpa',
+            'user_id' => $user->id,
+        ]);
+
+        $spjLs = Spj::create([
+            'nomor_spj' => '50228102026',
+            'kegiatan' => 'Kegiatan Pembayaran LS Tanpa Keterangan Bendahara',
+            'tanggal' => '2026-11-10',
+            'nilai' => 2500000,
+            'status' => 'proses_ls',
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this->get(route('home'));
+        $response->assertStatus(200);
+
+        // Verifikasi SPJ OTP
+        $response->assertSee('Menunggu OTP QLOLA KPA');
+        $response->assertSee('Tahap 5: Menunggu OTP KPA');
+        $response->assertDontSee('Menunggu OTP KPA (Bendahara)');
+
+        // Verifikasi SPJ LS
+        $response->assertSee('Pembayaran LS');
+        $response->assertSee('Tahap 5: Pembayaran LS');
+        $response->assertDontSee('Kliring Bank LS (Bendahara)');
+    }
 }

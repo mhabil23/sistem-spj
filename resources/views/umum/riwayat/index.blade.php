@@ -149,9 +149,12 @@ $subtitle = 'Arsip & pemantauan seluruh berkas SPJ yang masuk ke alur verifikasi
                                 } elseif ($spj->status === 'disetujui_ppspm') {
                                     $badgeClass = 'dash-badge-disetujui_ppspm';
                                     $statusText = 'Siap Diproses Bendahara (SPM Terbit)';
-                                } elseif (in_array($spj->status, ['menunggu_otp_kpa', 'proses_ls'])) {
+                                } elseif ($spj->status === 'menunggu_otp_kpa') {
+                                    $badgeClass = 'dash-badge-cyan';
+                                    $statusText = 'Menunggu OTP QLOLA KPA';
+                                } elseif ($spj->status === 'proses_ls') {
                                     $badgeClass = 'dash-badge-purple';
-                                    $statusText = 'Proses Pembayaran (Bendahara)';
+                                    $statusText = 'Pembayaran LS (Kliring Bank)';
                                 } elseif ($spj->status === 'selesai') {
                                     $badgeClass = 'dash-badge-selesai';
                                     $statusText = 'Selesai & Cair (Arsip)';

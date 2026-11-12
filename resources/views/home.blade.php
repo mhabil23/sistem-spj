@@ -967,7 +967,15 @@
                                     @elseif($stage === 3) Tahap 3: PPK
                                     @elseif($stage === 4) Tahap 4: PPSPM
                                     @elseif($stage === 5)
-                                        {{ $spj->status === 'selesai' ? 'Tahap 5: Selesai &amp; Lunas' : 'Tahap 5: Bendahara' }}
+                                        @if($spj->status === 'selesai')
+                                            Tahap 5: Selesai &amp; Lunas
+                                        @elseif($spj->status === 'menunggu_otp_kpa')
+                                            Tahap 5: Menunggu OTP KPA
+                                        @elseif($spj->status === 'proses_ls')
+                                            Tahap 5: Pembayaran LS
+                                        @else
+                                            Tahap 5: Bendahara
+                                        @endif
                                     @endif
                                 </div>
                             </div>
@@ -1248,8 +1256,8 @@
                     <div class="track-step-row" id="trackNode5">
                         <div class="track-step-bullet" id="trackIcon5">5</div>
                         <div class="track-step-text">
-                            <strong>5. Pencairan Dana oleh Bendahara</strong>
-                            <p>Pembayaran tagihan setelah SP2D terbit dan pengarsipan kuitansi sah.</p>
+                            <strong id="trackTitle5">5. Pencairan Dana oleh Bendahara</strong>
+                            <p id="trackDesc5">Pembayaran tagihan setelah SP2D terbit dan pengarsipan kuitansi sah.</p>
                             <span class="track-timestamp" id="trackTime5">—</span>
                         </div>
                     </div>
@@ -2009,7 +2017,31 @@
             document.getElementById('trackTime2').textContent = umumAt ? 'Disetujui: ' + umumAt : (fisikAt ? 'Fisik Masuk: ' + fisikAt : (stage > 2 ? 'Selesai' : (stage === 2 ? 'Sedang Diperiksa' : 'Menunggu Berkas')));
             document.getElementById('trackTime3').textContent = ppkAt ? 'Disetujui: ' + ppkAt : (stage > 3 ? 'Selesai' : (stage === 3 ? 'Sedang Diproses' : 'Menunggu'));
             document.getElementById('trackTime4').textContent = ppspmAt ? 'SPM: ' + (spm || 'Terbit') + ' (' + ppspmAt + ')' : (stage > 4 ? 'Selesai' : (stage === 4 ? 'Sedang Diproses' : 'Menunggu'));
-            document.getElementById('trackTime5').textContent = selesaiAt ? 'Lunas: ' + selesaiAt : (status === 'selesai' ? 'Lunas' : (stage === 5 ? 'Proses Pencairan' : 'Menunggu'));
+            const title5 = document.getElementById('trackTitle5');
+            const desc5 = document.getElementById('trackDesc5');
+            const time5 = document.getElementById('trackTime5');
+
+            if (status === 'selesai') {
+                if (title5) title5.textContent = '5. Pembayaran Selesai & Lunas';
+                if (desc5) desc5.textContent = 'Pembayaran tagihan telah berhasil dicairkan dan ditransfer ke rekening penerima.';
+                if (time5) time5.textContent = selesaiAt ? 'Lunas: ' + selesaiAt : 'Lunas';
+            } else if (status === 'menunggu_otp_kpa') {
+                if (title5) title5.textContent = '5. Otorisasi Pembayaran (Menunggu OTP KPA)';
+                if (desc5) desc5.textContent = 'Transaksi telah diinput ke BRI QLOLA. Menunggu otorisasi kode OTP dari Kuasa Pengguna Anggaran (KPA).';
+                if (time5) time5.textContent = 'Menunggu OTP KPA';
+            } else if (status === 'proses_ls') {
+                if (title5) title5.textContent = '5. Pembayaran LS (Kliring Bank)';
+                if (desc5) desc5.textContent = 'SPM tagihan diproses via mekanisme LS. Menunggu kliring dan transfer langsung dari bank penyalur.';
+                if (time5) time5.textContent = 'Kliring Bank LS';
+            } else if (status === 'disetujui_ppspm') {
+                if (title5) title5.textContent = '5. Pencairan Dana oleh Bendahara';
+                if (desc5) desc5.textContent = 'SPM telah diterbitkan oleh PPSPM. Berkas berada di Bendahara untuk persiapan pencairan.';
+                if (time5) time5.textContent = 'Siap Diproses Bendahara';
+            } else {
+                if (title5) title5.textContent = '5. Pencairan Dana';
+                if (desc5) desc5.textContent = 'Pembayaran tagihan setelah SPM diterbitkan.';
+                if (time5) time5.textContent = 'Menunggu';
+            }
 
             for (let i = 1; i <= 5; i++) {
                 const node = document.getElementById('trackNode' + i);

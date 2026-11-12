@@ -487,15 +487,27 @@ class Spj extends Model
 
         if ($status === 'disetujui_ppspm' || $status === 'menunggu_otp_kpa' || $status === 'proses_ls') {
             $label = match ($status) {
-                'menunggu_otp_kpa' => 'Menunggu OTP KPA (Bendahara)',
-                'proses_ls' => 'Kliring Bank LS (Bendahara)',
-                default => 'SPM Terbit (Proses Bendahara)',
+                'menunggu_otp_kpa' => 'Menunggu OTP QLOLA KPA',
+                'proses_ls' => $this->isHonor() ? 'Pembayaran LS (Kliring Bank)' : 'Pembayaran LS (Transfer Bank)',
+                default => 'Siap Diproses Bendahara (SPM Terbit)',
+            };
+
+            $badgeClass = match ($status) {
+                'menunggu_otp_kpa' => 'badge-otp',
+                'proses_ls' => 'badge-ls',
+                default => 'badge-bendahara',
+            };
+
+            $icon = match ($status) {
+                'menunggu_otp_kpa' => 'bi bi-key-fill',
+                'proses_ls' => 'bi bi-bank',
+                default => 'bi bi-award-fill',
             };
 
             return [
-                'class' => 'badge-bendahara',
+                'class' => $badgeClass,
                 'label' => $label,
-                'icon' => 'bi bi-award-fill',
+                'icon' => $icon,
                 'group' => 'proses',
             ];
         }

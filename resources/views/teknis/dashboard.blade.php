@@ -121,7 +121,7 @@ $subtitle = 'Pantau dan kelola pengajuan SPJ Anda.';
                                 @elseif($spj->status == 'menunggu_otp_kpa')
                                     KPA (OTP QLOLA)
                                 @elseif($spj->status == 'proses_ls')
-                                    Bank LS (Bendahara)
+                                    Bank Penyalur (LS)
                                 @elseif($spj->status == 'selesai')
                                     Arsip
                                 @else
