@@ -23,21 +23,35 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $role = Auth::user()->role;
-            if ($role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            } elseif ($role === 'teknis') {
-                return redirect()->route('teknis.dashboard');
-            } elseif ($role === 'umum') {
-                return redirect()->route('umum.dashboard');
-            } elseif ($role === 'ppk') {
-                return redirect()->route('ppk.dashboard');
-            } elseif ($role === 'ppspm') {
-                return redirect()->route('ppspm.dashboard');
-            } elseif ($role === 'bendahara') {
-                return redirect()->route('bendahara.dashboard');
+            $redirectUrl = match ($role) {
+                'admin' => route('admin.dashboard'),
+                'teknis' => route('teknis.dashboard'),
+                'umum' => route('umum.dashboard'),
+                'ppk' => route('ppk.dashboard'),
+                'ppspm' => route('ppspm.dashboard'),
+                'bendahara' => route('bendahara.dashboard'),
+                default => url('/'),
+            };
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Login berhasil. Mengalihkan ke dashboard...',
+                    'redirect_url' => $redirectUrl,
+                ]);
             }
 
-            return redirect()->intended('/');
+            return redirect()->intended($redirectUrl);
+        }
+
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email atau kata sandi yang Anda masukkan tidak sesuai.',
+                'errors' => [
+                    'email' => ['Email atau kata sandi yang Anda masukkan tidak sesuai.'],
+                ],
+            ], 422);
         }
 
         return back()->withErrors([

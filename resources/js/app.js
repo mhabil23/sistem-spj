@@ -133,27 +133,82 @@
         }
     });
 
-    // 4. Tangani Submit Form Login (Sapuan cat menuju Dashboard)
+    // 4. Tangani Submit Form Login dengan Transisi Sapuan Cat ke Dashboard
     document.addEventListener('DOMContentLoaded', function () {
         const loginForm = document.getElementById('loginForm');
         if (loginForm) {
             loginForm.addEventListener('submit', function (e) {
-                if (loginForm.checkValidity && loginForm.checkValidity()) {
-                    try {
-                        sessionStorage.setItem('spj_paint_transition', 'active');
-                    } catch (err) {}
-                    const curtain = getCurtain();
-                    curtain.classList.remove('wiping-out');
-                    curtain.classList.add('active');
-                    void curtain.offsetWidth;
-                    curtain.classList.add('wiping-in');
+                e.preventDefault();
 
-                    const submitBtn = loginForm.querySelector('.btn-submit-login');
-                    if (submitBtn) {
-                        submitBtn.classList.add('loading');
-                        submitBtn.style.pointerEvents = 'none';
+                // Validasi form HTML5
+                if (loginForm.checkValidity && !loginForm.checkValidity()) {
+                    if (typeof loginForm.reportValidity === 'function') {
+                        loginForm.reportValidity();
                     }
+                    return;
                 }
+
+                const submitBtn = loginForm.querySelector('.btn-submit-login');
+                const ajaxAlert = document.getElementById('loginAjaxAlert');
+                const ajaxErrMsg = document.getElementById('loginAjaxErrorMessage');
+
+                // Sembunyikan alert error lama jika ada
+                if (ajaxAlert) ajaxAlert.style.display = 'none';
+
+                // Ubah status tombol jadi memverifikasi
+                if (submitBtn) {
+                    submitBtn.classList.add('loading');
+                    submitBtn.style.pointerEvents = 'none';
+                    submitBtn.innerHTML = '<i class="bi bi-arrow-repeat spin-icon"></i> <span>Memverifikasi Akun...</span>';
+                }
+
+                const formData = new FormData(loginForm);
+
+                fetch(loginForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(function (response) {
+                    return response.json().then(function (data) {
+                        return { ok: response.ok, status: response.status, data: data };
+                    });
+                })
+                .then(function (result) {
+                    if (result.ok && result.data && result.data.status === 'success') {
+                        // Login Berhasil: Ubah label tombol lalu picu sapuan cat ke Dashboard
+                        if (submitBtn) {
+                            submitBtn.innerHTML = '<i class="bi bi-check2-circle"></i> <span>Berhasil! Mengalihkan...</span>';
+                        }
+                        const targetDashboard = result.data.redirect_url || '/';
+                        triggerPaintWipe(targetDashboard);
+                    } else {
+                        // Kredensial Salah / Error Validasi
+                        if (submitBtn) {
+                            submitBtn.classList.remove('loading');
+                            submitBtn.style.pointerEvents = '';
+                            submitBtn.innerHTML = '<span>Masuk ke Sistem</span> <i class="bi bi-arrow-right"></i>';
+                        }
+                        const msg = (result.data && result.data.message) ? result.data.message : 'Email atau kata sandi yang Anda masukkan tidak sesuai.';
+                        if (ajaxAlert && ajaxErrMsg) {
+                            ajaxErrMsg.textContent = msg;
+                            ajaxAlert.style.display = 'flex';
+                        }
+                        const passInput = document.getElementById('password');
+                        if (passInput) {
+                            passInput.value = '';
+                            passInput.focus();
+                        }
+                    }
+                })
+                .catch(function (error) {
+                    // Fallback jika terjadi kegagalan jaringan: submit konvensional
+                    console.error('AJAX login error:', error);
+                    loginForm.submit();
+                });
             });
         }
     });

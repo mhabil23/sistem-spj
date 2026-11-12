@@ -1221,14 +1221,21 @@ html.paint-wipe-covered .paint-wipe-badge {
 
 /* Efek tombol submit saat loading transisi */
 .btn-submit-login.loading {
-    opacity: 0.85;
-    pointer-events: none;
+    opacity: 0.9;
     cursor: wait;
+    background: linear-gradient(135deg, #0369a1 0%, #0c2556 100%);
 }
 
-/* Efek tombol submit saat loading transisi */
-.btn-submit-login.loading {
-    opacity: 0.85;
-    pointer-events: none;
-    cursor: wait;
+@keyframes spinIconAnim {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spin-icon {
+    display: inline-block;
+    animation: spinIconAnim 0.75s linear infinite;
 }

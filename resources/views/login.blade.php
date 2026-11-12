@@ -269,6 +269,15 @@
                         </div>
                     @endif
 
+                    <!-- Notifikasi Error Dinamis AJAX -->
+                    <div id="loginAjaxAlert" class="alert-box-danger" style="display: none;">
+                        <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                        <div class="alert-content">
+                            <strong>Gagal Masuk:</strong>
+                            <span id="loginAjaxErrorMessage">Email atau kata sandi yang Anda masukkan tidak sesuai.</span>
+                        </div>
+                    </div>
+
                     <!-- Notifikasi Error Validasi -->
                     @if (isset($errors) && $errors->any())
                         <div class="alert-box-danger">
