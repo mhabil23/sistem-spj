@@ -63,6 +63,14 @@
             <span class="nav-icon"><i class="bi bi-card-checklist"></i></span>
             <span>Syarat Dokumen SPJ</span>
         </a>
+
+        {{-- VIDEO TUTORIAL PANDUAN --}}
+        <a
+            href="{{ route('admin.video-tutorial.index') }}"
+            class="nav-item {{ request()->routeIs('admin.video-tutorial.*') ? 'active' : '' }}">
+            <span class="nav-icon"><i class="bi bi-play-btn-fill"></i></span>
+            <span>Video Tutorial Panduan</span>
+        </a>
         <div class="nav-label" style="margin-top: 1.5rem;">
             PENGATURAN
         </div>

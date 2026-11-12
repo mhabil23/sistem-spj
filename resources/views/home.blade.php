@@ -45,7 +45,7 @@
                     <a href="#beranda" class="nav-link active">BERANDA</a>
                     <a href="#alur" class="nav-link">ALUR SPJ</a>
                     <a href="#monitoring" class="nav-link">MONITORING</a>
-                    <a href="{{ route('panduan-role.preview') }}" target="_blank" class="nav-link">PANDUAN</a>
+                    <a href="#panduan" class="nav-link" onclick="openPanduanModal(event)">PANDUAN</a>
                     <a href="#templates" class="nav-link" onclick="openTemplateModal(event)">TEMPLATE</a>
                 </nav>
             </div>
@@ -119,7 +119,8 @@
             <a href="#templates" onclick="closeMobileNav(); openTemplateModal(event)">TEMPLATE BERKAS</a>
             <div class="mobile-drawer-divider"></div>
             <a href="{{ route('flowchart.preview') }}" target="_blank"><i class="bi bi-diagram-3"></i> FLOWCHART SOP</a>
-            <a href="{{ route('panduan-role.preview') }}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> PANDUAN ROLE</a>
+            <a href="#panduan" onclick="closeMobileNav(); openPanduanModal(event)"><i class="bi bi-play-circle-fill"></i> PANDUAN VIDEO TUTORIAL</a>
+            <a href="{{ route('panduan-role.preview') }}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> PANDUAN ROLE (PDF)</a>
         </div>
     </div>
 
@@ -1153,7 +1154,8 @@
                 <a href="#beranda">BERANDA</a>
                 <a href="#alur">ALUR SPJ</a>
                 <a href="#monitoring">MONITORING</a>
-                <a href="{{ route('panduan-role.preview') }}" target="_blank">PANDUAN ROLE</a>
+                <a href="#panduan" onclick="openPanduanModal(event)">VIDEO TUTORIAL</a>
+                <a href="{{ route('panduan-role.preview') }}" target="_blank">PANDUAN ROLE (PDF)</a>
                 <a href="{{ route('flowchart.preview') }}" target="_blank">FLOWCHART SOP</a>
             </div>
         </div>
@@ -1269,6 +1271,197 @@
                 <button type="button" class="btn-formal-outline" onclick="closeTrackModal()">
                     <span>Tutup Pelacakan</span>
                 </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- =========================================================
+         MODAL PANDUAN & VIDEO TUTORIAL SPJ (PUBLIK)
+    ========================================================= -->
+    <div class="panduan-modal-backdrop" id="panduanModalBackdrop" onclick="closePanduanModalOnBackdrop(event)" aria-hidden="true">
+        <div class="panduan-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="panduanModalTitle">
+
+            <!-- Modal Header -->
+            <div class="tpl-modal-header">
+                <div class="tpl-modal-header-info">
+                    <div class="tpl-modal-badge">
+                        <i class="bi bi-play-circle-fill"></i>
+                        <span>Pusat Panduan &amp; Video Tutorial</span>
+                    </div>
+                    <h2 id="panduanModalTitle">Video Tutorial &amp; Panduan SPJ</h2>
+                    <p>
+                        Pelajari tata cara pengajuan, verifikasi kelengkapan, dan pencairan dana SPJ melalui panduan video interaktif dan berkas SOP resmi.
+                    </p>
+                </div>
+
+                <div class="tpl-modal-header-actions">
+                    @if(auth()->check() && auth()->user()->role === 'admin')
+                        <a href="{{ route('admin.video-tutorial.index') }}" class="btn-modal-admin" title="Buka panel admin untuk mengelola / mengubah video tutorial">
+                            <i class="bi bi-gear-fill"></i>
+                            <span>Kelola Video Tutorial</span>
+                        </a>
+                    @endif
+                    <button type="button" class="tpl-modal-close" onclick="closePanduanModal()" aria-label="Tutup Modal Panduan">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Controls: Filter Role & Live Search -->
+            <div class="tpl-modal-controls">
+                <div class="tpl-search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="panduanSearchBox" placeholder="Cari judul video tutorial, panduan teknis, umum, PPK, bendahara..." oninput="filterPanduanCards()" autocomplete="off">
+                    <button type="button" id="panduanClearSearch" onclick="clearPanduanSearch()" style="display: none;" aria-label="Hapus pencarian">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </button>
+                </div>
+
+                <div class="tpl-cat-chips" id="panduanCatChips">
+                    <button type="button" class="tpl-chip active" data-cat="all" onclick="selectPanduanCategory('all')">
+                        Semua Video <span class="chip-count">({{ count($videoTutorials ?? []) }})</span>
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="teknis" onclick="selectPanduanCategory('teknis')">
+                        <i class="bi bi-person-workspace"></i> Staf Teknis
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="umum" onclick="selectPanduanCategory('umum')">
+                        <i class="bi bi-inbox-fill"></i> Subbag Umum
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="ppk" onclick="selectPanduanCategory('ppk')">
+                        <i class="bi bi-pen-fill"></i> PPK
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="ppspm" onclick="selectPanduanCategory('ppspm')">
+                        <i class="bi bi-patch-check-fill"></i> PPSPM
+                    </button>
+                    <button type="button" class="tpl-chip" data-cat="bendahara" onclick="selectPanduanCategory('bendahara')">
+                        <i class="bi bi-cash-stack"></i> Bendahara
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Body: Theater Player + Video Grid -->
+            <div class="tpl-modal-body">
+                
+                <!-- Theater Video Player Showcase (Dynamic) -->
+                @php
+                    $firstVideo = ($videoTutorials ?? collect())->first();
+                @endphp
+                <div class="panduan-theater-box" id="panduanTheaterBox" style="{{ $firstVideo ? '' : 'display: none;' }}">
+                    <div class="panduan-player-frame" id="panduanPlayerFrame">
+                        @if($firstVideo)
+                            @if($firstVideo->tipe_sumber === 'upload' && $firstVideo->file_video)
+                                <video controls id="theaterVideoElement" style="width: 100%; height: 100%;">
+                                    <source src="{{ $firstVideo->embed_url }}" type="video/mp4">
+                                </video>
+                            @elseif($firstVideo->embed_url)
+                                <iframe id="theaterIframeElement" src="{{ $firstVideo->embed_url }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            @endif
+                        @endif
+                    </div>
+                    <div class="panduan-theater-info">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <span class="badge-kategori {{ $firstVideo ? $firstVideo->kategori_badge_class : '' }}" id="theaterBadge">
+                                    {{ $firstVideo ? $firstVideo->kategori_label : '' }}
+                                </span>
+                                <span id="theaterDuration" style="font-size: 11.5px; color: #94a3b8; font-weight: 600;">
+                                    {{ $firstVideo && $firstVideo->durasi ? '⏱ ' . $firstVideo->durasi : '' }}
+                                </span>
+                            </div>
+                            <h3 class="panduan-theater-title" id="theaterTitle">{{ $firstVideo ? $firstVideo->judul : 'Pilih Video Tutorial' }}</h3>
+                            <p class="panduan-theater-desc" id="theaterDesc">{{ $firstVideo ? $firstVideo->deskripsi : '' }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Cards Grid -->
+                <div class="panduan-video-grid" id="panduanVideoGrid">
+                    @forelse(($videoTutorials ?? []) as $vid)
+                        @php
+                            $thumb = $vid->thumbnail_url;
+                            $embed = $vid->embed_url;
+                        @endphp
+                        <div class="panduan-card {{ $loop->first ? 'active-playing' : '' }}"
+                            data-id="{{ $vid->id }}"
+                            data-cat="{{ $vid->kategori }}"
+                            data-title="{{ strtolower($vid->judul) }}"
+                            data-desc="{{ strtolower($vid->deskripsi ?? '') }}"
+                            data-embed="{{ $embed }}"
+                            data-type="{{ $vid->tipe_sumber }}"
+                            data-judul="{{ $vid->judul }}"
+                            data-badge="{{ $vid->kategori_label }}"
+                            data-badge-class="{{ $vid->kategori_badge_class }}"
+                            data-duration="{{ $vid->durasi ? '⏱ ' . $vid->durasi : '' }}"
+                            data-keterangan="{{ $vid->deskripsi ?? '' }}"
+                            onclick="selectActiveTutorial(this)">
+                            
+                            <div class="panduan-card-thumb">
+                                @if($thumb)
+                                    <img src="{{ $thumb }}" alt="{{ $vid->judul }}" loading="lazy">
+                                @else
+                                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #38bdf8; font-size: 32px;">
+                                        <i class="bi bi-play-circle-fill"></i>
+                                    </div>
+                                @endif
+                                <div class="play-btn-circle">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                            </div>
+
+                            <div class="panduan-card-body">
+                                <div class="panduan-card-meta">
+                                    <span class="badge-kategori {{ $vid->kategori_badge_class }}" style="font-size: 10px;">
+                                        {{ $vid->kategori_label }}
+                                    </span>
+                                    @if($vid->durasi)
+                                        <span style="font-size: 11px; color: var(--text-muted-cream); font-weight: 700;">
+                                            {{ $vid->durasi }}
+                                        </span>
+                                    @endif
+                                </div>
+                                <h4 class="panduan-card-title">{{ $vid->judul }}</h4>
+                                <p class="panduan-card-desc">{{ $vid->deskripsi ?: 'Simak penjelasan tutorial langkah demi langkah.' }}</p>
+                            </div>
+                        </div>
+                    @empty
+                        <div style="grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--text-muted-cream);">
+                            <i class="bi bi-film" style="font-size: 36px; margin-bottom: 8px; display: block;"></i>
+                            <strong>Belum Ada Video Tutorial</strong>
+                            <p style="font-size: 12.5px; margin: 4px 0 0 0;">Admin dapat menambahkan link video tutorial baru melalui menu Admin.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                <!-- Empty State Search -->
+                <div id="panduanNoResults" style="display: none; padding: 40px; text-align: center; color: var(--text-muted-cream);">
+                    <i class="bi bi-search" style="font-size: 32px; margin-bottom: 8px; display: block; color: var(--salmon-accent);"></i>
+                    <strong>Video Tutorial Tidak Ditemukan</strong>
+                    <p style="font-size: 12.5px; margin: 4px 0 0 0;">Coba gunakan kata kunci pencarian lain atau pilih kategori Semua Video.</p>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer: Quick Links to PDF SOP -->
+            <div class="panduan-pdf-strip">
+                <div class="panduan-pdf-links">
+                    <span style="font-size: 12px; font-weight: 800; color: var(--text-on-cream);">
+                        <i class="bi bi-file-earmark-pdf-fill" style="color: #dc2626;"></i> DOKUMEN RESMI:
+                    </span>
+                    <a href="{{ route('panduan-role.preview') }}" target="_blank" class="panduan-pdf-btn">
+                        <i class="bi bi-journal-text"></i>
+                        <span>Buku Panduan Role &amp; Hak Akses</span>
+                    </a>
+                    <a href="{{ route('flowchart.preview') }}" target="_blank" class="panduan-pdf-btn">
+                        <i class="bi bi-diagram-3-fill"></i>
+                        <span>Flowchart SOP 5 Pintu SPJ</span>
+                    </a>
+                </div>
+                <div>
+                    <button type="button" class="btn-formal-outline" style="padding: 6px 16px; font-size: 12px;" onclick="closePanduanModal()">
+                        <span>Tutup Panduan</span>
+                    </button>
+                </div>
             </div>
 
         </div>
@@ -1659,6 +1852,10 @@
             if (window.location.hash === '#templates' || window.location.hash === '#template-spj') {
                 setTimeout(() => openTemplateModal(), 300);
             }
+
+            if (window.location.hash === '#panduan' || window.location.hash === '#video-tutorial') {
+                setTimeout(() => openPanduanModal(), 300);
+            }
         });
 
         /* =========================================================
@@ -1723,6 +1920,135 @@
                     void noResults.offsetWidth;
                     noResults.classList.add('skel-loaded-fade');
                 }
+            }
+        }
+
+        /* ---------------------------------------------
+           MODAL PANDUAN VIDEO TUTORIAL
+        --------------------------------------------- */
+        let currentPanduanCat = 'all';
+
+        function openPanduanModal(event) {
+            if (event) event.preventDefault();
+            const backdrop = document.getElementById('panduanModalBackdrop');
+            if (!backdrop) return;
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            applyPanduanFilters();
+        }
+
+        function closePanduanModal() {
+            const backdrop = document.getElementById('panduanModalBackdrop');
+            if (!backdrop) return;
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+
+            const videoEl = document.getElementById('theaterVideoElement');
+            if (videoEl) videoEl.pause();
+            const iframeEl = document.getElementById('theaterIframeElement');
+            if (iframeEl) {
+                const currentSrc = iframeEl.src;
+                iframeEl.src = '';
+                iframeEl.src = currentSrc.replace('&autoplay=1', '');
+            }
+        }
+
+        function closePanduanModalOnBackdrop(event) {
+            if (event.target === document.getElementById('panduanModalBackdrop')) {
+                closePanduanModal();
+            }
+        }
+
+        function selectPanduanCategory(cat) {
+            currentPanduanCat = cat;
+            document.querySelectorAll('#panduanCatChips .tpl-chip').forEach(chip => {
+                chip.classList.toggle('active', chip.getAttribute('data-cat') === cat);
+            });
+            applyPanduanFilters();
+        }
+
+        function clearPanduanSearch() {
+            const searchBox = document.getElementById('panduanSearchBox');
+            if (searchBox) {
+                searchBox.value = '';
+                applyPanduanFilters();
+            }
+        }
+
+        function filterPanduanCards() {
+            applyPanduanFilters();
+        }
+
+        function applyPanduanFilters() {
+            const searchBox = document.getElementById('panduanSearchBox');
+            const query = (searchBox?.value || '').toLowerCase().trim();
+            const clearBtn = document.getElementById('panduanClearSearch');
+            if (clearBtn) clearBtn.style.display = query ? 'inline-flex' : 'none';
+
+            const cards = document.querySelectorAll('.panduan-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-cat') || 'semua';
+                const cardTitle = card.getAttribute('data-title') || '';
+                const cardDesc = card.getAttribute('data-desc') || '';
+
+                const matchesCat = (currentPanduanCat === 'all' || cardCat === currentPanduanCat || cardCat === 'semua');
+                const matchesQuery = (!query || cardTitle.includes(query) || cardDesc.includes(query));
+
+                if (matchesCat && matchesQuery) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const noResults = document.getElementById('panduanNoResults');
+            if (noResults) {
+                noResults.style.display = (visibleCount === 0 && cards.length > 0) ? 'block' : 'none';
+            }
+        }
+
+        function selectActiveTutorial(cardEl) {
+            document.querySelectorAll('.panduan-card').forEach(c => c.classList.remove('active-playing'));
+            cardEl.classList.add('active-playing');
+
+            const embedUrl = cardEl.getAttribute('data-embed');
+            const type = cardEl.getAttribute('data-type');
+            const judul = cardEl.getAttribute('data-judul');
+            const badge = cardEl.getAttribute('data-badge');
+            const badgeClass = cardEl.getAttribute('data-badge-class');
+            const duration = cardEl.getAttribute('data-duration');
+            const keterangan = cardEl.getAttribute('data-keterangan');
+
+            const theaterBox = document.getElementById('panduanTheaterBox');
+            if (theaterBox) theaterBox.style.display = 'block';
+
+            document.getElementById('theaterTitle').textContent = judul;
+            document.getElementById('theaterDesc').textContent = keterangan;
+            document.getElementById('theaterDuration').textContent = duration;
+
+            const badgeEl = document.getElementById('theaterBadge');
+            if (badgeEl) {
+                badgeEl.className = `badge-kategori ${badgeClass}`;
+                badgeEl.textContent = badge;
+            }
+
+            const frame = document.getElementById('panduanPlayerFrame');
+            if (frame) {
+                if (!embedUrl) {
+                    frame.innerHTML = '<div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #ffffff;">Video belum tersedia.</div>';
+                } else if (type === 'upload') {
+                    frame.innerHTML = `<video controls autoplay id="theaterVideoElement" style="position: absolute; top:0; left:0; width: 100%; height: 100%; border-radius: 12px;"><source src="${embedUrl}" type="video/mp4"></video>`;
+                } else {
+                    frame.innerHTML = `<iframe id="theaterIframeElement" src="${embedUrl}&autoplay=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position: absolute; top:0; left:0; width: 100%; height: 100%; border:none; border-radius: 12px;"></iframe>`;
+                }
+            }
+
+            const modalBody = cardEl.closest('.tpl-modal-body');
+            if (modalBody) {
+                modalBody.scrollTo({ top: 0, behavior: 'smooth' });
             }
         }
 

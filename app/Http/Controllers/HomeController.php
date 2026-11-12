@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Admin\TemplateBerkasController;
 use App\Models\Spj;
+use App\Models\VideoTutorial;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -165,6 +166,11 @@ class HomeController extends Controller
             ]);
         }
 
-        return view('home', compact('templates', 'spjs', 'stats'));
+        $videoTutorials = VideoTutorial::where('is_active', true)
+            ->orderBy('urutan', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('home', compact('templates', 'spjs', 'stats', 'videoTutorials'));
     }
 }

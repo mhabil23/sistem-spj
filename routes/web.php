@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\SpjController;
 use App\Http\Controllers\Admin\SyaratDokumenController;
 use App\Http\Controllers\Admin\TemplateBerkasController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VideoTutorialController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -71,6 +72,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/template-berkas', [TemplateBerkasController::class, 'index'])->name('template-berkas.index');
     Route::post('/template-berkas', [TemplateBerkasController::class, 'upload'])->name('template-berkas.upload');
     Route::delete('/template-berkas/{id}', [TemplateBerkasController::class, 'destroy'])->name('template-berkas.destroy');
+
+    // Video Tutorial Panduan
+    Route::get('/video-tutorial', [VideoTutorialController::class, 'index'])->name('video-tutorial.index');
+    Route::post('/video-tutorial', [VideoTutorialController::class, 'store'])->name('video-tutorial.store');
+    Route::put('/video-tutorial/{videoTutorial}', [VideoTutorialController::class, 'update'])->name('video-tutorial.update');
+    Route::delete('/video-tutorial/{videoTutorial}', [VideoTutorialController::class, 'destroy'])->name('video-tutorial.destroy');
+    Route::patch('/video-tutorial/{videoTutorial}/toggle', [VideoTutorialController::class, 'toggle'])->name('video-tutorial.toggle');
 
     // Riwayat
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
