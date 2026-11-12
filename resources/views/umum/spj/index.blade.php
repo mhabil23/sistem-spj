@@ -151,8 +151,7 @@ $subtitle = 'Kelola dan periksa seluruh SPJ yang diajukan oleh staf Teknis.';
                             <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
                                 <a href="{{ route('umum.spj.print', $spj->id) }}" 
                                    target="_blank"
-                                   class="btn-table-view" 
-                                   style="background-color: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd;" 
+                                   class="btn-table-print" 
                                    title="Cetak Laporan Rekapitulasi SPJ (Tab Baru)">
                                     <ion-icon name="print-outline"></ion-icon>
                                 </a>

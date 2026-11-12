@@ -82,6 +82,19 @@
         color: #ffffff;
     }
 
+    .btn-action-print {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #7dd3fc;
+    }
+
+    .btn-action-print:hover {
+        background: #0284c7;
+        color: #ffffff;
+        border-color: #0284c7;
+        transform: translateY(-1px);
+    }
+
     .btn-action-secondary {
         background: #f1f5f9;
         color: #334155;
@@ -407,7 +420,7 @@
                 <i class="bi bi-pencil-square"></i> Edit Data
             </a>
 
-            <a href="{{ route('admin.spj.print', $spj->id) }}" target="_blank" class="btn-action-detail btn-action-secondary" title="Cetak Laporan Rekapitulasi SPJ (Tab Baru)">
+            <a href="{{ route('admin.spj.print', $spj->id) }}" target="_blank" class="btn-action-detail btn-action-print" title="Cetak Laporan Rekapitulasi SPJ (Tab Baru)">
                 <i class="bi bi-printer"></i> Cetak
             </a>
 

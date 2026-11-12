@@ -468,10 +468,17 @@
         font-size: 14px;
     }
 
-    .btn-action-cell.print:hover {
-        background: #f0f9ff;
+    .btn-action-cell.print {
+        background: #e0f2fe;
         color: #0284c7;
-        border-color: #bae6fd;
+        border: 1px solid #bae6fd;
+    }
+
+    .btn-action-cell.print:hover {
+        background: #0284c7;
+        color: #ffffff;
+        border-color: #0284c7;
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
     }
 
     .btn-action-cell.view:hover {

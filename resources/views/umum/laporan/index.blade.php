@@ -407,8 +407,8 @@ $subtitle = 'Rekapitulasi dan cetak laporan SPJ untuk Pimpinan dan Arsip Umum.';
                                 </a>
                                 <a href="{{ route('umum.spj.print', $spj->id) }}" 
                                    target="_blank"
-                                   class="btn-dash-reset" 
-                                   style="padding: 6px 10px; font-size: 12px; color: #0284c7;" 
+                                   class="btn-table-print" 
+                                   style="width: 30px; height: 30px; font-size: 16px;" 
                                    title="Cetak Lembar Kendali & Checklist SPJ">
                                     <ion-icon name="print-outline"></ion-icon>
                                 </a>

@@ -1019,6 +1019,29 @@ input:focus, select:focus, textarea:focus {
     line-height: 1;
 }
 
+.action-btn-print {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #7dd3fc;
+}
+
+.action-btn-print ion-icon {
+    color: #0284c7;
+    font-size: 15px;
+    --ionicon-stroke-width: 44px;
+}
+
+.action-btn-print:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+
+.action-btn-print:hover ion-icon {
+    color: #ffffff;
+}
+
 .action-btn-view {
     background: var(--dash-cyan-badge);
     color: var(--dash-cyan-text);

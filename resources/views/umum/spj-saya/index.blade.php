@@ -251,7 +251,7 @@ $subtitle = 'Pantau dan kelola seluruh dokumen SPJ yang diajukan sendiri oleh Su
                         </td>
                         <td style="text-align: right; padding-right: 24px; white-space: nowrap;">
                             <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
-                                <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="action-btn" style="background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; text-decoration: none;" title="Cetak Lembar Checklist SPJ">
+                                <a href="{{ route('umum.spj.print', $spj->id) }}" target="_blank" class="action-btn action-btn-print" title="Cetak Lembar Checklist SPJ">
                                     <ion-icon name="print-outline"></ion-icon>
                                     <span>Cetak</span>
                                 </a>

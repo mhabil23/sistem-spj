@@ -1294,7 +1294,7 @@ html.dark-theme .dash-badge-purple {
     height: 34px;
     border-radius: 9px;
     text-decoration: none;
-    color: #ffffff !important;
+    color: #ffffff;
     transition: all 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-size: 18px;
@@ -1305,6 +1305,41 @@ html.dark-theme .dash-badge-purple {
 .btn-table-view:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Tombol Cetak Khusus Tabel (Kontras Tinggi, Solid Blue BPS & Sangat Jelas) */
+.btn-table-print {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    text-decoration: none;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+    font-size: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    cursor: pointer;
+}
+
+.btn-table-print ion-icon {
+    color: #ffffff !important;
+    --ionicon-stroke-width: 40px;
+    font-size: 18px;
+}
+
+.btn-table-print:hover {
+    background: linear-gradient(135deg, #0369a1 0%, #075985 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.45);
+    color: #ffffff !important;
+}
+
+.btn-table-print:hover ion-icon {
+    color: #ffffff !important;
 }
 
 .btn-table-delete {
@@ -1546,6 +1581,44 @@ html.dark-theme .dash-badge-purple {
         width: 100%;
         justify-content: center;
     }
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.action-btn-print {
+    background: #e0f2fe !important;
+    color: #0369a1 !important;
+    border: 1px solid #7dd3fc !important;
+}
+
+.action-btn-print ion-icon {
+    color: #0284c7 !important;
+    font-size: 15px !important;
+    --ionicon-stroke-width: 44px;
+}
+
+.action-btn-print:hover {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+    border-color: #0284c7 !important;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3) !important;
+}
+
+.action-btn-print:hover ion-icon {
+    color: #ffffff !important;
 }
 
 
