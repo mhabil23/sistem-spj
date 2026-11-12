@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>SOP & Flowchart Pengajuan SPJ - BPS Kabupaten Kolaka Utara</title>
+    <x-favicon />
     <style>
         @page {
             margin: 10mm 12mm;

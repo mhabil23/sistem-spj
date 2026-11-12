@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Laporan Pencairan SPJ - Bendahara</title>
+    <x-favicon />
     <style>
         body { font-family: sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }

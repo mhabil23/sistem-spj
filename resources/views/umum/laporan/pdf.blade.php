@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Rekapitulasi SPJ - BPS Kabupaten Kolaka Utara</title>
+    <x-favicon />
     <style>
         @page {
             margin: 12mm 15mm;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Panduan Hak Akses & Tugas Role - Sistem SPJ Digital BPS Kolaka Utara</title>
+    <x-favicon />
     <style>
         @page {
             margin: 10mm 12mm 12mm 12mm;

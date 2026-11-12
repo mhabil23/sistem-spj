@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Rekapitulasi SPJ - {{ $spj->nomor_spj ?: 'SPJ #'.$spj->id }}</title>
+    <x-favicon />
     <style>
         @page {
             size: A4 landscape;

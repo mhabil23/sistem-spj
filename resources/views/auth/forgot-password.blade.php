@@ -7,6 +7,8 @@
 
     <title>Lupa Kata Sandi | Sistem Informasi Penyelesaian Tagihan - BPS</title>
 
+    <x-favicon />
+
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
