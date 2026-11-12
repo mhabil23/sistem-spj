@@ -1093,39 +1093,109 @@ body {
 }
 
 /* ==========================================================
-   PAGE TRANSITION: FADE & SLIDE (MEMUDAR KE KIRI / KANAN)
+   PAINT WIPE SMOOTH TRANSITION (SAPUAN CAT DARI KANAN KE KIRI)
+   Transisi artistik, pelan, dan elegan khas kuas cat menyapu layar
    ========================================================== */
-@keyframes loginEnterFromRight {
-    0% {
-        opacity: 0;
-        transform: translateX(32px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
-    }
+.paint-wipe-curtain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999999;
+    pointer-events: none;
+    overflow: hidden;
+    visibility: hidden;
 }
 
-body {
-    transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+.paint-wipe-curtain.active {
+    pointer-events: all;
+    visibility: visible;
 }
 
-.login-page {
-    animation: loginEnterFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) both;
+.paint-wipe-layer-accent {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: -20%;
+    right: -20%;
+    background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+    transform: translate3d(125%, 0, 0) skewX(-9deg);
+    transition: transform 0.52s cubic-bezier(0.77, 0, 0.175, 1);
+    box-shadow: -15px 0 35px rgba(2, 132, 199, 0.35);
+    border-left: 2px solid rgba(255, 255, 255, 0.5);
 }
 
-body.page-transition-exit-left,
-.page-transition-exit-left {
-    opacity: 0 !important;
-    transform: translateX(-32px) !important;
-    pointer-events: none !important;
+.paint-wipe-layer-main {
+    position: absolute;
+    top: -10%;
+    bottom: -10%;
+    left: -20%;
+    right: -20%;
+    background: linear-gradient(145deg, #061938 0%, #0c2556 55%, #034275 100%);
+    transform: translate3d(125%, 0, 0) skewX(-9deg);
+    transition: transform 0.58s cubic-bezier(0.77, 0, 0.175, 1);
+    box-shadow: -30px 0 60px rgba(0, 0, 0, 0.45);
 }
 
-body.page-transition-exit-right,
-.page-transition-exit-right {
-    opacity: 0 !important;
-    transform: translateX(32px) !important;
-    pointer-events: none !important;
+.paint-wipe-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #ffffff;
+    opacity: 0;
+    transition: opacity 0.22s ease 0.22s, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.22s;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.paint-wipe-badge img {
+    height: 52px;
+    width: auto;
+    filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.35));
+}
+
+.paint-wipe-badge span {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: #e0f2fe;
+}
+
+.paint-wipe-curtain.wiping-in .paint-wipe-layer-accent {
+    transform: translate3d(-3%, 0, 0) skewX(-9deg);
+}
+
+.paint-wipe-curtain.wiping-in .paint-wipe-layer-main {
+    transform: translate3d(0, 0, 0) skewX(0deg);
+}
+
+.paint-wipe-curtain.wiping-in .paint-wipe-badge {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.paint-wipe-curtain.wiping-out .paint-wipe-layer-accent {
+    transform: translate3d(-135%, 0, 0) skewX(-9deg);
+    transition: transform 0.52s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.paint-wipe-curtain.wiping-out .paint-wipe-layer-main {
+    transform: translate3d(-135%, 0, 0) skewX(-9deg);
+    transition: transform 0.58s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.paint-wipe-curtain.wiping-out .paint-wipe-badge {
+    opacity: 0;
+    transform: translate(-75%, -50%) scale(0.92);
+    transition: opacity 0.18s ease, transform 0.25s ease;
 }
 
 /* Efek tombol submit saat loading transisi */
