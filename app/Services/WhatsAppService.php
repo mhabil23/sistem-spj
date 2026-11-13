@@ -2,15 +2,15 @@
 
 namespace App\Services;
 
+use App\Jobs\SendWhatsAppNotification;
 use App\Models\Spj;
 use App\Models\User;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class WhatsAppService
 {
     /**
-     * Mengirim pesan WhatsApp via Fonnte API
+     * Mengirim pesan WhatsApp via Antrean (Queue) Fonnte API agar respons web instan
      */
     public static function send(string|array $target, string $message): bool
     {
@@ -33,34 +33,10 @@ class WhatsAppService
             return false;
         }
 
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => $token,
-            ])->timeout(10)->post('https://api.fonnte.com/send', [
-                'target' => $target,
-                'message' => $message,
-                'countryCode' => '62',
-            ]);
+        // Jalankan pengiriman via Antrean Background (implements ShouldQueue)
+        SendWhatsAppNotification::dispatch($target, $message);
 
-            if ($response->successful()) {
-                Log::info('[WhatsAppService] Sukses mengirim pesan WA', [
-                    'target' => $target,
-                ]);
-
-                return true;
-            }
-
-            Log::warning('[WhatsAppService] Gagal mengirim pesan WA', [
-                'status' => $response->status(),
-                'response' => $response->body(),
-            ]);
-
-            return false;
-        } catch (\Throwable $e) {
-            Log::error('[WhatsAppService] Exception saat kirim WA: '.$e->getMessage());
-
-            return false;
-        }
+        return true;
     }
 
     /**
