@@ -42,12 +42,16 @@ class SyaratDokumenController extends Controller
             });
         }
 
-        $syaratDokumens = $query->orderBy('nama_belanja')
+        $allSyaratDokumens = $query->orderBy('nama_belanja')
             ->orderBy('jenis_belanja')
             ->orderBy('urutan')
             ->orderBy('id')
-            ->paginate(25)
-            ->withQueryString();
+            ->get();
+
+        // Kelompokkan dokumen per Kategori Akun & Jenis Belanja agar tabel tidak berulang/doble
+        $groupedDokumens = $allSyaratDokumens->groupBy(function ($item) {
+            return $item->nama_belanja.'|||'.$item->jenis_belanja;
+        });
 
         $daftarNamaBelanja = SyaratDokumenSpj::distinct()
             ->orderBy('nama_belanja')
@@ -63,53 +67,103 @@ class SyaratDokumenController extends Controller
         $totalDokumen = SyaratDokumenSpj::count();
         $totalSm = SyaratDokumenSpj::where('assignee', 'SM')->count();
         $totalBendahara = SyaratDokumenSpj::where('assignee', 'Bendahara')->count();
+        $totalJenisBelanja = SyaratDokumenSpj::distinct('jenis_belanja')->count('jenis_belanja');
 
         return view('admin.syarat-dokumen.index', compact(
-            'syaratDokumens',
+            'groupedDokumens',
             'daftarNamaBelanja',
             'daftarJenisBelanja',
             'totalDokumen',
             'totalSm',
-            'totalBendahara'
+            'totalBendahara',
+            'totalJenisBelanja'
         ));
     }
 
     /**
-     * Simpan dokumen persyaratan baru.
+     * Simpan dokumen persyaratan baru (Mendukung batch input dengan tombol +).
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $request->validate([
             'nama_belanja' => 'required|string|max:255',
             'jenis_belanja' => 'required|string|max:255',
-            'nama_dokumen' => 'required|string|max:255',
-            'assignee' => 'required|in:SM,Bendahara,PPK',
             'peruntukan' => 'nullable|in:semua,teknis,umum',
-            'urutan' => 'nullable|integer|min:0',
         ], [
             'nama_belanja.required' => 'Nama Belanja wajib diisi atau dipilih.',
             'jenis_belanja.required' => 'Jenis Belanja wajib diisi atau dipilih.',
+        ]);
+
+        $namaBelanja = trim($request->nama_belanja);
+        $jenisBelanja = trim($request->jenis_belanja);
+        $peruntukan = $request->peruntukan ?: SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
+
+        // Jika input batch dokumen (menggunakan tombol +)
+        if ($request->has('dokumen') && is_array($request->dokumen)) {
+            $dokumenList = $request->input('dokumen', []);
+            $maxUrutan = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+                ->where('jenis_belanja', $jenisBelanja)
+                ->max('urutan') ?? 0;
+
+            $insertedCount = 0;
+            foreach ($dokumenList as $docItem) {
+                $namaDok = trim($docItem['nama_dokumen'] ?? '');
+                if (empty($namaDok)) {
+                    continue;
+                }
+
+                $assignee = in_array($docItem['assignee'] ?? '', ['SM', 'Bendahara', 'PPK']) ? $docItem['assignee'] : 'SM';
+                $urutan = ! empty($docItem['urutan']) ? (int) $docItem['urutan'] : (++$maxUrutan);
+
+                SyaratDokumenSpj::create([
+                    'nama_belanja' => $namaBelanja,
+                    'jenis_belanja' => $jenisBelanja,
+                    'nama_dokumen' => $namaDok,
+                    'assignee' => $assignee,
+                    'peruntukan' => $peruntukan,
+                    'urutan' => $urutan,
+                ]);
+                $insertedCount++;
+            }
+
+            if ($insertedCount > 0) {
+                return redirect()->route('admin.syarat-dokumen.index', [
+                    'nama_belanja' => $namaBelanja,
+                    'jenis_belanja' => $jenisBelanja,
+                ])->with('success', "{$insertedCount} dokumen persyaratan berhasil ditambahkan untuk '{$jenisBelanja}'!");
+            }
+        }
+
+        // Fallback untuk single dokumen jika dikirim format lama
+        $validated = $request->validate([
+            'nama_dokumen' => 'required|string|max:255',
+            'assignee' => 'required|in:SM,Bendahara,PPK',
+            'urutan' => 'nullable|integer|min:0',
+        ], [
             'nama_dokumen.required' => 'Nama Dokumen wajib diisi.',
             'assignee.required' => 'Pihak yang menyiapkan wajib dipilih.',
             'assignee.in' => 'Pihak yang menyiapkan harus SM, Bendahara, atau PPK.',
         ]);
 
-        if (empty($validated['peruntukan'])) {
-            $validated['peruntukan'] = SyaratDokumenSpj::determinePeruntukanByKode($validated['nama_belanja']);
-        }
-
         if (empty($validated['urutan'])) {
-            $maxUrutan = SyaratDokumenSpj::where('nama_belanja', $validated['nama_belanja'])
-                ->where('jenis_belanja', $validated['jenis_belanja'])
+            $maxUrutan = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+                ->where('jenis_belanja', $jenisBelanja)
                 ->max('urutan') ?? 0;
             $validated['urutan'] = $maxUrutan + 1;
         }
 
-        SyaratDokumenSpj::create($validated);
+        SyaratDokumenSpj::create([
+            'nama_belanja' => $namaBelanja,
+            'jenis_belanja' => $jenisBelanja,
+            'nama_dokumen' => $validated['nama_dokumen'],
+            'assignee' => $validated['assignee'],
+            'peruntukan' => $peruntukan,
+            'urutan' => $validated['urutan'],
+        ]);
 
         return redirect()->route('admin.syarat-dokumen.index', [
-            'nama_belanja' => $validated['nama_belanja'],
-            'jenis_belanja' => $validated['jenis_belanja'],
+            'nama_belanja' => $namaBelanja,
+            'jenis_belanja' => $jenisBelanja,
         ])->with('success', 'Dokumen persyaratan SPJ berhasil ditambahkan!');
     }
 

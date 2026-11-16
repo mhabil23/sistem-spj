@@ -54,6 +54,54 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             background: #fce7f3;
             color: #db2777;
         }
+
+        /* Akun Belanja Grouping & Filter Chips */
+        .akun-filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .akun-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 9999px;
+            border: 1px solid var(--border, #cbdde8);
+            background: var(--surface, #ffffff);
+            color: var(--text-muted, #64748b);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .akun-chip:hover {
+            border-color: #0284c7;
+            color: #0284c7;
+            background: #f0f9ff;
+        }
+        .akun-chip.active {
+            background: #0284c7 !important;
+            color: #ffffff !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 2px 5px rgba(2, 132, 199, 0.25);
+        }
+        .akun-chip .akun-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .akun-chip .dot-51 { background: #3b82f6; }
+        .akun-chip .dot-52 { background: #10b981; }
+        .akun-chip .dot-53 { background: #a855f7; }
+        .akun-chip.active .akun-dot { background: #ffffff; }
+
+        @media (max-width: 768px) {
+            .akun-filter-placeholder { display: none; }
+        }
     </style>
 @endpush
 
@@ -94,16 +142,84 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             @method('PUT')
             
             @php
-                $dokumen = $spj->dokumen_file ? json_decode($spj->dokumen_file, true) : [];
+                $currentPeruntukanVal = old('peruntukan', $currentPeruntukan ?? ($spj->peruntukan ?: (($spj->seksi === 'Subbag Umum' || ($spj->user && $spj->user->role === 'umum')) ? 'umum' : 'teknis')));
             @endphp
-            
-            <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
-                <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+
+            <!-- PERUNTUKAN SPJ (TEKNIS / UMUM) -->
+            <div style="padding: 1.25rem 1.5rem; background: #ffffff; border-radius: var(--radius-md); border: 1.5px solid #e2e8f0; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
                     <div>
-                        <label class="spj-label" style="margin-bottom: 0;">Kelengkapan Berkas (Telah Dipilih)</label>
-                        <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                        <label class="spj-label" style="font-size: 1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.15rem;">
+                            Peruntukan Pengajuan SPJ <span style="color: #ef4444;">*</span>
+                        </label>
+                        <span style="font-size: 0.8rem; color: #64748b;">Pilih alur pengajuan: untuk Tim Teknis (kegiatan sensus/survei) atau Subbagian Umum (belanja pegawai &amp; operasional kantor).</span>
                     </div>
-                    @if(count($dokumen) > 0)
+                </div>
+
+                <div class="spj-radio-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <label class="spj-radio-card" id="card_peruntukan_teknis" style="cursor: pointer; border: 2px solid {{ $currentPeruntukanVal === 'teknis' ? '#0284c7' : 'var(--border)' }}; background: {{ $currentPeruntukanVal === 'teknis' ? '#f0f9ff' : '#ffffff' }}; padding: 1rem; border-radius: 8px; transition: all 0.2s ease;">
+                        <input type="radio" name="peruntukan" value="teknis" {{ $currentPeruntukanVal === 'teknis' ? 'checked' : '' }} onchange="handlePeruntukanChange(this.value)">
+                        <div class="spj-radio-content" style="margin-left: 0.5rem;">
+                            <strong style="color: #0369a1; font-size: 0.95rem;">SPJ Tim Teknis</strong>
+                            <span style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">Kegiatan sensus, survei lapangan, pelatihan &amp; belanja seksi teknis</span>
+                        </div>
+                    </label>
+
+                    <label class="spj-radio-card" id="card_peruntukan_umum" style="cursor: pointer; border: 2px solid {{ $currentPeruntukanVal === 'umum' ? '#0284c7' : 'var(--border)' }}; background: {{ $currentPeruntukanVal === 'umum' ? '#f0f9ff' : '#ffffff' }}; padding: 1rem; border-radius: 8px; transition: all 0.2s ease;">
+                        <input type="radio" name="peruntukan" value="umum" {{ $currentPeruntukanVal === 'umum' ? 'checked' : '' }} onchange="handlePeruntukanChange(this.value)">
+                        <div class="spj-radio-content" style="margin-left: 0.5rem;">
+                            <strong style="color: #0f172a; font-size: 0.95rem;">SPJ Subbagian Umum</strong>
+                            <span style="display: block; font-size: 0.8rem; color: #64748b; margin-top: 2px;">Belanja Pegawai (Gaji, Tukin, Uang Makan, Lembur) &amp; keperluan kantor</span>
+                        </div>
+                    </label>
+                </div>
+                @error('peruntukan') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- DYNAMIC DROPDOWNS: NAMA BELANJA, JENIS BELANJA, CHECKLIST DOKUMEN -->
+            <div style="padding: 1.5rem; background: linear-gradient(135deg, #f8fafc, #f1f5f9); border-radius: var(--radius-md); border: 1px solid var(--border); margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: #0f172a;">Kategori &amp; Kelengkapan Berkas</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap; gap: 4px;">
+                            <label class="spj-label" for="nama_belanja" style="margin-bottom: 0;">Nama Belanja (Kategori Akun) <span style="color: #ef4444;">*</span></label>
+                            <span id="badge_akun_terpilih" class="spj-badge-auto" style="display: none; font-size: 11px;"></span>
+                        </div>
+                        <!-- Filter Chips Kelompok Akun Belanja -->
+                        <div class="akun-filter-group" id="akun_filter_group">
+                            <button type="button" class="akun-chip active" data-akun="all" onclick="setAkunFilter('all')">Semua Akun</button>
+                            <button type="button" class="akun-chip" data-akun="51" onclick="setAkunFilter('51')"><span class="akun-dot dot-51"></span>Akun 51 (Pegawai)</button>
+                            <button type="button" class="akun-chip" data-akun="52" onclick="setAkunFilter('52')"><span class="akun-dot dot-52"></span>Akun 52 (Barang &amp; Jasa)</button>
+                            <button type="button" class="akun-chip" data-akun="53" onclick="setAkunFilter('53')"><span class="akun-dot dot-53"></span>Akun 53 (Modal)</button>
+                        </div>
+                        <select id="nama_belanja" name="nama_belanja" class="spj-input" required onchange="handleNamaBelanjaChange()">
+                            <option value="" disabled selected>-- Pilih Nama Belanja --</option>
+                        </select>
+                        <span class="spj-field-hint" style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Dikelompokkan berdasarkan Bagan Akun Standar (Akun 51, 52, 53).</span>
+                        @error('nama_belanja') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                            <label class="spj-label" for="jenis_belanja" style="margin-bottom: 0;">Jenis Belanja <span style="color: #ef4444;">*</span></label>
+                            <span id="jenis_count_hint" style="font-size: 11px; color: #64748b; font-weight: 600;"></span>
+                        </div>
+                        <div style="height: 31px; margin-bottom: 8px;" class="akun-filter-placeholder"></div>
+                        <select id="jenis_belanja" name="jenis_belanja" class="spj-input" required disabled onchange="handleJenisBelanjaChange()">
+                            <option value="" disabled selected>-- Pilih Jenis Belanja --</option>
+                        </select>
+                        <span class="spj-field-hint" style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; display: block;">Spesifikasi jenis pengeluaran atau rincian kegiatan belanja.</span>
+                        @error('jenis_belanja') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div id="dokumen_container" style="display: none;">
+                    <div style="margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                        <div>
+                            <label class="spj-label" style="margin-bottom: 0;">Dokumen Wajib</label>
+                            <span style="font-size: 0.75rem; color: #64748b; display: block;">Centang berkas fisik yang sudah disiapkan</span>
+                        </div>
                         <div style="display: flex; gap: 0.5rem;">
                             <button type="button" onclick="centangSemuaBerkas(true)" class="spj-btn spj-btn-secondary" style="padding: 0.25rem 0.65rem; font-size: 0.75rem; height: auto;">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 2px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -113,48 +229,10 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                                 Batal Semua
                             </button>
                         </div>
-                    @endif
-                </div>
-                <div id="dokumen_list">
-                    @if(count($dokumen) > 0)
-                        @foreach($dokumen as $index => $doc)
-                            @php
-                                $isBendahara = \App\Models\Spj::isBendaharaDoc($doc);
-                                $isPpk = \App\Models\Spj::isPpkDoc($doc);
-                                $isTeknis = !$isBendahara && !$isPpk;
-                            @endphp
-                            <div class="upload-item">
-                                <div class="upload-info">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.25rem;">
-                                        <span class="upload-label" style="margin: 0;">{{ $doc['nama'] }}</span>
-                                        @if($isBendahara)
-                                            <span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>
-                                        @elseif($isPpk)
-                                            <span class="badge-assignee badge-ppk">Dilengkapi PPK</span>
-                                        @else
-                                            <span class="badge-assignee">Wajib Disiapkan Teknis</span>
-                                        @endif
-                                    </div>
-                                    <input type="hidden" name="nama_dokumen[{{ $index }}]" value="{{ $doc['nama'] }}">
-                                    <input type="hidden" name="assignee_dokumen[{{ $index }}]" value="{{ $doc['assignee'] ?? ($isBendahara ? 'Bendahara' : ($isPpk ? 'PPK' : 'SM')) }}">
-                                </div>
-                                <div class="upload-action">
-                                    @if($isTeknis)
-                                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin: 0;">
-                                            <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ !empty($doc['disiapkan']) ? 'checked' : '' }} class="berkas-teknis-cb" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
-                                            <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
-                                        </label>
-                                    @elseif($isBendahara)
-                                        <span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>
-                                    @elseif($isPpk)
-                                        <span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    @else
-                        <p style="font-size: 0.85rem; color: #64748b; font-style: italic;">Tidak ada dokumen yang dipilih sebelumnya.</p>
-                    @endif
+                    </div>
+                    <div id="dokumen_list">
+                        <!-- File checklist dynamically generated here -->
+                    </div>
                 </div>
             </div>
 
@@ -204,7 +282,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;" class="spj-form-group">
-                <div>
+                <div id="seksi_field_container" style="display: {{ $currentPeruntukanVal === 'umum' ? 'none' : 'block' }};">
                     <label class="spj-label">
                         Seksi / Tim Teknis <span style="color: #ef4444;">*</span>
                     </label>
@@ -216,7 +294,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                             sort($seksiList);
                         }
                     @endphp
-                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror" required>
+                    <select name="seksi" id="seksi_input" class="spj-input @error('seksi') has-error @enderror">
                         <option value="" disabled {{ $currentSeksi ? '' : 'selected' }}>Pilih Seksi...</option>
                         @foreach($seksiList as $opt)
                             <option value="{{ $opt }}" {{ $currentSeksi === $opt ? 'selected' : '' }}>
@@ -301,12 +379,395 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
 
 @push('scripts')
 <script>
+    // Data Kategori SPJ
+    const teknisSpjData = @json($teknisSpjData ?? \App\Models\SyaratDokumenSpj::getSpjData('teknis'));
+    const umumSpjData = @json($umumSpjData ?? \App\Models\SyaratDokumenSpj::getSpjData('umum'));
+    const allSpjData = @json($spjData ?? \App\Models\SyaratDokumenSpj::getSpjData());
+    let currentPeruntukan = "{{ $currentPeruntukanVal }}";
+    let spjData = (currentPeruntukan === 'umum') ? umumSpjData : teknisSpjData;
+
+    const oldNamaBelanja = {!! json_encode(old('nama_belanja', $spj->nama_belanja ?? '')) !!};
+    const oldJenisBelanja = {!! json_encode(old('jenis_belanja', $spj->jenis_belanja ?? '')) !!};
+    const oldBerkas = {!! json_encode(old('berkas', null)) !!};
+    const existingDokumenFile = @json($spj->dokumen_file ? json_decode($spj->dokumen_file, true) : []);
+
+    // Pemetaan dokumen yang sudah disiapkan sebelumnya (agar saat diedit tetap tercentang)
+    const existingDocsMap = {};
+    if (Array.isArray(existingDokumenFile)) {
+        existingDokumenFile.forEach((doc) => {
+            if (doc && doc.nama) {
+                existingDocsMap[doc.nama] = !!doc.disiapkan;
+            }
+        });
+    }
+
+    function handlePeruntukanChange(val) {
+        currentPeruntukan = val;
+        spjData = (val === 'umum') ? umumSpjData : teknisSpjData;
+
+        const cardTeknis = document.getElementById('card_peruntukan_teknis');
+        const cardUmum = document.getElementById('card_peruntukan_umum');
+        const seksiContainer = document.getElementById('seksi_field_container');
+        const seksiInput = document.getElementById('seksi_input');
+
+        if (val === 'umum') {
+            if (cardUmum) {
+                cardUmum.style.borderColor = '#0284c7';
+                cardUmum.style.backgroundColor = '#f0f9ff';
+            }
+            if (cardTeknis) {
+                cardTeknis.style.borderColor = 'var(--border)';
+                cardTeknis.style.backgroundColor = '#ffffff';
+            }
+            if (seksiContainer) {
+                seksiContainer.style.display = 'none';
+            }
+            if (seksiInput) {
+                seksiInput.removeAttribute('required');
+            }
+        } else {
+            if (cardTeknis) {
+                cardTeknis.style.borderColor = '#0284c7';
+                cardTeknis.style.backgroundColor = '#f0f9ff';
+            }
+            if (cardUmum) {
+                cardUmum.style.borderColor = 'var(--border)';
+                cardUmum.style.backgroundColor = '#ffffff';
+            }
+            if (seksiContainer) {
+                seksiContainer.style.display = 'block';
+            }
+            if (seksiInput) {
+                seksiInput.setAttribute('required', 'required');
+            }
+        }
+
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        const docContainer = document.getElementById("dokumen_container");
+        const docList = document.getElementById("dokumen_list");
+
+        currentAkunFilter = 'all';
+        document.querySelectorAll('.akun-chip').forEach(chip => {
+            if (chip.getAttribute('data-akun') === 'all') {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+
+        populateNamaBelanjaOptions('');
+
+        if (selJenisBelanja) {
+            selJenisBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Belanja --</option>';
+            selJenisBelanja.disabled = true;
+        }
+
+        if (docContainer) {
+            docContainer.style.display = 'none';
+        }
+        if (docList) {
+            docList.innerHTML = '';
+        }
+
+        resetPrintStatus();
+    }
+
     function centangSemuaBerkas(val = true) {
         const checkboxes = document.querySelectorAll('input.berkas-teknis-cb');
         checkboxes.forEach(cb => {
             cb.checked = val;
         });
     }
+
+    function getAkunCategory(nama) {
+        if (/\(51\d*\)/.test(nama) || /gaji|tunjangan|uang makan|lembur|honor output/i.test(nama)) {
+            return {
+                kode: '51',
+                label: 'Akun 51 - Belanja Pegawai'
+            };
+        }
+        if (/\(53\d*\)/.test(nama) || /modal/i.test(nama)) {
+            return {
+                kode: '53',
+                label: 'Akun 53 - Belanja Modal'
+            };
+        }
+        return {
+            kode: '52',
+            label: 'Akun 52 - Belanja Barang & Jasa'
+        };
+    }
+
+    let currentAkunFilter = 'all';
+
+    function setAkunFilter(kode) {
+        currentAkunFilter = kode;
+        document.querySelectorAll('.akun-chip').forEach(chip => {
+            if (chip.getAttribute('data-akun') === kode) {
+                chip.classList.add('active');
+            } else {
+                chip.classList.remove('active');
+            }
+        });
+
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const currentVal = selNamaBelanja ? selNamaBelanja.value : '';
+
+        let keepVal = false;
+        if (currentVal && spjData[currentVal]) {
+            const cat = getAkunCategory(currentVal);
+            if (kode === 'all' || cat.kode === kode) {
+                keepVal = true;
+            }
+        }
+
+        populateNamaBelanjaOptions(keepVal ? currentVal : '');
+
+        if (!keepVal) {
+            if (selNamaBelanja) {
+                selNamaBelanja.value = '';
+            }
+            handleNamaBelanjaChange();
+        }
+    }
+
+    function populateNamaBelanjaOptions(targetSelectedVal = '') {
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        if (!selNamaBelanja) return;
+
+        selNamaBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Nama Belanja --</option>';
+
+        const groups = {
+            '51': { label: 'Akun 51 - Belanja Pegawai', items: [] },
+            '52': { label: 'Akun 52 - Belanja Barang & Jasa', items: [] },
+            '53': { label: 'Akun 53 - Belanja Modal', items: [] }
+        };
+
+        for (const nama in spjData) {
+            const cat = getAkunCategory(nama);
+            if (groups[cat.kode]) {
+                groups[cat.kode].items.push(nama);
+            }
+        }
+
+        // Tampilkan/sembunyikan chip jika akun tidak ada dalam dataset saat ini
+        ['51', '52', '53'].forEach(k => {
+            const chip = document.querySelector(`.akun-chip[data-akun="${k}"]`);
+            if (chip) {
+                chip.style.display = groups[k].items.length > 0 ? 'inline-flex' : 'none';
+            }
+        });
+
+        const order = ['51', '52', '53'];
+        let foundSelected = false;
+
+        order.forEach(k => {
+            if (currentAkunFilter !== 'all' && currentAkunFilter !== k) {
+                return;
+            }
+            const group = groups[k];
+            if (group.items.length === 0) return;
+
+            const optgroup = document.createElement('optgroup');
+            optgroup.label = group.label;
+
+            group.items.sort().forEach(nama => {
+                const opt = document.createElement('option');
+                opt.value = nama;
+                opt.textContent = nama;
+                if (nama === targetSelectedVal) {
+                    opt.selected = true;
+                    foundSelected = true;
+                }
+                optgroup.appendChild(opt);
+            });
+
+            selNamaBelanja.appendChild(optgroup);
+        });
+
+        if (foundSelected && targetSelectedVal) {
+            selNamaBelanja.value = targetSelectedVal;
+        }
+
+        updateAkunBadge(selNamaBelanja.value);
+    }
+
+    function updateAkunBadge(nama) {
+        const badge = document.getElementById('badge_akun_terpilih');
+        if (!badge) return;
+        if (!nama) {
+            badge.style.display = 'none';
+            return;
+        }
+        const cat = getAkunCategory(nama);
+        badge.textContent = cat.label;
+        badge.style.display = 'inline-block';
+        if (cat.kode === '51') {
+            badge.style.backgroundColor = '#dbeafe';
+            badge.style.color = '#1e40af';
+        } else if (cat.kode === '52') {
+            badge.style.backgroundColor = '#d1fae5';
+            badge.style.color = '#065f46';
+        } else if (cat.kode === '53') {
+            badge.style.backgroundColor = '#f3e8ff';
+            badge.style.color = '#6b21a8';
+        }
+    }
+
+    function handleNamaBelanjaChange() {
+        resetPrintStatus();
+        const nama = document.getElementById("nama_belanja").value;
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        const docContainer = document.getElementById("dokumen_container");
+        const hintEl = document.getElementById("jenis_count_hint");
+        
+        updateAkunBadge(nama);
+
+        // Reset jenis belanja dropdown
+        selJenisBelanja.innerHTML = '<option value="" disabled selected>-- Pilih Jenis Belanja --</option>';
+        if (docContainer) docContainer.style.display = "none";
+
+        if (nama && spjData[nama]) {
+            selJenisBelanja.disabled = false;
+            const jenisKeys = Object.keys(spjData[nama]);
+            if (hintEl) hintEl.textContent = `(${jenisKeys.length} pilihan)`;
+
+            for (const jenis in spjData[nama]) {
+                const opt = document.createElement("option");
+                opt.value = jenis;
+                opt.textContent = jenis;
+                selJenisBelanja.appendChild(opt);
+            }
+        } else {
+            selJenisBelanja.disabled = true;
+            if (hintEl) hintEl.textContent = '';
+        }
+    }
+
+    function handleJenisBelanjaChange() {
+        resetPrintStatus();
+        const nama = document.getElementById("nama_belanja").value;
+        const jenis = document.getElementById("jenis_belanja").value;
+        renderDokumenList(nama, jenis);
+    }
+
+    function renderDokumenList(nama, jenis, savedCheckboxes = null) {
+        const docContainer = document.getElementById("dokumen_container");
+        const docList = document.getElementById("dokumen_list");
+        if (!docContainer || !docList) return;
+
+        docList.innerHTML = "";
+
+        if (nama && jenis && spjData[nama] && spjData[nama][jenis]) {
+            docContainer.style.display = "block";
+            const docs = spjData[nama][jenis];
+            
+            docs.forEach((doc, idx) => {
+                let badgeHtml = '';
+                let uploadHtml = '';
+                
+                let isChecked = false;
+                if (savedCheckboxes !== null && savedCheckboxes !== undefined) {
+                    isChecked = savedCheckboxes[idx] == 1 || savedCheckboxes[idx] === true || savedCheckboxes[idx] === '1';
+                } else if (existingDocsMap[doc.name] !== undefined) {
+                    isChecked = existingDocsMap[doc.name] === true;
+                }
+
+                const isBendahara = doc.assignee && doc.assignee.includes('Bendahara');
+                const isPpk = doc.assignee && doc.assignee.includes('PPK');
+
+                if (isBendahara) {
+                    badgeHtml = `<span class="badge-assignee badge-bendahara">Dilengkapi Bendahara</span>`;
+                    uploadHtml = `<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus Bendahara)</span>`;
+                } else if (isPpk) {
+                    badgeHtml = `<span class="badge-assignee badge-ppk">Dilengkapi PPK</span>`;
+                    uploadHtml = `<span style="font-size: 0.8rem; color: #94a3b8; font-style: italic;">Tidak perlu (Diurus PPK)</span>`;
+                } else {
+                    const badgeText = currentPeruntukan === 'umum' ? 'Wajib Disiapkan Subbag Umum' : 'Wajib Disiapkan Teknis';
+                    badgeHtml = `<span class="badge-assignee">${badgeText}</span>`;
+                    uploadHtml = `
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin: 0;">
+                        <input type="checkbox" name="berkas[${idx}]" id="doc_${idx}" value="1" ${isChecked ? 'checked' : ''} class="berkas-teknis-cb" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
+                        <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
+                    </label>
+                    `;
+                }
+
+                const item = document.createElement("div");
+                item.className = "upload-item";
+                item.innerHTML = `
+                    <div class="upload-info">
+                        <div style="display: flex; align-items: center; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.25rem;">
+                            <span class="upload-label" style="margin: 0;">${doc.name}</span>
+                            ${badgeHtml}
+                        </div>
+                        <input type="hidden" name="nama_dokumen[${idx}]" value="${doc.name}">
+                        <input type="hidden" name="assignee_dokumen[${idx}]" value="${doc.assignee || 'SM'}">
+                    </div>
+                    <div class="upload-action">
+                        ${uploadHtml}
+                    </div>
+                `;
+                docList.appendChild(item);
+            });
+        } else {
+            docContainer.style.display = "none";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const selNamaBelanja = document.getElementById("nama_belanja");
+        const selJenisBelanja = document.getElementById("jenis_belanja");
+        
+        // Cek jika kategori awal belum ada di dataset spesifik, fallback ke allSpjData jika perlu
+        let activeNama = oldNamaBelanja;
+        let activeJenis = oldJenisBelanja;
+
+        if (!activeNama && Object.keys(spjData).length > 0) {
+            // Jika kosong, biarkan user memilih
+        } else if (activeNama && !spjData[activeNama] && allSpjData[activeNama]) {
+            // Jika ada di data umum/sebaliknya, sesuaikan peruntukan jika perlu
+            const cat = getAkunCategory(activeNama);
+            if (cat.kode === '51' && currentPeruntukan !== 'umum') {
+                const radioUmum = document.querySelector('input[name="peruntukan"][value="umum"]');
+                if (radioUmum) {
+                    radioUmum.checked = true;
+                    handlePeruntukanChange('umum');
+                }
+            }
+        }
+
+        // Tampilkan kategori akun
+        populateNamaBelanjaOptions(activeNama);
+
+        if (activeNama && spjData[activeNama] && selNamaBelanja) {
+            selNamaBelanja.value = activeNama;
+            updateAkunBadge(activeNama);
+
+            if (selJenisBelanja) {
+                selJenisBelanja.innerHTML = '<option value="" disabled>-- Pilih Jenis Belanja --</option>';
+                selJenisBelanja.disabled = false;
+                const jenisKeys = Object.keys(spjData[activeNama]);
+                const hintEl = document.getElementById("jenis_count_hint");
+                if (hintEl) hintEl.textContent = `(${jenisKeys.length} pilihan)`;
+
+                for (const jenis in spjData[activeNama]) {
+                    const opt = document.createElement("option");
+                    opt.value = jenis;
+                    opt.textContent = jenis;
+                    if (jenis === activeJenis) {
+                        opt.selected = true;
+                    }
+                    selJenisBelanja.appendChild(opt);
+                }
+            }
+
+            if (activeJenis && spjData[activeNama][activeJenis]) {
+                renderDokumenList(activeNama, activeJenis, oldBerkas);
+            }
+        }
+    });
 
     function formatRupiah(number) {
         if (!number || isNaN(number)) return 'Rp 0';
@@ -375,7 +836,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
     function cetakLangsung() {
         const docInputs = document.querySelectorAll('input[name^="nama_dokumen"]');
         if (docInputs.length === 0) {
-            alert("Belum ada dokumen yang tersedia untuk dicetak.");
+            alert("Belum ada dokumen yang tersedia untuk dicetak. Silakan pilih Nama Belanja dan Jenis Belanja terlebih dahulu.");
             return;
         }
 
@@ -657,7 +1118,6 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             updateSubmitButtonState();
         };
 
-        // Buka proses cetak di TAB BARU (bukan di tab yang sama)
         const printWin = window.open('', '_blank');
         if (!printWin) {
             alert("Gagal membuka tab baru untuk mencetak. Pastikan peramban (browser) Anda mengizinkan pop-up.");
@@ -668,7 +1128,6 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
         printWin.document.write(printHtml);
         printWin.document.close();
 
-        // Tandai langsung di tab form bahwa checklist sudah dicetak
         markAsPrinted();
 
         try {
@@ -716,9 +1175,8 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
 
         if (selectedStatus === 'diajukan') {
             if (isPrinted) {
-                // STATUS DIAJUKAN & SUDAH PRINT -> AKTIF & WARNA HIJAU
                 submitBtn.disabled = false;
-                submitBtn.style.backgroundColor = '#059669'; // Emerald Green
+                submitBtn.style.backgroundColor = '#059669';
                 submitBtn.style.borderColor = '#047857';
                 submitBtn.style.color = '#ffffff';
                 submitBtn.style.opacity = '1';
@@ -740,9 +1198,8 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                     hint.style.display = 'none';
                 }
             } else {
-                // STATUS DIAJUKAN & BELUM PRINT -> TIDAK AKTIF DULU (ABU-ABU)
                 submitBtn.disabled = false;
-                submitBtn.style.backgroundColor = '#94a3b8'; // Slate 400
+                submitBtn.style.backgroundColor = '#94a3b8';
                 submitBtn.style.borderColor = '#94a3b8';
                 submitBtn.style.color = '#ffffff';
                 submitBtn.style.opacity = '0.75';
@@ -766,7 +1223,6 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
                 }
             }
         } else {
-            // STATUS DRAFT -> BIRU STANDAR
             submitBtn.disabled = false;
             submitBtn.style.backgroundColor = 'var(--primary)';
             submitBtn.style.borderColor = 'var(--primary)';
@@ -848,7 +1304,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             syncTanggalMin();
         }
 
-        // Intercept klik pada tombol submit jika status diajukan dan belum print -> langsung POP-UP MODAL!
+        // Intercept klik pada tombol submit jika status diajukan dan belum print
         const submitBtn = document.getElementById('btn_submit_spj');
         if (submitBtn) {
             submitBtn.addEventListener('click', function(e) {

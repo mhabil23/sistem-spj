@@ -121,6 +121,94 @@ class AdminSpjTest extends TestCase
         ]);
     }
 
+    public function test_admin_can_update_spj_switching_belanja_from_52_to_51(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $userUmum = User::factory()->create(['role' => 'umum', 'status' => 'aktif']);
+
+        $spj = Spj::create([
+            'user_id' => $admin->id,
+            'nomor_spj' => 'SPJ-EDIT-52-TO-51',
+            'nama_belanja' => 'Belanja Bahan (521211)',
+            'jenis_belanja' => 'Belanja Konsumsi',
+            'peruntukan' => 'teknis',
+            'kegiatan' => 'Konsumsi Rapat Koordinasi',
+            'tanggal' => now(),
+            'nilai' => 1500000,
+            'seksi' => 'Sosial',
+            'status' => 'draft',
+            'dokumen_file' => json_encode([
+                ['nama' => 'KAK', 'disiapkan' => true, 'assignee' => 'SM'],
+            ]),
+        ]);
+
+        $response = $this->actingAs($admin)->put(route('admin.spj.update', $spj->id), [
+            'nomor_spj' => 'SPJ-EDIT-52-TO-51',
+            'peruntukan' => 'umum',
+            'nama_belanja' => 'Belanja Gaji Pokok PNS (511111)',
+            'jenis_belanja' => 'Gaji Induk PNS',
+            'kegiatan' => 'Pembayaran Gaji Induk Pegawai',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => 75000000,
+            'status' => 'diajukan',
+            'is_printed' => 1,
+            'nama_dokumen' => ['0' => 'Daftar Gaji Induk', '1' => 'SPTJM Pembayaran Gaji'],
+            'assignee_dokumen' => ['0' => 'SM', '1' => 'SM'],
+            'berkas' => ['0' => '1', '1' => '1'],
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+
+        $spj->refresh();
+        $this->assertEquals('Belanja Gaji Pokok PNS (511111)', $spj->nama_belanja);
+        $this->assertEquals('Gaji Induk PNS', $spj->jenis_belanja);
+        $this->assertEquals('umum', $spj->peruntukan);
+        $this->assertEquals('Subbag Umum', $spj->seksi);
+        $this->assertEquals('Pembayaran Gaji Induk Pegawai', $spj->kegiatan);
+        $this->assertEquals(75000000, $spj->nilai);
+
+        $decodedDocs = json_decode($spj->dokumen_file, true);
+        $this->assertCount(2, $decodedDocs);
+        $this->assertEquals('Daftar Gaji Induk', $decodedDocs[0]['nama']);
+        $this->assertTrue($decodedDocs[0]['disiapkan']);
+    }
+
+    public function test_admin_can_manage_syarat_dokumen_and_store_multiple_documents(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+
+        $getIndex = $this->actingAs($admin)->get(route('admin.syarat-dokumen.index'));
+        $getIndex->assertStatus(200);
+
+        $postBatch = $this->actingAs($admin)->post(route('admin.syarat-dokumen.store'), [
+            'nama_belanja' => 'Belanja Uji Coba Multi (529999)',
+            'jenis_belanja' => 'Uji Coba Multi Dokumen',
+            'dokumen' => [
+                ['nama_dokumen' => 'Surat Pengantar Multi A', 'assignee' => 'SM', 'peruntukan' => 'semua'],
+                ['nama_dokumen' => 'Bukti Transfer Multi B', 'assignee' => 'Bendahara', 'peruntukan' => 'semua'],
+            ],
+        ]);
+
+        $postBatch->assertRedirect(route('admin.syarat-dokumen.index', [
+            'nama_belanja' => 'Belanja Uji Coba Multi (529999)',
+            'jenis_belanja' => 'Uji Coba Multi Dokumen',
+        ]));
+
+        $this->assertDatabaseHas('syarat_dokumen_spjs', [
+            'nama_belanja' => 'Belanja Uji Coba Multi (529999)',
+            'jenis_belanja' => 'Uji Coba Multi Dokumen',
+            'nama_dokumen' => 'Surat Pengantar Multi A',
+            'assignee' => 'SM',
+        ]);
+
+        $this->assertDatabaseHas('syarat_dokumen_spjs', [
+            'nama_belanja' => 'Belanja Uji Coba Multi (529999)',
+            'jenis_belanja' => 'Uji Coba Multi Dokumen',
+            'nama_dokumen' => 'Bukti Transfer Multi B',
+            'assignee' => 'Bendahara',
+        ]);
+    }
+
     public function test_admin_spj_index_and_dashboard_count_disetujui_ppspm_and_menunggu_otp_kpa_in_proses(): void
     {
         $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);

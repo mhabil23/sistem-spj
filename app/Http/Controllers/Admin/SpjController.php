@@ -80,8 +80,32 @@ class SpjController extends Controller
     public function edit(Spj $spj)
     {
         $nomorSpjOtomatis = $spj->nomor_spj ?: Spj::generateNomorSpj();
+        $teknisSpjData = SyaratDokumenSpj::getSpjData('teknis');
+        $umumSpjData = SyaratDokumenSpj::getSpjData('umum');
+        $spjData = SyaratDokumenSpj::getSpjData();
+        $daftarNamaBelanja = SyaratDokumenSpj::distinct()->orderBy('nama_belanja')->pluck('nama_belanja');
 
-        return view('admin.spj-edit', compact('spj', 'nomorSpjOtomatis'));
+        // Deteksi peruntukan saat ini
+        $currentPeruntukan = $spj->peruntukan;
+        if (! $currentPeruntukan) {
+            $currentPeruntukan = ($spj->seksi === 'Subbag Umum' || ($spj->user && $spj->user->role === 'umum')) ? 'umum' : 'teknis';
+        }
+
+        if (! $spj->nama_belanja && $spj->dokumen_file) {
+            $existingDocs = json_decode($spj->dokumen_file, true);
+            if (is_array($existingDocs) && count($existingDocs) > 0) {
+                $firstDocName = $existingDocs[0]['nama'] ?? null;
+                if ($firstDocName) {
+                    $matched = SyaratDokumenSpj::where('nama_dokumen', $firstDocName)->first();
+                    if ($matched) {
+                        $spj->nama_belanja = $matched->nama_belanja;
+                        $spj->jenis_belanja = $matched->jenis_belanja;
+                    }
+                }
+            }
+        }
+
+        return view('admin.spj-edit', compact('spj', 'nomorSpjOtomatis', 'spjData', 'teknisSpjData', 'umumSpjData', 'daftarNamaBelanja', 'currentPeruntukan'));
     }
 
     /**
@@ -157,6 +181,9 @@ class SpjController extends Controller
             'nilai' => $request->nilai,
             'seksi' => $seksi,
             'user_id' => $user->id,
+            'nama_belanja' => $request->nama_belanja,
+            'jenis_belanja' => $request->jenis_belanja,
+            'peruntukan' => $peruntukan,
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa ?? $user->no_wa,
             'status' => $request->status,
@@ -185,6 +212,9 @@ class SpjController extends Controller
 
         $validated = $request->validate([
             'nomor_spj' => 'nullable|string|max:100|unique:spjs,nomor_spj,'.$spj->id,
+            'peruntukan' => 'nullable|in:teknis,umum',
+            'nama_belanja' => 'nullable|string',
+            'jenis_belanja' => 'nullable|string',
             'kegiatan' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'tanggal_selesai' => 'nullable|date|after_or_equal:tanggal',
@@ -197,6 +227,38 @@ class SpjController extends Controller
             'nomor_spj.unique' => 'Nomor SPJ sudah terdaftar, silakan gunakan nomor lain.',
             'tanggal_selesai.after_or_equal' => 'Tanggal selesai kegiatan tidak boleh sebelum tanggal mulai kegiatan.',
         ]);
+
+        $peruntukan = $request->input('peruntukan', $spj->peruntukan ?: (($spj->seksi === 'Subbag Umum' || ($spj->user && $spj->user->role === 'umum')) ? 'umum' : 'teknis'));
+        $validated['peruntukan'] = $peruntukan;
+
+        if ($request->filled('nama_belanja')) {
+            $validated['nama_belanja'] = $request->nama_belanja;
+        }
+        if ($request->filled('jenis_belanja')) {
+            $validated['jenis_belanja'] = $request->jenis_belanja;
+        }
+
+        if ($peruntukan === 'umum') {
+            $validated['seksi'] = 'Subbag Umum';
+            if (! $spj->user || $spj->user->role !== 'umum') {
+                $userUmum = User::where('role', 'umum')->first();
+                if ($userUmum) {
+                    $validated['user_id'] = $userUmum->id;
+                }
+            }
+        } elseif ($request->filled('seksi')) {
+            $validated['seksi'] = $request->seksi;
+            if ($spj->user && $spj->user->role !== 'teknis') {
+                $userTeknis = User::where('role', 'teknis')
+                    ->where(function ($q) use ($request) {
+                        $q->where('seksi', $request->seksi)
+                            ->orWhere('name', 'like', '%'.$request->seksi.'%');
+                    })->first() ?? User::where('role', 'teknis')->first();
+                if ($userTeknis) {
+                    $validated['user_id'] = $userTeknis->id;
+                }
+            }
+        }
 
         if ($request->status === 'diajukan' && ! $request->boolean('is_printed')) {
             return back()->withInput()->withErrors([

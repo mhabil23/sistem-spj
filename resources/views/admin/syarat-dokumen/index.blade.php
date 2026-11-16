@@ -17,6 +17,7 @@
         --bps-green: #10b981;
         --bps-green-light: #ecfdf5;
         --dash-slate-800: #1e293b;
+        --dash-slate-700: #334155;
         --dash-slate-600: #475569;
         --dash-slate-500: #64748b;
         --dash-slate-200: #e2e8f0;
@@ -76,7 +77,7 @@
         margin: 0;
         color: var(--dash-slate-500);
         font-size: 13.5px;
-        max-width: 700px;
+        max-width: 720px;
         line-height: 1.45;
     }
 
@@ -87,7 +88,7 @@
         background: linear-gradient(135deg, var(--bps-blue) 0%, #0369a1 100%);
         color: #ffffff;
         border: none;
-        padding: 10px 18px;
+        padding: 11px 20px;
         border-radius: var(--dash-radius-md);
         font-size: 13.5px;
         font-weight: 700;
@@ -104,7 +105,7 @@
     /* STATS GRID */
     .doc-stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
         gap: 16px;
     }
 
@@ -133,6 +134,7 @@
     .doc-stat-icon.blue { background: #e0f2fe; color: #0284c7; }
     .doc-stat-icon.green { background: #dcfce7; color: #16a34a; }
     .doc-stat-icon.orange { background: #ffedd5; color: #ea580c; }
+    .doc-stat-icon.purple { background: #f3e8ff; color: #7e22ce; }
 
     .doc-stat-val {
         font-size: 20px;
@@ -159,7 +161,7 @@
 
     .filter-grid-doc {
         display: grid;
-        grid-template-columns: 1.5fr 1.5fr 1.2fr 1.2fr 1.8fr auto;
+        grid-template-columns: 1.4fr 1.4fr 1.1fr 1.1fr 1.6fr auto;
         gap: 12px;
         align-items: flex-end;
     }
@@ -176,38 +178,9 @@
         }
     }
 
-    .badge-peruntukan {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        padding: 3px 9px;
-        border-radius: 9999px;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .badge-peruntukan.semua {
-        background: #ecfdf5;
-        color: #047857;
-        border: 1px solid #a7f3d0;
-    }
-
-    .badge-peruntukan.umum {
-        background: #f5f3ff;
-        color: #6d28d9;
-        border: 1px solid #ddd6fe;
-    }
-
-    .badge-peruntukan.teknis {
-        background: #eff6ff;
-        color: #1d4ed8;
-        border: 1px solid #bfdbfe;
-    }
-
     .filter-label-doc {
         display: block;
-        font-size: 11.5px;
+        font-size: 11px;
         font-weight: 700;
         color: var(--dash-slate-600);
         margin-bottom: 5px;
@@ -234,41 +207,175 @@
         box-shadow: 0 0 0 3px rgba(2, 75, 134, 0.12);
     }
 
-    /* TABLE */
-    .doc-table-card {
+    /* GROUPED CARDS (CUKUP SATU NAMA JENIS BELANJA, TIDAK DOBLE-DOBLE) */
+    .belanja-groups-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .belanja-group-card {
         background: #ffffff;
         border-radius: var(--dash-radius-xl);
         border: 1px solid var(--dash-slate-200);
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(8, 32, 82, 0.04);
+        transition: border-color 0.2s ease;
     }
 
-    .doc-table {
+    .belanja-group-card:hover {
+        border-color: #cbd5e1;
+    }
+
+    .belanja-group-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-bottom: 1px solid var(--dash-slate-200);
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .belanja-header-left {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .badge-akun-kode {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        letter-spacing: 0.2px;
+    }
+
+    .badge-akun-kode.akun-51 {
+        background: #dbeafe;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .badge-akun-kode.akun-52 {
+        background: #dcfce7;
+        color: #15803d;
+        border: 1px solid #bbf7d0;
+    }
+
+    .badge-akun-kode.akun-53 {
+        background: #f3e8ff;
+        color: #7e22ce;
+        border: 1px solid #e9d5ff;
+    }
+
+    .jenis-belanja-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--bps-navy);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-peruntukan {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2.5px 8px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .badge-peruntukan.semua {
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .badge-peruntukan.umum {
+        background: #f5f3ff;
+        color: #6d28d9;
+        border: 1px solid #ddd6fe;
+    }
+
+    .badge-peruntukan.teknis {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
+    .badge-doc-count {
+        background: #ffffff;
+        color: var(--dash-slate-600);
+        border: 1px solid var(--dash-slate-200);
+        padding: 2px 8px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .btn-quick-add {
+        background: #ffffff;
+        color: var(--bps-blue);
+        border: 1.5px solid #bae6fd;
+        padding: 6px 14px;
+        border-radius: 7px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-quick-add:hover {
+        background: #0284c7;
+        color: #ffffff;
+        border-color: #0284c7;
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+    }
+
+    /* INNER TABLE */
+    .doc-table-inner {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
     }
 
-    .doc-table th {
-        background: #f8fafc;
-        padding: 12px 16px;
-        font-size: 12px;
+    .doc-table-inner th {
+        background: #ffffff;
+        padding: 10px 16px;
+        font-size: 11.5px;
         font-weight: 700;
-        color: var(--dash-slate-700);
+        color: var(--dash-slate-500);
         border-bottom: 1px solid var(--dash-slate-200);
         text-transform: uppercase;
-        letter-spacing: 0.4px;
+        letter-spacing: 0.3px;
     }
 
-    .doc-table td {
-        padding: 12px 16px;
+    .doc-table-inner td {
+        padding: 11px 16px;
         font-size: 13px;
         color: var(--dash-slate-700);
         border-bottom: 1px solid #f1f5f9;
         vertical-align: middle;
     }
 
-    .doc-table tr:hover td {
+    .doc-table-inner tr:last-child td {
+        border-bottom: none;
+    }
+
+    .doc-table-inner tr:hover td {
         background: #f8fafc;
     }
 
@@ -319,89 +426,6 @@
     .btn-action-icon.delete { color: #dc2626; }
     .btn-action-icon.delete:hover { background: #fee2e2; }
 
-    /* PAGINATION */
-    .admin-pagination-nav {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-        padding: 14px 20px;
-        background: #ffffff;
-        border-top: 1px solid var(--dash-slate-200);
-    }
-
-    .admin-pagination-info {
-        font-size: 12.5px;
-        color: var(--dash-slate-500);
-    }
-
-    .admin-pagination-info span {
-        font-weight: 700;
-        color: var(--bps-navy);
-    }
-
-    .admin-pagination-links {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        flex-wrap: wrap;
-    }
-
-    .page-link-item {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 34px;
-        height: 34px;
-        padding: 0 10px;
-        border-radius: 8px;
-        font-size: 12.5px;
-        font-weight: 600;
-        color: var(--dash-slate-700);
-        background: #ffffff;
-        border: 1px solid var(--dash-slate-200);
-        text-decoration: none;
-        transition: all 0.2s ease;
-        gap: 5px;
-        cursor: pointer;
-    }
-
-    .page-link-item:hover:not(.disabled):not(.active) {
-        background: #e0f2fe;
-        border-color: #bae6fd;
-        color: #0284c7;
-    }
-
-    .page-link-item.active {
-        background: var(--bps-blue);
-        border-color: var(--bps-blue);
-        color: #ffffff;
-        font-weight: 700;
-        cursor: default;
-        box-shadow: 0 2px 6px rgba(2, 75, 134, 0.25);
-    }
-
-    .page-link-item.disabled {
-        color: #94a3b8;
-        background: #f8fafc;
-        border-color: #e2e8f0;
-        cursor: not-allowed;
-        opacity: 0.7;
-    }
-
-    .page-link-item.dots {
-        border: none;
-        background: transparent;
-        cursor: default;
-        padding: 0 4px;
-        min-width: auto;
-    }
-
-    .admin-pagination-nav svg {
-        display: none !important;
-    }
-
     /* MODAL */
     .modal-backdrop-custom {
         display: none;
@@ -421,7 +445,7 @@
     .modal-box-custom {
         background: #ffffff;
         width: 100%;
-        max-width: 580px;
+        max-width: 680px;
         border-radius: 16px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         overflow: hidden;
@@ -486,12 +510,89 @@
         margin-top: 4px;
     }
 
+    /* DYNAMIC DOKUMEN ROW IN MODAL */
+    .doc-input-rows-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    .doc-input-row {
+        display: grid;
+        grid-template-columns: 1fr 170px 75px 36px;
+        gap: 8px;
+        align-items: center;
+        background: #f8fafc;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid var(--dash-slate-200);
+        animation: fadeInRow 0.2s ease-out;
+    }
+
+    @keyframes fadeInRow {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-remove-row {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 16px;
+        cursor: pointer;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s ease;
+    }
+
+    .btn-remove-row:hover:not(:disabled) {
+        color: #dc2626;
+        background: #fee2e2;
+    }
+
+    .btn-remove-row:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+
+    .btn-add-more-row {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1.5px dashed #7dd3fc;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        justify-content: center;
+        transition: all 0.2s ease;
+        margin-top: 6px;
+    }
+
+    .btn-add-more-row:hover {
+        background: #0284c7;
+        color: #ffffff;
+        border-style: solid;
+        border-color: #0284c7;
+        box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+    }
+
     .modal-footer-custom {
         padding: 14px 22px;
         background: #f8fafc;
         border-top: 1px solid var(--dash-slate-200);
         display: flex;
-        justify-content: flex-end;
+        justify-content: space-between;
+        align-items: center;
         gap: 10px;
     }
 
@@ -515,6 +616,11 @@
         font-weight: 700;
         font-size: 13px;
         cursor: pointer;
+        box-shadow: 0 2px 6px rgba(2, 75, 134, 0.25);
+    }
+
+    .btn-save-modal:hover {
+        background: #0369a1;
     }
 </style>
 @endpush
@@ -529,19 +635,28 @@
                 Kelola Persyaratan Dokumen SPJ
             </h2>
             <p>
-                Konfigurasi daftar checklist dokumen wajib untuk setiap <strong>Nama Belanja</strong> dan <strong>Jenis Belanja</strong>. Setiap penambahan atau perubahan dokumen di sini akan otomatis muncul pada form pengajuan SPJ Staf Teknis dan Subbag Umum.
+                Konfigurasi daftar checklist dokumen wajib untuk setiap <strong>Nama Belanja</strong> dan <strong>Jenis Belanja</strong>. Setiap penambahan atau perubahan dokumen di sini otomatis sinkron ke formulir pengajuan SPJ Staf Teknis dan Subbag Umum.
             </p>
         </div>
         <div>
             <button type="button" class="btn-add-doc" onclick="openAddDocModal()">
                 <i class="bi bi-plus-circle-fill"></i>
-                Tambah Dokumen Baru
+                Tambah Dokumen / Jenis Belanja Baru
             </button>
         </div>
     </div>
 
     <!-- 2. STATS CARDS -->
     <div class="doc-stats-grid">
+        <div class="doc-stat-card">
+            <div class="doc-stat-icon purple">
+                <i class="bi bi-tags-fill"></i>
+            </div>
+            <div>
+                <div class="doc-stat-val">{{ $totalJenisBelanja }}</div>
+                <div class="doc-stat-lbl">Jenis Belanja Terdaftar</div>
+            </div>
+        </div>
         <div class="doc-stat-card">
             <div class="doc-stat-icon blue">
                 <i class="bi bi-file-earmark-check"></i>
@@ -566,7 +681,7 @@
             </div>
             <div>
                 <div class="doc-stat-val">{{ $totalBendahara }}</div>
-                <div class="doc-stat-lbl">Dilengkapi Bendahara (Pajak/Kas)</div>
+                <div class="doc-stat-lbl">Dilengkapi Bendahara / PPK</div>
             </div>
         </div>
     </div>
@@ -616,132 +731,126 @@
             </div>
             <div>
                 <label class="filter-label-doc">Cari Dokumen / Belanja</label>
-                <input type="text" name="search" class="form-control-doc" value="{{ request('search') }}" placeholder="Ketik kata kunci...">
+                <input type="text" name="search" class="form-control-doc" placeholder="Ketik kata kunci pencarian..." value="{{ request('search') }}">
             </div>
-            <div style="display: flex; gap: 8px;">
-                <button type="submit" class="btn-add-doc" style="height: 38px; padding: 0 16px;">
-                    <i class="bi bi-funnel-fill"></i> Filter
+            <div>
+                <button type="submit" class="btn-save-modal" style="height: 38px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="bi bi-search"></i> Filter
                 </button>
-                @if(request()->hasAny(['nama_belanja', 'jenis_belanja', 'assignee', 'peruntukan', 'search']))
-                    <a href="{{ route('admin.syarat-dokumen.index') }}" class="btn-cancel-modal" style="height: 38px; display: inline-flex; align-items: center; text-decoration: none;">
-                        Reset
-                    </a>
-                @endif
             </div>
         </form>
     </div>
 
-    <!-- 4. DATA TABLE -->
-    <div class="doc-table-card">
-        <div style="padding: 14px 20px; border-bottom: 1px solid var(--dash-slate-200); background: #ffffff; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-weight: 700; font-size: 14px; color: var(--bps-navy);">
-                Daftar Dokumen Persyaratan SPJ
-            </div>
-            <div style="font-size: 12px; color: var(--dash-slate-500);">
-                Menampilkan <strong>{{ $syaratDokumens->firstItem() ?? 0 }} - {{ $syaratDokumens->lastItem() ?? 0 }}</strong> dari {{ $syaratDokumens->total() }} dokumen
-            </div>
-        </div>
+    <!-- 4. TABEL PERSYARATAN DIKELOMPOKKAN PER JENIS BELANJA (TIDAK DOBLE-DOBLE) -->
+    <div class="belanja-groups-wrapper">
+        @forelse($groupedDokumens as $groupKey => $docs)
+            @php
+                $first = $docs->first();
+                $namaBelanja = $first->nama_belanja;
+                $jenisBelanja = $first->jenis_belanja;
+                $peruntukanVal = $first->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
 
-        <div style="overflow-x: auto;">
-            <table class="doc-table">
-                <thead>
-                    <tr>
-                        <th style="width: 50px; text-align: center;">No</th>
-                        <th style="width: 230px;">Nama Belanja (Akun)</th>
-                        <th style="width: 210px;">Jenis Belanja</th>
-                        <th>Nama Dokumen Persyaratan</th>
-                        <th style="width: 150px; text-align: center;">Peruntukan</th>
-                        <th style="width: 160px; text-align: center;">Pihak Penyiap</th>
-                        <th style="width: 60px; text-align: center;">Urutan</th>
-                        <th style="width: 90px; text-align: center;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($syaratDokumens as $index => $doc)
-                    <tr>
-                        <td style="text-align: center; font-weight: 700; color: var(--dash-slate-500); font-size: 12px;">
-                            {{ $syaratDokumens->firstItem() + $index }}
-                        </td>
-                        <td style="font-weight: 700; color: var(--bps-navy);">
-                            <div style="line-height: 1.35;">{{ $doc->nama_belanja }}</div>
-                        </td>
-                        <td style="font-weight: 600; color: var(--dash-slate-700);">
-                            <div style="line-height: 1.35;">{{ $doc->jenis_belanja }}</div>
-                        </td>
-                        <td>
-                            <div style="font-weight: 700; color: #0f172a; font-size: 13.5px; line-height: 1.35;">
-                                {{ $doc->nama_dokumen }}
-                            </div>
-                        </td>
-                        <td style="text-align: center;">
-                            @php
-                                $peruntukanVal = $doc->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($doc->nama_belanja);
-                            @endphp
-                            @if($peruntukanVal === 'umum')
-                                <span class="badge-peruntukan umum" title="Khusus Form Pengajuan Subbagian Umum (Akun 51 & 53)">
-                                    <i class="bi bi-building"></i> Khusus Umum
-                                </span>
-                            @elseif($peruntukanVal === 'teknis')
-                                <span class="badge-peruntukan teknis" title="Khusus Form Pengajuan Staf Teknis">
-                                    <i class="bi bi-laptop"></i> Khusus Teknis
-                                </span>
-                            @else
-                                <span class="badge-peruntukan semua" title="Dua-duanya: Berlaku untuk Teknis dan Subbag Umum">
-                                    <i class="bi bi-people-fill"></i> Dua-duanya
-                                </span>
-                            @endif
-                        </td>
-                        <td style="text-align: center;">
-                            @if($doc->assignee === 'SM')
-                                <span class="badge-assignee sm" title="Wajib disediakan oleh pengaju kegiatan / SM">
-                                    <i class="bi bi-person-check-fill"></i> Disiapkan Teknis (SM)
-                                </span>
-                            @elseif($doc->assignee === 'Bendahara')
-                                <span class="badge-assignee bendahara" title="Diverifikasi dan dilengkapi oleh Bendahara Pengeluaran">
-                                    <i class="bi bi-cash-coin"></i> Dilengkapi Bendahara
-                                </span>
-                            @else
-                                <span class="badge-assignee ppk" title="Diverifikasi dan dilengkapi oleh PPK">
-                                    <i class="bi bi-shield-check"></i> Dilengkapi PPK
-                                </span>
-                            @endif
-                        </td>
-                        <td style="text-align: center; font-weight: 700; color: var(--dash-slate-600); font-size: 12px;">
-                            {{ $doc->urutan }}
-                        </td>
-                        <td style="text-align: center; white-space: nowrap;">
-                            <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModal({{ json_encode($doc) }})">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                            <form action="{{ route('admin.syarat-dokumen.destroy', $doc->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen persyaratan: \'{{ addslashes($doc->nama_dokumen) }}\'?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-action-icon delete" title="Hapus Dokumen">
-                                    <i class="bi bi-trash3-fill"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="8" style="text-align: center; padding: 48px 16px; color: var(--dash-slate-500);">
-                            <i class="bi bi-inbox" style="font-size: 36px; display: block; margin-bottom: 8px; opacity: 0.5;"></i>
-                            Tidak ada dokumen persyaratan yang cocok dengan filter.
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                $akunKode = '52';
+                if (str_contains($namaBelanja, '51')) $akunKode = '51';
+                elseif (str_contains($namaBelanja, '53')) $akunKode = '53';
+            @endphp
+            <div class="belanja-group-card">
+                <div class="belanja-group-header">
+                    <div class="belanja-header-left">
+                        <span class="badge-akun-kode akun-{{ $akunKode }}">{{ $namaBelanja }}</span>
+                        <h3 class="jenis-belanja-title">{{ $jenisBelanja }}</h3>
+                        @if($peruntukanVal === 'umum')
+                            <span class="badge-peruntukan umum" title="Khusus Form Pengajuan Subbagian Umum (Akun 51 & 53)">
+                                <i class="bi bi-building"></i> Khusus Umum
+                            </span>
+                        @elseif($peruntukanVal === 'teknis')
+                            <span class="badge-peruntukan teknis" title="Khusus Form Pengajuan Staf Teknis">
+                                <i class="bi bi-laptop"></i> Khusus Teknis
+                            </span>
+                        @else
+                            <span class="badge-peruntukan semua" title="Dua-duanya: Berlaku untuk Teknis dan Subbag Umum">
+                                <i class="bi bi-people-fill"></i> Dua-duanya
+                            </span>
+                        @endif
+                        <span class="badge-doc-count"><i class="bi bi-file-earmark-text"></i> {{ $docs->count() }} Dokumen</span>
+                    </div>
+                    <div>
+                        <button type="button" class="btn-quick-add" onclick="openAddDocForGroup('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', '{{ $peruntukanVal }}')">
+                            <i class="bi bi-plus-lg"></i> Tambah Dokumen (+)
+                        </button>
+                    </div>
+                </div>
 
-        @if($syaratDokumens->hasPages())
-            {{ $syaratDokumens->links('vendor.pagination.admin') }}
-        @endif
+                <div class="belanja-group-body">
+                    <table class="doc-table-inner">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; text-align: center;">No</th>
+                                <th>Nama Dokumen Persyaratan</th>
+                                <th style="width: 240px; text-align: center;">Pihak Penyiap (Assignee)</th>
+                                <th style="width: 80px; text-align: center;">Urutan</th>
+                                <th style="width: 100px; text-align: center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($docs as $dIndex => $doc)
+                            <tr>
+                                <td style="text-align: center; color: var(--dash-slate-500); font-weight: 600;">
+                                    {{ $dIndex + 1 }}
+                                </td>
+                                <td>
+                                    <div style="font-weight: 700; color: #0f172a; font-size: 13.5px;">
+                                        {{ $doc->nama_dokumen }}
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    @if($doc->assignee === 'SM')
+                                        <span class="badge-assignee sm" title="Wajib disediakan oleh pengaju kegiatan / SM">
+                                            <i class="bi bi-person-check-fill"></i> Disiapkan Teknis (SM)
+                                        </span>
+                                    @elseif($doc->assignee === 'Bendahara')
+                                        <span class="badge-assignee bendahara" title="Diverifikasi dan dilengkapi oleh Bendahara Pengeluaran">
+                                            <i class="bi bi-cash-coin"></i> Dilengkapi Bendahara
+                                        </span>
+                                    @else
+                                        <span class="badge-assignee ppk" title="Diverifikasi dan dilengkapi oleh PPK">
+                                            <i class="bi bi-shield-check"></i> Dilengkapi PPK
+                                        </span>
+                                    @endif
+                                </td>
+                                <td style="text-align: center; font-weight: 700; color: var(--dash-slate-600); font-size: 12px;">
+                                    {{ $doc->urutan }}
+                                </td>
+                                <td style="text-align: center; white-space: nowrap;">
+                                    <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModal({{ json_encode($doc) }})">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <form action="{{ route('admin.syarat-dokumen.destroy', $doc->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen persyaratan: \'{{ addslashes($doc->nama_dokumen) }}\'?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action-icon delete" title="Hapus Dokumen">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @empty
+            <div style="background: #ffffff; border-radius: var(--dash-radius-xl); border: 1px solid var(--dash-slate-200); padding: 48px 16px; text-align: center; color: var(--dash-slate-500);">
+                <i class="bi bi-inbox" style="font-size: 40px; display: block; margin-bottom: 10px; opacity: 0.4;"></i>
+                <h4 style="margin: 0 0 6px 0; color: var(--bps-navy); font-size: 16px;">Tidak ada dokumen persyaratan ditemukan</h4>
+                <p style="margin: 0; font-size: 13px;">Silakan sesuaikan kata kunci filter atau klik tombol "Tambah Dokumen / Jenis Belanja Baru" di atas.</p>
+            </div>
+        @endforelse
     </div>
 
 </div>
 
-<!-- 5. MODAL TAMBAH DOKUMEN -->
+<!-- 5. MODAL TAMBAH DOKUMEN / JENIS BELANJA (MENDUKUNG INPUT BANYAK DENGAN TOMBOL +) -->
 <div class="modal-backdrop-custom" id="modalAddDoc">
     <div class="modal-box-custom">
         <form action="{{ route('admin.syarat-dokumen.store') }}" method="POST">
@@ -787,35 +896,53 @@
                         <option value="umum">Khusus Subbag Umum (Contoh: Akun 51 &amp; Akun 53)</option>
                         <option value="teknis">Khusus Staf Teknis</option>
                     </select>
-                    <div class="form-help-modal">Pilih siapa yang dapat mengajukan jenis belanja/dokumen ini. Akun 51 (Pegawai) &amp; Akun 53 (Modal) otomatis disarankan khusus Umum, Akun 52 untuk dua-duanya.</div>
+                    <div class="form-help-modal">Akun 51 (Pegawai) &amp; Akun 53 (Modal) otomatis disarankan khusus Umum, Akun 52 untuk dua-duanya.</div>
                 </div>
 
-                <!-- Nama Dokumen -->
-                <div class="form-group-modal">
-                    <label class="form-label-modal">Nama Dokumen Persyaratan <span style="color: #ef4444;">*</span></label>
-                    <input type="text" name="nama_dokumen" class="form-control-doc" placeholder="Contoh: KAK, BAST, Faktur Pajak, dll" required>
-                </div>
+                <!-- DAFTAR DOKUMEN MULTI-INPUT (BISA BANYAK DENGAN TANDA PLUS) -->
+                <div class="form-group-modal" style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label class="form-label-modal" style="margin: 0;">
+                            Daftar Dokumen yang Ditambahkan <span style="color: #ef4444;">*</span>
+                        </label>
+                        <span style="font-size: 11px; color: var(--dash-slate-500);">Bisa tambah banyak sekaligus via tombol (+)</span>
+                    </div>
 
-                <!-- Pihak Penyiap (Assignee) -->
-                <div class="form-group-modal">
-                    <label class="form-label-modal">Pihak yang Menyiapkan / Bertanggung Jawab <span style="color: #ef4444;">*</span></label>
-                    <select name="assignee" class="form-control-doc" required>
-                        <option value="SM">SM (Wajib Disiapkan Teknis / Pelaksana Kegiatan)</option>
-                        <option value="Bendahara">Bendahara (Dilengkapi Bendahara - Pajak/Transfer)</option>
-                        <option value="PPK">PPK (Verifikasi Komitmen Anggaran)</option>
-                    </select>
-                    <div class="form-help-modal">Jika dipilih "Bendahara", form sisi Teknis akan otomatis mengunci checkbox dan menandainya dengan badge 'Dilengkapi Bendahara'.</div>
-                </div>
+                    <div style="display: grid; grid-template-columns: 1fr 170px 75px 36px; gap: 8px; padding: 0 10px 4px 10px; font-size: 11px; font-weight: 700; color: var(--dash-slate-500); text-transform: uppercase;">
+                        <span>Nama Dokumen</span>
+                        <span>Pihak Penyiap</span>
+                        <span style="text-align: center;">Urutan</span>
+                        <span></span>
+                    </div>
 
-                <!-- Urutan -->
-                <div class="form-group-modal">
-                    <label class="form-label-modal">Urutan Tampil (Opsional)</label>
-                    <input type="number" name="urutan" class="form-control-doc" placeholder="Biarkan kosong untuk otomatis di urutan terakhir" min="0">
+                    <div class="doc-input-rows-container" id="doc_input_rows_container">
+                        <!-- Baris Pertama -->
+                        <div class="doc-input-row" data-row-index="0">
+                            <input type="text" name="dokumen[0][nama_dokumen]" class="form-control-doc" placeholder="Contoh: KAK / Laporan / BAST" required>
+                            <select name="dokumen[0][assignee]" class="form-control-doc" required>
+                                <option value="SM" selected>SM (Teknis)</option>
+                                <option value="Bendahara">Bendahara</option>
+                                <option value="PPK">PPK</option>
+                            </select>
+                            <input type="number" name="dokumen[0][urutan]" class="form-control-doc" value="1" min="1" style="text-align: center;" placeholder="1">
+                            <button type="button" class="btn-remove-row" onclick="removeDocRow(this)" disabled title="Baris pertama tidak dapat dihapus">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tombol Plus Tambah Dokumen Lain -->
+                    <button type="button" class="btn-add-more-row" onclick="addDocRow()">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah Dokumen Lain (+)
+                    </button>
                 </div>
             </div>
             <div class="modal-footer-custom">
-                <button type="button" class="btn-cancel-modal" onclick="closeAddDocModal()">Batal</button>
-                <button type="submit" class="btn-save-modal">Simpan Dokumen</button>
+                <span style="font-size: 12px; color: var(--dash-slate-500);" id="doc_rows_counter_hint">1 dokumen siap disimpan</span>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-cancel-modal" onclick="closeAddDocModal()">Batal</button>
+                    <button type="submit" class="btn-save-modal">Simpan Semua Dokumen</button>
+                </div>
             </div>
         </form>
     </div>
@@ -850,15 +977,14 @@
                     <input type="text" name="nama_dokumen" id="edit_nama_dokumen" class="form-control-doc" required>
                 </div>
 
-                <!-- Peruntukan / Berlaku Untuk Siapa -->
+                <!-- Peruntukan -->
                 <div class="form-group-modal">
-                    <label class="form-label-modal">Peruntukan / Berlaku Untuk Siapa <span style="color: #ef4444;">*</span></label>
+                    <label class="form-label-modal">Peruntukan <span style="color: #ef4444;">*</span></label>
                     <select name="peruntukan" id="edit_peruntukan" class="form-control-doc" required>
                         <option value="semua">Dua-duanya (Teknis &amp; Subbag Umum)</option>
-                        <option value="umum">Khusus Subbag Umum (Contoh: Akun 51 &amp; Akun 53)</option>
+                        <option value="umum">Khusus Subbag Umum</option>
                         <option value="teknis">Khusus Staf Teknis</option>
                     </select>
-                    <div class="form-help-modal">Pilih siapa yang dapat mengajukan jenis belanja ini di form SPJ.</div>
                 </div>
 
                 <!-- Pihak Penyiap (Assignee) -->
@@ -878,8 +1004,11 @@
                 </div>
             </div>
             <div class="modal-footer-custom">
-                <button type="button" class="btn-cancel-modal" onclick="closeEditDocModal()">Batal</button>
-                <button type="submit" class="btn-save-modal">Simpan Perubahan</button>
+                <div></div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn-cancel-modal" onclick="closeEditDocModal()">Batal</button>
+                    <button type="submit" class="btn-save-modal">Simpan Perubahan</button>
+                </div>
             </div>
         </form>
     </div>
@@ -887,6 +1016,8 @@
 
 @push('scripts')
 <script>
+    let nextRowIndex = 1;
+
     function detectPeruntukanFromText(text) {
         if (!text) return null;
         if (/\(51\d*\)/i.test(text) || /\(53\d*\)/i.test(text) || /\b51\d{4}\b/.test(text) || /\b53\d{4}\b/.test(text)) {
@@ -898,12 +1029,82 @@
         return null;
     }
 
+    function updateRowCounters() {
+        const rows = document.querySelectorAll('#doc_input_rows_container .doc-input-row');
+        const count = rows.length;
+        const hint = document.getElementById('doc_rows_counter_hint');
+        if (hint) {
+            hint.textContent = `${count} dokumen siap disimpan`;
+        }
+
+        rows.forEach((row, idx) => {
+            const removeBtn = row.querySelector('.btn-remove-row');
+            if (removeBtn) {
+                removeBtn.disabled = (count <= 1);
+            }
+        });
+    }
+
+    function addDocRow() {
+        const container = document.getElementById('doc_input_rows_container');
+        const rows = container.querySelectorAll('.doc-input-row');
+        const newUrutan = rows.length + 1;
+
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'doc-input-row';
+        rowDiv.setAttribute('data-row-index', nextRowIndex);
+        rowDiv.innerHTML = `
+            <input type="text" name="dokumen[${nextRowIndex}][nama_dokumen]" class="form-control-doc" placeholder="Nama dokumen persyaratan" required>
+            <select name="dokumen[${nextRowIndex}][assignee]" class="form-control-doc" required>
+                <option value="SM" selected>SM (Teknis)</option>
+                <option value="Bendahara">Bendahara</option>
+                <option value="PPK">PPK</option>
+            </select>
+            <input type="number" name="dokumen[${nextRowIndex}][urutan]" class="form-control-doc" value="${newUrutan}" min="1" style="text-align: center;">
+            <button type="button" class="btn-remove-row" onclick="removeDocRow(this)" title="Hapus baris dokumen ini">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        `;
+        container.appendChild(rowDiv);
+        nextRowIndex++;
+        updateRowCounters();
+
+        // Focus input baru
+        const firstInput = rowDiv.querySelector('input[type="text"]');
+        if (firstInput) firstInput.focus();
+    }
+
+    function removeDocRow(button) {
+        const row = button.closest('.doc-input-row');
+        const container = document.getElementById('doc_input_rows_container');
+        if (container.querySelectorAll('.doc-input-row').length > 1) {
+            row.remove();
+            updateRowCounters();
+        }
+    }
+
     function openAddDocModal() {
         document.getElementById('modalAddDoc').style.display = 'flex';
     }
 
     function closeAddDocModal() {
         document.getElementById('modalAddDoc').style.display = 'none';
+    }
+
+    function openAddDocForGroup(namaBelanja, jenisBelanja, peruntukan) {
+        const selNama = document.getElementById('add_select_nama_belanja');
+        const inpNama = document.getElementById('add_input_nama_belanja');
+        const selJenis = document.getElementById('add_select_jenis_belanja');
+        const inpJenis = document.getElementById('add_input_jenis_belanja');
+        const selPeruntukan = document.getElementById('add_peruntukan');
+
+        if (selNama) selNama.value = namaBelanja || '';
+        if (inpNama) inpNama.value = namaBelanja || '';
+        if (selJenis) selJenis.value = jenisBelanja || '';
+        if (inpJenis) inpJenis.value = jenisBelanja || '';
+        if (selPeruntukan && peruntukan) selPeruntukan.value = peruntukan;
+
+        openAddDocModal();
     }
 
     function handleAddNamaBelanjaChange(val) {
@@ -967,6 +1168,8 @@
                 }
             });
         }
+
+        updateRowCounters();
     });
 
     // Close modal when clicking backdrop
@@ -978,4 +1181,3 @@
 @endpush
 
 @endsection
-
