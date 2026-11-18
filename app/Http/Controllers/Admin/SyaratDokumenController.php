@@ -53,6 +53,11 @@ class SyaratDokumenController extends Controller
             return $item->nama_belanja.'|||'.$item->jenis_belanja;
         });
 
+        // Struktur hierarkis untuk Tampilan Tabel Excel (Nama Belanja -> Jenis Belanja -> Dokumen)
+        $groupedByNamaBelanja = $allSyaratDokumens->groupBy('nama_belanja')->map(function ($itemsInNama) {
+            return $itemsInNama->groupBy('jenis_belanja');
+        });
+
         $daftarNamaBelanja = SyaratDokumenSpj::distinct()
             ->orderBy('nama_belanja')
             ->pluck('nama_belanja');
@@ -71,6 +76,7 @@ class SyaratDokumenController extends Controller
 
         return view('admin.syarat-dokumen.index', compact(
             'groupedDokumens',
+            'groupedByNamaBelanja',
             'daftarNamaBelanja',
             'daftarJenisBelanja',
             'totalDokumen',
@@ -165,6 +171,61 @@ class SyaratDokumenController extends Controller
             'nama_belanja' => $namaBelanja,
             'jenis_belanja' => $jenisBelanja,
         ])->with('success', 'Dokumen persyaratan SPJ berhasil ditambahkan!');
+    }
+
+    /**
+     * Perbarui peruntukan untuk semua dokumen dalam satu jenis belanja sekaligus (kecuali berkas bendahara).
+     */
+    public function updatePeruntukanGroup(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_belanja' => 'required|string|max:255',
+            'jenis_belanja' => 'required|string|max:255',
+            'peruntukan' => 'required|in:semua,teknis,umum',
+        ], [
+            'nama_belanja.required' => 'Nama belanja wajib disertakan.',
+            'jenis_belanja.required' => 'Jenis belanja wajib disertakan.',
+            'peruntukan.required' => 'Peruntukan wajib dipilih.',
+            'peruntukan.in' => 'Peruntukan harus semua, teknis, atau umum.',
+        ]);
+
+        $namaBelanja = trim($validated['nama_belanja']);
+        $jenisBelanja = trim($validated['jenis_belanja']);
+        $peruntukan = $validated['peruntukan'];
+
+        // Update semua dokumen dalam kelompok belanja ini KECUALI berkas yang disiapkan oleh Bendahara
+        $updatedCount = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+            ->where('jenis_belanja', $jenisBelanja)
+            ->where('assignee', '!=', 'Bendahara')
+            ->update([
+                'peruntukan' => $peruntukan,
+            ]);
+
+        // Pastikan berkas bendahara tetap berstatus 'semua' agar bisa diakses dan diverifikasi oleh kedua alur
+        SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+            ->where('jenis_belanja', $jenisBelanja)
+            ->where('assignee', 'Bendahara')
+            ->update([
+                'peruntukan' => 'semua',
+            ]);
+
+        $labelPeruntukan = match ($peruntukan) {
+            'umum' => 'Khusus Subbag Umum',
+            'teknis' => 'Khusus Staf Teknis',
+            default => 'Dua-duanya (Teknis & Umum)',
+        };
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'peruntukan' => $peruntukan,
+                'label' => $labelPeruntukan,
+                'updated_count' => $updatedCount,
+                'message' => "Peruntukan untuk '{$jenisBelanja}' berhasil diubah menjadi: {$labelPeruntukan} ({$updatedCount} berkas disesuaikan, berkas Bendahara tetap aman).",
+            ]);
+        }
+
+        return back()->with('success', "Peruntukan untuk '{$jenisBelanja}' berhasil diperbarui menjadi: {$labelPeruntukan}!");
     }
 
     /**

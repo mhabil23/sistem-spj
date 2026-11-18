@@ -207,7 +207,181 @@
         box-shadow: 0 0 0 3px rgba(2, 75, 134, 0.12);
     }
 
-    /* GROUPED CARDS (CUKUP SATU NAMA JENIS BELANJA, TIDAK DOBLE-DOBLE) */
+    /* VIEW MODE SWITCHER BAR */
+    .view-control-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 4px;
+    }
+
+    .view-mode-switcher {
+        display: inline-flex;
+        align-items: center;
+        background: #f1f5f9;
+        border: 1px solid var(--dash-slate-200);
+        padding: 4px;
+        border-radius: 10px;
+        gap: 4px;
+    }
+
+    .btn-view-mode {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 6px 15px;
+        border-radius: 7px;
+        border: none;
+        background: transparent;
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--dash-slate-600);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-view-mode:hover {
+        color: var(--bps-blue);
+    }
+
+    .btn-view-mode.active {
+        background: #ffffff;
+        color: var(--bps-blue);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* TOMBOL PERUNTUKAN INTERAKTIF & DROPDOWN */
+    .peruntukan-dropdown-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+
+    .btn-peruntukan-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        user-select: none;
+    }
+
+    .btn-peruntukan-toggle.semua {
+        background: #ecfdf5;
+        color: #047857;
+        border-color: #a7f3d0;
+    }
+    .btn-peruntukan-toggle.semua:hover {
+        background: #d1fae5;
+    }
+
+    .btn-peruntukan-toggle.umum {
+        background: #f5f3ff;
+        color: #6d28d9;
+        border-color: #ddd6fe;
+    }
+    .btn-peruntukan-toggle.umum:hover {
+        background: #ede9fe;
+    }
+
+    .btn-peruntukan-toggle.teknis {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-color: #bfdbfe;
+    }
+    .btn-peruntukan-toggle.teknis:hover {
+        background: #dbeafe;
+    }
+
+    .peruntukan-menu-dropdown {
+        display: none;
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        min-width: 285px;
+        background: #ffffff;
+        border: 1px solid var(--dash-slate-200);
+        border-radius: 12px;
+        box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+        z-index: 1050;
+        padding: 8px;
+        animation: fadeInMenu 0.15s ease-out;
+        text-align: left;
+    }
+
+    .peruntukan-menu-dropdown.show {
+        display: block;
+    }
+
+    @keyframes fadeInMenu {
+        from { opacity: 0; transform: translateY(-4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dropdown-header-title {
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--bps-navy);
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 4px 8px 2px 8px;
+    }
+
+    .dropdown-header-desc {
+        font-size: 10.5px;
+        color: var(--dash-slate-500);
+        padding: 0 8px 6px 8px;
+        line-height: 1.35;
+        border-bottom: 1px solid #f1f5f9;
+        margin-bottom: 6px;
+    }
+
+    .dropdown-item-peruntukan {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .dropdown-item-peruntukan:hover {
+        background: #f8fafc;
+        border-color: #e2e8f0;
+    }
+
+    .dropdown-item-peruntukan.active {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+    }
+
+    .dropdown-item-peruntukan strong {
+        display: block;
+        font-size: 12px;
+        color: var(--dash-slate-800);
+    }
+
+    .dropdown-item-peruntukan small {
+        display: block;
+        font-size: 10.5px;
+        color: var(--dash-slate-500);
+        margin-top: 2px;
+        line-height: 1.3;
+    }
+
+    /* 4A. TAMPILAN KARTU KELOMPOK (CARD VIEW) */
     .belanja-groups-wrapper {
         display: flex;
         flex-direction: column;
@@ -284,35 +458,6 @@
         gap: 6px;
     }
 
-    .badge-peruntukan {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        padding: 2.5px 8px;
-        border-radius: 9999px;
-        font-size: 11px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .badge-peruntukan.semua {
-        background: #ecfdf5;
-        color: #047857;
-        border: 1px solid #a7f3d0;
-    }
-
-    .badge-peruntukan.umum {
-        background: #f5f3ff;
-        color: #6d28d9;
-        border: 1px solid #ddd6fe;
-    }
-
-    .badge-peruntukan.teknis {
-        background: #eff6ff;
-        color: #1d4ed8;
-        border: 1px solid #bfdbfe;
-    }
-
     .badge-doc-count {
         background: #ffffff;
         color: var(--dash-slate-600);
@@ -345,7 +490,6 @@
         box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
     }
 
-    /* INNER TABLE */
     .doc-table-inner {
         width: 100%;
         border-collapse: collapse;
@@ -425,6 +569,107 @@
     .btn-action-icon.edit:hover { background: #e0f2fe; }
     .btn-action-icon.delete { color: #dc2626; }
     .btn-action-icon.delete:hover { background: #fee2e2; }
+
+    /* 4B. TAMPILAN TABEL EXCEL RINGKAS (PERSIS SEPERTI GAMBAR USER) */
+    .excel-table-container {
+        background: #ffffff;
+        border-radius: var(--dash-radius-xl);
+        border: 1.5px solid #334155;
+        box-shadow: 0 4px 14px rgba(8, 32, 82, 0.06);
+        overflow-x: auto;
+    }
+
+    .excel-doc-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12.5px;
+        color: #0f172a;
+    }
+
+    .excel-doc-table th {
+        background: #d1fae5; /* Pastel soft green matching Image 2 excel */
+        color: #064e3b;
+        font-weight: 800;
+        font-size: 12px;
+        padding: 10px 14px;
+        border: 1px solid #334155;
+        text-align: center;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+    }
+
+    .excel-doc-table th.th-nama-belanja {
+        background: #bbf7d0;
+    }
+
+    .excel-doc-table th.th-jenis-belanja {
+        background: #bbf7d0;
+    }
+
+    .excel-doc-table th.th-dokumen {
+        background: #cbf3bb;
+    }
+
+    .excel-doc-table th.th-penanggungjawab {
+        background: #bbf7d0;
+    }
+
+    .excel-doc-table th.th-peruntukan {
+        background: #d1fae5;
+    }
+
+    .excel-doc-table th.th-aksi {
+        background: #cbf3bb;
+    }
+
+    .excel-doc-table td {
+        border: 1px solid #334155;
+        padding: 7px 12px;
+        vertical-align: middle;
+        background: #ffffff;
+    }
+
+    .excel-doc-table tr:hover td {
+        background-color: #f8fafc;
+    }
+
+    .excel-cell-nama-belanja {
+        font-weight: 800;
+        color: var(--bps-navy);
+        background: #ffffff !important;
+        font-size: 13px;
+        vertical-align: middle !important;
+    }
+
+    .excel-cell-jenis-belanja {
+        font-weight: 700;
+        color: #1e293b;
+        background: #ffffff !important;
+        vertical-align: middle !important;
+    }
+
+    .excel-cell-dokumen {
+        font-weight: 500;
+        color: #0f172a;
+        background: #ffffff;
+    }
+
+    .excel-cell-assignee {
+        text-align: center;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .excel-cell-peruntukan {
+        text-align: center;
+        vertical-align: middle !important;
+        background: #f8fafc !important;
+    }
+
+    .excel-cell-aksi {
+        text-align: center;
+        white-space: nowrap;
+    }
 
     /* MODAL */
     .modal-backdrop-custom {
@@ -510,7 +755,6 @@
         margin-top: 4px;
     }
 
-    /* DYNAMIC DOKUMEN ROW IN MODAL */
     .doc-input-rows-container {
         display: flex;
         flex-direction: column;
@@ -520,7 +764,7 @@
 
     .doc-input-row {
         display: grid;
-        grid-template-columns: 1fr 170px 75px 36px;
+        grid-template-columns: 1fr 180px 75px 36px;
         gap: 8px;
         align-items: center;
         background: #f8fafc;
@@ -672,7 +916,7 @@
             </div>
             <div>
                 <div class="doc-stat-val">{{ $totalSm }}</div>
-                <div class="doc-stat-lbl">Wajib Disiapkan Teknis (SM)</div>
+                <div class="doc-stat-lbl">Wajib Disiapkan Teknis / Umum</div>
             </div>
         </div>
         <div class="doc-stat-card">
@@ -715,7 +959,7 @@
                 <label class="filter-label-doc">Pihak / Assignee</label>
                 <select name="assignee" class="form-control-doc" onchange="this.form.submit()">
                     <option value="">-- Semua Pihak --</option>
-                    <option value="SM" {{ request('assignee') === 'SM' ? 'selected' : '' }}>SM (Teknis)</option>
+                    <option value="SM" {{ request('assignee') === 'SM' ? 'selected' : '' }}>SM (Teknis/Umum)</option>
                     <option value="Bendahara" {{ request('assignee') === 'Bendahara' ? 'selected' : '' }}>Bendahara</option>
                     <option value="PPK" {{ request('assignee') === 'PPK' ? 'selected' : '' }}>PPK</option>
                 </select>
@@ -741,14 +985,34 @@
         </form>
     </div>
 
-    <!-- 4. TABEL PERSYARATAN DIKELOMPOKKAN PER JENIS BELANJA (TIDAK DOBLE-DOBLE) -->
-    <div class="belanja-groups-wrapper">
+    <!-- VIEW CONTROL & TOGGLE BAR (OPSI TAMPILAN KARTU vs TABEL EXCEL) -->
+    <div class="view-control-bar">
+        <div style="font-size: 13.5px; font-weight: 700; color: var(--dash-slate-700); display: flex; align-items: center; gap: 8px;">
+            <span>Daftar Dokumen Persyaratan</span>
+            <span style="font-size: 11px; font-weight: 600; color: var(--dash-slate-500); background: #f1f5f9; padding: 2px 8px; border-radius: 9999px;">
+                {{ $groupedDokumens->count() }} Jenis Belanja Ditemukan
+            </span>
+        </div>
+
+        <div class="view-mode-switcher">
+            <button type="button" class="btn-view-mode active" id="btnViewCards" onclick="switchViewMode('cards')" title="Tampilan Kartu Kelompok Modern">
+                <i class="bi bi-grid-fill"></i> Tampilan Kartu
+            </button>
+            <button type="button" class="btn-view-mode" id="btnViewTable" onclick="switchViewMode('table')" title="Tampilan Tabel Rinci / Excel">
+                <i class="bi bi-table"></i> Tampilan Tabel Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- 4A. TAMPILAN KARTU KELOMPOK (BENTUK BEGITU) -->
+    <div id="containerViewCards" class="belanja-groups-wrapper">
         @forelse($groupedDokumens as $groupKey => $docs)
             @php
                 $first = $docs->first();
                 $namaBelanja = $first->nama_belanja;
                 $jenisBelanja = $first->jenis_belanja;
                 $peruntukanVal = $first->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
+                $groupKeyId = md5($namaBelanja . '|||' . $jenisBelanja);
 
                 $akunKode = '52';
                 if (str_contains($namaBelanja, '51')) $akunKode = '51';
@@ -759,19 +1023,48 @@
                     <div class="belanja-header-left">
                         <span class="badge-akun-kode akun-{{ $akunKode }}">{{ $namaBelanja }}</span>
                         <h3 class="jenis-belanja-title">{{ $jenisBelanja }}</h3>
-                        @if($peruntukanVal === 'umum')
-                            <span class="badge-peruntukan umum" title="Khusus Form Pengajuan Subbagian Umum (Akun 51 & 53)">
-                                <i class="bi bi-building"></i> Khusus Umum
-                            </span>
-                        @elseif($peruntukanVal === 'teknis')
-                            <span class="badge-peruntukan teknis" title="Khusus Form Pengajuan Staf Teknis">
-                                <i class="bi bi-laptop"></i> Khusus Teknis
-                            </span>
-                        @else
-                            <span class="badge-peruntukan semua" title="Dua-duanya: Berlaku untuk Teknis dan Subbag Umum">
-                                <i class="bi bi-people-fill"></i> Dua-duanya
-                            </span>
-                        @endif
+                        
+                        <!-- TOMBOL PERUNTUKAN INTERAKTIF -->
+                        <div class="peruntukan-dropdown-wrapper" data-group-wrapper="{{ $groupKeyId }}">
+                            <button type="button" class="btn-peruntukan-toggle {{ $peruntukanVal }}" data-group-btn="{{ $groupKeyId }}" onclick="togglePeruntukanDropdown(event, this)" title="Klik untuk ubah peruntukan semua berkas sekaligus (kecuali Bendahara)">
+                                <span class="peruntukan-current-label">
+                                    @if($peruntukanVal === 'umum')
+                                        <i class="bi bi-building"></i> Khusus Umum
+                                    @elseif($peruntukanVal === 'teknis')
+                                        <i class="bi bi-laptop"></i> Khusus Teknis
+                                    @else
+                                        <i class="bi bi-people-fill"></i> Dua-duanya
+                                    @endif
+                                </span>
+                                <i class="bi bi-chevron-down" style="font-size: 10px; margin-left: 3px;"></i>
+                            </button>
+                            <div class="peruntukan-menu-dropdown">
+                                <div class="dropdown-header-title">Ubah Peruntukan Belanja</div>
+                                <div class="dropdown-header-desc">Semua berkas otomatis mengikuti, kecuali berkas yang disiapkan Bendahara.</div>
+                                <button type="button" class="dropdown-item-peruntukan {{ $peruntukanVal === 'semua' ? 'active' : '' }}" onclick="changeGroupPeruntukan('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', 'semua', this, '{{ $groupKeyId }}')">
+                                    <i class="bi bi-people-fill" style="color: #059669; font-size: 16px;"></i>
+                                    <div>
+                                        <strong>Dua-duanya (Teknis &amp; Umum)</strong>
+                                        <small>Berlaku untuk Tim Teknis dan Subbag Umum</small>
+                                    </div>
+                                </button>
+                                <button type="button" class="dropdown-item-peruntukan {{ $peruntukanVal === 'teknis' ? 'active' : '' }}" onclick="changeGroupPeruntukan('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', 'teknis', this, '{{ $groupKeyId }}')">
+                                    <i class="bi bi-laptop" style="color: #2563eb; font-size: 16px;"></i>
+                                    <div>
+                                        <strong>Khusus Staf Teknis</strong>
+                                        <small>Hanya tampil pada formulir Tim Teknis</small>
+                                    </div>
+                                </button>
+                                <button type="button" class="dropdown-item-peruntukan {{ $peruntukanVal === 'umum' ? 'active' : '' }}" onclick="changeGroupPeruntukan('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', 'umum', this, '{{ $groupKeyId }}')">
+                                    <i class="bi bi-building" style="color: #7c3aed; font-size: 16px;"></i>
+                                    <div>
+                                        <strong>Khusus Subbag Umum</strong>
+                                        <small>Hanya tampil pada formulir Subbag Umum</small>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
                         <span class="badge-doc-count"><i class="bi bi-file-earmark-text"></i> {{ $docs->count() }} Dokumen</span>
                     </div>
                     <div>
@@ -805,8 +1098,8 @@
                                 </td>
                                 <td style="text-align: center;">
                                     @if($doc->assignee === 'SM')
-                                        <span class="badge-assignee sm" title="Wajib disediakan oleh pengaju kegiatan / SM">
-                                            <i class="bi bi-person-check-fill"></i> Disiapkan Teknis (SM)
+                                        <span class="badge-assignee sm" title="Wajib disediakan oleh pengaju kegiatan">
+                                            <i class="bi bi-person-check-fill"></i> Disiapkan Teknis / Umum (SM)
                                         </span>
                                     @elseif($doc->assignee === 'Bendahara')
                                         <span class="badge-assignee bendahara" title="Diverifikasi dan dilengkapi oleh Bendahara Pengeluaran">
@@ -846,6 +1139,160 @@
                 <p style="margin: 0; font-size: 13px;">Silakan sesuaikan kata kunci filter atau klik tombol "Tambah Dokumen / Jenis Belanja Baru" di atas.</p>
             </div>
         @endforelse
+    </div>
+
+    <!-- 4B. TAMPILAN TABEL EXCEL RINGKAS (PERSIS BENTUK SEPERTI GAMBAR DARI USER) -->
+    <div id="containerViewTable" class="excel-table-container" style="display: none;">
+        <table class="excel-doc-table">
+            <thead>
+                <tr>
+                    <th class="th-nama-belanja" style="width: 22%;">Nama Belanja</th>
+                    <th class="th-jenis-belanja" style="width: 20%;">Jenis Belanja</th>
+                    <th class="th-dokumen">Dokumen Wajib</th>
+                    <th class="th-penanggungjawab" style="width: 14%;">Penanggungjawab</th>
+                    <th class="th-peruntukan" style="width: 17%;">Peruntukan</th>
+                    <th class="th-aksi" style="width: 80px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($groupedByNamaBelanja as $namaBelanja => $jenisBelanjaGroup)
+                    @php
+                        $totalRowsNama = $jenisBelanjaGroup->sum(fn($docs) => $docs->count());
+                        $isFirstNamaRow = true;
+
+                        $akunKode = '52';
+                        if (str_contains($namaBelanja, '51')) $akunKode = '51';
+                        elseif (str_contains($namaBelanja, '53')) $akunKode = '53';
+                    @endphp
+
+                    @foreach($jenisBelanjaGroup as $jenisBelanja => $docs)
+                        @php
+                            $totalRowsJenis = $docs->count();
+                            $isFirstJenisRow = true;
+                            $firstDoc = $docs->first();
+                            $peruntukanVal = $firstDoc->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
+                            $groupKeyId = md5($namaBelanja . '|||' . $jenisBelanja);
+                        @endphp
+
+                        @foreach($docs as $doc)
+                            <tr>
+                                @if($isFirstNamaRow)
+                                    <td rowspan="{{ $totalRowsNama }}" class="excel-cell-nama-belanja">
+                                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                                            <span class="badge-akun-kode akun-{{ $akunKode }}" style="align-self: flex-start;">
+                                                {{ $namaBelanja }}
+                                            </span>
+                                            <span style="font-size: 11px; color: var(--dash-slate-500);">
+                                                {{ $jenisBelanjaGroup->count() }} Jenis Belanja ({{ $totalRowsNama }} Dokumen)
+                                            </span>
+                                        </div>
+                                    </td>
+                                    @php $isFirstNamaRow = false; @endphp
+                                @endif
+
+                                @if($isFirstJenisRow)
+                                    <td rowspan="{{ $totalRowsJenis }}" class="excel-cell-jenis-belanja">
+                                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                                            <strong style="color: #0f172a; font-size: 13.5px;">{{ $jenisBelanja }}</strong>
+                                            <button type="button" class="btn-quick-add" style="align-self: flex-start; padding: 4px 10px; font-size: 11px;" onclick="openAddDocForGroup('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', '{{ $peruntukanVal }}')">
+                                                <i class="bi bi-plus-lg"></i> + Dokumen
+                                            </button>
+                                        </div>
+                                    </td>
+                                @endif
+
+                                <td class="excel-cell-dokumen">
+                                    <span style="font-weight: 600; color: #1e293b;">{{ $doc->nama_dokumen }}</span>
+                                    <span style="font-size: 10.5px; color: var(--dash-slate-500); margin-left: 6px;">(Urutan #{{ $doc->urutan }})</span>
+                                </td>
+
+                                <td class="excel-cell-assignee">
+                                    @if($doc->assignee === 'SM')
+                                        <span class="badge-assignee sm" style="font-size: 11px;">
+                                            <i class="bi bi-person-check-fill"></i> SM
+                                        </span>
+                                    @elseif($doc->assignee === 'Bendahara')
+                                        <span class="badge-assignee bendahara" style="font-size: 11px;">
+                                            <i class="bi bi-cash-coin"></i> Bendahara
+                                        </span>
+                                    @else
+                                        <span class="badge-assignee ppk" style="font-size: 11px;">
+                                            <i class="bi bi-shield-check"></i> PPK
+                                        </span>
+                                    @endif
+                                </td>
+
+                                @if($isFirstJenisRow)
+                                    <td rowspan="{{ $totalRowsJenis }}" class="excel-cell-peruntukan">
+                                        <!-- Tombol Peruntukan Dropdown (Sama seperti di Card View) -->
+                                        <div class="peruntukan-dropdown-wrapper" data-group-wrapper="{{ $groupKeyId }}">
+                                            <button type="button" class="btn-peruntukan-toggle {{ $peruntukanVal }}" data-group-btn="{{ $groupKeyId }}" onclick="togglePeruntukanDropdown(event, this)" title="Klik untuk ubah peruntukan semua berkas (kecuali Bendahara)">
+                                                <span class="peruntukan-current-label">
+                                                    @if($peruntukanVal === 'umum')
+                                                        <i class="bi bi-building"></i> Khusus Umum
+                                                    @elseif($peruntukanVal === 'teknis')
+                                                        <i class="bi bi-laptop"></i> Khusus Teknis
+                                                    @else
+                                                        <i class="bi bi-people-fill"></i> Dua-duanya
+                                                    @endif
+                                                </span>
+                                                <i class="bi bi-chevron-down" style="font-size: 10px; margin-left: 3px;"></i>
+                                            </button>
+                                            <div class="peruntukan-menu-dropdown">
+                                                <div class="dropdown-header-title">Ubah Peruntukan Belanja</div>
+                                                <div class="dropdown-header-desc">Semua berkas otomatis mengikuti, kecuali berkas Bendahara.</div>
+                                                <button type="button" class="dropdown-item-peruntukan {{ $peruntukanVal === 'semua' ? 'active' : '' }}" onclick="changeGroupPeruntukan('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', 'semua', this, '{{ $groupKeyId }}')">
+                                                    <i class="bi bi-people-fill" style="color: #059669; font-size: 16px;"></i>
+                                                    <div>
+                                                        <strong>Dua-duanya (Teknis &amp; Umum)</strong>
+                                                        <small>Berlaku untuk Tim Teknis dan Subbag Umum</small>
+                                                    </div>
+                                                </button>
+                                                <button type="button" class="dropdown-item-peruntukan {{ $peruntukanVal === 'teknis' ? 'active' : '' }}" onclick="changeGroupPeruntukan('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', 'teknis', this, '{{ $groupKeyId }}')">
+                                                    <i class="bi bi-laptop" style="color: #2563eb; font-size: 16px;"></i>
+                                                    <div>
+                                                        <strong>Khusus Staf Teknis</strong>
+                                                        <small>Hanya tampil pada formulir Tim Teknis</small>
+                                                    </div>
+                                                </button>
+                                                <button type="button" class="dropdown-item-peruntukan {{ $peruntukanVal === 'umum' ? 'active' : '' }}" onclick="changeGroupPeruntukan('{{ addslashes($namaBelanja) }}', '{{ addslashes($jenisBelanja) }}', 'umum', this, '{{ $groupKeyId }}')">
+                                                    <i class="bi bi-building" style="color: #7c3aed; font-size: 16px;"></i>
+                                                    <div>
+                                                        <strong>Khusus Subbag Umum</strong>
+                                                        <small>Hanya tampil pada formulir Subbag Umum</small>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    @php $isFirstJenisRow = false; @endphp
+                                @endif
+
+                                <td class="excel-cell-aksi">
+                                    <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModal({{ json_encode($doc) }})">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <form action="{{ route('admin.syarat-dokumen.destroy', $doc->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Hapus dokumen \'{{ addslashes($doc->nama_dokumen) }}\'?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action-icon delete" title="Hapus Dokumen">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 36px; color: var(--dash-slate-500);">
+                            <i class="bi bi-inbox" style="font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.5;"></i>
+                            Tidak ada dokumen persyaratan ditemukan.
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
 </div>
@@ -896,7 +1343,7 @@
                         <option value="umum">Khusus Subbag Umum (Contoh: Akun 51 &amp; Akun 53)</option>
                         <option value="teknis">Khusus Staf Teknis</option>
                     </select>
-                    <div class="form-help-modal">Akun 51 (Pegawai) &amp; Akun 53 (Modal) otomatis disarankan khusus Umum, Akun 52 untuk dua-duanya.</div>
+                    <div class="form-help-modal">Dokumen pengaju otomatis menyesuaikan peruntukan ini. Berkas Bendahara tetap bertugas sebagai Bendahara.</div>
                 </div>
 
                 <!-- DAFTAR DOKUMEN MULTI-INPUT (BISA BANYAK DENGAN TANDA PLUS) -->
@@ -908,7 +1355,7 @@
                         <span style="font-size: 11px; color: var(--dash-slate-500);">Bisa tambah banyak sekaligus via tombol (+)</span>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 170px 75px 36px; gap: 8px; padding: 0 10px 4px 10px; font-size: 11px; font-weight: 700; color: var(--dash-slate-500); text-transform: uppercase;">
+                    <div style="display: grid; grid-template-columns: 1fr 180px 75px 36px; gap: 8px; padding: 0 10px 4px 10px; font-size: 11px; font-weight: 700; color: var(--dash-slate-500); text-transform: uppercase;">
                         <span>Nama Dokumen</span>
                         <span>Pihak Penyiap</span>
                         <span style="text-align: center;">Urutan</span>
@@ -920,7 +1367,7 @@
                         <div class="doc-input-row" data-row-index="0">
                             <input type="text" name="dokumen[0][nama_dokumen]" class="form-control-doc" placeholder="Contoh: KAK / Laporan / BAST" required>
                             <select name="dokumen[0][assignee]" class="form-control-doc" required>
-                                <option value="SM" selected>SM (Teknis)</option>
+                                <option value="SM" selected>SM (Teknis / Umum)</option>
                                 <option value="Bendahara">Bendahara</option>
                                 <option value="PPK">PPK</option>
                             </select>
@@ -991,7 +1438,7 @@
                 <div class="form-group-modal">
                     <label class="form-label-modal">Pihak yang Menyiapkan / Bertanggung Jawab <span style="color: #ef4444;">*</span></label>
                     <select name="assignee" id="edit_assignee" class="form-control-doc" required>
-                        <option value="SM">SM (Wajib Disiapkan Teknis / Pelaksana Kegiatan)</option>
+                        <option value="SM">SM (Wajib Disiapkan Teknis / Subbag Umum)</option>
                         <option value="Bendahara">Bendahara (Dilengkapi Bendahara - Pajak/Transfer)</option>
                         <option value="PPK">PPK (Verifikasi Komitmen Anggaran)</option>
                     </select>
@@ -1018,6 +1465,178 @@
 <script>
     let nextRowIndex = 1;
 
+    // 1. SWITCH TAMPILAN (KARTU vs TABEL EXCEL)
+    function switchViewMode(mode) {
+        const containerCards = document.getElementById('containerViewCards');
+        const containerTable = document.getElementById('containerViewTable');
+        const btnCards = document.getElementById('btnViewCards');
+        const btnTable = document.getElementById('btnViewTable');
+
+        if (mode === 'table') {
+            if (containerCards) containerCards.style.display = 'none';
+            if (containerTable) containerTable.style.display = 'block';
+            if (btnCards) btnCards.classList.remove('active');
+            if (btnTable) btnTable.classList.add('active');
+            localStorage.setItem('spj_syarat_view_mode', 'table');
+        } else {
+            if (containerCards) containerCards.style.display = 'flex';
+            if (containerTable) containerTable.style.display = 'none';
+            if (btnCards) btnCards.classList.add('active');
+            if (btnTable) btnTable.classList.remove('active');
+            localStorage.setItem('spj_syarat_view_mode', 'cards');
+        }
+    }
+
+    // 2. TOGGLE DROPDOWN PERUNTUKAN
+    function togglePeruntukanDropdown(event, button) {
+        event.stopPropagation();
+        const wrapper = button.closest('.peruntukan-dropdown-wrapper');
+        const dropdown = wrapper ? wrapper.querySelector('.peruntukan-menu-dropdown') : null;
+
+        // Tutup dropdown lain yang sedang terbuka
+        document.querySelectorAll('.peruntukan-menu-dropdown.show').forEach(el => {
+            if (el !== dropdown) el.classList.remove('show');
+        });
+
+        if (dropdown) {
+            dropdown.classList.toggle('show');
+        }
+    }
+
+    // 3. UBAH PERUNTUKAN KELOMPOK (KECUALI BERKAS BENDAHARA)
+    function changeGroupPeruntukan(namaBelanja, jenisBelanja, newPeruntukan, itemEl, groupKeyId) {
+        const dropdown = itemEl.closest('.peruntukan-menu-dropdown');
+        const wrapper = itemEl.closest('.peruntukan-dropdown-wrapper');
+        const toggleBtn = wrapper ? wrapper.querySelector('.btn-peruntukan-toggle') : null;
+
+        if (toggleBtn) {
+            toggleBtn.style.opacity = '0.5';
+            toggleBtn.style.pointerEvents = 'none';
+        }
+
+        fetch("{{ route('admin.syarat-dokumen.update-peruntukan-group') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({
+                nama_belanja: namaBelanja,
+                jenis_belanja: jenisBelanja,
+                peruntukan: newPeruntukan
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (toggleBtn) {
+                toggleBtn.style.opacity = '1';
+                toggleBtn.style.pointerEvents = 'auto';
+            }
+            if (dropdown) dropdown.classList.remove('show');
+
+            if (data.success) {
+                // Perbarui semua badge/tombol di Card View dan Table View yang memiliki groupKeyId sama
+                updatePeruntukanUI(groupKeyId, newPeruntukan, data.label);
+                showToastNotification(data.message, 'success');
+            } else {
+                showToastNotification(data.message || 'Gagal mengubah peruntukan.', 'error');
+            }
+        })
+        .catch(err => {
+            if (toggleBtn) {
+                toggleBtn.style.opacity = '1';
+                toggleBtn.style.pointerEvents = 'auto';
+            }
+            if (dropdown) dropdown.classList.remove('show');
+            showToastNotification('Terjadi kendala jaringan saat memperbarui peruntukan.', 'error');
+        });
+    }
+
+    function updatePeruntukanUI(groupKeyId, peruntukan, label) {
+        const wrappers = document.querySelectorAll(`[data-group-wrapper="${groupKeyId}"]`);
+        
+        let iconHtml = '<i class="bi bi-people-fill"></i> Dua-duanya';
+        if (peruntukan === 'umum') {
+            iconHtml = '<i class="bi bi-building"></i> Khusus Umum';
+        } else if (peruntukan === 'teknis') {
+            iconHtml = '<i class="bi bi-laptop"></i> Khusus Teknis';
+        }
+
+        wrappers.forEach(wrap => {
+            const btn = wrap.querySelector('.btn-peruntukan-toggle');
+            if (btn) {
+                btn.className = `btn-peruntukan-toggle ${peruntukan}`;
+                const labelSpan = btn.querySelector('.peruntukan-current-label');
+                if (labelSpan) {
+                    labelSpan.innerHTML = iconHtml;
+                }
+            }
+
+            // Update item active class
+            wrap.querySelectorAll('.dropdown-item-peruntukan').forEach(item => {
+                if (item.onclick.toString().includes(`'${peruntukan}'`)) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        });
+    }
+
+    // 4. TOAST NOTIFIKASI REAL-TIME
+    function showToastNotification(message, type = 'success') {
+        let container = document.getElementById('toastNoticeContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toastNoticeContainer';
+            container.style.cssText = 'position: fixed; top: 24px; right: 24px; z-index: 999999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;';
+            document.body.appendChild(container);
+        }
+
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            pointer-events: auto;
+            min-width: 300px;
+            max-width: 460px;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: ${type === 'success' ? '#065f46' : '#991b1b'};
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.22);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.25s ease;
+        `;
+        const icon = type === 'success' ? 'bi-check-circle-fill' : 'bi-exclamation-triangle-fill';
+        toast.innerHTML = `
+            <i class="bi ${icon}" style="font-size: 20px; color: #a7f3d0; flex-shrink: 0;"></i>
+            <div style="flex: 1; line-height: 1.45;">${message}</div>
+            <button type="button" style="background: none; border: none; color: #ffffff; cursor: pointer; opacity: 0.8; font-size: 16px; padding: 0 0 0 6px;" onclick="this.parentElement.remove()">&times;</button>
+        `;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(-10px)';
+            setTimeout(() => toast.remove(), 250);
+        }, 4000);
+    }
+
+    // Tutup dropdown saat klik di luar
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.peruntukan-dropdown-wrapper')) {
+            document.querySelectorAll('.peruntukan-menu-dropdown.show').forEach(el => {
+                el.classList.remove('show');
+            });
+        }
+        if (e.target.id === 'modalAddDoc') closeAddDocModal();
+        if (e.target.id === 'modalEditDoc') closeEditDocModal();
+    });
+
     function detectPeruntukanFromText(text) {
         if (!text) return null;
         if (/\(51\d*\)/i.test(text) || /\(53\d*\)/i.test(text) || /\b51\d{4}\b/.test(text) || /\b53\d{4}\b/.test(text)) {
@@ -1037,7 +1656,7 @@
             hint.textContent = `${count} dokumen siap disimpan`;
         }
 
-        rows.forEach((row, idx) => {
+        rows.forEach((row) => {
             const removeBtn = row.querySelector('.btn-remove-row');
             if (removeBtn) {
                 removeBtn.disabled = (count <= 1);
@@ -1056,7 +1675,7 @@
         rowDiv.innerHTML = `
             <input type="text" name="dokumen[${nextRowIndex}][nama_dokumen]" class="form-control-doc" placeholder="Nama dokumen persyaratan" required>
             <select name="dokumen[${nextRowIndex}][assignee]" class="form-control-doc" required>
-                <option value="SM" selected>SM (Teknis)</option>
+                <option value="SM" selected>SM (Teknis / Umum)</option>
                 <option value="Bendahara">Bendahara</option>
                 <option value="PPK">PPK</option>
             </select>
@@ -1069,7 +1688,6 @@
         nextRowIndex++;
         updateRowCounters();
 
-        // Focus input baru
         const firstInput = rowDiv.querySelector('input[type="text"]');
         if (firstInput) firstInput.focus();
     }
@@ -1147,8 +1765,11 @@
         document.getElementById('modalEditDoc').style.display = 'none';
     }
 
-    // Auto-detect peruntukan saat mengetik nama belanja baru
     document.addEventListener('DOMContentLoaded', function() {
+        // Pulihkan preferensi tampilan (Cards vs Excel Table)
+        const savedView = localStorage.getItem('spj_syarat_view_mode') || 'cards';
+        switchViewMode(savedView);
+
         const addInput = document.getElementById('add_input_nama_belanja');
         if (addInput) {
             addInput.addEventListener('input', function() {
@@ -1170,12 +1791,6 @@
         }
 
         updateRowCounters();
-    });
-
-    // Close modal when clicking backdrop
-    window.addEventListener('click', function(e) {
-        if (e.target.id === 'modalAddDoc') closeAddDocModal();
-        if (e.target.id === 'modalEditDoc') closeEditDocModal();
     });
 </script>
 @endpush

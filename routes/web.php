@@ -54,6 +54,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Syarat Dokumen SPJ (Kelola Dokumen Persyaratan per Jenis Belanja)
     Route::get('/syarat-dokumen', [SyaratDokumenController::class, 'index'])->name('syarat-dokumen.index');
     Route::post('/syarat-dokumen', [SyaratDokumenController::class, 'store'])->name('syarat-dokumen.store');
+    Route::post('/syarat-dokumen/update-peruntukan-group', [SyaratDokumenController::class, 'updatePeruntukanGroup'])->name('syarat-dokumen.update-peruntukan-group');
     Route::put('/syarat-dokumen/{syaratDokumen}', [SyaratDokumenController::class, 'update'])->name('syarat-dokumen.update');
     Route::delete('/syarat-dokumen/{syaratDokumen}', [SyaratDokumenController::class, 'destroy'])->name('syarat-dokumen.destroy');
 

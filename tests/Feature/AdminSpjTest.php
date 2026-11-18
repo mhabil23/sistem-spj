@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Spj;
 use App\Models\SpjHistory;
+use App\Models\SyaratDokumenSpj;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -207,6 +208,92 @@ class AdminSpjTest extends TestCase
             'nama_dokumen' => 'Bukti Transfer Multi B',
             'assignee' => 'Bendahara',
         ]);
+    }
+
+    public function test_admin_can_update_peruntukan_for_entire_group_except_bendahara(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+
+        $docTeknis1 = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'nama_dokumen' => 'Surat Tugas Pengajar',
+            'assignee' => 'SM',
+            'peruntukan' => 'semua',
+            'urutan' => 1,
+        ]);
+
+        $docTeknis2 = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'nama_dokumen' => 'Daftar Hadir Mengajar',
+            'assignee' => 'SM',
+            'peruntukan' => 'semua',
+            'urutan' => 2,
+        ]);
+
+        $docBendahara = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'nama_dokumen' => 'Bukti Potong PPh 21',
+            'assignee' => 'Bendahara',
+            'peruntukan' => 'semua',
+            'urutan' => 3,
+        ]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.syarat-dokumen.update-peruntukan-group'), [
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'peruntukan' => 'umum',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+            'peruntukan' => 'umum',
+            'updated_count' => 2,
+        ]);
+
+        $docTeknis1->refresh();
+        $docTeknis2->refresh();
+        $docBendahara->refresh();
+
+        // Non-Bendahara docs follow the new peruntukan
+        $this->assertEquals('umum', $docTeknis1->peruntukan);
+        $this->assertEquals('umum', $docTeknis2->peruntukan);
+
+        // Bendahara docs remain 'semua' (safe for both)
+        $this->assertEquals('semua', $docBendahara->peruntukan);
+        $this->assertEquals('Bendahara', $docBendahara->assignee);
+    }
+
+    public function test_admin_syarat_dokumen_index_renders_both_cards_and_excel_table(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+
+        SyaratDokumenSpj::create([
+            'nama_belanja' => 'Belanja Bahan (521211)',
+            'jenis_belanja' => 'Belanja Konsumsi',
+            'nama_dokumen' => 'Undangan Rapat Konsumsi',
+            'assignee' => 'SM',
+            'peruntukan' => 'semua',
+            'urutan' => 1,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.syarat-dokumen.index'));
+        $response->assertStatus(200);
+
+        // Card View elements
+        $response->assertSee('containerViewCards');
+        $response->assertSee('Tampilan Kartu');
+
+        // Excel Table View elements
+        $response->assertSee('containerViewTable');
+        $response->assertSee('Tampilan Tabel Excel');
+        $response->assertSee('excel-doc-table');
+        $response->assertSee('Belanja Bahan (521211)');
+        $response->assertSee('Belanja Konsumsi');
+        $response->assertSee('Undangan Rapat Konsumsi');
     }
 
     public function test_admin_spj_index_and_dashboard_count_disetujui_ppspm_and_menunggu_otp_kpa_in_proses(): void
