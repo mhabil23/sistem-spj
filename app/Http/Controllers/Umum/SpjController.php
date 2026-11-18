@@ -102,6 +102,9 @@ class SpjController extends Controller
 
         $nomorSpj = $request->filled('nomor_spj') ? $request->nomor_spj : Spj::generateNomorSpj();
 
+        $namaBelanja = $request->input('nama_belanja');
+        $jenisBelanja = $request->input('jenis_belanja');
+
         $spj = Spj::create([
             'user_id' => Auth::id(),
             'nomor_spj' => $nomorSpj,
@@ -110,6 +113,9 @@ class SpjController extends Controller
             'tanggal_selesai' => $request->tanggal_selesai ?: null,
             'seksi' => $request->seksi ?: (Auth::user()->seksi ?? 'Subbag Umum'),
             'nilai' => $request->nilai,
+            'nama_belanja' => $namaBelanja,
+            'jenis_belanja' => $jenisBelanja,
+            'peruntukan' => 'umum',
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa ?: Auth::user()->no_wa,
             'status' => $request->status,
@@ -284,7 +290,7 @@ class SpjController extends Controller
         $wasDraftOrRevisi = $spj->status !== 'diajukan';
         $isRevisi = str_starts_with((string) $statusLama, 'revisi_') || $statusLama === 'dikembalikan';
 
-        $spj->update([
+        $updateData = [
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
@@ -298,7 +304,16 @@ class SpjController extends Controller
             'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
             'berkas_fisik_diterima_at' => $isRevisi && $request->status === 'diajukan' ? null : $spj->berkas_fisik_diterima_at,
             'pemeriksaan_dimulai_at' => $isRevisi && $request->status === 'diajukan' ? null : $spj->pemeriksaan_dimulai_at,
-        ]);
+        ];
+
+        if ($request->filled('nama_belanja')) {
+            $updateData['nama_belanja'] = $request->input('nama_belanja');
+        }
+        if ($request->filled('jenis_belanja')) {
+            $updateData['jenis_belanja'] = $request->input('jenis_belanja');
+        }
+
+        $spj->update($updateData);
 
         if ($request->status === 'diajukan' && $wasDraftOrRevisi) {
             if ($isRevisi) {

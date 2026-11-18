@@ -32,7 +32,7 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         // Memastikan belanja umum seperti belanja bahan ada
         $response->assertSee('Belanja Bahan (521211)');
 
-        // Memastikan seluruh Belanja Pegawai (51xx) dan Belanja Modal (53) tidak dapat dilihat oleh staf teknis
+        // Memastikan Belanja Pegawai internal kantor (511x, 5124, 512211) dan Belanja Modal (53) tidak dapat dilihat oleh staf teknis
         $response->assertDontSee('Belanja Gaji PNS (5111)');
         $response->assertDontSee('Belanja Gaji PPPK (5116)');
         $response->assertDontSee('Belanja Tunjangan Kinerja PNS (512411)');
@@ -40,8 +40,10 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $response->assertDontSee('Belanja Uang Makan PNS (511129)');
         $response->assertDontSee('Belanja Uang Makan PPPK (511628)');
         $response->assertDontSee('Belanja Lembur (512211)');
-        $response->assertDontSee('Honor output kegiatan (512213)');
         $response->assertDontSee('Belanja Modal (53)');
+
+        // Honor output kegiatan (512213) diperbolehkan untuk Teknis
+        $response->assertSee('Honor output kegiatan (512213)');
     }
 
     public function test_umum_can_see_belanja_pegawai_kode_51(): void
@@ -72,8 +74,8 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         $teknisData = SyaratDokumenSpj::getSpjData('teknis');
         $this->assertArrayNotHasKey('Belanja Gaji PNS (5111)', $teknisData);
         $this->assertArrayNotHasKey('Belanja Lembur (512211)', $teknisData);
-        $this->assertArrayNotHasKey('Honor output kegiatan (512213)', $teknisData);
         $this->assertArrayNotHasKey('Belanja Modal (53)', $teknisData);
+        $this->assertArrayHasKey('Honor output kegiatan (512213)', $teknisData);
         $this->assertArrayHasKey('Belanja Bahan (521211)', $teknisData);
 
         $umumData = SyaratDokumenSpj::getSpjData('umum');
@@ -203,5 +205,37 @@ class BelanjaPegawaiPeruntukanTest extends TestCase
         ]);
 
         $responseKode53->assertSessionHasErrors('nama_belanja');
+    }
+
+    public function test_teknis_can_submit_honor_output_kegiatan_512213(): void
+    {
+        $teknis = User::factory()->create([
+            'role' => 'teknis',
+            'status' => 'aktif',
+            'seksi' => 'IPDS',
+        ]);
+
+        $response = $this->actingAs($teknis)->post('/teknis/spj', [
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'kegiatan' => 'Honor Pengajar Pelatihan Daerah Sensus',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => '4.500.000',
+            'status' => 'draft',
+            'nama_dokumen' => ['0' => 'KAK'],
+            'assignee_dokumen' => ['0' => 'SM'],
+            'berkas' => ['0' => '1'],
+        ]);
+
+        $response->assertSessionDoesntHaveErrors();
+        $response->assertRedirect(route('teknis.spj.index'));
+
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Honor Pengajar Pelatihan Daerah Sensus',
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'user_id' => $teknis->id,
+            'nilai' => 4500000,
+        ]);
     }
 }

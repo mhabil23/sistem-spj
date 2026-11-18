@@ -60,13 +60,31 @@ class SyaratDokumenSpj extends Model
     }
 
     /**
-     * Tentukan peruntukan belanja berdasarkan kode akun:
-     * - Akun 51 (Belanja Pegawai): Hanya Subbag Umum ('umum')
+     * Tentukan peruntukan belanja berdasarkan kode akun atau konfigurasi database:
+     * - Honor output kegiatan (512213): Berlaku untuk Teknis dan Umum ('semua')
+     * - Belanja yang terdaftar di database akan menggunakan status peruntukan dari database
+     * - Akun 51 (Belanja Pegawai) & Akun 53 (Belanja Modal) bawaan: Subbag Umum ('umum')
      * - Akun 52 (Belanja Barang & Jasa): Teknis dan Umum ('semua')
-     * - Akun 53 (Belanja Modal): Hanya Subbag Umum ('umum')
      */
     public static function determinePeruntukanByKode(string $namaBelanja): string
     {
+        if (preg_match('/\(512213\)/', $namaBelanja) || str_contains(strtolower($namaBelanja), 'honor output')) {
+            return 'semua';
+        }
+
+        $existing = self::where('nama_belanja', $namaBelanja)->pluck('peruntukan')->unique();
+        if ($existing->isNotEmpty()) {
+            if ($existing->contains('semua') || ($existing->contains('teknis') && $existing->contains('umum'))) {
+                return 'semua';
+            }
+            if ($existing->contains('teknis')) {
+                return 'teknis';
+            }
+            if ($existing->contains('umum')) {
+                return 'umum';
+            }
+        }
+
         if (preg_match('/\(51\d*\)/', $namaBelanja) || preg_match('/\(53\d*\)/', $namaBelanja)) {
             return 'umum';
         }

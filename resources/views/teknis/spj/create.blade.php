@@ -365,16 +365,18 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                             <label class="spj-label" for="nama_belanja" style="margin-bottom: 0;">Nama Belanja (Kategori Akun) <span style="color: #ef4444;">*</span></label>
                             <span id="badge_akun_terpilih" class="spj-badge-auto" style="display: none; font-size: 11px;"></span>
                         </div>
-                        <!-- Kelompok Akun Belanja Khusus Teknis (Akun 52) -->
+                        <!-- Filter Chips Kelompok Akun Belanja -->
                         <div class="akun-filter-group" id="akun_filter_group">
-                            <span class="akun-chip active" style="cursor: default;" title="Kewenangan Staf Teknis: Belanja Barang & Jasa (Akun 52)">
-                                <span class="akun-dot dot-52"></span>Akun 52 (Barang &amp; Jasa)
-                            </span>
+                            <button type="button" class="akun-chip active" data-akun="all" onclick="setAkunFilter('all')">Semua Akun</button>
+                            <button type="button" class="akun-chip" data-akun="51" onclick="setAkunFilter('51')"><span class="akun-dot dot-51"></span>Akun 51 (Pegawai)</button>
+                            <button type="button" class="akun-chip" data-akun="52" onclick="setAkunFilter('52')"><span class="akun-dot dot-52"></span>Akun 52 (Barang &amp; Jasa)</button>
+                            <button type="button" class="akun-chip" data-akun="53" onclick="setAkunFilter('53')"><span class="akun-dot dot-53"></span>Akun 53 (Modal)</button>
                         </div>
                         <select id="nama_belanja" name="nama_belanja" class="spj-input" required onchange="handleNamaBelanjaChange()">
                             <option value="" disabled selected>Pilih Nama Belanja...</option>
                         </select>
-                        <span class="spj-field-hint">Kewenangan Staf Teknis: Belanja Barang &amp; Jasa (Akun 52). Akun 51 &amp; 53 diajukan oleh Subbag Umum.</span>
+                        <span class="spj-field-hint">Pilih kategori akun dan rincian belanja kegiatan yang diajukan.</span>
+                        @error('nama_belanja') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                     </div>
 
                     <div>
@@ -387,6 +389,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                             <option value="" disabled selected>Pilih Jenis Belanja...</option>
                         </select>
                         <span class="spj-field-hint">Spesifikasi jenis pengeluaran atau rincian kegiatan belanja.</span>
+                        @error('jenis_belanja') <span style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">{{ $message }}</span> @enderror
                     </div>
                 </div>
 

@@ -62,13 +62,26 @@ class SpjController extends Controller
         ]);
 
         if ($request->filled('nama_belanja')) {
-            $isUmum = SyaratDokumenSpj::where('nama_belanja', $request->nama_belanja)->where('peruntukan', 'umum')->exists()
-                || SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja) === 'umum';
+            $namaBelanja = $request->input('nama_belanja');
+            $jenisBelanja = $request->input('jenis_belanja');
 
-            if ($isUmum) {
-                return back()->withInput()->withErrors([
-                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51), Belanja Modal (53), atau belanja khusus Subbag Umum tidak dapat diajukan oleh Teknis.',
-                ]);
+            $docs = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+                ->when($jenisBelanja, fn ($q) => $q->where('jenis_belanja', $jenisBelanja))
+                ->get();
+
+            if ($docs->isNotEmpty()) {
+                $isAllowedForTeknis = $docs->contains(fn ($d) => in_array($d->peruntukan, ['teknis', 'semua']));
+                if (! $isAllowedForTeknis) {
+                    return back()->withInput()->withErrors([
+                        'nama_belanja' => "Jenis belanja '{$jenisBelanja}' pada '{$namaBelanja}' dikhususkan untuk Subbagian Umum dan tidak dapat diajukan oleh Staf Teknis.",
+                    ]);
+                }
+            } else {
+                if (SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja) === 'umum') {
+                    return back()->withInput()->withErrors([
+                        'nama_belanja' => 'Kategori belanja ini dikhususkan untuk Subbagian Umum dan tidak dapat diajukan oleh Staf Teknis.',
+                    ]);
+                }
             }
         }
 
@@ -105,6 +118,20 @@ class SpjController extends Controller
 
         $nomorSpj = $request->filled('nomor_spj') ? $request->nomor_spj : Spj::generateNomorSpj();
 
+        $namaBelanja = $request->input('nama_belanja');
+        $jenisBelanja = $request->input('jenis_belanja');
+
+        // Deteksi peruntukan dari syarat dokumen atau default teknis
+        $peruntukan = 'teknis';
+        if ($namaBelanja && $jenisBelanja) {
+            $matchedDoc = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+                ->where('jenis_belanja', $jenisBelanja)
+                ->first();
+            if ($matchedDoc && in_array($matchedDoc->peruntukan, ['teknis', 'umum', 'semua'])) {
+                $peruntukan = $matchedDoc->peruntukan === 'semua' ? 'teknis' : $matchedDoc->peruntukan;
+            }
+        }
+
         $spj = Spj::create([
             'user_id' => Auth::id(),
             'nomor_spj' => $nomorSpj,
@@ -113,6 +140,9 @@ class SpjController extends Controller
             'tanggal_selesai' => $request->tanggal_selesai ?: null,
             'seksi' => $request->filled('seksi') ? $request->seksi : (Auth::user()->seksi ?: Auth::user()->name),
             'nilai' => $request->nilai,
+            'nama_belanja' => $namaBelanja,
+            'jenis_belanja' => $jenisBelanja,
+            'peruntukan' => $peruntukan,
             'keterangan' => $request->keterangan,
             'no_wa' => $request->no_wa,
             'status' => $request->status,
@@ -195,13 +225,26 @@ class SpjController extends Controller
         ]);
 
         if ($request->filled('nama_belanja')) {
-            $isUmum = SyaratDokumenSpj::where('nama_belanja', $request->nama_belanja)->where('peruntukan', 'umum')->exists()
-                || SyaratDokumenSpj::determinePeruntukanByKode((string) $request->nama_belanja) === 'umum';
+            $namaBelanja = $request->input('nama_belanja');
+            $jenisBelanja = $request->input('jenis_belanja');
 
-            if ($isUmum) {
-                return back()->withInput()->withErrors([
-                    'nama_belanja' => 'Staf Teknis hanya diperbolehkan mengajukan Belanja Barang & Jasa (Akun 52). Belanja Pegawai (51), Belanja Modal (53), atau belanja khusus Subbag Umum tidak dapat diajukan oleh Teknis.',
-                ]);
+            $docs = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+                ->when($jenisBelanja, fn ($q) => $q->where('jenis_belanja', $jenisBelanja))
+                ->get();
+
+            if ($docs->isNotEmpty()) {
+                $isAllowedForTeknis = $docs->contains(fn ($d) => in_array($d->peruntukan, ['teknis', 'semua']));
+                if (! $isAllowedForTeknis) {
+                    return back()->withInput()->withErrors([
+                        'nama_belanja' => "Jenis belanja '{$jenisBelanja}' pada '{$namaBelanja}' dikhususkan untuk Subbagian Umum dan tidak dapat diajukan oleh Staf Teknis.",
+                    ]);
+                }
+            } else {
+                if (SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja) === 'umum') {
+                    return back()->withInput()->withErrors([
+                        'nama_belanja' => 'Kategori belanja ini dikhususkan untuk Subbagian Umum dan tidak dapat diajukan oleh Staf Teknis.',
+                    ]);
+                }
             }
         }
 
@@ -256,7 +299,7 @@ class SpjController extends Controller
         $wasDraftOrRevisi = $spj->status !== 'diajukan';
         $isRevisi = str_starts_with((string) $statusLama, 'revisi_') || $statusLama === 'dikembalikan';
 
-        $spj->update([
+        $updateData = [
             'nomor_spj' => $nomorSpj,
             'kegiatan' => $request->kegiatan,
             'tanggal' => $request->tanggal,
@@ -270,7 +313,16 @@ class SpjController extends Controller
             'diajukan_at' => $request->status === 'diajukan' && $spj->status !== 'diajukan' ? now() : $spj->diajukan_at,
             'berkas_fisik_diterima_at' => $isRevisi && $request->status === 'diajukan' ? null : $spj->berkas_fisik_diterima_at,
             'pemeriksaan_dimulai_at' => $isRevisi && $request->status === 'diajukan' ? null : $spj->pemeriksaan_dimulai_at,
-        ]);
+        ];
+
+        if ($request->filled('nama_belanja')) {
+            $updateData['nama_belanja'] = $request->input('nama_belanja');
+        }
+        if ($request->filled('jenis_belanja')) {
+            $updateData['jenis_belanja'] = $request->input('jenis_belanja');
+        }
+
+        $spj->update($updateData);
 
         if ($request->status === 'diajukan' && $wasDraftOrRevisi) {
             if ($isRevisi) {
