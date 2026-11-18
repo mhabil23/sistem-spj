@@ -582,31 +582,40 @@
     .btn-action-icon.delete { color: #dc2626; }
     .btn-action-icon.delete:hover { background: #fee2e2; }
 
-    /* 4B. TAMPILAN TABEL EXCEL RINGKAS (PERSIS BENTUK SEPERTI GAMBAR DARI USER) */
+    /* 4B. TAMPILAN TABEL EXCEL RINGKAS (FLEKSIBEL 100% UNTUK SEMUA RESOLUSI DESKTOP TANPA PERLU DIGESER) */
     .excel-table-container {
         background: #ffffff;
         border-radius: var(--dash-radius-xl);
         border: 1.5px solid #334155;
         box-shadow: 0 4px 14px rgba(8, 32, 82, 0.06);
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
         overflow-x: auto;
     }
 
     .excel-doc-table {
         width: 100%;
+        min-width: 100%;
+        table-layout: fixed; /* Kunci fleksibilitas: Kolom terkontrol 100% dan tidak melebar keluar batas layar */
         border-collapse: collapse;
-        font-size: 12.5px;
+        font-size: 11.5px;
         color: #0f172a;
+        box-sizing: border-box;
     }
 
     .excel-doc-table th {
         background: #d1fae5;
         color: #064e3b;
         font-weight: 800;
-        font-size: 12px;
-        padding: 10px 14px;
+        font-size: 11.5px;
+        padding: 9px 6px;
         border: 1px solid #334155;
         text-align: center;
         letter-spacing: 0.2px;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
         white-space: nowrap;
     }
 
@@ -636,9 +645,11 @@
 
     .excel-doc-table td {
         border: 1px solid #334155;
-        padding: 7px 12px;
+        padding: 6px 8px;
         vertical-align: middle;
         background: #ffffff;
+        box-sizing: border-box;
+        font-size: 11.5px;
     }
 
     .excel-doc-table tr:hover td {
@@ -649,8 +660,12 @@
         font-weight: 800;
         color: var(--bps-navy);
         background: #ffffff !important;
-        font-size: 13px;
+        font-size: 11.5px;
         vertical-align: middle !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        line-height: 1.35;
     }
 
     .excel-cell-jenis-belanja {
@@ -658,29 +673,69 @@
         color: #1e293b;
         background: #ffffff !important;
         vertical-align: middle !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        line-height: 1.35;
     }
 
     .excel-cell-dokumen {
         font-weight: 500;
         color: #0f172a;
         background: #ffffff;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        line-height: 1.35;
     }
 
     .excel-cell-assignee {
         text-align: center;
         font-weight: 700;
-        white-space: nowrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    .excel-cell-assignee .badge-assignee {
+        padding: 2.5px 6px;
+        font-size: 10px;
+        gap: 3px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.25;
+        display: inline-flex;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .excel-cell-peruntukan {
         text-align: center;
         vertical-align: middle !important;
         background: #f8fafc !important;
+        position: relative;
+    }
+
+    .excel-cell-peruntukan .btn-peruntukan-toggle {
+        padding: 2.5px 7px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .excel-cell-peruntukan .peruntukan-menu-dropdown {
+        right: 0;
+        left: auto;
     }
 
     .excel-cell-aksi {
         text-align: center;
+        padding: 4px 2px !important;
         white-space: nowrap;
+    }
+
+    .excel-cell-aksi .btn-action-icon {
+        width: 25px;
+        height: 25px;
+        font-size: 11px;
     }
 
     /* MODAL */
@@ -1167,17 +1222,17 @@
         @endforelse
     </div>
 
-    <!-- 4B. TAMPILAN TABEL EXCEL RINGKAS (PERSIS BENTUK SEPERTI GAMBAR DARI USER) -->
+    <!-- 4B. TAMPILAN TABEL EXCEL RINGKAS (FLEKSIBEL 100% UNTUK SEMUA RESOLUSI DESKTOP TANPA PERLU DIGESER) -->
     <div id="containerViewTable" class="excel-table-container" style="display: none;">
         <table class="excel-doc-table">
             <thead>
                 <tr>
-                    <th class="th-nama-belanja" style="width: 22%;">Nama Belanja</th>
-                    <th class="th-jenis-belanja" style="width: 20%;">Jenis Belanja</th>
-                    <th class="th-dokumen">Dokumen Wajib</th>
+                    <th class="th-nama-belanja" style="width: 17%;">Nama Belanja</th>
+                    <th class="th-jenis-belanja" style="width: 17%;">Jenis Belanja</th>
+                    <th class="th-dokumen" style="width: 34%;">Dokumen Wajib</th>
                     <th class="th-penanggungjawab" style="width: 14%;">Penanggungjawab</th>
-                    <th class="th-peruntukan" style="width: 17%;">Peruntukan</th>
-                    <th class="th-aksi" style="width: 80px;">Aksi</th>
+                    <th class="th-peruntukan" style="width: 12%;">Peruntukan</th>
+                    <th class="th-aksi" style="width: 6%;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
