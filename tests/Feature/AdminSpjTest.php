@@ -382,5 +382,78 @@ class AdminSpjTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee(route('admin.spj.destroy', $spj->id));
+        $response->assertSee('Hapus Semua SPJ');
+    }
+
+    public function test_admin_can_destroy_all_spjs(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-ALL-001',
+            'kegiatan' => 'Kegiatan Semua 1',
+            'tanggal' => now(),
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-ALL-002',
+            'kegiatan' => 'Kegiatan Semua 2',
+            'tanggal' => now(),
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+
+        $this->assertGreaterThanOrEqual(2, Spj::count());
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy-all'));
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertEquals(0, Spj::count());
+    }
+
+    public function test_admin_can_bulk_destroy_selected_spjs(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj1 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BULK-001',
+            'kegiatan' => 'Kegiatan Bulk 1',
+            'tanggal' => now(),
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+        $spj2 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BULK-002',
+            'kegiatan' => 'Kegiatan Bulk 2',
+            'tanggal' => now(),
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+        $spj3 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BULK-003',
+            'kegiatan' => 'Kegiatan Bulk 3 (Tetap Ada)',
+            'tanggal' => now(),
+            'nilai' => 3000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.bulk-destroy'), [
+            'ids' => [$spj1->id, $spj2->id],
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('spjs', ['id' => $spj1->id]);
+        $this->assertDatabaseMissing('spjs', ['id' => $spj2->id]);
+        $this->assertDatabaseHas('spjs', ['id' => $spj3->id]);
     }
 }

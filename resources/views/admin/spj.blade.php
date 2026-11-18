@@ -508,6 +508,267 @@
         background: #ffffff;
     }
 
+    /* TOMBOL HAPUS SEMUA DI HEADER */
+    .btn-delete-all-spj {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        background: #fef2f2;
+        color: #dc2626;
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: var(--dash-radius-md);
+        border: 1px solid #fecaca;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .btn-delete-all-spj:hover {
+        background: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        transform: translateY(-2px);
+    }
+
+    /* BAR AKSI MASSAL (BULK ACTION BAR) */
+    .bulk-action-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 12px 20px;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        border-radius: var(--dash-radius-lg);
+        margin: 16px 24px 0 24px;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .bulk-action-left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .bulk-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #e11d48;
+        color: #ffffff;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 800;
+        box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
+    }
+
+    .bulk-hint {
+        font-size: 12.5px;
+        color: #9f1239;
+        font-weight: 600;
+    }
+
+    .bulk-action-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-bulk-delete {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: #dc2626;
+        color: #ffffff;
+        border: none;
+        border-radius: var(--dash-radius-md);
+        font-size: 12.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+    }
+
+    .btn-bulk-delete:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+    }
+
+    .btn-bulk-cancel {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: #ffffff;
+        color: var(--dash-slate-700);
+        border: 1px solid #e2e8f0;
+        border-radius: var(--dash-radius-md);
+        font-size: 12.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-bulk-cancel:hover {
+        background: #f1f5f9;
+        color: var(--dash-slate-900);
+    }
+
+    /* CUSTOM CHECKBOX */
+    .spj-custom-checkbox {
+        width: 17px;
+        height: 17px;
+        cursor: pointer;
+        accent-color: #dc2626;
+        border-radius: 4px;
+        vertical-align: middle;
+    }
+
+    .modern-data-table tbody tr.row-selected {
+        background-color: #fff1f2 !important;
+    }
+
+    /* MODAL STYLES */
+    .modal-backdrop-custom {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 32, 82, 0.45);
+        backdrop-filter: blur(4px);
+        z-index: 1050;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal-box-custom {
+        background: #ffffff;
+        border-radius: var(--dash-radius-xl);
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        animation: modalScaleIn 0.2s ease-out;
+    }
+
+    @keyframes modalScaleIn {
+        from { opacity: 0; transform: scale(0.96); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-danger-header {
+        padding: 24px 24px 12px;
+        text-align: center;
+    }
+
+    .modal-danger-icon {
+        width: 60px;
+        height: 60px;
+        background: #fee2e2;
+        color: #dc2626;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 14px;
+        border: 4px solid #fef2f2;
+    }
+
+    .modal-danger-header h3 {
+        margin: 0 0 8px 0;
+        font-size: 19px;
+        font-weight: 800;
+        color: var(--dash-slate-900);
+    }
+
+    .modal-danger-header p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--dash-slate-600);
+        line-height: 1.5;
+    }
+
+    .modal-danger-summary {
+        margin: 16px 24px;
+        padding: 14px 16px;
+        background: #f8fafc;
+        border-radius: var(--dash-radius-md);
+        border: 1px solid #e2e8f0;
+        font-size: 12.5px;
+    }
+
+    .modal-danger-summary .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+
+    .modal-danger-summary .summary-row:last-child {
+        margin-bottom: 0;
+        padding-top: 6px;
+        border-top: 1px dashed #cbd5e1;
+        font-weight: 700;
+    }
+
+    .modal-footer-custom {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 16px 24px;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .btn-cancel-modal {
+        padding: 9px 18px;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: var(--dash-radius-md);
+        color: var(--dash-slate-700);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-cancel-modal:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
+    }
+
+    .btn-danger-confirm {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 9px 20px;
+        background: #dc2626;
+        color: #ffffff;
+        border: none;
+        border-radius: var(--dash-radius-md);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+    }
+
+    .btn-danger-confirm:hover {
+        background: #b91c1c;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1200px) {
         .spj-stats-grid {
@@ -545,7 +806,12 @@
             </h2>
             <p>Kelola, pantau kelengkapan berkas, dan verifikasi seluruh pengajuan tagihan SPJ BPS Kolaka Utara.</p>
         </div>
-        <div class="spj-header-actions">
+        <div class="spj-header-actions" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            @if($totalSpj > 0)
+                <button type="button" class="btn-delete-all-spj" onclick="openDeleteAllModal()" title="Hapus seluruh data SPJ sekaligus tanpa hapus satu per satu">
+                    <i class="bi bi-trash3-fill"></i> Hapus Semua SPJ
+                </button>
+            @endif
             <a href="{{ route('admin.spj.create') }}" class="btn-create-spj">
                 <i class="bi bi-plus-circle-fill"></i> Tambah SPJ Baru
             </a>
@@ -669,11 +935,33 @@
             </div>
         </div>
 
+        {{-- BULK ACTIONS BAR (MUNCUL OTOMATIS SAAT ADA BERKAS DICENTANG) --}}
+        <div id="bulk_action_bar" class="bulk-action-bar" style="display: none;">
+            <div class="bulk-action-left">
+                <div class="bulk-pill">
+                    <i class="bi bi-check2-circle"></i>
+                    <span id="selected_count">0</span> Berkas Dipilih
+                </div>
+                <span class="bulk-hint">Tindakan massal untuk berkas yang Anda pilih:</span>
+            </div>
+            <div class="bulk-action-right">
+                <button type="button" class="btn-bulk-delete" onclick="openBulkDeleteModal()">
+                    <i class="bi bi-trash3-fill"></i> Hapus Terpilih (<span id="btn_selected_count">0</span>)
+                </button>
+                <button type="button" class="btn-bulk-cancel" onclick="deselectAll()">
+                    <i class="bi bi-x-circle"></i> Batal Pilihan
+                </button>
+            </div>
+        </div>
+
         {{-- TABLE CONTAINER --}}
         <div class="table-container">
             <table class="modern-data-table" id="spj_table">
                 <thead>
                     <tr>
+                        <th style="width: 40px; text-align: center;">
+                            <input type="checkbox" id="check_all" class="spj-custom-checkbox" onchange="toggleSelectAll(this)" title="Pilih Semua SPJ di Halaman Ini">
+                        </th>
                         <th style="width: 45px; text-align: center;">No</th>
                         <th>Uraian Kegiatan & Nomor SPJ</th>
                         <th>Staf Pengaju (PIC)</th>
@@ -686,12 +974,19 @@
                 <tbody id="table_body">
                     @forelse($spjs as $index => $spj)
                     <tr class="spj-row"
+                        id="spj_row_{{ $spj->id }}"
+                        data-id="{{ $spj->id }}"
                         data-status="{{ strtolower($spj->status) }}"
                         data-kegiatan="{{ strtolower($spj->kegiatan) }}"
                         data-nomor="{{ strtolower($spj->nomor_spj ?? '') }}"
                         data-pic="{{ strtolower($spj->user->name ?? '') }}"
                         data-nilai="{{ $spj->nilai }}">
                         
+                        {{-- CHECKBOX --}}
+                        <td style="text-align: center;">
+                            <input type="checkbox" class="spj-custom-checkbox spj-row-checkbox" value="{{ $spj->id }}" onchange="handleRowCheckboxChange(this)">
+                        </td>
+
                         {{-- NO --}}
                         <td style="text-align: center; font-weight: 800; color: var(--dash-slate-400);">
                             {{ $index + 1 }}
@@ -803,7 +1098,7 @@
                     </tr>
                     @empty
                     <tr id="empty_row">
-                        <td colspan="7" style="text-align: center; padding: 40px 20px; color: var(--dash-slate-400);">
+                        <td colspan="8" style="text-align: center; padding: 40px 20px; color: var(--dash-slate-400);">
                             <i class="bi bi-inbox" style="font-size: 36px; display: block; margin-bottom: 8px;"></i>
                             Belum ada berkas SPJ yang terdaftar dalam sistem.
                         </td>
@@ -812,7 +1107,7 @@
                     
                     {{-- Row saat filter pencarian tidak menemukan hasil --}}
                     <tr id="no_match_row" style="display: none;">
-                        <td colspan="7" style="text-align: center; padding: 40px 20px; color: var(--dash-slate-400);">
+                        <td colspan="8" style="text-align: center; padding: 40px 20px; color: var(--dash-slate-400);">
                             <i class="bi bi-search" style="font-size: 32px; display: block; margin-bottom: 8px; color: var(--dash-slate-400);"></i>
                             Tidak ada berkas SPJ yang cocok dengan filter atau kata kunci pencarian.
                         </td>
@@ -833,6 +1128,76 @@
 
     </div>
 
+</div>
+
+{{-- MODAL HAPUS SEMUA SPJ --}}
+<div class="modal-backdrop-custom" id="modalDeleteAll">
+    <div class="modal-box-custom">
+        <div class="modal-danger-header">
+            <div class="modal-danger-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h3>Hapus Semua Data SPJ?</h3>
+            <p>
+                Apakah Anda yakin ingin menghapus <strong>seluruh data pengajuan SPJ ({{ $totalSpj }} berkas)</strong> sekaligus?
+                Semua data pengajuan, riwayat alur persetujuan, dan berkas lampiran yang tersimpan akan dihapus secara permanen.
+            </p>
+        </div>
+
+        <div class="modal-danger-summary">
+            <div class="summary-row">
+                <span style="color: var(--dash-slate-500);">Total Berkas Terdaftar:</span>
+                <strong>{{ $totalSpj }} Berkas</strong>
+            </div>
+            <div class="summary-row">
+                <span style="color: var(--dash-slate-500);">Total Nilai Anggaran:</span>
+                <span style="color: var(--bps-navy); font-weight: 700;">Rp {{ number_format($totalNilaiSpj, 0, ',', '.') }}</span>
+            </div>
+            <div class="summary-row" style="color: #dc2626;">
+                <span>Status Tindakan:</span>
+                <span>Permanen & Tidak Dapat Dibatalkan</span>
+            </div>
+        </div>
+
+        <form action="{{ route('admin.spj.destroy-all') }}" method="POST" id="formDeleteAll">
+            @csrf
+            @method('DELETE')
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-cancel-modal" onclick="closeDeleteAllModal()">Batal</button>
+                <button type="submit" class="btn-danger-confirm" id="btnConfirmDeleteAll">
+                    <i class="bi bi-trash3-fill"></i> Ya, Hapus Semua ({{ $totalSpj }} Berkas)
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- MODAL HAPUS BERKAS TERPILIH (BULK DELETE) --}}
+<div class="modal-backdrop-custom" id="modalBulkDelete">
+    <div class="modal-box-custom">
+        <div class="modal-danger-header">
+            <div class="modal-danger-icon">
+                <i class="bi bi-trash3-fill"></i>
+            </div>
+            <h3>Hapus Berkas SPJ Terpilih?</h3>
+            <p>
+                Apakah Anda yakin ingin menghapus <strong id="bulk_modal_count_text">0</strong> berkas SPJ yang telah Anda tandai?
+                Berkas terpilih beserta riwayatnya akan dihapus permanen dari sistem.
+            </p>
+        </div>
+
+        <form action="{{ route('admin.spj.bulk-destroy') }}" method="POST" id="formBulkDelete">
+            @csrf
+            @method('DELETE')
+            <input type="hidden" name="ids" id="bulk_delete_ids_input">
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-cancel-modal" onclick="closeBulkDeleteModal()">Batal</button>
+                <button type="submit" class="btn-danger-confirm" id="btnConfirmBulkDelete">
+                    <i class="bi bi-trash3-fill"></i> Ya, Hapus Berkas Terpilih
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 @push('scripts')
@@ -888,6 +1253,9 @@
         if (noMatchRow) {
             noMatchRow.style.display = (visibleCount === 0 && rows.length > 0) ? '' : 'none';
         }
+
+        // Sinkronisasi status bar aksi massal jika ada item terpilih yang tersembunyi
+        updateBulkActionBar();
     }
 
     function resetFilter() {
@@ -895,6 +1263,144 @@
         document.getElementById('status_filter').value = '';
         filterTable();
     }
+
+    // MODAL HAPUS SEMUA SPJ
+    function openDeleteAllModal() {
+        const modal = document.getElementById('modalDeleteAll');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeDeleteAllModal() {
+        const modal = document.getElementById('modalDeleteAll');
+        if (modal) modal.style.display = 'none';
+    }
+
+    // CHECKBOX & BULK ACTIONS
+    function toggleSelectAll(masterCheckbox) {
+        const isChecked = masterCheckbox.checked;
+        const rows = document.querySelectorAll('.spj-row');
+
+        rows.forEach(row => {
+            if (row.style.display !== 'none') {
+                const cb = row.querySelector('.spj-row-checkbox');
+                if (cb) {
+                    cb.checked = isChecked;
+                    if (isChecked) {
+                        row.classList.add('row-selected');
+                    } else {
+                        row.classList.remove('row-selected');
+                    }
+                }
+            }
+        });
+
+        updateBulkActionBar();
+    }
+
+    function handleRowCheckboxChange(cb) {
+        const row = cb.closest('tr');
+        if (cb.checked) {
+            row.classList.add('row-selected');
+        } else {
+            row.classList.remove('row-selected');
+        }
+
+        updateBulkActionBar();
+    }
+
+    function getSelectedIds() {
+        const checkboxes = document.querySelectorAll('.spj-row-checkbox:checked');
+        const ids = [];
+        checkboxes.forEach(cb => {
+            const row = cb.closest('.spj-row');
+            if (row && row.style.display !== 'none') {
+                ids.push(cb.value);
+            }
+        });
+        return ids;
+    }
+
+    function updateBulkActionBar() {
+        const selectedIds = getSelectedIds();
+        const count = selectedIds.length;
+        const bulkBar = document.getElementById('bulk_action_bar');
+        const countEl = document.getElementById('selected_count');
+        const btnCountEl = document.getElementById('btn_selected_count');
+        const masterCb = document.getElementById('check_all');
+
+        if (count > 0) {
+            if (bulkBar) bulkBar.style.display = 'flex';
+            if (countEl) countEl.textContent = count;
+            if (btnCountEl) btnCountEl.textContent = count;
+        } else {
+            if (bulkBar) bulkBar.style.display = 'none';
+        }
+
+        // Sinkronisasi status master checkbox dengan baris yang terlihat
+        const visibleRows = Array.from(document.querySelectorAll('.spj-row')).filter(r => r.style.display !== 'none');
+        if (masterCb) {
+            if (visibleRows.length > 0 && count === visibleRows.length) {
+                masterCb.checked = true;
+                masterCb.indeterminate = false;
+            } else if (count > 0) {
+                masterCb.checked = false;
+                masterCb.indeterminate = true;
+            } else {
+                masterCb.checked = false;
+                masterCb.indeterminate = false;
+            }
+        }
+    }
+
+    function deselectAll() {
+        document.querySelectorAll('.spj-row-checkbox').forEach(cb => {
+            cb.checked = false;
+            const row = cb.closest('tr');
+            if (row) row.classList.remove('row-selected');
+        });
+        const masterCb = document.getElementById('check_all');
+        if (masterCb) {
+            masterCb.checked = false;
+            masterCb.indeterminate = false;
+        }
+        updateBulkActionBar();
+    }
+
+    function openBulkDeleteModal() {
+        const selectedIds = getSelectedIds();
+        if (selectedIds.length === 0) {
+            alert('Silakan pilih minimal satu berkas SPJ terlebih dahulu.');
+            return;
+        }
+
+        const input = document.getElementById('bulk_delete_ids_input');
+        if (input) input.value = selectedIds.join(',');
+
+        const countText = document.getElementById('bulk_modal_count_text');
+        if (countText) countText.textContent = selectedIds.length;
+
+        const modal = document.getElementById('modalBulkDelete');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    function closeBulkDeleteModal() {
+        const modal = document.getElementById('modalBulkDelete');
+        if (modal) modal.style.display = 'none';
+    }
+
+    // Tutup modal jika klik di area luar (backdrop)
+    window.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'modalDeleteAll') closeDeleteAllModal();
+        if (e.target && e.target.id === 'modalBulkDelete') closeBulkDeleteModal();
+    });
+
+    // Tutup modal dengan tombol Escape keyboard
+    window.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDeleteAllModal();
+            closeBulkDeleteModal();
+        }
+    });
 
     document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);

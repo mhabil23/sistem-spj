@@ -10,6 +10,7 @@ use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SpjController extends Controller
 {
@@ -336,11 +337,84 @@ class SpjController extends Controller
      */
     public function destroy(Spj $spj)
     {
+        $nomor = $spj->nomor_spj ?: $spj->kegiatan;
+
+        if ($spj->file_lampiran && Storage::disk('public')->exists($spj->file_lampiran)) {
+            Storage::disk('public')->delete($spj->file_lampiran);
+        }
+        if ($spj->bukti_transfer && Storage::disk('public')->exists($spj->bukti_transfer)) {
+            Storage::disk('public')->delete($spj->bukti_transfer);
+        }
+
         $spj->delete();
 
         return redirect()
             ->route('admin.spj.index')
             ->with('success', 'Data SPJ berhasil dihapus.');
+    }
+
+    /**
+     * Menghapus seluruh data SPJ sekaligus
+     */
+    public function destroyAll()
+    {
+        $spjs = Spj::all();
+        $count = $spjs->count();
+
+        if ($count === 0) {
+            return redirect()
+                ->route('admin.spj.index')
+                ->with('info', 'Tidak ada data SPJ yang dapat dihapus.');
+        }
+
+        foreach ($spjs as $spj) {
+            if ($spj->file_lampiran && Storage::disk('public')->exists($spj->file_lampiran)) {
+                Storage::disk('public')->delete($spj->file_lampiran);
+            }
+            if ($spj->bukti_transfer && Storage::disk('public')->exists($spj->bukti_transfer)) {
+                Storage::disk('public')->delete($spj->bukti_transfer);
+            }
+            $spj->delete();
+        }
+
+        return redirect()
+            ->route('admin.spj.index')
+            ->with('success', "Seluruh data SPJ ({$count} berkas) berhasil dihapus dari sistem.");
+    }
+
+    /**
+     * Menghapus beberapa data SPJ yang dipilih sekaligus (Bulk Delete)
+     */
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (is_string($ids)) {
+            $ids = explode(',', $ids);
+        }
+        $ids = array_filter(array_map('intval', (array) $ids));
+
+        if (empty($ids)) {
+            return redirect()
+                ->route('admin.spj.index')
+                ->with('error', 'Pilih minimal satu berkas SPJ untuk dihapus.');
+        }
+
+        $spjs = Spj::whereIn('id', $ids)->get();
+        $count = $spjs->count();
+
+        foreach ($spjs as $spj) {
+            if ($spj->file_lampiran && Storage::disk('public')->exists($spj->file_lampiran)) {
+                Storage::disk('public')->delete($spj->file_lampiran);
+            }
+            if ($spj->bukti_transfer && Storage::disk('public')->exists($spj->bukti_transfer)) {
+                Storage::disk('public')->delete($spj->bukti_transfer);
+            }
+            $spj->delete();
+        }
+
+        return redirect()
+            ->route('admin.spj.index')
+            ->with('success', "Sebanyak {$count} berkas SPJ yang dipilih berhasil dihapus.");
     }
 
     public function laporan(Request $request)
