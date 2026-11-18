@@ -1383,29 +1383,31 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ) Subbagian Umum.';
             updateSubmitButtonState();
         };
 
-        const printWin = window.open('', '_blank');
+        markAsPrinted();
+
+        // Buka proses cetak di TAB BARU secara terisolasi (Blob URL) agar dialog print tidak memblokir JavaScript di tab utama
+        const printHtmlWithScript = printHtml.replace('<\/body>', 
+            '    <script>\n'
+            + '        window.addEventListener("DOMContentLoaded", function() {\n'
+            + '            setTimeout(function() {\n'
+            + '                window.focus();\n'
+            + '                window.print();\n'
+            + '            }, 350);\n'
+            + '        });\n'
+            + '    <\/script>\n'
+            + '<\/body>');
+
+        const blob = new Blob([printHtmlWithScript], { type: 'text/html;charset=utf-8' });
+        const blobUrl = URL.createObjectURL(blob);
+        const printWin = window.open(blobUrl, '_blank');
         if (!printWin) {
-            markAsPrinted();
             alert("Pop-up cetak otomatis diblokir oleh browser Anda. Namun berkas telah berhasil ditandai 'Sudah Dicetak' sehingga Anda dapat langsung menekan tombol 'Ajukan Sekarang'.\n\nUntuk mencetak lembar fisik, silakan izinkan pop-up pada bilah URL browser Anda.");
             return;
         }
 
-        printWin.document.open();
-        printWin.document.write(printHtml);
-        printWin.document.close();
-
-        markAsPrinted();
-
         try {
-            printWin.addEventListener('afterprint', markAsPrinted, { once: true });
+            printWin.opener = null;
         } catch(e) {}
-
-        setTimeout(function() {
-            try {
-                printWin.focus();
-                printWin.print();
-            } catch(e) {}
-        }, 350);
     }
 
     let isPrinted = {{ old('is_printed', '0') == '1' ? 'true' : 'false' }};

@@ -950,22 +950,31 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ Anda.';
             updateSubmitButtonState();
         };
 
-        // Buka proses cetak di TAB BARU (bukan di tab yang sama)
-        const printWin = window.open('', '_blank');
+        // Tandai langsung di tab form bahwa checklist sudah dicetak
+        markAsPrinted();
+
+        // Buka proses cetak di TAB BARU secara terisolasi (Blob URL) agar dialog print tidak memblokir JavaScript di tab utama
+        const printHtmlWithScript = printHtml.replace('<\/body>', 
+            '    <script>\n'
+            + '        window.addEventListener("DOMContentLoaded", function() {\n'
+            + '            setTimeout(function() {\n'
+            + '                window.focus();\n'
+            + '                window.print();\n'
+            + '            }, 350);\n'
+            + '        });\n'
+            + '    <\/script>\n'
+            + '<\/body>');
+
+        const blob = new Blob([printHtmlWithScript], { type: 'text/html;charset=utf-8' });
+        const blobUrl = URL.createObjectURL(blob);
+        const printWin = window.open(blobUrl, '_blank');
         if (!printWin) {
             alert("Gagal membuka tab baru untuk mencetak. Pastikan peramban (browser) Anda mengizinkan pop-up.");
             return;
         }
 
-        printWin.document.open();
-        printWin.document.write(printHtml);
-        printWin.document.close();
-
-        // Tandai langsung di tab form bahwa checklist sudah dicetak
-        markAsPrinted();
-
         try {
-            printWin.addEventListener('afterprint', markAsPrinted, { once: true });
+            printWin.opener = null;
         } catch(e) {}
     }
 

@@ -900,15 +900,6 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ mandiri Subbagian Umum.';
             + '<\/body>\n'
             + '<\/html>';
 
-        const printWin = window.open('', '_blank', 'width=1100,height=750');
-        if (!printWin) {
-            alert("Pop-up diblokir oleh browser. Harap izinkan pop-up untuk mencetak lembar checklist.");
-            return;
-        }
-        printWin.document.open();
-        printWin.document.write(printHtml);
-        printWin.document.close();
-
         // Mark as printed
         const isPrintedInput = document.getElementById("is_printed_input");
         if (isPrintedInput) isPrintedInput.value = "1";
@@ -928,6 +919,30 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ mandiri Subbagian Umum.';
 
         const hint = document.getElementById("print_requirement_hint");
         if (hint) hint.style.display = "none";
+
+        // Buka proses cetak di TAB BARU secara terisolasi (Blob URL) agar dialog print tidak memblokir JavaScript di tab utama
+        const printHtmlWithScript = printHtml.replace('<\/body>', 
+            '    <script>\n'
+            + '        window.addEventListener("DOMContentLoaded", function() {\n'
+            + '            setTimeout(function() {\n'
+            + '                window.focus();\n'
+            + '                window.print();\n'
+            + '            }, 350);\n'
+            + '        });\n'
+            + '    <\/script>\n'
+            + '<\/body>');
+
+        const blob = new Blob([printHtmlWithScript], { type: 'text/html;charset=utf-8' });
+        const blobUrl = URL.createObjectURL(blob);
+        const printWin = window.open(blobUrl, '_blank');
+        if (!printWin) {
+            alert("Pop-up diblokir oleh browser. Harap izinkan pop-up untuk mencetak lembar checklist.");
+            return;
+        }
+
+        try {
+            printWin.opener = null;
+        } catch(e) {}
     }
 
     document.addEventListener("DOMContentLoaded", function() {
