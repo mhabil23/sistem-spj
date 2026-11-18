@@ -643,13 +643,6 @@
 
             </div>
 
-            <div class="pipeline-bottom-action">
-                <a href="{{ route('flowchart.preview') }}" target="_blank" class="btn-formal-primary">
-                    <i class="bi bi-diagram-3-fill"></i>
-                    <span>LIHAT FLOWCHART RESMI SOP (PDF)</span>
-                </a>
-            </div>
-
         </section>
 
         <!-- =========================================================
