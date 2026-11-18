@@ -8,6 +8,7 @@ use App\Models\SpjHistory;
 use App\Models\SyaratDokumenSpj;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -36,6 +37,19 @@ class SpjController extends Controller
 
         $totalNilaiSelesai = $spjs->filter(fn ($s) => in_array($s->status, ['disetujui_ppspm', 'selesai']))->sum('nilai');
 
+        $availableYears = Spj::whereNotNull('tanggal')
+            ->pluck('tanggal')
+            ->map(fn ($d) => (int) date('Y', strtotime((string) $d)))
+            ->unique()
+            ->sortDesc()
+            ->values()
+            ->toArray();
+
+        $currentYear = (int) date('Y');
+        if (! in_array($currentYear, $availableYears)) {
+            array_unshift($availableYears, $currentYear);
+        }
+
         return view('admin.spj', compact(
             'spjs',
             'totalSpj',
@@ -43,7 +57,8 @@ class SpjController extends Controller
             'totalNilaiSelesai',
             'menungguProses',
             'selesai',
-            'dikembalikan'
+            'dikembalikan',
+            'availableYears'
         ));
     }
 
@@ -354,17 +369,37 @@ class SpjController extends Controller
     }
 
     /**
-     * Menghapus seluruh data SPJ sekaligus
+     * Hitung preview jumlah dan nilai data SPJ berdasarkan filter untuk modal hapus
      */
-    public function destroyAll()
+    public function countDeleteFilter(Request $request)
     {
-        $spjs = Spj::all();
+        $labelKeterangan = 'Seluruh data SPJ';
+        $query = $this->buildFilteredSpjQuery($request, $labelKeterangan);
+        $count = $query->count();
+        $totalNilai = (float) $query->sum('nilai');
+
+        return response()->json([
+            'count' => $count,
+            'total_nilai' => $totalNilai,
+            'total_nilai_formatted' => 'Rp '.number_format($totalNilai, 0, ',', '.'),
+            'label' => $labelKeterangan,
+        ]);
+    }
+
+    /**
+     * Menghapus seluruh data SPJ atau berdasarkan filter waktu (tahun, bulan, tanggal)
+     */
+    public function destroyAll(Request $request)
+    {
+        $labelKeterangan = 'Seluruh data SPJ';
+        $query = $this->buildFilteredSpjQuery($request, $labelKeterangan);
+        $spjs = $query->get();
         $count = $spjs->count();
 
         if ($count === 0) {
             return redirect()
                 ->route('admin.spj.index')
-                ->with('info', 'Tidak ada data SPJ yang dapat dihapus.');
+                ->with('info', "Tidak ada data SPJ yang ditemukan untuk {$labelKeterangan}.");
         }
 
         foreach ($spjs as $spj) {
@@ -379,7 +414,60 @@ class SpjController extends Controller
 
         return redirect()
             ->route('admin.spj.index')
-            ->with('success', "Seluruh data SPJ ({$count} berkas) berhasil dihapus dari sistem.");
+            ->with('success', "Sebanyak {$count} berkas SPJ ({$labelKeterangan}) berhasil dihapus dari sistem.");
+    }
+
+    /**
+     * Helper untuk membangun query filter hapus SPJ
+     */
+    protected function buildFilteredSpjQuery(Request $request, ?string &$labelKeterangan = null)
+    {
+        $filterType = $request->input('filter_type', 'semua');
+        $query = Spj::query();
+        $labelKeterangan = 'Seluruh data SPJ';
+
+        if ($filterType === 'tahun' && $request->filled('filter_tahun')) {
+            $tahun = (int) $request->filter_tahun;
+            $query->whereYear('tanggal', $tahun);
+            $labelKeterangan = "Tahun {$tahun}";
+        } elseif ($filterType === 'bulan' && $request->filled('filter_bulan')) {
+            $bulan = (int) $request->filter_bulan;
+            $tahun = (int) $request->input('filter_tahun_bulan', date('Y'));
+            $query->whereYear('tanggal', $tahun)->whereMonth('tanggal', $bulan);
+            $namaBulan = Carbon::createFromDate($tahun, $bulan, 1)->locale('id')->translatedFormat('F');
+            $labelKeterangan = "Bulan {$namaBulan} {$tahun}";
+        } elseif ($filterType === 'tanggal' && $request->filled('filter_tanggal')) {
+            $tgl = $request->filter_tanggal;
+            $query->whereDate('tanggal', $tgl);
+            $tglIndo = Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y');
+            $labelKeterangan = "Tanggal {$tglIndo}";
+        } elseif ($filterType === 'rentang' && $request->filled('filter_tanggal_mulai')) {
+            $mulai = $request->filter_tanggal_mulai;
+            $selesai = $request->filter_tanggal_selesai;
+            $query->whereDate('tanggal', '>=', $mulai);
+            if ($selesai) {
+                $query->whereDate('tanggal', '<=', $selesai);
+                $labelKeterangan = 'Rentang '.Carbon::parse($mulai)->locale('id')->translatedFormat('d M Y').' s.d. '.Carbon::parse($selesai)->locale('id')->translatedFormat('d M Y');
+            } else {
+                $labelKeterangan = 'Sejak '.Carbon::parse($mulai)->locale('id')->translatedFormat('d M Y');
+            }
+        }
+
+        if ($request->filled('filter_status') && $request->filter_status !== 'semua') {
+            $status = $request->filter_status;
+            if ($status === 'diproses') {
+                $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']);
+            } elseif ($status === 'dikembalikan') {
+                $query->where(function ($q) {
+                    $q->where('status', 'like', 'revisi_%')->orWhere('status', 'dikembalikan');
+                });
+            } else {
+                $query->where('status', $status);
+            }
+            $labelKeterangan .= " (Status: {$status})";
+        }
+
+        return $query;
     }
 
     /**

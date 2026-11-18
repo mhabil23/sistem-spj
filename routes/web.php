@@ -42,6 +42,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Daftar SPJ (Admin dapat memonitor, membuat, mengedit & menghapus SPJ)
+    Route::get('/spj/count-delete-filter', [SpjController::class, 'countDeleteFilter'])->name('spj.count-delete-filter');
     Route::delete('/spj/delete-all', [SpjController::class, 'destroyAll'])->name('spj.destroy-all');
     Route::delete('/spj/bulk-delete', [SpjController::class, 'bulkDestroy'])->name('spj.bulk-destroy');
     Route::get('/spj', [SpjController::class, 'index'])->name('spj.index');

@@ -456,4 +456,143 @@ class AdminSpjTest extends TestCase
         $this->assertDatabaseMissing('spjs', ['id' => $spj2->id]);
         $this->assertDatabaseHas('spjs', ['id' => $spj3->id]);
     }
+
+    public function test_admin_can_preview_delete_count_with_filter(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-FILTER-001',
+            'kegiatan' => 'Kegiatan 2025',
+            'tanggal' => '2025-05-10',
+            'nilai' => 1500000,
+            'status' => 'draft',
+        ]);
+        Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-FILTER-002',
+            'kegiatan' => 'Kegiatan 2026',
+            'tanggal' => '2026-05-10',
+            'nilai' => 2500000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->getJson(route('admin.spj.count-delete-filter', [
+            'filter_type' => 'tahun',
+            'filter_tahun' => 2025,
+        ]));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'count' => 1,
+            'total_nilai' => 1500000,
+            'total_nilai_formatted' => 'Rp 1.500.000',
+            'label' => 'Tahun 2025',
+        ]);
+    }
+
+    public function test_admin_can_destroy_spjs_filtered_by_year(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj2025 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-TH-2025',
+            'kegiatan' => 'Kegiatan Tahun 2025',
+            'tanggal' => '2025-08-15',
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $spj2026 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-TH-2026',
+            'kegiatan' => 'Kegiatan Tahun 2026',
+            'tanggal' => '2026-08-15',
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy-all'), [
+            'filter_type' => 'tahun',
+            'filter_tahun' => 2025,
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('spjs', ['id' => $spj2025->id]);
+        $this->assertDatabaseHas('spjs', ['id' => $spj2026->id]);
+    }
+
+    public function test_admin_can_destroy_spjs_filtered_by_month_and_year(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spjOkt = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BLN-OKT',
+            'kegiatan' => 'Kegiatan Bulan Oktober',
+            'tanggal' => '2026-10-10',
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $spjNov = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-BLN-NOV',
+            'kegiatan' => 'Kegiatan Bulan November',
+            'tanggal' => '2026-11-10',
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy-all'), [
+            'filter_type' => 'bulan',
+            'filter_bulan' => 10,
+            'filter_tahun_bulan' => 2026,
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('spjs', ['id' => $spjOkt->id]);
+        $this->assertDatabaseHas('spjs', ['id' => $spjNov->id]);
+    }
+
+    public function test_admin_can_destroy_spjs_filtered_by_specific_date(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj1 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-TGL-01',
+            'kegiatan' => 'Kegiatan Tanggal 1',
+            'tanggal' => '2026-11-01',
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $spj2 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-TGL-02',
+            'kegiatan' => 'Kegiatan Tanggal 2',
+            'tanggal' => '2026-11-02',
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy-all'), [
+            'filter_type' => 'tanggal',
+            'filter_tanggal' => '2026-11-01',
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('spjs', ['id' => $spj1->id]);
+        $this->assertDatabaseHas('spjs', ['id' => $spj2->id]);
+    }
 }

@@ -769,6 +769,99 @@
         box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
     }
 
+    /* FILTER MODAL HAPUS SPJ */
+    .delete-filter-pills {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+    .delete-pill-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        background: #f1f5f9;
+        color: var(--dash-slate-700);
+        border: 1.5px solid #e2e8f0;
+        border-radius: 9999px;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+
+    .delete-pill-label:hover {
+        background: #e2e8f0;
+        color: var(--dash-slate-900);
+    }
+
+    .delete-pill-label input[type="radio"] {
+        display: none;
+    }
+
+    .delete-pill-label.active {
+        background: #fee2e2;
+        color: #b91c1c;
+        border-color: #ef4444;
+        font-weight: 700;
+        box-shadow: 0 1px 4px rgba(220, 38, 38, 0.15);
+    }
+
+    .delete-filter-inputs-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--dash-radius-md);
+        padding: 12px 14px;
+        margin-bottom: 14px;
+    }
+
+    .delete-form-group {
+        margin-bottom: 10px;
+    }
+
+    .delete-form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .delete-form-label {
+        display: block;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--dash-slate-700);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .delete-form-select, .delete-form-input {
+        width: 100%;
+        padding: 7px 11px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 12.5px;
+        color: var(--dash-slate-900);
+        background: #ffffff;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    .delete-form-select:focus, .delete-form-input:focus {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+    }
+
+    .btn-danger-confirm:disabled {
+        background: #94a3b8 !important;
+        border-color: #94a3b8 !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+        transform: none !important;
+        opacity: 0.65;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1200px) {
         .spj-stats-grid {
@@ -1130,42 +1223,152 @@
 
 </div>
 
-{{-- MODAL HAPUS SEMUA SPJ --}}
+{{-- MODAL HAPUS SEMUA SPJ DENGAN FILTER (TAHUN, BULAN, TANGGAL) --}}
 <div class="modal-backdrop-custom" id="modalDeleteAll">
-    <div class="modal-box-custom">
+    <div class="modal-box-custom" style="max-width: 560px;">
         <div class="modal-danger-header">
             <div class="modal-danger-icon">
-                <i class="bi bi-exclamation-triangle-fill"></i>
+                <i class="bi bi-trash3-fill"></i>
             </div>
-            <h3>Hapus Semua Data SPJ?</h3>
+            <h3>Hapus Data SPJ (Dengan Filter)</h3>
             <p>
-                Apakah Anda yakin ingin menghapus <strong>seluruh data pengajuan SPJ ({{ $totalSpj }} berkas)</strong> sekaligus?
-                Semua data pengajuan, riwayat alur persetujuan, dan berkas lampiran yang tersimpan akan dihapus secara permanen.
+                Pilih cakupan data SPJ yang ingin Anda bersihkan secara permanen. Anda dapat memfilter berdasarkan tahun, bulan, tanggal tertentu, atau seluruhnya.
             </p>
         </div>
 
-        <div class="modal-danger-summary">
-            <div class="summary-row">
-                <span style="color: var(--dash-slate-500);">Total Berkas Terdaftar:</span>
-                <strong>{{ $totalSpj }} Berkas</strong>
-            </div>
-            <div class="summary-row">
-                <span style="color: var(--dash-slate-500);">Total Nilai Anggaran:</span>
-                <span style="color: var(--bps-navy); font-weight: 700;">Rp {{ number_format($totalNilaiSpj, 0, ',', '.') }}</span>
-            </div>
-            <div class="summary-row" style="color: #dc2626;">
-                <span>Status Tindakan:</span>
-                <span>Permanen & Tidak Dapat Dibatalkan</span>
-            </div>
-        </div>
-
-        <form action="{{ route('admin.spj.destroy-all') }}" method="POST" id="formDeleteAll">
+        <form action="{{ route('admin.spj.destroy-all') }}" method="POST" id="formDeleteAll" onsubmit="return confirmSubmitDeleteAll()">
             @csrf
             @method('DELETE')
+
+            <div style="padding: 0 24px;">
+                <label class="delete-form-label" style="margin-bottom: 8px;">Pilih Cakupan / Waktu Penghapusan:</label>
+                <div class="delete-filter-pills" id="deleteFilterPills">
+                    <label class="delete-pill-label active" onclick="setDeleteFilterMode('semua')">
+                        <input type="radio" name="filter_type" value="semua" checked>
+                        <i class="bi bi-collection-fill"></i> Semua SPJ
+                    </label>
+                    <label class="delete-pill-label" onclick="setDeleteFilterMode('tahun')">
+                        <input type="radio" name="filter_type" value="tahun">
+                        <i class="bi bi-calendar3"></i> Per Tahun
+                    </label>
+                    <label class="delete-pill-label" onclick="setDeleteFilterMode('bulan')">
+                        <input type="radio" name="filter_type" value="bulan">
+                        <i class="bi bi-calendar-month"></i> Per Bulan
+                    </label>
+                    <label class="delete-pill-label" onclick="setDeleteFilterMode('tanggal')">
+                        <input type="radio" name="filter_type" value="tanggal">
+                        <i class="bi bi-calendar-event"></i> Per Tanggal
+                    </label>
+                    <label class="delete-pill-label" onclick="setDeleteFilterMode('rentang')">
+                        <input type="radio" name="filter_type" value="rentang">
+                        <i class="bi bi-calendar-range"></i> Rentang Tanggal
+                    </label>
+                </div>
+
+                {{-- PANEL FILTER INPUTS --}}
+                <div class="delete-filter-inputs-box" id="deleteFilterInputsBox" style="display: none;">
+                    {{-- Input Mode: Tahun --}}
+                    <div id="filter_input_tahun" class="delete-filter-panel" style="display: none;">
+                        <div class="delete-form-group">
+                            <label class="delete-form-label" for="select_filter_tahun">Pilih Tahun SPJ:</label>
+                            <select name="filter_tahun" id="select_filter_tahun" class="delete-form-select" onchange="fetchDeletePreview()">
+                                @foreach($availableYears ?? [date('Y')] as $year)
+                                    <option value="{{ $year }}" {{ $year == date('Y') ? 'selected' : '' }}>Tahun {{ $year }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    {{-- Input Mode: Bulan & Tahun --}}
+                    <div id="filter_input_bulan" class="delete-filter-panel" style="display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="delete-form-group">
+                                <label class="delete-form-label" for="select_filter_bulan">Pilih Bulan:</label>
+                                <select name="filter_bulan" id="select_filter_bulan" class="delete-form-select" onchange="fetchDeletePreview()">
+                                    @php
+                                        $daftarBulan = [
+                                            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+                                            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+                                            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+                                        ];
+                                        $currentMonth = (int) date('m');
+                                    @endphp
+                                    @foreach($daftarBulan as $num => $namaBulan)
+                                        <option value="{{ $num }}" {{ $num == $currentMonth ? 'selected' : '' }}>{{ $namaBulan }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="delete-form-group">
+                                <label class="delete-form-label" for="select_filter_tahun_bulan">Pilih Tahun:</label>
+                                <select name="filter_tahun_bulan" id="select_filter_tahun_bulan" class="delete-form-select" onchange="fetchDeletePreview()">
+                                    @foreach($availableYears ?? [date('Y')] as $year)
+                                        <option value="{{ $year }}" {{ $year == date('Y') ? 'selected' : '' }}>Tahun {{ $year }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Input Mode: Tanggal Tertentu --}}
+                    <div id="filter_input_tanggal" class="delete-filter-panel" style="display: none;">
+                        <div class="delete-form-group">
+                            <label class="delete-form-label" for="input_filter_tanggal">Pilih Tanggal Kegiatan SPJ:</label>
+                            <input type="date" name="filter_tanggal" id="input_filter_tanggal" class="delete-form-input" value="{{ date('Y-m-d') }}" onchange="fetchDeletePreview()">
+                        </div>
+                    </div>
+
+                    {{-- Input Mode: Rentang Tanggal --}}
+                    <div id="filter_input_rentang" class="delete-filter-panel" style="display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <div class="delete-form-group">
+                                <label class="delete-form-label" for="input_filter_tanggal_mulai">Dari Tanggal:</label>
+                                <input type="date" name="filter_tanggal_mulai" id="input_filter_tanggal_mulai" class="delete-form-input" onchange="fetchDeletePreview()">
+                            </div>
+                            <div class="delete-form-group">
+                                <label class="delete-form-label" for="input_filter_tanggal_selesai">Sampai Tanggal:</label>
+                                <input type="date" name="filter_tanggal_selesai" id="input_filter_tanggal_selesai" class="delete-form-input" onchange="fetchDeletePreview()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Filter Status Tambahan (Opsional) --}}
+                <div class="delete-form-group" style="margin-bottom: 14px;">
+                    <label class="delete-form-label" for="select_filter_status">Filter Status Dokumen (Opsional):</label>
+                    <select name="filter_status" id="select_filter_status" class="delete-form-select" onchange="fetchDeletePreview()">
+                        <option value="semua">Semua Status Dokumen (Tanpa Batasan Status)</option>
+                        <option value="draft">Draft Saja</option>
+                        <option value="diajukan">Diajukan (Menunggu Verifikasi Umum) Saja</option>
+                        <option value="diproses">Sedang Diproses Saja</option>
+                        <option value="selesai">Selesai (Sudah Dicairkan / Arsip) Saja</option>
+                        <option value="dikembalikan">Perlu Revisi / Dikembalikan Saja</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-danger-summary">
+                <div class="summary-row">
+                    <span style="color: var(--dash-slate-500);">Cakupan Terpilih:</span>
+                    <strong id="delete_filter_label">Seluruh Data SPJ</strong>
+                </div>
+                <div class="summary-row">
+                    <span style="color: var(--dash-slate-500);">Total Berkas Ditemukan:</span>
+                    <strong id="delete_filter_count" style="color: #dc2626; font-size: 13.5px;">{{ $totalSpj }} Berkas</strong>
+                </div>
+                <div class="summary-row">
+                    <span style="color: var(--dash-slate-500);">Total Nilai Anggaran:</span>
+                    <span id="delete_filter_nilai" style="color: var(--bps-navy); font-weight: 700;">Rp {{ number_format($totalNilaiSpj, 0, ',', '.') }}</span>
+                </div>
+                <div class="summary-row" style="color: #dc2626;">
+                    <span>Status Tindakan:</span>
+                    <span>Permanen &amp; Berkas Fisik Terkait Dihapus</span>
+                </div>
+            </div>
+
             <div class="modal-footer-custom">
                 <button type="button" class="btn-cancel-modal" onclick="closeDeleteAllModal()">Batal</button>
                 <button type="submit" class="btn-danger-confirm" id="btnConfirmDeleteAll">
-                    <i class="bi bi-trash3-fill"></i> Ya, Hapus Semua ({{ $totalSpj }} Berkas)
+                    <i class="bi bi-trash3-fill"></i> <span id="btn_delete_confirm_text">Ya, Hapus Semua ({{ $totalSpj }} Berkas)</span>
                 </button>
             </div>
         </form>
@@ -1264,15 +1467,101 @@
         filterTable();
     }
 
-    // MODAL HAPUS SEMUA SPJ
+    // MODAL HAPUS SEMUA SPJ DENGAN FILTER
+    let currentDeleteMode = 'semua';
+
     function openDeleteAllModal() {
         const modal = document.getElementById('modalDeleteAll');
         if (modal) modal.style.display = 'flex';
+        fetchDeletePreview();
     }
 
     function closeDeleteAllModal() {
         const modal = document.getElementById('modalDeleteAll');
         if (modal) modal.style.display = 'none';
+    }
+
+    function setDeleteFilterMode(mode) {
+        currentDeleteMode = mode;
+        const labels = document.querySelectorAll('#deleteFilterPills .delete-pill-label');
+        labels.forEach(lbl => {
+            const radio = lbl.querySelector('input[type="radio"]');
+            if (radio && radio.value === mode) {
+                radio.checked = true;
+                lbl.classList.add('active');
+            } else {
+                lbl.classList.remove('active');
+            }
+        });
+
+        const inputsBox = document.getElementById('deleteFilterInputsBox');
+        const panels = document.querySelectorAll('.delete-filter-panel');
+        panels.forEach(p => p.style.display = 'none');
+
+        if (mode === 'semua') {
+            if (inputsBox) inputsBox.style.display = 'none';
+        } else {
+            if (inputsBox) inputsBox.style.display = 'block';
+            const targetPanel = document.getElementById('filter_input_' + mode);
+            if (targetPanel) targetPanel.style.display = 'block';
+        }
+
+        fetchDeletePreview();
+    }
+
+    let deletePreviewTimeout = null;
+    function fetchDeletePreview() {
+        clearTimeout(deletePreviewTimeout);
+        deletePreviewTimeout = setTimeout(() => {
+            const form = document.getElementById('formDeleteAll');
+            if (!form) return;
+
+            const formData = new FormData(form);
+            const params = new URLSearchParams();
+            for (let [k, v] of formData.entries()) {
+                if (k !== '_token' && k !== '_method') {
+                    params.append(k, v);
+                }
+            }
+
+            const countEl = document.getElementById('delete_filter_count');
+            const nilaiEl = document.getElementById('delete_filter_nilai');
+            const labelEl = document.getElementById('delete_filter_label');
+            const btnText = document.getElementById('btn_delete_confirm_text');
+            const btnConfirm = document.getElementById('btnConfirmDeleteAll');
+
+            if (countEl) countEl.innerHTML = '<span style="color:#64748b; font-size:11px;">Menghitung...</span>';
+
+            fetch("{{ route('admin.spj.count-delete-filter') }}?" + params.toString())
+                .then(res => res.json())
+                .then(data => {
+                    if (countEl) countEl.textContent = data.count + ' Berkas';
+                    if (nilaiEl) nilaiEl.textContent = data.total_nilai_formatted;
+                    if (labelEl) labelEl.textContent = data.label;
+
+                    if (btnConfirm) {
+                        if (data.count === 0) {
+                            btnConfirm.disabled = true;
+                            if (btnText) btnText.textContent = 'Tidak Ada Berkas yang Cocok (0 Berkas)';
+                        } else {
+                            btnConfirm.disabled = false;
+                            if (btnText) btnText.textContent = 'Ya, Hapus (' + data.count + ' Berkas)';
+                        }
+                    }
+                })
+                .catch(err => {
+                    if (countEl) countEl.textContent = 'Gagal memeriksa';
+                });
+        }, 150);
+    }
+
+    function confirmSubmitDeleteAll() {
+        const countEl = document.getElementById('delete_filter_count');
+        const countText = countEl ? countEl.textContent : '';
+        const labelEl = document.getElementById('delete_filter_label');
+        const labelText = labelEl ? labelEl.textContent : '';
+
+        return confirm('PERINGATAN PERMANEN:\nApakah Anda benar-benar yakin ingin menghapus ' + countText + ' (' + labelText + ')?\n\nSeluruh data pengajuan dan berkas fisik/lampiran terkait akan dihapus secara permanen dari server!');
     }
 
     // CHECKBOX & BULK ACTIONS
