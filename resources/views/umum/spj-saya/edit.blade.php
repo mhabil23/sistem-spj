@@ -355,7 +355,7 @@ $subtitle = 'Perbaiki atau perbarui pengajuan SPJ mandiri Subbagian Umum.';
                                 <div class="upload-action">
                                     @if($isUmum)
                                         <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin: 0;">
-                                            <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ !empty($doc['disiapkan']) ? 'checked' : '' }} class="berkas-teknis-cb" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
+                                            <input type="checkbox" name="berkas[{{ $index }}]" id="doc_{{ $index }}" value="1" {{ !empty($doc['disiapkan']) ? 'checked' : '' }} class="berkas-teknis-cb" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
                                             <span class="spj-doc-checkbox-label">Ada (Fisik)</span>
                                         </label>
                                     @elseif($isBendahara)

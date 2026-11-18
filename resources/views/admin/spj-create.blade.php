@@ -519,7 +519,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     badgeHtml = `<span class="badge-assignee">${badgeText}</span>`;
                     uploadHtml = `
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
+                        <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
                         <span style="font-size: 0.85rem; font-weight: 500; color: #0f172a;">Ada (Fisik)</span>
                     </label>
                     `;

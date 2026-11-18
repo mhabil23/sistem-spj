@@ -350,7 +350,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
     </div>
     
     <div class="spj-panel-body">
-        <form action="{{ route('teknis.spj.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('teknis.spj.store') }}" method="POST" enctype="multipart/form-data" id="form_spj_teknis">
             @csrf
             
 
@@ -615,7 +615,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
                     badgeHtml = `<span class="badge-assignee">Wajib Disiapkan Teknis</span>`;
                     uploadHtml = `
                     <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                        <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required>
+                        <input type="checkbox" name="berkas[${idx}]" value="1" ${isChecked ? 'checked' : ''} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);">
                         <span class="spj-doc-checkbox-label">Ada (Fisik)</span>
                     </label>
                     `;
@@ -1529,6 +1529,7 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
 
         // Intercept klik pada tombol submit jika status diajukan dan belum print -> langsung POP-UP MODAL!
         const submitBtn = document.getElementById('btn_submit_spj');
+        const submitText = document.getElementById('btn_submit_text');
         if (submitBtn) {
             submitBtn.addEventListener('click', function(e) {
                 const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
@@ -1551,8 +1552,23 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
             });
         }
 
-        const form = document.querySelector('form[action="{{ route('teknis.spj.store') }}"]') || document.querySelector('form');
+        const form = document.getElementById('form_spj_teknis') || document.querySelector('form');
         if (form) {
+            // Tangani event invalid agar user langsung diarahkan ke field yang belum terisi
+            form.addEventListener('invalid', function(e) {
+                if (submitBtn) {
+                    submitBtn.style.pointerEvents = 'auto';
+                    submitBtn.style.opacity = '1';
+                }
+                const invalidField = e.target;
+                if (invalidField) {
+                    setTimeout(() => {
+                        invalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        invalidField.focus();
+                    }, 50);
+                }
+            }, true);
+
             form.addEventListener('submit', function(e) {
                 const selectedStatus = document.querySelector('input[name="status"]:checked')?.value || 'draft';
                 if (selectedStatus === 'diajukan' && !isPrinted) {
@@ -1569,6 +1585,31 @@ $subtitle = 'Formulir pengajuan Surat Pertanggungjawaban (SPJ).';
 
                     openPrintValidationModal();
                     return false;
+                }
+
+                // Sinkronkan nilai input hidden jika belum sinkron dari nilai_display
+                const display = document.getElementById('nilai_display');
+                const hidden = document.getElementById('nilai_input');
+                if (display && hidden && display.value && !hidden.value) {
+                    let clean = display.value.replace(/[^\d,\.]/g, '');
+                    if (clean.includes('.') && clean.includes(',')) {
+                        clean = clean.replace(/\./g, '').replace(',', '.');
+                    } else if (clean.includes('.')) {
+                        const parts = clean.split('.');
+                        if (parts.length > 2 || (parts.length === 2 && parts[1].length === 3)) {
+                            clean = clean.replace(/\./g, '');
+                        }
+                    }
+                    hidden.value = clean;
+                }
+
+                // Beri visual loading feedback pada tombol submit agar user tahu form sedang diproses
+                if (submitBtn) {
+                    submitBtn.style.pointerEvents = 'none';
+                    submitBtn.style.opacity = '0.85';
+                    if (submitText) {
+                        submitText.textContent = selectedStatus === 'diajukan' ? 'Mengajukan SPJ...' : 'Menyimpan Draft...';
+                    }
                 }
 
                 // Sukses diajukan / disimpan: bersihkan storage

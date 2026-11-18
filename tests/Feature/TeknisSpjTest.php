@@ -760,4 +760,65 @@ class TeknisSpjTest extends TestCase
             'seksi' => 'Seksi Neraca',
         ]);
     }
+
+    public function test_teknis_can_submit_spj_diajukan_when_printed_even_with_partial_documents(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif', 'seksi' => 'IPDS']);
+
+        $response = $this->actingAs($teknis)->post(route('teknis.spj.store'), [
+            'kegiatan' => 'Honor Pengajar Workshop IT 2026',
+            'tanggal' => now()->format('Y-m-d'),
+            'nilai' => 1500000,
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'status' => 'diajukan',
+            'is_printed' => '1',
+            'nama_dokumen' => [
+                0 => 'KAK',
+                1 => 'Laporan pengajar',
+                2 => 'SSP PPh Pasal 21',
+            ],
+            'assignee_dokumen' => [
+                0 => 'SM',
+                1 => 'SM',
+                2 => 'Bendahara',
+            ],
+            'berkas' => [
+                0 => '1', // Document 1 is checked, Document 2 is unchecked, Document 3 is bendahara
+            ],
+        ]);
+
+        $response->assertRedirect(route('teknis.spj.index'));
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('spjs', [
+            'kegiatan' => 'Honor Pengajar Workshop IT 2026',
+            'status' => 'diajukan',
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar',
+            'peruntukan' => 'teknis',
+        ]);
+
+        $spj = Spj::where('kegiatan', 'Honor Pengajar Workshop IT 2026')->first();
+        $this->assertNotNull($spj);
+        $this->assertNotNull($spj->diajukan_at);
+
+        $docs = json_decode($spj->dokumen_file, true);
+        $this->assertCount(3, $docs);
+        $this->assertTrue($docs[0]['disiapkan']); // KAK is prepared
+        $this->assertFalse($docs[1]['disiapkan']); // Laporan pengajar is pending/not prepared
+        $this->assertFalse($docs[2]['disiapkan']); // Bendahara doc is handled by bendahara
+    }
+
+    public function test_teknis_create_view_has_form_id_and_unrestricted_document_checkboxes(): void
+    {
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $response = $this->actingAs($teknis)->get(route('teknis.spj.create'));
+
+        $response->assertStatus(200);
+        $response->assertSee('id="form_spj_teknis"', false);
+        // Ensure checkboxes are generated without the HTML5 'required' attribute that causes silent freeze
+        $response->assertDontSee('name="berkas[${idx}]" value="1" ${isChecked ? \'checked\' : \'\'} onchange="saveBerkasState()" style="width: 1.25rem; height: 1.25rem; accent-color: var(--primary);" required', false);
+    }
 }
