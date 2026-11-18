@@ -6,6 +6,7 @@ use App\Models\Spj;
 use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,6 +25,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Paksa skema HTTPS di production, di balik reverse proxy SSL (cPanel/Cloudflare), atau saat diakses via HTTPS
+        if ($this->app->environment('production') || request()->server('HTTP_X_FORWARDED_PROTO') === 'https' || request()->isSecure() || str_starts_with((string) config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+        }
+
         Paginator::defaultView('vendor.pagination.admin');
 
         // Atur locale dan timezone Carbon ke bahasa Indonesia / WITA
