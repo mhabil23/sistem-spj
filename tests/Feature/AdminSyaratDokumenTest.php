@@ -175,4 +175,79 @@ class AdminSyaratDokumenTest extends TestCase
         $responseSemua->assertSee('Dokumen Bersama Unik 52');
         $responseSemua->assertDontSee('Dokumen Khusus Umum Unik 53');
     }
+
+    public function test_admin_can_update_peruntukan_group_excluding_bendahara(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $docSM1 = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar Uji',
+            'nama_dokumen' => 'KAK',
+            'assignee' => 'SM',
+            'peruntukan' => 'semua',
+            'urutan' => 1,
+        ]);
+
+        $docSM2 = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar Uji',
+            'nama_dokumen' => 'Jadwal',
+            'assignee' => 'SM',
+            'peruntukan' => 'semua',
+            'urutan' => 2,
+        ]);
+
+        $docBendahara = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar Uji',
+            'nama_dokumen' => 'SSP PPh 21',
+            'assignee' => 'Bendahara',
+            'peruntukan' => 'semua',
+            'urutan' => 3,
+        ]);
+
+        $response = $this->actingAs($admin)->postJson(route('admin.syarat-dokumen.update-peruntukan-group'), [
+            'nama_belanja' => 'Honor output kegiatan (512213)',
+            'jenis_belanja' => 'Honor Pengajar Uji',
+            'peruntukan' => 'umum',
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'success' => true,
+            'peruntukan' => 'umum',
+            'updated_count' => 2,
+        ]);
+
+        $this->assertSame('umum', $docSM1->fresh()->peruntukan);
+        $this->assertSame('umum', $docSM2->fresh()->peruntukan);
+        $this->assertSame('semua', $docBendahara->fresh()->peruntukan);
+    }
+
+    public function test_admin_updating_bendahara_assignee_forces_peruntukan_semua(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $doc = SyaratDokumenSpj::create([
+            'nama_belanja' => 'Belanja Bahan (521211)',
+            'jenis_belanja' => 'Konsumsi Rapat',
+            'nama_dokumen' => 'Bukti Pajak Bendahara',
+            'assignee' => 'SM',
+            'peruntukan' => 'teknis',
+            'urutan' => 1,
+        ]);
+
+        $response = $this->actingAs($admin)->put(route('admin.syarat-dokumen.update', $doc->id), [
+            'nama_belanja' => 'Belanja Bahan (521211)',
+            'jenis_belanja' => 'Konsumsi Rapat',
+            'nama_dokumen' => 'Bukti Pajak Bendahara',
+            'assignee' => 'Bendahara',
+            'peruntukan' => 'teknis',
+            'urutan' => 1,
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame('semua', $doc->fresh()->peruntukan);
+    }
 }

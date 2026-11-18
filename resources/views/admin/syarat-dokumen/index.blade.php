@@ -1023,7 +1023,8 @@
                 $first = $docs->first();
                 $namaBelanja = $first->nama_belanja;
                 $jenisBelanja = $first->jenis_belanja;
-                $peruntukanVal = $first->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
+                $firstNonBendahara = $docs->first(fn ($d) => $d->assignee !== 'Bendahara') ?? $first;
+                $peruntukanVal = $firstNonBendahara->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
                 $groupKeyId = md5($namaBelanja . '|||' . $jenisBelanja);
 
                 $akunKode = '52';
@@ -1195,7 +1196,8 @@
                             $totalRowsJenis = $docs->count();
                             $isFirstJenisRow = true;
                             $firstDoc = $docs->first();
-                            $peruntukanVal = $firstDoc->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
+                            $firstNonBendahara = $docs->first(fn ($d) => $d->assignee !== 'Bendahara') ?? $firstDoc;
+                            $peruntukanVal = $firstNonBendahara->peruntukan ?: \App\Models\SyaratDokumenSpj::determinePeruntukanByKode($namaBelanja);
                             $groupKeyId = md5($namaBelanja . '|||' . $jenisBelanja);
                         @endphp
 
@@ -1769,6 +1771,10 @@
 
     function detectPeruntukanFromText(text) {
         if (!text) return null;
+        const lower = text.toLowerCase();
+        if (lower.includes('512213') || lower.includes('honor output')) {
+            return 'semua';
+        }
         if (/\(51\d*\)/i.test(text) || /\(53\d*\)/i.test(text) || /\b51\d{4}\b/.test(text) || /\b53\d{4}\b/.test(text)) {
             return 'umum';
         }

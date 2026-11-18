@@ -409,6 +409,9 @@ class SpjController extends Controller
             if ($spj->bukti_transfer && Storage::disk('public')->exists($spj->bukti_transfer)) {
                 Storage::disk('public')->delete($spj->bukti_transfer);
             }
+            if ($spj->dokumen_file && ! str_starts_with(trim($spj->dokumen_file), '[') && Storage::disk('public')->exists($spj->dokumen_file)) {
+                Storage::disk('public')->delete($spj->dokumen_file);
+            }
             $spj->delete();
         }
 
@@ -426,35 +429,57 @@ class SpjController extends Controller
         $query = Spj::query();
         $labelKeterangan = 'Seluruh data SPJ';
 
-        if ($filterType === 'tahun' && $request->filled('filter_tahun')) {
-            $tahun = (int) $request->filter_tahun;
+        if ($filterType === 'tahun') {
+            $tahun = (int) ($request->filter_tahun ?: date('Y'));
             $query->whereYear('tanggal', $tahun);
             $labelKeterangan = "Tahun {$tahun}";
-        } elseif ($filterType === 'bulan' && $request->filled('filter_bulan')) {
-            $bulan = (int) $request->filter_bulan;
-            $tahun = (int) $request->input('filter_tahun_bulan', date('Y'));
+        } elseif ($filterType === 'bulan') {
+            $bulan = (int) ($request->filter_bulan ?: date('n'));
+            $tahun = (int) ($request->input('filter_tahun_bulan', date('Y')));
             $query->whereYear('tanggal', $tahun)->whereMonth('tanggal', $bulan);
             $namaBulan = Carbon::createFromDate($tahun, $bulan, 1)->locale('id')->translatedFormat('F');
             $labelKeterangan = "Bulan {$namaBulan} {$tahun}";
-        } elseif ($filterType === 'tanggal' && $request->filled('filter_tanggal')) {
-            $tgl = $request->filter_tanggal;
+        } elseif ($filterType === 'tanggal') {
+            $tgl = $request->filter_tanggal ?: date('Y-m-d');
             $query->whereDate('tanggal', $tgl);
-            $tglIndo = Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y');
+            try {
+                $tglIndo = Carbon::parse($tgl)->locale('id')->translatedFormat('d F Y');
+            } catch (\Exception $e) {
+                $tglIndo = $tgl;
+            }
             $labelKeterangan = "Tanggal {$tglIndo}";
-        } elseif ($filterType === 'rentang' && $request->filled('filter_tanggal_mulai')) {
+        } elseif ($filterType === 'rentang') {
             $mulai = $request->filter_tanggal_mulai;
             $selesai = $request->filter_tanggal_selesai;
-            $query->whereDate('tanggal', '>=', $mulai);
-            if ($selesai) {
-                $query->whereDate('tanggal', '<=', $selesai);
+
+            if ($mulai && $selesai) {
+                if ($mulai > $selesai) {
+                    [$mulai, $selesai] = [$selesai, $mulai];
+                }
+                $query->whereDate('tanggal', '>=', $mulai)->whereDate('tanggal', '<=', $selesai);
                 $labelKeterangan = 'Rentang '.Carbon::parse($mulai)->locale('id')->translatedFormat('d M Y').' s.d. '.Carbon::parse($selesai)->locale('id')->translatedFormat('d M Y');
-            } else {
+            } elseif ($mulai) {
+                $query->whereDate('tanggal', '>=', $mulai);
                 $labelKeterangan = 'Sejak '.Carbon::parse($mulai)->locale('id')->translatedFormat('d M Y');
+            } elseif ($selesai) {
+                $query->whereDate('tanggal', '<=', $selesai);
+                $labelKeterangan = 'Hingga '.Carbon::parse($selesai)->locale('id')->translatedFormat('d M Y');
+            } else {
+                $labelKeterangan = 'Rentang Tanggal (Semua Tanggal)';
             }
         }
 
         if ($request->filled('filter_status') && $request->filter_status !== 'semua') {
             $status = $request->filter_status;
+            $statusLabel = match ($status) {
+                'draft' => 'Draft',
+                'diajukan' => 'Diajukan',
+                'diproses' => 'Sedang Diproses',
+                'selesai' => 'Selesai',
+                'dikembalikan' => 'Perlu Revisi / Dikembalikan',
+                default => $status,
+            };
+
             if ($status === 'diproses') {
                 $query->whereIn('status', ['diproses', 'disetujui_umum', 'disetujui_ppk', 'disetujui_ppspm', 'menunggu_otp_kpa', 'proses_ls']);
             } elseif ($status === 'dikembalikan') {
@@ -464,7 +489,7 @@ class SpjController extends Controller
             } else {
                 $query->where('status', $status);
             }
-            $labelKeterangan .= " (Status: {$status})";
+            $labelKeterangan .= " (Status: {$statusLabel})";
         }
 
         return $query;
@@ -496,6 +521,9 @@ class SpjController extends Controller
             }
             if ($spj->bukti_transfer && Storage::disk('public')->exists($spj->bukti_transfer)) {
                 Storage::disk('public')->delete($spj->bukti_transfer);
+            }
+            if ($spj->dokumen_file && ! str_starts_with(trim($spj->dokumen_file), '[') && Storage::disk('public')->exists($spj->dokumen_file)) {
+                Storage::disk('public')->delete($spj->dokumen_file);
             }
             $spj->delete();
         }

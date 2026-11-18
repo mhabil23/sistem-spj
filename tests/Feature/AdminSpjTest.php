@@ -595,4 +595,84 @@ class AdminSpjTest extends TestCase
         $this->assertDatabaseMissing('spjs', ['id' => $spj1->id]);
         $this->assertDatabaseHas('spjs', ['id' => $spj2->id]);
     }
+
+    public function test_admin_can_destroy_spjs_filtered_by_date_range_and_handles_reversed_dates(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spj1 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-RNG-01',
+            'kegiatan' => 'Kegiatan 05 Nov',
+            'tanggal' => '2026-11-05',
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $spj2 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-RNG-02',
+            'kegiatan' => 'Kegiatan 15 Nov',
+            'tanggal' => '2026-11-15',
+            'nilai' => 2000000,
+            'status' => 'draft',
+        ]);
+
+        $spj3 = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-RNG-03',
+            'kegiatan' => 'Kegiatan 25 Nov',
+            'tanggal' => '2026-11-25',
+            'nilai' => 3000000,
+            'status' => 'draft',
+        ]);
+
+        // Reversed date range (mulai > selesai)
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy-all'), [
+            'filter_type' => 'rentang',
+            'filter_tanggal_mulai' => '2026-11-20',
+            'filter_tanggal_selesai' => '2026-11-10',
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseHas('spjs', ['id' => $spj1->id]);
+        $this->assertDatabaseMissing('spjs', ['id' => $spj2->id]);
+        $this->assertDatabaseHas('spjs', ['id' => $spj3->id]);
+    }
+
+    public function test_admin_can_destroy_spjs_filtered_by_status(): void
+    {
+        $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
+        $teknis = User::factory()->create(['role' => 'teknis', 'status' => 'aktif']);
+
+        $spjDraft = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-STAT-DRAFT',
+            'kegiatan' => 'Kegiatan Draft',
+            'tanggal' => '2026-11-10',
+            'nilai' => 1000000,
+            'status' => 'draft',
+        ]);
+
+        $spjSelesai = Spj::create([
+            'user_id' => $teknis->id,
+            'nomor_spj' => 'SPJ-STAT-SELESAI',
+            'kegiatan' => 'Kegiatan Selesai',
+            'tanggal' => '2026-11-10',
+            'nilai' => 2000000,
+            'status' => 'selesai',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.spj.destroy-all'), [
+            'filter_type' => 'semua',
+            'filter_status' => 'draft',
+        ]);
+
+        $response->assertRedirect(route('admin.spj.index'));
+        $response->assertSessionHas('success');
+        $this->assertDatabaseMissing('spjs', ['id' => $spjDraft->id]);
+        $this->assertDatabaseHas('spjs', ['id' => $spjSelesai->id]);
+    }
 }

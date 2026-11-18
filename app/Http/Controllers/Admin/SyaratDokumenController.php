@@ -253,7 +253,9 @@ class SyaratDokumenController extends Controller
             'assignee.required' => 'Pihak yang menyiapkan wajib dipilih.',
         ]);
 
-        if (empty($validated['peruntukan'])) {
+        if ($validated['assignee'] === 'Bendahara') {
+            $validated['peruntukan'] = 'semua';
+        } elseif (empty($validated['peruntukan'])) {
             $validated['peruntukan'] = $syaratDokumen->peruntukan ?: SyaratDokumenSpj::determinePeruntukanByKode($validated['nama_belanja']);
         }
 
