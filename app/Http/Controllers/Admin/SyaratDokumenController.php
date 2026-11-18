@@ -75,6 +75,7 @@ class SyaratDokumenController extends Controller
         $totalJenisBelanja = SyaratDokumenSpj::distinct('jenis_belanja')->count('jenis_belanja');
 
         return view('admin.syarat-dokumen.index', compact(
+            'allSyaratDokumens',
             'groupedDokumens',
             'groupedByNamaBelanja',
             'daftarNamaBelanja',
@@ -215,12 +216,17 @@ class SyaratDokumenController extends Controller
             default => 'Dua-duanya (Teknis & Umum)',
         };
 
+        $updatedDocs = SyaratDokumenSpj::where('nama_belanja', $namaBelanja)
+            ->where('jenis_belanja', $jenisBelanja)
+            ->get();
+
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'peruntukan' => $peruntukan,
                 'label' => $labelPeruntukan,
                 'updated_count' => $updatedCount,
+                'docs' => $updatedDocs,
                 'message' => "Peruntukan untuk '{$jenisBelanja}' berhasil diubah menjadi: {$labelPeruntukan} ({$updatedCount} berkas disesuaikan, berkas Bendahara tetap aman).",
             ]);
         }

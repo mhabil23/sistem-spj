@@ -539,6 +539,18 @@
         border: 1px solid #bae6fd;
     }
 
+    .badge-assignee.umum {
+        background: #f5f3ff;
+        color: #6d28d9;
+        border: 1px solid #ddd6fe;
+    }
+
+    .badge-assignee.teknis {
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+    }
+
     .badge-assignee.bendahara {
         background: #fef3c7;
         color: #b45309;
@@ -570,7 +582,7 @@
     .btn-action-icon.delete { color: #dc2626; }
     .btn-action-icon.delete:hover { background: #fee2e2; }
 
-    /* 4B. TAMPILAN TABEL EXCEL RINGKAS (PERSIS SEPERTI GAMBAR USER) */
+    /* 4B. TAMPILAN TABEL EXCEL RINGKAS (PERSIS BENTUK SEPERTI GAMBAR DARI USER) */
     .excel-table-container {
         background: #ffffff;
         border-radius: var(--dash-radius-xl);
@@ -587,7 +599,7 @@
     }
 
     .excel-doc-table th {
-        background: #d1fae5; /* Pastel soft green matching Image 2 excel */
+        background: #d1fae5;
         color: #064e3b;
         font-weight: 800;
         font-size: 12px;
@@ -1087,7 +1099,10 @@
                         </thead>
                         <tbody>
                             @foreach($docs as $dIndex => $doc)
-                            <tr>
+                            @php
+                                $docPeruntukan = $doc->peruntukan ?: $peruntukanVal;
+                            @endphp
+                            <tr class="doc-row-{{ $groupKeyId }}" data-doc-id="{{ $doc->id }}" data-is-bendahara="{{ $doc->assignee === 'Bendahara' ? '1' : '0' }}">
                                 <td style="text-align: center; color: var(--dash-slate-500); font-weight: 600;">
                                     {{ $dIndex + 1 }}
                                 </td>
@@ -1097,25 +1112,35 @@
                                     </div>
                                 </td>
                                 <td style="text-align: center;">
-                                    @if($doc->assignee === 'SM')
-                                        <span class="badge-assignee sm" title="Wajib disediakan oleh pengaju kegiatan">
-                                            <i class="bi bi-person-check-fill"></i> Disiapkan Teknis / Umum (SM)
-                                        </span>
-                                    @elseif($doc->assignee === 'Bendahara')
+                                    @if($doc->assignee === 'Bendahara')
                                         <span class="badge-assignee bendahara" title="Diverifikasi dan dilengkapi oleh Bendahara Pengeluaran">
                                             <i class="bi bi-cash-coin"></i> Dilengkapi Bendahara
                                         </span>
-                                    @else
+                                    @elseif($doc->assignee === 'PPK')
                                         <span class="badge-assignee ppk" title="Diverifikasi dan dilengkapi oleh PPK">
                                             <i class="bi bi-shield-check"></i> Dilengkapi PPK
                                         </span>
+                                    @else
+                                        @if($docPeruntukan === 'umum')
+                                            <span class="badge-assignee umum badge-assignee-dynamic" data-doc-id="{{ $doc->id }}" title="Wajib disediakan oleh Subbagian Umum">
+                                                <i class="bi bi-building"></i> Disiapkan Subbag Umum
+                                            </span>
+                                        @elseif($docPeruntukan === 'teknis')
+                                            <span class="badge-assignee teknis badge-assignee-dynamic" data-doc-id="{{ $doc->id }}" title="Wajib disediakan oleh Staf Teknis (SM)">
+                                                <i class="bi bi-laptop"></i> Disiapkan Staf Teknis (SM)
+                                            </span>
+                                        @else
+                                            <span class="badge-assignee sm badge-assignee-dynamic" data-doc-id="{{ $doc->id }}" title="Wajib disediakan oleh pengaju kegiatan (Teknis / Umum)">
+                                                <i class="bi bi-person-check-fill"></i> Disiapkan Teknis / Umum (SM)
+                                            </span>
+                                        @endif
                                     @endif
                                 </td>
                                 <td style="text-align: center; font-weight: 700; color: var(--dash-slate-600); font-size: 12px;">
                                     {{ $doc->urutan }}
                                 </td>
                                 <td style="text-align: center; white-space: nowrap;">
-                                    <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModal({{ json_encode($doc) }})">
+                                    <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModalById({{ $doc->id }})">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>
                                     <form action="{{ route('admin.syarat-dokumen.destroy', $doc->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus dokumen persyaratan: \'{{ addslashes($doc->nama_dokumen) }}\'?');">
@@ -1175,7 +1200,10 @@
                         @endphp
 
                         @foreach($docs as $doc)
-                            <tr>
+                            @php
+                                $docPeruntukan = $doc->peruntukan ?: $peruntukanVal;
+                            @endphp
+                            <tr class="doc-row-table-{{ $groupKeyId }}" data-doc-id="{{ $doc->id }}" data-is-bendahara="{{ $doc->assignee === 'Bendahara' ? '1' : '0' }}">
                                 @if($isFirstNamaRow)
                                     <td rowspan="{{ $totalRowsNama }}" class="excel-cell-nama-belanja">
                                         <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -1207,18 +1235,28 @@
                                 </td>
 
                                 <td class="excel-cell-assignee">
-                                    @if($doc->assignee === 'SM')
-                                        <span class="badge-assignee sm" style="font-size: 11px;">
-                                            <i class="bi bi-person-check-fill"></i> SM
-                                        </span>
-                                    @elseif($doc->assignee === 'Bendahara')
+                                    @if($doc->assignee === 'Bendahara')
                                         <span class="badge-assignee bendahara" style="font-size: 11px;">
                                             <i class="bi bi-cash-coin"></i> Bendahara
                                         </span>
-                                    @else
+                                    @elseif($doc->assignee === 'PPK')
                                         <span class="badge-assignee ppk" style="font-size: 11px;">
                                             <i class="bi bi-shield-check"></i> PPK
                                         </span>
+                                    @else
+                                        @if($docPeruntukan === 'umum')
+                                            <span class="badge-assignee umum badge-assignee-dynamic-table" data-doc-id="{{ $doc->id }}" style="font-size: 11px;">
+                                                <i class="bi bi-building"></i> Subbag Umum
+                                            </span>
+                                        @elseif($docPeruntukan === 'teknis')
+                                            <span class="badge-assignee teknis badge-assignee-dynamic-table" data-doc-id="{{ $doc->id }}" style="font-size: 11px;">
+                                                <i class="bi bi-laptop"></i> Staf Teknis
+                                            </span>
+                                        @else
+                                            <span class="badge-assignee sm badge-assignee-dynamic-table" data-doc-id="{{ $doc->id }}" style="font-size: 11px;">
+                                                <i class="bi bi-person-check-fill"></i> Teknis / Umum
+                                            </span>
+                                        @endif
                                     @endif
                                 </td>
 
@@ -1269,7 +1307,7 @@
                                 @endif
 
                                 <td class="excel-cell-aksi">
-                                    <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModal({{ json_encode($doc) }})">
+                                    <button type="button" class="btn-action-icon edit" title="Edit Dokumen" onclick="openEditDocModalById({{ $doc->id }})">
                                         <i class="bi bi-pencil-fill"></i>
                                     </button>
                                     <form action="{{ route('admin.syarat-dokumen.destroy', $doc->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Hapus dokumen \'{{ addslashes($doc->nama_dokumen) }}\'?');">
@@ -1465,6 +1503,14 @@
 <script>
     let nextRowIndex = 1;
 
+    // Registry dokumen tersinkron di sisi browser
+    const allDocsRegistry = {};
+    @if(isset($allSyaratDokumens))
+        @foreach($allSyaratDokumens as $itemDoc)
+            allDocsRegistry[{{ $itemDoc->id }}] = {!! json_encode($itemDoc) !!};
+        @endforeach
+    @endif
+
     // 1. SWITCH TAMPILAN (KARTU vs TABEL EXCEL)
     function switchViewMode(mode) {
         const containerCards = document.getElementById('containerViewCards');
@@ -1536,6 +1582,22 @@
             if (dropdown) dropdown.classList.remove('show');
 
             if (data.success) {
+                // Perbarui data di allDocsRegistry dari server
+                if (data.docs && Array.isArray(data.docs)) {
+                    data.docs.forEach(doc => {
+                        allDocsRegistry[doc.id] = doc;
+                    });
+                } else {
+                    for (const id in allDocsRegistry) {
+                        const d = allDocsRegistry[id];
+                        if (d.nama_belanja === namaBelanja && d.jenis_belanja === jenisBelanja) {
+                            if (d.assignee !== 'Bendahara') {
+                                d.peruntukan = newPeruntukan;
+                            }
+                        }
+                    }
+                }
+
                 // Perbarui semua badge/tombol di Card View dan Table View yang memiliki groupKeyId sama
                 updatePeruntukanUI(groupKeyId, newPeruntukan, data.label);
                 showToastNotification(data.message, 'success');
@@ -1575,16 +1637,84 @@
 
             // Update item active class
             wrap.querySelectorAll('.dropdown-item-peruntukan').forEach(item => {
-                if (item.onclick.toString().includes(`'${peruntukan}'`)) {
+                if (item.onclick && item.onclick.toString().includes(`'${peruntukan}'`)) {
                     item.classList.add('active');
                 } else {
                     item.classList.remove('active');
                 }
             });
         });
+
+        // Update badge penanggung jawab pada setiap baris di Card View
+        document.querySelectorAll(`.doc-row-${groupKeyId}`).forEach(row => {
+            const isBendahara = row.getAttribute('data-is-bendahara') === '1';
+            const badge = row.querySelector('.badge-assignee-dynamic');
+            if (badge && !isBendahara) {
+                if (peruntukan === 'umum') {
+                    badge.className = 'badge-assignee umum badge-assignee-dynamic';
+                    badge.innerHTML = '<i class="bi bi-building"></i> Disiapkan Subbag Umum';
+                    badge.title = 'Wajib disediakan oleh Subbagian Umum';
+                } else if (peruntukan === 'teknis') {
+                    badge.className = 'badge-assignee teknis badge-assignee-dynamic';
+                    badge.innerHTML = '<i class="bi bi-laptop"></i> Disiapkan Staf Teknis (SM)';
+                    badge.title = 'Wajib disediakan oleh Staf Teknis (SM)';
+                } else {
+                    badge.className = 'badge-assignee sm badge-assignee-dynamic';
+                    badge.innerHTML = '<i class="bi bi-person-check-fill"></i> Disiapkan Teknis / Umum (SM)';
+                    badge.title = 'Wajib disediakan oleh pengaju kegiatan (Teknis / Umum)';
+                }
+            }
+        });
+
+        // Update badge penanggung jawab pada setiap baris di Table View
+        document.querySelectorAll(`.doc-row-table-${groupKeyId}`).forEach(row => {
+            const isBendahara = row.getAttribute('data-is-bendahara') === '1';
+            const badge = row.querySelector('.badge-assignee-dynamic-table');
+            if (badge && !isBendahara) {
+                if (peruntukan === 'umum') {
+                    badge.className = 'badge-assignee umum badge-assignee-dynamic-table';
+                    badge.innerHTML = '<i class="bi bi-building"></i> Subbag Umum';
+                } else if (peruntukan === 'teknis') {
+                    badge.className = 'badge-assignee teknis badge-assignee-dynamic-table';
+                    badge.innerHTML = '<i class="bi bi-laptop"></i> Staf Teknis';
+                } else {
+                    badge.className = 'badge-assignee sm badge-assignee-dynamic-table';
+                    badge.innerHTML = '<i class="bi bi-person-check-fill"></i> Teknis / Umum';
+                }
+            }
+        });
     }
 
-    // 4. TOAST NOTIFIKASI REAL-TIME
+    // 4. OPEN EDIT MODAL (SINKRON 100% DENGAN REGISTRY REAL-TIME)
+    function openEditDocModalById(id) {
+        const doc = allDocsRegistry[id];
+        if (!doc) {
+            console.error('Dokumen dengan ID ' + id + ' tidak ditemukan di registry.');
+            return;
+        }
+
+        const form = document.getElementById('formEditDoc');
+        form.action = "{{ url('admin/syarat-dokumen') }}/" + doc.id;
+        document.getElementById('edit_nama_belanja').value = doc.nama_belanja || '';
+        document.getElementById('edit_jenis_belanja').value = doc.jenis_belanja || '';
+        document.getElementById('edit_nama_dokumen').value = doc.nama_dokumen || '';
+        
+        // Pilihan Peruntukan selalu sinkron dengan state terbaru
+        const editPeruntukanEl = document.getElementById('edit_peruntukan');
+        if (editPeruntukanEl) {
+            editPeruntukanEl.value = doc.peruntukan || 'semua';
+        }
+
+        const editAssigneeEl = document.getElementById('edit_assignee');
+        if (editAssigneeEl) {
+            editAssigneeEl.value = doc.assignee || 'SM';
+        }
+
+        document.getElementById('edit_urutan').value = doc.urutan || 1;
+        document.getElementById('modalEditDoc').style.display = 'flex';
+    }
+
+    // 5. TOAST NOTIFIKASI REAL-TIME
     function showToastNotification(message, type = 'success') {
         let container = document.getElementById('toastNoticeContainer');
         if (!container) {
@@ -1720,7 +1850,10 @@
         if (inpNama) inpNama.value = namaBelanja || '';
         if (selJenis) selJenis.value = jenisBelanja || '';
         if (inpJenis) inpJenis.value = jenisBelanja || '';
-        if (selPeruntukan && peruntukan) selPeruntukan.value = peruntukan;
+        if (selPeruntukan && peruntukan) {
+            selPeruntukan.value = peruntukan;
+            selPeruntukan.dispatchEvent(new Event('change'));
+        }
 
         openAddDocModal();
     }
@@ -1747,18 +1880,6 @@
         } else if (val) {
             inp.value = val;
         }
-    }
-
-    function openEditDocModal(doc) {
-        const form = document.getElementById('formEditDoc');
-        form.action = "{{ url('admin/syarat-dokumen') }}/" + doc.id;
-        document.getElementById('edit_nama_belanja').value = doc.nama_belanja || '';
-        document.getElementById('edit_jenis_belanja').value = doc.jenis_belanja || '';
-        document.getElementById('edit_nama_dokumen').value = doc.nama_dokumen || '';
-        document.getElementById('edit_peruntukan').value = doc.peruntukan || (detectPeruntukanFromText(doc.nama_belanja) || 'semua');
-        document.getElementById('edit_assignee').value = doc.assignee || 'SM';
-        document.getElementById('edit_urutan').value = doc.urutan || 1;
-        document.getElementById('modalEditDoc').style.display = 'flex';
     }
 
     function closeEditDocModal() {
