@@ -56,6 +56,12 @@
     </div>
 
     <div class="topbar-right">
+        <!-- Quick Buku Panduan SIPETA Chip -->
+        <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" class="topbar-chip-btn" title="Buka Buku Panduan Penggunaan SIPETA 2026 (PDF Lengkap 42 Hlm)">
+            <ion-icon name="journal-outline"></ion-icon>
+            <span>Buku Panduan</span>
+        </a>
+
         <!-- Quick SOP Flowchart Chip -->
         <a href="{{ route('flowchart.preview') }}" target="_blank" class="topbar-chip-btn" title="Buka Flowchart & Alur SOP SPJ Digital (PDF)">
             <ion-icon name="git-network-outline"></ion-icon>

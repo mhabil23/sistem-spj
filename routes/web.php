@@ -18,6 +18,7 @@ Route::get('/tracking', [HomeController::class, 'index'])->name('tracking');
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FlowchartPdfController;
 use App\Http\Controllers\PanduanRolePdfController;
+use App\Http\Controllers\PanduanSipetaPdfController;
 use App\Http\Controllers\PasswordResetController;
 
 Route::get('/flowchart-sop/pdf', [FlowchartPdfController::class, 'preview'])->name('flowchart.preview');
@@ -25,6 +26,9 @@ Route::get('/flowchart-sop/download', [FlowchartPdfController::class, 'download'
 
 Route::get('/panduan-role/pdf', [PanduanRolePdfController::class, 'preview'])->name('panduan-role.preview');
 Route::get('/panduan-role/download', [PanduanRolePdfController::class, 'download'])->name('panduan-role.download');
+
+Route::get('/panduan-sipeta/pdf', [PanduanSipetaPdfController::class, 'preview'])->name('panduan-sipeta.preview');
+Route::get('/panduan-sipeta/download', [PanduanSipetaPdfController::class, 'download'])->name('panduan-sipeta.download');
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);

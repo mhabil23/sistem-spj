@@ -416,6 +416,19 @@ $subtitle = 'Ringkasan antrean pencairan SPJ dan status transaksi BRI QLOLA.';
                             <ion-icon name="chevron-forward-outline" style="color: #94a3b8; font-size: 16px;"></ion-icon>
                         </a>
 
+                        <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" class="bnd-quick-link-item">
+                            <div class="bnd-quick-link-left">
+                                <div class="bnd-quick-link-icon" style="background: #fef3c7; color: #d97706;">
+                                    <ion-icon name="journal-outline"></ion-icon>
+                                </div>
+                                <div>
+                                    <div class="bnd-quick-link-title">Buku Panduan SIPETA 2026 (PDF)</div>
+                                    <div class="bnd-quick-link-sub">Buku pedoman resmi lengkap 42 halaman BPS</div>
+                                </div>
+                            </div>
+                            <ion-icon name="open-outline" style="color: #94a3b8; font-size: 16px;"></ion-icon>
+                        </a>
+
                         <a href="{{ route('flowchart.preview') }}" target="_blank" class="bnd-quick-link-item">
                             <div class="bnd-quick-link-left">
                                 <div class="bnd-quick-link-icon" style="background: #dcfce7; color: #059669;">

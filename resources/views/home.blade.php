@@ -121,6 +121,7 @@
             <a href="#monitoring" onclick="closeMobileNav()">MONITORING SPJ</a>
             <a href="#templates" onclick="closeMobileNav(); openTemplateModal(event)">TEMPLATE BERKAS</a>
             <div class="mobile-drawer-divider"></div>
+            <a href="{{ route('panduan-sipeta.preview') }}" target="_blank"><i class="bi bi-book-half"></i> BUKU PANDUAN SIPETA (PDF)</a>
             <a href="{{ route('flowchart.preview') }}" target="_blank"><i class="bi bi-diagram-3"></i> FLOWCHART SOP</a>
             <a href="#panduan" onclick="closeMobileNav(); openPanduanModal(event)"><i class="bi bi-play-circle-fill"></i> PANDUAN VIDEO TUTORIAL</a>
             <a href="{{ route('panduan-role.preview') }}" target="_blank"><i class="bi bi-file-earmark-pdf"></i> PANDUAN ROLE (PDF)</a>
@@ -1150,6 +1151,7 @@
                 <a href="#beranda">BERANDA</a>
                 <a href="#alur">ALUR SPJ</a>
                 <a href="#monitoring">MONITORING</a>
+                <a href="{{ route('panduan-sipeta.preview') }}" target="_blank">BUKU PANDUAN SIPETA (PDF)</a>
                 <a href="#panduan" onclick="openPanduanModal(event)">VIDEO TUTORIAL</a>
                 <a href="{{ route('panduan-role.preview') }}" target="_blank">PANDUAN ROLE (PDF)</a>
                 <a href="{{ route('flowchart.preview') }}" target="_blank">FLOWCHART SOP</a>
@@ -1354,6 +1356,34 @@
                         @endif
                     </div>
                 @endif
+
+                <!-- KARTU RESMI BUKU PANDUAN PENGGUNAAN SIPETA 2026 -->
+                <div class="panduan-sipeta-card">
+                    <div class="panduan-sipeta-card-icon">
+                        <i class="bi bi-book-half"></i>
+                    </div>
+                    <div class="panduan-sipeta-card-body">
+                        <div class="panduan-sipeta-card-meta">
+                            <span class="panduan-sipeta-card-tag"><i class="bi bi-patch-check-fill"></i> Buku Pedoman Resmi BPS</span>
+                            <span class="panduan-sipeta-card-pages">42 Halaman &bull; Dokumen Lengkap 2026</span>
+                        </div>
+                        <h4 class="panduan-sipeta-card-title">Buku Panduan Penggunaan SIPETA Tahun 2026</h4>
+                        <p class="panduan-sipeta-card-desc">
+                            Pedoman baku alur 5 pintu (SOP), diagram use case, standar kelengkapan berkas Akun 51/52/53, mitigasi anomali dokumen SE2026, panduan operasional 4 peran kerja (Teknis, Umum, PPK/PPSPM, Bendahara), serta lampiran format kuitansi &amp; verifikasi.
+                        </p>
+                    </div>
+                    <div class="panduan-sipeta-card-actions">
+                        <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" class="panduan-sipeta-btn-view" title="Buka dan baca Buku Panduan SIPETA langsung di browser">
+                            <i class="bi bi-eye-fill"></i>
+                            <span>Buka Buku Panduan</span>
+                        </a>
+                        <a href="{{ route('panduan-sipeta.download') }}" class="panduan-sipeta-btn-dl" title="Unduh berkas PDF Buku Panduan SIPETA">
+                            <i class="bi bi-download"></i>
+                            <span>Unduh PDF</span>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
             <!-- Modal Footer: Quick Links to PDF SOP -->
@@ -1362,6 +1392,10 @@
                     <span style="font-size: 12px; font-weight: 800; color: var(--text-on-cream);">
                         <i class="bi bi-file-earmark-pdf-fill" style="color: #dc2626;"></i> DOKUMEN RESMI:
                     </span>
+                    <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" class="panduan-pdf-btn primary">
+                        <i class="bi bi-book-half"></i>
+                        <span>Buku Panduan SIPETA (42 Hlm)</span>
+                    </a>
                     <a href="{{ route('panduan-role.preview') }}" target="_blank" class="panduan-pdf-btn">
                         <i class="bi bi-journal-text"></i>
                         <span>Buku Panduan Role &amp; Hak Akses</span>

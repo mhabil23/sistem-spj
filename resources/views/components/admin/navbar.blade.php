@@ -20,6 +20,12 @@
     <!-- RIGHT -->
     <div class="topbar-right">
 
+        <!-- PANDUAN SIPETA QUICK LINK -->
+        <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; border-radius: 8px; font-size: 12px; font-weight: 700; text-decoration: none; margin-right: 12px; transition: all 0.2s ease;" title="Buka Buku Panduan Penggunaan SIPETA 2026 (PDF)">
+            <i class="bi bi-book-half"></i>
+            <span>Buku Panduan</span>
+        </a>
+
         <!-- NOTIFICATION -->
         <button
             type="button"

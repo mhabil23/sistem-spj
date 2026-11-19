@@ -4026,6 +4026,148 @@ body.formal-bps-theme {
     color: #0284c7;
 }
 
+.panduan-pdf-btn.primary {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+}
+
+.panduan-pdf-btn.primary:hover {
+    background: #0369a1;
+    border-color: #0369a1;
+    color: #ffffff;
+}
+
+.panduan-sipeta-card {
+    margin-top: 20px;
+    padding: 18px 20px;
+    background: #ffffff;
+    border: 1.5px solid #bae6fd;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.08);
+    transition: all 0.25s ease;
+}
+
+.panduan-sipeta-card:hover {
+    border-color: #38bdf8;
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.15);
+}
+
+.panduan-sipeta-card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.panduan-sipeta-card-body {
+    flex: 1;
+    min-width: 240px;
+}
+
+.panduan-sipeta-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.panduan-sipeta-card-tag {
+    font-size: 10.5px;
+    font-weight: 800;
+    background: #e0f2fe;
+    color: #0284c7;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.panduan-sipeta-card-pages {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.panduan-sipeta-card-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+    line-height: 1.3;
+}
+
+.panduan-sipeta-card-desc {
+    font-size: 12.5px;
+    color: #475569;
+    margin: 0;
+    line-height: 1.45;
+}
+
+.panduan-sipeta-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+}
+
+.panduan-sipeta-btn-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.panduan-sipeta-btn-view:hover {
+    background: #0369a1;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.panduan-sipeta-btn-dl {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.panduan-sipeta-btn-dl:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
 /* ==========================================================
    PAINT WIPE SMOOTH TRANSITION (ZERO FLICKER & ULTRA SILKY)
    Efek kuas cat basah menyapu layar dari kanan ke kiri pelan & mulus

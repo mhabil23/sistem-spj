@@ -77,6 +77,10 @@ $title = 'Dashboard';
                     <span>Periksa Antrean SPJ</span>
                     <ion-icon name="arrow-forward-outline"></ion-icon>
                 </a>
+                <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" class="hero-btn-glass" title="Buka Buku Panduan Penggunaan SIPETA 2026 (PDF)">
+                    <ion-icon name="journal-outline"></ion-icon>
+                    <span>Buku Panduan (PDF)</span>
+                </a>
                 <a href="{{ route('flowchart.preview') }}" target="_blank" class="hero-btn-glass" title="Buka Flowchart & Alur SOP Lengkap (PDF)">
                     <ion-icon name="git-network-outline"></ion-icon>
                     <span>Buka Alur SOP (PDF)</span>

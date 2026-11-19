@@ -362,6 +362,10 @@
             </div>
         </div>
         <div class="video-header-actions">
+            <a href="{{ route('panduan-sipeta.preview') }}" target="_blank" class="btn-action-secondary" title="Buka Buku Panduan Penggunaan SIPETA 2026 (PDF)">
+                <i class="bi bi-book-half" style="color: #0284c7;"></i>
+                <span>Buku Panduan SIPETA (PDF)</span>
+            </a>
             <a href="{{ route('home') }}#panduan" target="_blank" class="btn-action-secondary" title="Lihat tampilan modal panduan di beranda">
                 <i class="bi bi-box-arrow-up-right"></i>
                 <span>Lihat di Beranda</span>
