@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Pengguna Teknis',
+            'username' => 'teknis',
             'email' => 'teknis@example.com',
             'role' => 'teknis',
             'password' => bcrypt('password'),
@@ -26,6 +27,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Pengguna Admin',
+            'username' => null, // Admin login menggunakan email resmi
             'email' => 'admin@example.com',
             'role' => 'admin',
             'password' => bcrypt('password'),
@@ -33,6 +35,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Pengguna Umum',
+            'username' => 'umum',
             'email' => 'umum@example.com',
             'role' => 'umum',
             'password' => bcrypt('password'),
@@ -40,6 +43,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Pengguna PPK',
+            'username' => 'ppk',
             'email' => 'ppk@example.com',
             'role' => 'ppk',
             'password' => bcrypt('password'),
@@ -47,6 +51,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Pengguna PPSPM',
+            'username' => 'ppspm',
             'email' => 'ppspm@example.com',
             'role' => 'ppspm',
             'password' => bcrypt('password'),
@@ -54,6 +59,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'Pengguna Bendahara',
+            'username' => 'bendahara',
             'email' => 'bendahara@example.com',
             'role' => 'bendahara',
             'password' => bcrypt('password'),

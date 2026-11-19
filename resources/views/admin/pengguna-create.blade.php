@@ -307,7 +307,7 @@
                 {{-- NAMA LENGKAP --}}
                 <div class="form-group">
                     <label for="name" class="form-label">
-                        <i class="bi bi-person"></i> Nama Lengkap / Username <span style="color: #dc2626;">*</span>
+                        <i class="bi bi-person"></i> Nama Lengkap Pegawai <span style="color: #dc2626;">*</span>
                     </label>
                     <input
                         type="text"
@@ -315,13 +315,33 @@
                         name="name"
                         value="{{ old('name') }}"
                         class="form-input"
-                        placeholder="Contoh: Muhammad Habil atau teknis"
+                        placeholder="Contoh: Muhammad Habil atau Tim IPDS"
                         required>
                     @error('name')
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
 
+                {{-- USERNAME (LOGIN STAF) --}}
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-at"></i> Username (ID Login Non-Admin)
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="{{ old('username') }}"
+                        class="form-input"
+                        placeholder="Contoh: ipds, umum, bendahara, neraca">
+                    <span class="form-hint">Digunakan login untuk staf non-admin (Admin wajib menggunakan email).</span>
+                    @error('username')
+                        <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-grid-2">
                 {{-- EMAIL --}}
                 <div class="form-group">
                     <label for="email" class="form-label">
@@ -335,13 +355,12 @@
                         class="form-input"
                         placeholder="contoh@bps.go.id atau user@gmail.com"
                         required>
+                    <span class="form-hint">Wajib untuk Administrator saat login, dan untuk reset password akun.</span>
                     @error('email')
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
-            </div>
 
-            <div class="form-grid-2">
                 {{-- WHATSAPP --}}
                 <div class="form-group">
                     <label for="no_wa" class="form-label">
@@ -359,7 +378,9 @@
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
+            </div>
 
+            <div class="form-grid-2">
                 {{-- PASSWORD --}}
                 <div class="form-group">
                     <label for="password" class="form-label">
@@ -374,6 +395,20 @@
                         required>
                     <span class="form-hint">Gunakan kombinasi huruf dan angka untuk keamanan optimal.</span>
                     @error('password')
+                        <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
+                    @enderror
+                </div>
+
+                {{-- STATUS --}}
+                <div class="form-group">
+                    <label for="status" class="form-label">
+                        <i class="bi bi-toggle-on"></i> Status Keaktifan <span style="color: #dc2626;">*</span>
+                    </label>
+                    <select id="status" name="status" class="form-select" required>
+                        <option value="aktif" {{ old('status', 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif (Dapat Login ke Sistem)</option>
+                        <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif (Akses Sementara Dibatasi)</option>
+                    </select>
+                    @error('status')
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
@@ -442,20 +477,6 @@
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
-            </div>
-
-            {{-- STATUS --}}
-            <div class="form-group">
-                <label for="status" class="form-label">
-                    <i class="bi bi-toggle-on"></i> Status Keaktifan <span style="color: #dc2626;">*</span>
-                </label>
-                <select id="status" name="status" class="form-select" required>
-                    <option value="aktif" {{ old('status', 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif (Dapat Login ke Sistem)</option>
-                    <option value="nonaktif" {{ old('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif (Akses Sementara Dibatasi)</option>
-                </select>
-                @error('status')
-                    <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
-                @enderror
             </div>
         </div>
 

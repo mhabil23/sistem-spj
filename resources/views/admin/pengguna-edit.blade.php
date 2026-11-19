@@ -328,7 +328,7 @@
                 {{-- NAMA LENGKAP --}}
                 <div class="form-group">
                     <label for="name" class="form-label">
-                        <i class="bi bi-person"></i> Nama Lengkap / Username <span style="color: #dc2626;">*</span>
+                        <i class="bi bi-person"></i> Nama Lengkap Pegawai <span style="color: #dc2626;">*</span>
                     </label>
                     <input
                         type="text"
@@ -342,6 +342,26 @@
                     @enderror
                 </div>
 
+                {{-- USERNAME (LOGIN STAF) --}}
+                <div class="form-group">
+                    <label for="username" class="form-label">
+                        <i class="bi bi-at"></i> Username (ID Login Non-Admin)
+                    </label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        value="{{ old('username', $user->username) }}"
+                        class="form-input"
+                        placeholder="Contoh: ipds, umum, bendahara, neraca">
+                    <span class="form-hint">Digunakan login untuk staf non-admin (Admin wajib menggunakan email).</span>
+                    @error('username')
+                        <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-grid-2">
                 {{-- EMAIL --}}
                 <div class="form-group">
                     <label for="email" class="form-label">
@@ -354,11 +374,11 @@
                         value="{{ old('email', $user->email) }}"
                         class="form-input"
                         required>
+                    <span class="form-hint">Wajib untuk Administrator saat login, dan untuk reset password akun.</span>
                     @error('email')
                         <span class="form-error"><i class="bi bi-exclamation-circle-fill"></i> {{ $message }}</span>
                     @enderror
                 </div>
-            </div>
 
             <div class="form-grid-2">
                 {{-- WHATSAPP --}}

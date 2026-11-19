@@ -299,20 +299,20 @@
                     <form action="{{ route('login') }}" method="POST" id="loginForm">
                         @csrf
 
-                        <!-- Field Email -->
+                        <!-- Field Email / Username -->
                         <div class="form-group">
-                            <label for="email">Alamat Email / ID Pengguna</label>
+                            <label for="email">Username / Alamat Email</label>
                             <div class="input-container">
                                 <span class="input-icon">
-                                    <i class="bi bi-envelope"></i>
+                                    <i class="bi bi-person-badge"></i>
                                 </span>
                                 <input
-                                    type="email"
+                                    type="text"
                                     id="email"
                                     name="email"
                                     value="{{ old('email') }}"
-                                    placeholder="contoh: teknis@example.com"
-                                    autocomplete="email"
+                                    placeholder="Username staf (atau email khusus Admin)"
+                                    autocomplete="username"
                                     required
                                     autofocus>
                             </div>

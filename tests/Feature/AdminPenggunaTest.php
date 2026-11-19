@@ -56,6 +56,7 @@ class AdminPenggunaTest extends TestCase
 
         $response = $this->actingAs($admin)->post(route('admin.pengguna.store'), [
             'name' => 'Budi Santoso',
+            'username' => 'budisantoso',
             'email' => 'budi@bps.go.id',
             'no_wa' => '081298765432',
             'password' => 'rahasia123',
@@ -65,6 +66,7 @@ class AdminPenggunaTest extends TestCase
 
         $response->assertRedirect(route('admin.pengguna.index'));
         $this->assertDatabaseHas('users', [
+            'username' => 'budisantoso',
             'email' => 'budi@bps.go.id',
             'role' => 'teknis',
             'no_wa' => '081298765432',
@@ -74,10 +76,11 @@ class AdminPenggunaTest extends TestCase
     public function test_admin_can_update_pengguna(): void
     {
         $admin = User::factory()->create(['role' => 'admin', 'status' => 'aktif']);
-        $targetUser = User::factory()->create(['name' => 'Lama', 'role' => 'teknis']);
+        $targetUser = User::factory()->create(['name' => 'Lama', 'username' => 'lamauser', 'role' => 'teknis']);
 
         $response = $this->actingAs($admin)->put(route('admin.pengguna.update', $targetUser->id), [
             'name' => 'Baru',
+            'username' => 'baruuser',
             'email' => $targetUser->email,
             'no_wa' => '08999999999',
             'role' => 'umum',
@@ -88,6 +91,7 @@ class AdminPenggunaTest extends TestCase
         $this->assertDatabaseHas('users', [
             'id' => $targetUser->id,
             'name' => 'Baru',
+            'username' => 'baruuser',
             'role' => 'umum',
             'no_wa' => '08999999999',
         ]);

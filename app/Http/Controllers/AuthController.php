@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -14,15 +16,67 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $loginInput = trim((string) ($request->input('login') ?? $request->input('email') ?? ''));
+        $password = (string) $request->input('password');
 
-        if (Auth::attempt($credentials)) {
+        if (empty($loginInput) || empty($password)) {
+            $msg = 'Username / email dan kata sandi wajib diisi.';
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $msg,
+                    'errors' => ['email' => [$msg], 'login' => [$msg]],
+                ], 422);
+            }
+
+            return back()->withErrors(['email' => $msg, 'login' => $msg])->onlyInput('login', 'email');
+        }
+
+        $isEmail = (bool) filter_var($loginInput, FILTER_VALIDATE_EMAIL);
+
+        if ($isEmail) {
+            $user = User::where('email', $loginInput)->first();
+        } else {
+            // Pencarian username (case-insensitive)
+            $user = User::where('username', $loginInput)
+                ->orWhereRaw('LOWER(username) = ?', [strtolower($loginInput)])
+                ->first();
+        }
+
+        // Semua user kecuali admin bisa login menggunakan username.
+        // Jika akun adalah admin tetapi mencoba login dengan username (bukan email), tolak dengan pesan khusus.
+        if ($user && $user->role === 'admin' && ! $isEmail) {
+            $msg = 'Akun Administrator wajib masuk menggunakan alamat email resmi.';
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $msg,
+                    'errors' => ['email' => [$msg], 'login' => [$msg]],
+                ], 422);
+            }
+
+            return back()->withErrors(['email' => $msg, 'login' => $msg])->onlyInput('login', 'email');
+        }
+
+        // Verifikasi password dan login
+        if ($user && Hash::check($password, $user->password)) {
+            if ($user->status !== 'aktif') {
+                $msg = 'Akun Anda sedang dinonaktifkan. Silakan hubungi Administrator.';
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => $msg,
+                        'errors' => ['email' => [$msg], 'login' => [$msg]],
+                    ], 422);
+                }
+
+                return back()->withErrors(['email' => $msg, 'login' => $msg])->onlyInput('login', 'email');
+            }
+
+            Auth::login($user, $request->boolean('remember'));
             $request->session()->regenerate();
 
-            $role = Auth::user()->role;
+            $role = $user->role;
             $redirectUrl = match ($role) {
                 'admin' => route('admin.dashboard'),
                 'teknis' => route('teknis.dashboard'),
@@ -44,19 +98,22 @@ class AuthController extends Controller
             return redirect()->intended($redirectUrl);
         }
 
+        $errorMsg = 'Username / email atau kata sandi yang Anda masukkan tidak sesuai.';
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Email atau kata sandi yang Anda masukkan tidak sesuai.',
+                'message' => $errorMsg,
                 'errors' => [
-                    'email' => ['Email atau kata sandi yang Anda masukkan tidak sesuai.'],
+                    'email' => [$errorMsg],
+                    'login' => [$errorMsg],
                 ],
             ], 422);
         }
 
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            'email' => $errorMsg,
+            'login' => $errorMsg,
+        ])->onlyInput('login', 'email');
     }
 
     public function logout(Request $request)

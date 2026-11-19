@@ -470,6 +470,20 @@
         border-radius: 4px;
     }
 
+    .badge-username {
+        font-size: 11px;
+        color: #0369a1;
+        background: #e0f2fe;
+        border: 1px solid #bae6fd;
+        font-family: monospace;
+        font-weight: 700;
+        display: inline-block;
+        margin-top: 2px;
+        margin-left: 4px;
+        padding: 1px 6px;
+        border-radius: 4px;
+    }
+
     .email-link {
         color: var(--dash-slate-700);
         text-decoration: none;
@@ -804,6 +818,7 @@
                     @forelse($users as $index => $user)
                     <tr class="user-row"
                         data-name="{{ strtolower($user->name) }}"
+                        data-username="{{ strtolower($user->username ?? '') }}"
                         data-email="{{ strtolower($user->email) }}"
                         data-id="usr-{{ str_pad($user->id, 3, '0', STR_PAD_LEFT) }}"
                         data-role="{{ strtolower($user->role) }}"
@@ -822,7 +837,12 @@
                                 </div>
                                 <div>
                                     <strong class="user-name-title">{{ $user->name }}</strong>
-                                    <span class="user-id-sub">USR-{{ str_pad($user->id, 3, '0', STR_PAD_LEFT) }}</span>
+                                    <div class="d-flex align-items-center gap-1 mt-1 flex-wrap">
+                                        <span class="user-id-sub">USR-{{ str_pad($user->id, 3, '0', STR_PAD_LEFT) }}</span>
+                                        @if($user->username)
+                                            <span class="badge-username" title="Username Login"><i class="bi bi-person-fill"></i> {{ $user->username }}</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -956,6 +976,7 @@
 
         rows.forEach(row => {
             const rowName = row.getAttribute('data-name') || '';
+            const rowUsername = row.getAttribute('data-username') || '';
             const rowEmail = row.getAttribute('data-email') || '';
             const rowId = row.getAttribute('data-id') || '';
             const rowRole = row.getAttribute('data-role') || '';
@@ -963,6 +984,7 @@
 
             const matchesQuery = !query || 
                 rowName.includes(query) || 
+                rowUsername.includes(query) || 
                 rowEmail.includes(query) || 
                 rowId.includes(query);
 
